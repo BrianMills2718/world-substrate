@@ -1694,5 +1694,40 @@ Q = [
    "engine",
    "knock-on-now"
   ]
+ },
+ {
+  "id": "Q90",
+  "short": "Reuse or replace the spike's mid-run rule writing",
+  "question": "This repository's own game master already writes general rules mid-run for attempts no rule covers (spikes/any-scenario-2026-10/midrun.py, Decision 007, ODD 8.19; 27 rules in two saved runs, about $0.10 per attempt). Does J3 reuse its install step and keep-or-drop record, and what do its 27 rules show (general rules or one-offs, and how many pass today's rules check)?",
+  "blocks": "J3's install path and the plan's cost basis; not J2, which is built on Concordia's EventResolution and does not use the spike's rule writer.",
+  "resolves_with": "A free read of rules_written_mid_run in the two summary.json files (spikes/any-scenario-2026-10/evidence/waltzman/run, .../waltzman-spec/run2/run) and of midrun.py's install step before J3 starts; the 27 rules run through the current rules check as a free replay.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "docs/decisions/007-any-scenario-path.md",
+   "docs/model/ODD.md",
+   "docs/plans/ai_judge.md"
+  ],
+  "touches": [
+   "judge-ruling",
+   "midrun-setting"
+  ]
+ },
+ {
+  "id": "Q91",
+  "short": "Do configured resolution steps break 'no judge prompt of our own'",
+  "question": "R7 makes the judge Concordia's EventResolution with no judge prompt of our own, but a typed rule, a pass 2 review and a reached-or-not answer need thinking steps we write. Does passing our own event_resolution_steps and components to EventResolution count as conditioning the game master, or as a judge prompt of our own?",
+  "blocks": "J2's build and J5's stopping-point question.",
+  "resolves_with": "Reading Concordia 2.4.0's event_resolution.py for what the steps and components may supply, then whether that meets R7.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "Read 2026-11-10 (gdm-concordia 2.4.0, concordia/components/game_master/event_resolution.py, __init__ and pre_act): EventResolution takes event_resolution_steps (a sequence of callables over the interactive document, the premise and the active player's name) and a list of component keys whose pre-act text it adds to the document; the putative event is read from the game master's memory. That is its documented extension point. J2 (scripts/judge.py) runs EventResolution on an entity built from Concordia's stock parts, supplies two components (the world; the consequence report) and steps that each ask one typed question whose answer is a rule in the declaration language (prompts/judge_steps.yaml). So there is no judge agent or component of ours, but the question text is our own words; read as configuration. Inferred by agent; Brian may read Decision 006 differently, and then the steps are what to cut. Measured effect on the saved port run: evidence/ai-judge/j2/port/TRACE_READ.md.",
+  "sources": [
+   "docs/plans/ai_judge.md",
+   "docs/decisions/006-governed-rules-layer-scope.md"
+  ],
+  "touches": [
+   "judge-ruling"
+  ]
  }
 ]

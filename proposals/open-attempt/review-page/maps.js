@@ -1602,6 +1602,12 @@ window.MAPS = {
     "explain": "Blocks: Whether E2's rules-writer instructions prefer declared bands for a chance that depends on one or two facts, keeping Jev for the rest; not E1.."
    },
    {
+    "id": "Q90",
+    "label": "Q90: Reuse or replace the spike's mid-run rule writing",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: J3's install path and the plan's cost basis; not J2, which is built on Concordia's EventResolution and does not use the spike's rule writer.."
+   },
+   {
     "id": "affordance",
     "label": "Affordance (offered move)",
     "kind": "Concept",
@@ -1756,6 +1762,13 @@ window.MAPS = {
     "label": "Mechanisms library",
     "kind": "Concept",
     "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:71, Q28)."
+   },
+   {
+    "id": "midrun-setting",
+    "label": "Mid-run rulings setting",
+    "kind": "Concept",
+    "dashed": true,
+    "explain": "Plan ai-judge Decided 5 (planned, not implemented): a per-world option, 'Judge rulings during a run': Approved by Create (default; a checked ruling is installed at once and the attempt settles through it) or Wait for my approval (the proposed rule is held, the attempt waits as pending, Approve installs the rule and settles it, Reject refuses it; nothing settles without an installed rule)."
    },
    {
     "id": "norm",
@@ -2559,6 +2572,18 @@ window.MAPS = {
     "id": "Q88-gen-rules",
     "source": "Q88",
     "target": "gen-rules",
+    "label": "bears on"
+   },
+   {
+    "id": "Q90-judge-ruling",
+    "source": "Q90",
+    "target": "judge-ruling",
+    "label": "bears on"
+   },
+   {
+    "id": "Q90-midrun-setting",
+    "source": "Q90",
+    "target": "midrun-setting",
     "label": "bears on"
    }
   ],

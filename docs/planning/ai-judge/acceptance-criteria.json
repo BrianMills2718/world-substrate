@@ -65,18 +65,19 @@
   },
   {
    "id": "A2",
-   "criterion": "When someone tries something no rule covers, the judge is handed what the engine can already work out, including the blockers installed rules already name, and, before anything is installed, every knock-on effect and every blocker of the rule it proposes; the judge is the world's own game master, not a prompt of ours.",
+   "criterion": "When someone tries something no rule covers, the judge is handed what the engine can already work out, including the blockers installed rules already name, and, before anything is installed, the net changes, every blocker, the chain's length and where it stopped for the rule it proposes (the run page and run record keep every step of a long chain); the judge is the world's own game master, not a prompt of ours.",
    "grounded_in": [
     "Brian 2026-11-09 (Why): \"deliver the resutls of that propagation to he ai judge along with blockers\"; two-pass order inferred by agent (Q78); requirements R2, R7, R8"
    ],
    "demonstration": [
-    "On the World Builder, build the port world from its description (the plan's canonical example) with Create simulation.",
+    "On the World Builder, open the saved run \"port bribe\" (its world is the whole description \"A small port: Rosa, the customs officer, signs inspection releases. Vik, a trader, has 40 coins and a crate he has not declared.\" with hand-written rules, so a fresh build, which writes its rules afresh, need not reproduce the strings below; the run's log and trace read are in `evidence/ai-judge/j2/port/`).",
     "On the run page, open Vik's offer of 40 coins to Rosa.",
     "Read, in order: what the judge was given first (facts and blockers), the rule it proposed, the test run of that rule, and the judge's answer to it.",
     "Open the judge panel and read who ruled and what the judge read.",
-    "Open the saved run \"blocked chain ruling\", where the rule the judge proposes would set off a chain that reaches a truck with no fuel; read the test run and what the judge read before it answered."
+    "Open the saved run \"blocked chain ruling\" (`evidence/ai-judge/j2/blocked-chain/`), where the rule the judge proposes would set off a chain that reaches a truck with no fuel; read the test run and what the judge read before it answered.",
+    "Open the saved run \"long line ruling\" (`evidence/ai-judge/j2/long-line/`), where the rule the judge proposes sets off 5,000 steps; read what the judge read (the net changes and blockers) and then the run page's list of all 5,000 steps."
    ],
-   "expected": "Port: first given, the facts (Vik holds 40 coins; Rosa and Vik are at the customs desk) and, under Rosa's moves, the blocker an installed rule already names (\"sign release: blocked, inspected is false\"). Proposed: a person may hand coins they hold to a person at the same place. Test run: coins move to Rosa, Vik's purse empties, nothing else follows, no blocker. The judge confirms. The judge panel says the ruling came from the world's game master, and the facts, the blocker and the test run all appear in what the judge read. \"blocked chain ruling\": the test run shows \"blocked at step 40: the truck has no fuel\" and the chain stopping there, and that blocker appears in what the judge read before it confirmed, revised or withdrew.",
+   "expected": "Port: first given, the facts (Vik holds 40 coins; Rosa and Vik are at the customs desk) and, under Rosa's moves, the blocker an installed rule already names (\"sign release: blocked, inspected is false\"). Proposed: a rule that lets coins change hands between people at the same place (the judge wrote it as Rosa's own move, \"accept coin offer\", Vik the payer). Test run: coins move to Rosa, Vik's purse empties, nothing else follows, no blocker. The judge confirms. The judge panel says the ruling came from the world's game master, and the facts, the blocker and the test run all appear in what the judge read. \"blocked chain ruling\": the test run shows \"blocked at step 40: the truck has no fuel\" and the chain stopping there, and that blocker appears in what the judge read before it confirmed, revised or withdrew. \"long line ruling\": the judge read the net changes (grouped, with their count of 5,001), no blocker, chain length 5,000 and stopped as settled, and the run page lists all 5,000 steps.",
    "failure_example": "Broken: the judge read nothing from the engine, a blocker shown on the run page is missing from what the judge read, the rule was installed before its test run was shown to the judge, the test run is missing the coin move, or the panel shows a ruling that did not come from the game master. Working: facts and blockers, proposed rule, test run and the judge's answer appear in that order, and every blocker is in what the judge read.",
    "representation": {
     "view": "composite-linked-view: the run page's attempt row opening what the judge was given, its proposed rule, the test run of that rule and the ruling",
@@ -84,8 +85,9 @@
    },
    "entrypoint": "planned",
    "status": "not built",
+   "status_note": "The J2 code, panel and saved runs (evidence/ai-judge/j2/, each with its TRACE_READ.md) are written. This entry stays not built until the deployed World Builder serves a share link for the saved run; that link then becomes the entrypoint (cold review 2026-11-10, findings 1 and 2).",
    "evidence": [
-    "Run record evidence/ai-judge/j2/ (planned): the judge's Concordia call (concordia/components/game_master/event_resolution.py, EventResolution) with its component text and llm_client trace id; pass 1 = engine.discover (src/world_substrate/engine.py:380-440) for the person acting and each person the attempt names, plus the named entities' current values (Rosa's page holds the sign-release blocker; Vik's cannot).",
+    "Saved runs, each with its TRACE_READ.md: evidence/ai-judge/j2/port/ (judge calls 9675709 and 9675710 in the observability record), evidence/ai-judge/j2/blocked-chain/, evidence/ai-judge/j2/long-line/. The judge is Concordia's EventResolution (concordia/components/game_master/event_resolution.py) with our resolution steps (scripts/judge.py, prompts/judge_steps.yaml); pass 1 = engine.discover for the person acting and each person the attempt names, plus the named entities' current values (Rosa's page holds the sign-release blocker; Vik's cannot).",
     "Two-pass order: docs/plans/ai_judge.md, Canonical example; open question Q78."
    ]
   },
@@ -96,10 +98,10 @@
     "Decided 2 (Brian 2026-11-09, \"yes i aprpove all those\"); requirements R3, R8"
    ],
    "demonstration": [
-    "On the World Builder, open the saved run \"empty purse\", in which the coin rule is already installed and a trader with no coins offers coins.",
+    "On the World Builder, open the saved run \"empty purse\" (`evidence/ai-judge/j2/empty-purse/`), in which the coin rule is already installed and Ines, a trader with no coins, hands Rosa coins (she is briefed to bluff; no resident did it unprompted in 7 runs).",
     "On the run page, open the trader's offer and its panel."
    ],
-   "expected": "The offer reads \"refused: blocked: holds 0 coins\", nothing changes, and the panel says \"decided by rule, judge not asked\".",
+   "expected": "The offer reads \"Refused, because this check was false: the giver holds that many coins\" (the rule's own check), nothing changes, and the row says \"Decided by rule, judge not asked.\"",
    "failure_example": "Broken: the panel shows a judge call for the offer, or coins change hands. Working: refused with the blocker named and the judge not asked.",
    "representation": {
     "view": "composite-linked-view: the run page's attempt row opening the rule that decided it and its failed check",
@@ -107,8 +109,9 @@
    },
    "entrypoint": "planned",
    "status": "not built",
+   "status_note": "The J2 code, panel and saved runs (evidence/ai-judge/j2/, each with its TRACE_READ.md) are written. This entry stays not built until the deployed World Builder serves a share link for the saved run; that link then becomes the entrypoint (cold review 2026-11-10, findings 1 and 2).",
    "evidence": [
-    "Saved run evidence/ai-judge/j2/empty-purse/ (planned) with its TRACE_READ.md.",
+    "Saved run evidence/ai-judge/j2/empty-purse/ with its TRACE_READ.md (Ines's hand-coins refused, r1-e00001, no judge call).",
     "Decided 2; docs/plans/ai_judge.md, Acceptance checks A3."
    ]
   },
@@ -119,7 +122,7 @@
     "Decided 3 and Decided 5 (Brian 2026-11-09: \"can we make this configurable? or is that more troubel than it is worth. if so i say yes\"); language gap and wait mode inferred by agent (Q79, Q80); requirements R4, R9, R8"
    ],
    "demonstration": [
-    "Build the port world with Options, 'Judge rulings during a run' left at Approved by Create; run it.",
+    "Open the port world (the description \"A small port: Rosa, the customs officer, signs inspection releases. Vik, a trader, has 40 coins and a crate he has not declared.\" with the same fixture rules as the J2 port run) with Options, 'Judge rulings during a run' left at Approved by Create; run it.",
     "On the run page, open the ruling list, then the second trader's later offer.",
     "Build it again with 'Wait for my approval'; run it; open the ruling list and both traders' offers.",
     "Press Approve on the held ruling and open both offers again; in a second copy of that run, press Reject and open both offers.",
@@ -145,8 +148,8 @@
     "Decided 4 (Brian 2026-11-09: \"whether the bribe works seems like should be a deicsion made by the person being bribed\"); requirements R5, R8"
    ],
    "demonstration": [
-    "On the port run page, open Vik's offer and follow it to what decided whether Rosa signs and whether the coins moved.",
-    "Open the saved run \"sawmill\", where the sawmill offers to buy the logger's cedar logs, and follow the offer."
+    "On the port run page (the saved run \"port bribe\", `evidence/ai-judge/j2/port/`), open Vik's offer and follow it to what decided whether Rosa signs and whether the coins moved.",
+    "Open the saved ruling \"sawmill\" (`evidence/ai-judge/j2/sawmill/ruling.json`, with its TRACE_READ.md), where the sawmill offers to buy the logger's cedar logs, and follow the offer."
    ],
    "expected": "Rosa's own choice, accept or refuse, is shown in her words; the ruling covers only whether coins can change hands, and the coins move only if she signs. Sawmill: the offer reaches the logger as the logger's choice; no logs move on the sawmill's move alone.",
    "failure_example": "Broken: the ruling or a rule says the bribe succeeds or fails; coins move before or without Rosa signing; a rule moves the logger's logs without the logger agreeing (what the plain version wrote, evidence/ai-judge/plain-baseline/pencil-sawmill-buys-logs.json). Working: Rosa decides, in her words, and the coins move only with her signature.",
@@ -156,8 +159,9 @@
    },
    "entrypoint": "planned",
    "status": "not built",
+   "status_note": "The J2 code, panel and saved runs (evidence/ai-judge/j2/, each with its TRACE_READ.md) are written. This entry stays not built until the deployed World Builder serves a share link for the saved run; that link then becomes the entrypoint (cold review 2026-11-10, findings 1 and 2).",
    "evidence": [
-    "Rosa's resident call in the port run record (planned), scripts/concordia_residents.py; routing as the request path of #326.",
+    "Rosa's round 2 belief and move in evidence/ai-judge/j2/port/run-log.jsonl (she inspected the crate; the coins did not move), scripts/concordia_residents.py; routing as the request path of #326; the sawmill ruling names the logger and writes the rule as the logger's move (evidence/ai-judge/j2/sawmill/).",
     "Plain-version failure against Decided 4: evidence/ai-judge/plain-baseline/pencil-sawmill-buys-logs.json (its ruling says the logger's choice; its rule moves the logs on the sawmill's move alone); docs/plans/ai_judge.md, Plain baseline."
    ]
   },
@@ -170,7 +174,7 @@
    "demonstration": [
     "On the World Builder, open the saved run \"password\".",
     "Follow Mallory's phishing message to Alice, Alice's reply, and Mallory's login; read what the run page says about the norm and what happened after it.",
-    "Open the port run where Rosa signs Vik's release for a bribe; read what opened the gate and what the page says about the cargo norm.",
+    "Open the port run J4 saves (the port description \"A small port: Rosa, the customs officer, signs inspection releases. Vik, a trader, has 40 coins and a crate he has not declared.\" with the same fixture rules as the J2 port run) where Rosa signs Vik's release for a bribe; read what opened the gate and what the page says about the cargo norm.",
     "Open the world's norms list and read each norm."
    ],
    "expected": "After the phishing, Mallory holds Alice's password; the computer logs Mallory in; the page shows \"norm broken: only Alice should log in\"; a consequence follows only after someone who saw it acts. In the port, the gate opens because it read a valid code, not because of who holds it, and the cargo norm's breach is shown separately. Each entry in the norms list reads as: who it applies to; must, must not or may; what; when; and, where there is one, what happens otherwise and who enforces it. \"Bribery is forbidden, or else the inspector fines you\" shows an otherwise and an enforcer; \"only Alice should log in\" shows none and is marked a norm.",
@@ -220,7 +224,7 @@
    "demonstration": [
     "On the World Builder Create page, open Options and under When to stop a run tick \"Stop when this run has spent $\" and enter 0.05; build a world (its people are played by AI, so its rounds have a recorded cost; a free scripted run records $0 and never reaches a spending limit) and press Play until it stops.",
     "Build a world again with \"Stop after 3 rounds\" ticked; press Play until it stops.",
-    "Build a team world that must agree a budget, with \"Stop when\" set to \"stop once the team has agreed a budget\"; run it until it stops, then open the stop line, the judge's reason and one earlier round's panel.",
+    "Build a team world from the description \"A small team of three, Ana, Ben and Cai, must agree a budget for the quarter; each can propose an amount and each can accept or counter\", with \"Stop when\" set to \"stop once the team has agreed a budget\"; run it until it stops, then open the stop line, the judge's reason and one earlier round's panel.",
     "Build that team world again with \"Stop after 3 rounds\" as well, where the team cannot agree by round 3; run it."
    ],
    "expected": "Budget: the run stops after the round in which its recorded AI spending reached $0.05 and says \"Stopped at round N: this run had spent $X of its $0.05 limit\" (with \"it went a little over\" when the last round took it past). Rounds: it stops at round 3 with \"the limit of 3 rounds you set\". Stopping point: the run stops after the round in which the team agrees a budget and says \"Stopped at round N: the team has agreed a budget (the judge's reading of your stopping point)\"; the reason opens to what the judge read, and each earlier round's panel shows \"stopping point: not yet\" with the judge's reason. With the round limit of 3 as well, the run stops at round 3 on the round limit instead.",

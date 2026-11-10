@@ -16,9 +16,10 @@ WORLDS = {
     "blocked-chain": (w.blocked_chain, "Blocked chain", {
         "sam": "You want the truck loaded and on its way: shove the lever over by hand to start the loading line."}),
     "empty-purse": (w.empty_purse, "Port", {
-        "ines": "You owe Rosa 10 coins and promised to pay her first thing this morning. Pay her now, before "
-                "anything else; you believe the coins are in your purse.",
-        "vik": "You owe Rosa 50 coins and promised to pay all 50 at once this morning. Hand them to her now.",
+        "ines": "You want your crate released today and you are bluffing: you hold no coins, but you mean to hand Rosa "
+                "10 coins from your purse right now, hoping she signs the release before she notices. Say it as a "
+                "plain move: hand Rosa 10 coins.",
+        "vik": "You are in no hurry. Wait at the desk and watch.",
         "rosa": "You are the customs officer: you sign inspection releases for crates once inspected."}),
 }
 port, pw, name, turns, out_path = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4]), sys.argv[5]
@@ -26,9 +27,6 @@ make, label, briefs = WORLDS[name]
 bundle, rules = make()
 body = {"approved": True, "policy": "resident", "turns": turns, "world": label, "bundle": bundle,
         "causal_model": rules, "briefs": briefs}
-if name == "empty-purse":
-    body["resident_memory"] = {"ines": ["Round 0: Rosa's clerk paid you 10 coins this morning and you put them in "
-                                        "your purse."]}
 req = urllib.request.Request(f"http://127.0.0.1:{port}/run", data=json.dumps(body).encode(), method="POST",
                              headers={"Content-Type": "application/json", "Origin": "https://brianmills.dev",
                                       "X-World-Builder-Owner": open(pw).read().strip(),

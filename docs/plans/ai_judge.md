@@ -10,7 +10,7 @@ goal:
     only what no rule covers; its rulings become rules for everyone, and other people's choices stay theirs."
   canonical_example: "The port world in 'Canonical example' below: Vik's bribe offer reaches the judge with the
     facts and blockers the engine can compute without a rule; the judge proposes a rule that coins can
-    change hands; the engine test-runs it on a copy of the world and shows the judge every knock-on effect; the
+    change hands; the engine test-runs it on a copy of the world and shows the judge its net changes, every blocker and how far the chain ran; the
     judge confirms, the rule is installed, Rosa decides whether to sign and the coins move only if she does, the
     gate opens for the signed release
     whoever holds it, a 100-link chain from the gate runs in one moment, and the same offer by another trader
@@ -102,8 +102,9 @@ gate, a 100-step chain runs: the crate reaches the warehouse, the warehouse fill
    place", which applies to everyone in that situation. Vik's attempt is an exchange, coins for a signature, so
    it settles only on Rosa's choice (Decided 4).
 4. **Pass 2, the test run.** The engine runs the World Builder rules check on the proposed rule and test-runs it
-   on a copy of the world with the exchange settled. The copy's full knock-on chain and any blockers form the
-   consequence report: coins move to Rosa, Vik's purse empties, and nothing else follows. The judge reads the
+   on a copy of the world with the exchange settled. The copy's net changes, any blockers, the chain's length and where it
+   stopped form the consequence report (the full chain stays in the run record and on the run page: a 5,000-step
+   chain is about 500,000 tokens, Q74): coins move to Rosa, Vik's purse empties, and nothing else follows. The judge reads the
    report and confirms, revises the rule once, or withdraws it. If the language cannot express the ruling (the
    check rejects it, and the one revision is rejected too), the attempt is refused with "no rule could express
    this" and the run records a language gap.
@@ -235,14 +236,17 @@ and norms as breakable rules with consequences only when someone acts on them.
   more than `REACTION_LIMIT = 32` reactions is refused whole (`engine.py:1005`, `:1153`).
 - **Blockers reach only the person who tried.** A refused attempt names its failed checks to that resident; no
   other component reads them.
-- **There is no AI judge.** Concordia's game master is kept off on purpose (`scripts/concordia_residents.py:6`).
+- **There was no AI judge in the World Builder path.** Concordia's game master was kept off on purpose
+  (`scripts/concordia_residents.py:6`); J2 (2026-11-10) turns on its `EventResolution` for unmatched attempts.
+  This repository's own earlier version, in a spike and not in the World Builder, is in Prior art.
   An attempt the installed kinds do not fit goes in as unmatched and changes nothing
   (`scripts/run_authored_world.py:576-580`), except a request, which reaches the person asked (#326, `14afa48`).
 - **An earlier "not yet".** The open-attempt plan's D2 (Brian, 2026-10-26) declined an AI game master inventing
   effects for uncovered attempts (`docs/plans/open_attempt.md`, Decisions). Brian's 2026-11-09 approval above
   replaces it with a narrower judge: rulings on constraints only, which become checked rules.
 - **Approval comes before a run.** Pressing Create simulation is the approval (RULE-APPROVAL-BEFORE-RUN,
-  `docs/model/ODD.md` 8.7); no rule is installed mid-run today. Slice J3 changes this (Decided 5).
+  `docs/model/ODD.md` 8.7); in the World Builder no rule is installed mid-run today. The spike path did install
+  rules mid-run (Prior art, Decision 007, ODD 8.19). Slice J3 changes this for the World Builder (Decided 5).
 
 ## Requirements
 
@@ -254,7 +258,7 @@ and norms as breakable rules with consequences only when someone acts on them.
 | R4 | A ruling becomes a rule after the rules check and test run and then decides the same attempt for everyone; a ruling the language cannot express is refused and recorded as a language gap | Decided 3 | A4 |
 | R5 | Another person's choice goes to that person, not to the judge or a rule | Decided 4 | A5 |
 | R6 | Mechanism, credential holder and norm are separate; a credential can change hands; a norm can be broken | Decided (norms) | A6 |
-| R7 | The judge is Concordia's game master, conditioned on our data; no judge prompt of our own | Decision 006 | A2 (trace) |
+| R7 | The judge is Concordia's game master (`EventResolution`), conditioned on our data and configured only through its resolution steps (typed questions in the declaration language); no judge agent or component of our own (Q91) | Decision 006 | A2 (trace) |
 | R8 | Every run keeps its full trace, read before any slice is reported | workspace rule (Trace visibility) | A1-A8 |
 | R9 | A world's setting chooses whether checked rulings install during the run (default) or are held with the attempt pending until approved; the run page lists every ruling | Decided 5 | A4 |
 | R10 | Each saved run records the reaction limit it ran under, and replay uses the recorded value, so runs saved before J0 replay unchanged | goal boundary "saved worlds still replay unchanged" (inferred by agent, Agent technical calls) | A7 |
@@ -294,15 +298,21 @@ results below are in the run page's own words; the record files behind each are 
   "5,000 steps run, 5,000 with a cause, no refusal"; any step opens to the step that caused it; in the saved run
   "loop", each rule fires once for each thing and the moment ends; in the saved run "truck without fuel", step 40
   shows "blocked: the truck has no fuel" in orange and no step follows it.
-- **A2 (J1, J2):** on the port run page, Vik's offer opens to what the judge was given first: the facts (Vik
-  holds 40 coins; Rosa and Vik are at the customs desk) and, under Rosa's moves, "sign release: blocked,
-  inspected is false"; then the rule it proposed, the test-run report of that rule (coins move to Rosa, Vik's
-  purse empties, nothing else follows), and its confirmation; the judge panel says the ruling came from the world's game master and everything above
-  appears in what the judge read. In the saved run "blocked chain ruling", the test run shows "blocked at step
-  40: the truck has no fuel", and that blocker is in what the judge read before it answered.
+- **A2 (J1, J2):** on the saved run "port bribe" (`evidence/ai-judge/j2/port/`; its world is the whole
+  description "A small port: Rosa, the customs officer, signs inspection releases. Vik, a trader, has 40 coins and a crate he has not declared.", with the fixture rules in `tests/judge_worlds.py` `port()`), Vik's offer opens to what the
+  judge was given first: the facts (Vik holds 40 coins; Rosa and Vik are at the customs desk) and, under Rosa's
+  moves, "sign release: blocked, inspected is false"; then the rule it proposed (a rule that lets coins change
+  hands, written as Rosa's own move), the test-run report of that rule (coins move to Rosa, Vik's purse empties,
+  nothing else follows), and its confirmation; the judge panel says the ruling came from the world's game master
+  and everything above appears in what the judge read. In the saved run "blocked chain ruling", the test run shows
+  "blocked at step 40: the truck has no fuel", and that blocker is in what the judge read before it answered. In
+  the saved run "long line ruling", the proposed rule sets off 5,000 steps: the judge read the net changes
+  (grouped, with their count), no blocker, chain length 5,000 and "settled", while the run page lists all 5,000
+  steps (the net-change report, not the whole chain, is what the judge reads).
 - **A3 (J2):** once the coin rule is installed, the saved run "empty purse" shows a trader with no coins offering
-  coins: the offer is covered by that rule, is refused with "blocked: holds 0 coins", nothing changes, and its
-  panel says "decided by rule, judge not asked".
+  coins (briefed to bluff; residents never did it unprompted): the offer is covered by that rule, is refused with
+  "the giver holds that many coins" (the rule's own check), nothing changes, and its row says "Decided by rule,
+  judge not asked".
 - **A4 (J3):** with the default setting, the run page's ruling list shows the coin rule as "installed, passed the
   rules check and test run", and a second trader's later offer says "decided by rule, judge not asked". With
   "Wait for my approval", the ruling shows "held" and both offers show "pending: waiting for your approval" with
@@ -322,7 +332,8 @@ results below are in the run page's own words; the record files behind each are 
   showing "refused: knock-on effects did not settle within 32 steps (the limit this run ran under)"; a new run
   of the same world has no such limit. The existing test of that refusal
   (`tests/test_open_attempt.py:466-501`) is kept, run against the recorded limit.
-- **A8 (J5):** build a team world with Options, "Stop when" set to "stop once the team has agreed a budget"; run it.
+- **A8 (J5):** build a team world from the description "A small team of three, Ana, Ben and Cai, must agree a
+  budget for the quarter; each can propose an amount and each can accept or counter" with Options, "Stop when" set to "stop once the team has agreed a budget"; run it.
   When the team agrees a budget, the run stops after that round and the run page says "Stopped at round N: the
   team has agreed a budget (the judge's reading of your stopping point)", with the judge's reason opening to what
   it read; in the rounds before, each round's panel shows "stopping point: not yet" with its reason. With a round
@@ -412,6 +423,15 @@ for every model call. No new cross-project capability.
 ## Prior art
 
 - Concordia's game master components (`EventResolution`), already a dependency, kept off until now.
+- This repository's own earlier game master that writes rules mid-run: `spikes/any-scenario-2026-10/midrun.py`
+  (Decision 007, Brian 2026-10-07: "The game master should be able to write new rules mid-run, not just make
+  one-off rulings"; ODD 8.19). For an attempt no rule covers, its own rule writer proposes a general rule, the
+  layer-1 checks run on the whole model, a pass installs it into the running engine's registry and a fail is a
+  one-off ruling; no person approves. Its runs recorded 27 rules (`rules_written_mid_run`: 3 in
+  `spikes/any-scenario-2026-10/evidence/waltzman/run/summary.json`, 24 in `.../waltzman-spec/run2/run/summary.json`)
+  and about $0.10 per attempt (the comment in `midrun.py`). It was a spike, not in the World Builder. J2 does not reuse its
+  rule writer (R7: the judge is Concordia's component, conditioned on pass 1 and pass 2, which the spike lacks);
+  J3 looks first at its install step and its keep-or-drop record (Q90).
 - Crawford and Ostrom (1995), "A Grammar of Institutions": a rule is Attributes, Deontic, aIm, Conditions, Or
   else. Its split between a norm (no "or else") and a rule (an "or else" someone enforces) matches the
   constraint, decision and norm split above. J4 starts from it and from Institutional Grammar 2.0 (Frantz and
@@ -525,6 +545,13 @@ run's `max_budget`.
 - **U2 (agent):** how does the judge tell a constraint question from another person's choice? Settled by
   argument in J2's design: an attempt whose effect needs another resident's act is routed to that resident (the
   #326 path, generalised); the judge sees only what remains.
+- **U4 (agent, resolved 2026-11-10 by reading Concordia 2.4.0, Q91):** do configured thinking steps break R7's "no
+  judge prompt of our own"? `EventResolution(model, event_resolution_steps, components)` takes steps as its documented
+  configuration (`concordia/components/game_master/event_resolution.py`, `EventResolution.__init__`) and conditions on named components; J2
+  supplies two components (the world and the consequence report) and steps that each ask one typed question. Read
+  as: no judge agent or component of ours; the question text is configuration. Brian may read Decision 006
+  differently; if so, the steps are the part to remove.
+- **U5 (agent, open, Q90):** what the spike's 27 mid-run rules show, and whether J3 reuses its install step.
 - **U3 (agent):** how to represent a breakable norm and a credential holder in the declaration language.
   Settled by prior art first (Ostrom's grammar, Institutional Grammar 2.0, v3); a design step opens J4.
 
