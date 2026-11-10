@@ -72,10 +72,10 @@ a{color:var(--have)}
 <body>
 <main>
 <h1>An AI judge that rules only on what no rule covers, fed by everything the engine works out</h1>
-<p class="lede"><b>Status (2026-11-09):</b> complete draft. You approved its direction on 2026-11-09 ("i approve", after Decided 5). Nothing is built yet, and nothing on this page waits on you.</p>
+<p class="lede"><b>Status (2026-11-10):</b> adopted and being built. You approved its direction on 2026-11-09 ("i approve", after Decided 5) and building it on 2026-11-10 ("yes if ti si planned out and you have no quesitons for me"). Slice J0 is built and live: knock-on chains have no cap, and the saved runs behind A1 and A7 open from share links (A1 and A7 are marked built). J1, J2, J3 and J5 are next; J4 stays exploration. Nothing on this page waits on you.</p>
 <p class="lede"><b>Why.</b> You said, 2026-11-09: "an ai adjudicator doesnt really scale and that we need to facts to have implications and blockers. like 50 things could propagate down a causal chain 100 links deep taht the llm would not be able to understand so we need that causal chain to automaticlaly rpogate and to deliver the resutls of that propagation to he ai judge along with blockers." So the engine does the bookkeeping, however long the chain; the judge only fills gaps, and each ruling becomes a rule everyone is then held to. Other people's choices stay theirs.</p>
 <p class="lede">This page is the plan's own package. The repository-wide package is on <a href="../../planning-package/review-page/">World Substrate: planning package</a>; both share one set of checks, questions and models.</p>
-<p class="lede"><b>On this page:</b> <a href="#examples">1. The examples</a> · <a href="#capabilities">2. What changes</a> · <a href="#requirements">3. Requirements and how you judge each</a> · <a href="#decided">4. Decided</a> · <a href="#architecture">5. Architecture</a> · <a href="#ladder">6. Spectrum ladder</a> · <a href="#plan">7. Slices</a> · <a href="#evidence">8. Cost and evidence</a> · <a href="#checks">9. Checks, open questions, maps</a></p>
+<p class="lede"><b>On this page:</b> <a href="#examples">1. The examples</a> · <a href="#capabilities">2. What changes</a> · <a href="#requirements">3. Requirements and how you judge each</a> · <a href="#decided">4. Decided</a> · <a href="#architecture">5. Architecture</a> · <a href="#ladder">6. Spectrum ladder</a> · <a href="#plan">7. Slices</a> · <a href="#evidence">8. Cost and evidence</a> · <a href="#checks">9. Checks, open questions, maps, context and types</a></p>
 
 <h2 id="examples">1. The examples: follow one attempt</h2>
 <div class="legend">
@@ -218,15 +218,15 @@ a{color:var(--have)}
 
 <!-- package:start -->
 <h2>The planning package behind this page</h2>
-<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/ai-judge/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/ai-judge/checks.txt">checks.txt</a> (Checks run 2026-11-09 on branch plan/ai-judge (based on origin/main 0dcbcd6), working tree of the revision commit; the durable-document and wiki-cap failures below are the same on origin/main 0dcbcd6 itself (tracked by Q77)); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
+<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/ai-judge/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/ai-judge/checks.txt">checks.txt</a> (Checks run 2026-11-10 on branch feat/judge-j0-live, commit 6dc7d37 (based on origin/main d89a446, J0 merged and live). The durable-document and Markdown-cap failures below are in documents and archives this plan does not own (tracked by Q77): arc42 goal fields and headings, four system-model rules whose owner files the run-stop slices changed, and archived OpenSpec changes and older audits not linked from the wiki); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
 <div class="tablewrap"><table class="pkg"><thead><tr><th>Check</th><th>Counts</th><th>Result</th></tr></thead><tbody>
 <tr><td>durable documents (arc42)</td><td>findings 12 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
 <tr><td>project navigation</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>repository format</td><td>compliant 1, of 1</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>trace reads</td><td>runs 38, problems 0</td><td><span class="tag have">exit 0</span></td></tr>
-<tr><td>wiki and Markdown cap</td><td>md files 144, exception limit 180, more than two links deep 13, not linked from entry 0, durable findings 12 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
-<tr><td>doc reachability</td><td>reachable 121, unreachable 0</td><td><span class="tag have">exit 0</span></td></tr>
-<tr><td>project check (tests, system model, docs)</td><td>tests run 862, failed 0, skipped 2, subtests passed 222</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>wiki and Markdown cap</td><td>md files 160, exception limit 180, more than two links deep 13, not linked from entry 10, durable findings 12 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
+<tr><td>doc reachability</td><td>reachable 127, unreachable 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>project check (tests, system model, docs)</td><td>tests run 891, failed 0, skipped 2, subtests passed 222</td><td><span class="tag have">exit 0</span></td></tr>
 </tbody></table></div>
 <h3 class="sub">Open questions: 39 open, 42 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
@@ -284,6 +284,76 @@ a{color:var(--have)}
 <div class="graph" id="map-questions"></div>
 <p class="mapinfo" id="map-questions-info">Click a question to read it.</p>
 <!-- maps:end -->
+<!-- context:start -->
+<h2 id="context">Where World Substrate sits, and what is inside it</h2>
+<p class="lede">The system context (who and what talks to World Substrate) and its containers (the parts inside), drawn from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/ODD.md">ODD.md</a> section 3. The judge adds no container: it runs inside the run loop as Concordia's game master component, reaches the model only through llm_client, and its rulings go through the same compiler and Engine as every other rule.</p>
+<style>.mermaid{background:var(--panel,#fff);border:1px solid var(--line,#ddd);border-radius:12px;padding:12px;margin:0 0 12px;overflow-x:auto;max-width:100%}</style>
+<pre class="mermaid">C4Context
+  title World Substrate system context
+  Person(author, &quot;World author&quot;, &quot;Describes a world, reviews and approves its rules, watches runs&quot;)
+  System(ws, &quot;World Substrate&quot;, &quot;Compiler, approval gate, Engine, World Builder service, projections&quot;)
+  System_Ext(llm, &quot;LLM providers&quot;, &quot;Reached only through llm_client; proposals and move choices&quot;)
+  System_Ext(runtimes, &quot;Concordia / Mesa / PDDL&quot;, &quot;Resident cognition, grids and sweeps, plan validation&quot;)
+  System_Ext(host, &quot;Cloudflare + personal VPS&quot;, &quot;Serve the pages and the API&quot;)
+  Rel(author, ws, &quot;Describes, approves, inspects&quot;)
+  Rel(ws, llm, &quot;Requests proposals and choices&quot;)
+  Rel(runtimes, ws, &quot;Submit intents; read observations&quot;)
+  Rel(host, ws, &quot;Hosts&quot;)</pre>
+<pre class="mermaid">C4Container
+  title World Substrate containers
+  Person(author, &quot;World author&quot;)
+  Container(builder, &quot;World Builder service&quot;, &quot;scripts/world_builder_service.py&quot;, &quot;Approval gate, budget ledger, run log&quot;)
+  Container(compiler, &quot;Authoring compiler&quot;, &quot;src/world_substrate/action_authoring.py&quot;, &quot;Proposal to rules with derived authority&quot;)
+  Container(installer, &quot;Installer and run loop&quot;, &quot;scripts/run_authored_world.py + profile.py&quot;, &quot;Freezes the approved profile, runs residents&quot;)
+  Container(engine, &quot;Engine&quot;, &quot;src/world_substrate/engine.py&quot;, &quot;Atomic commit or refusal, write scopes, events&quot;)
+  Container(projection, &quot;Projections&quot;, &quot;projection.py, information.py&quot;, &quot;Live view and observer visibility from canonical state&quot;)
+  Rel(author, builder, &quot;HTTP&quot;)
+  Rel(builder, compiler, &quot;Compile and review&quot;)
+  Rel(builder, installer, &quot;Run approved mechanics&quot;)
+  Rel(installer, engine, &quot;Submit envelopes, tick processes&quot;)
+  Rel(engine, projection, &quot;Snapshot and event deltas&quot;)</pre>
+<script src="../../planning-package/review-page/mermaid.min.js"></script>
+<script>(function(){if(!window.mermaid)return;var dark=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;mermaid.initialize({startOnLoad:false,theme:dark?"dark":"neutral",securityLevel:"strict"});mermaid.run({querySelector:"pre.mermaid"});})();</script>
+<!-- context:end -->
+<!-- types:start -->
+<h2>The types the world is built from</h2>
+<p class="lede">Every thing, move, rule and notice the steps above use is one of these types. Blue "built" means World Substrate has it today; orange "planned" means a later slice of this plan adds it. The last column says how each one maps onto the shared scientific-hypergraph kernel (revision <code>7b0638f</code>), so the types are not a framework made up here. Before minting them, these formalisms were checked: PDDL and PDDL+ (closest: a move kind is a PDDL action, and PDDL+ has processes and events), Event Calculus (source of the knock-on design), onto-canon6, and the repository's own projection onto Linguistic Core's relation-schema.v1. The continuous-equation formats (SBML, CellML, Modelica and others) were not checked further: they hold continuous equations, and these rules are discrete checks and effects. Petri nets and TypeDB were weighed and composed rather than adopted (Q24, resolved): Petri-net transition semantics are reused for linked process participants, but neither carries per-observer noticing or named refusals. Full table: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/METAMODEL.md">METAMODEL.md</a>.</p>
+<div class="tablewrap"><table class="types"><thead><tr><th>Type</th><th>What it is</th><th>On the shared kernel</th></tr></thead><tbody>
+<tr><th colspan="3" class="grp">What the world holds</th></tr>
+<tr><td><b>World</b> <span class="tag have">built</span></td><td>The one canonical world of a run: entities, a tick, a revision and the events so far.</td><td>specializes scientific-hypergraph-v2 document</td></tr>
+<tr><td><b>Category (kind of thing)</b> <span class="tag have">built</span></td><td>What kind of thing an entity is (person, place, door, helicopter); rules select by category.</td><td>same sci:instanceOf type</td></tr>
+<tr><td><b>Entity (thing)</b> <span class="tag have">built</span></td><td>Any thing in the world, a person, a wall or a glass alike, with a stable id and typed components.</td><td>specializes sci:ModelElement</td></tr>
+<tr><td><b>Component (state field)</b> <span class="tag have">built</span></td><td>A typed field on an entity (location, water level, passable, role); the only thing effects change. A disposition (a wall cannot be walked through) is a component value plus the checks that read it. Held in Entity.components; each component type is registered by register_component (model.py:188).</td><td>composes sci:RelationInstance (holder, value)</td></tr>
+<tr><td><b>Place</b> <span class="tag have">built</span></td><td>An entity of category place; every other entity&#x27;s location names the place it is in.</td><td>specializes sci:ModelElement</td></tr>
+<tr><td><b>Way between places</b> <span class="tag have">built</span></td><td>What lies between two places (a door, a brick wall): an entity naming both places with a passable field; moving names its way and needs it passable. Until fix F6 lands (Q25, settled by argument), a way works from its first place to its second only.</td><td>specializes sci:ModelElement</td></tr>
+<tr><th colspan="3" class="grp">How someone acts</th></tr>
+<tr><td><b>Hard causal parent</b> <span class="tag have">built</span></td><td>An earlier event a rule declares as mechanically supporting this one (opt-in, DeclaresCausalParents); kept apart from information a person merely had in mind. S2&#x27;s reactions cite their trigger this way.</td><td>specializes sci:RelationInstance (event, parent event)</td></tr>
+<tr><td><b>Affordance (offered move)</b> <span class="tag have">built</span></td><td>A move an actor can make now: an action kind with participants bound and its checks holding, as Engine.discover lists it.</td><td>no_counterpart</td></tr>
+<tr><td><b>Decider (policy)</b> <span class="tag have">built</span></td><td>What chooses an actor&#x27;s next move: scripted, an AI menu chooser or a Concordia resident.</td><td>no_counterpart</td></tr>
+<tr><td><b>Attempt (free text)</b> <span class="tag have">built</span></td><td>What a resident says it tries, in its own words; never executable.</td><td>no_counterpart</td></tr>
+<tr><td><b>Attempt reading</b> <span class="tag have">built</span></td><td>The interpreter&#x27;s typed reading of an attempt: an action kind and participants, with no outcome field, a wait, or no match.</td><td>specializes sci:RelationInstance (proposed)</td></tr>
+<tr><td><b>Unmatched attempt</b> <span class="tag have">built</span></td><td>An attempt no action kind covers; it changes nothing and is listed in the run&#x27;s build record.</td><td>no_counterpart</td></tr>
+<tr><td><b>Typed action (command)</b> <span class="tag have">built</span></td><td>The envelope submitted to the Engine: actor, action kind, bound participants, base revision.</td><td>specializes sci:RelationInstance with sci:RoleBinding</td></tr>
+<tr><td><b>Event</b> <span class="tag have">built</span></td><td>The record of one attempt or process step: status, every check and its result, the changes, the cause and an id like r14-e00012.</td><td>specializes sci:RelationInstance</td></tr>
+<tr><th colspan="3" class="grp">What the rules do</th></tr>
+<tr><td><b>Action kind (effector)</b> <span class="tag have">built</span></td><td>Something an actor can try, with named participant roles, checks and effects, compiled before use (a generated DeclaredActionMechanic) or hand-written (FillRule and the other mechanisms); either way the Engine runs it through the action-rule interface.</td><td>specializes sci:RelationType</td></tr>
+<tr><td><b>Action and process rule interface</b> <span class="tag have">built</span></td><td>What the Engine actually runs: an action rule discovers, checks and applies one action kind; a process rule says when it is due and applies; both declare read and write paths. Generated mechanics and the hand-written mechanisms library (FillRule, VesselFailureSpillProcess) both implement it.</td><td>no_counterpart</td></tr>
+<tr><td><b>Rule registry</b> <span class="tag have">built</span></td><td>The sole lookup surface for the action and process rules installed in one world, in a fixed order.</td><td>no_counterpart</td></tr>
+<tr><td><b>Participant role</b> <span class="tag have">built</span></td><td>A named slot of an action kind (actor, to, way, aircraft) and the categories that may fill it.</td><td>same sci:RoleType</td></tr>
+<tr><td><b>Sense binding</b> <span class="tag have">built</span></td><td>The meaning and participant roles Linguistic Core gives an action kind; never its effects.</td><td>composes sci:declaresRole</td></tr>
+<tr><td><b>Check (precondition)</b> <span class="tag have">built</span></td><td>A test a move or process must pass against current state (the way is passable, the trainee can fly); a failed check refuses the move with the check named.</td><td>no_counterpart</td></tr>
+<tr><td><b>Effect</b> <span class="tag have">built</span></td><td>A change to one component path that runs when every check holds, inside the declared write scope.</td><td>no_counterpart</td></tr>
+<tr><td><b>Declared write scope</b> <span class="tag have">built</span></td><td>The paths a rule may change; the Engine refuses any change outside them.</td><td>no_counterpart</td></tr>
+<tr><td><b>Process (knock-on rule)</b> <span class="tag have">built</span></td><td>A rule the world runs by itself for every matching entity whose checks hold, each round by default or at once when its timing is immediately; this is how effects propagate (plants dry out, a glass breaks).</td><td>no_counterpart</td></tr>
+<tr><td><b>Same-moment knock-on</b> <span class="tag have">built</span></td><td>A process with timing immediately, run in waves inside the same moment as the move or round step that triggered it until nothing more is due; each process and thing pair fires once per moment, which ends every chain; new runs have no other cap, and a run recorded before J0 of docs/plans/ai_judge.md replays under its old cap of 32 (slice S2 of docs/plans/open_attempt.md, ODD 8.20).</td><td>no_counterpart</td></tr>
+<tr><td><b>Skill roll</b> <span class="tag miss">planned</span></td><td>A seeded roll on an action kind so a move can partly succeed or fail by skill (planned slice S3). Planned, not built.</td><td>no_counterpart</td></tr>
+<tr><td><b>Terminal condition</b> <span class="tag have">built</span></td><td>A state-derived stop: when its checks hold over the selected entities, the task ends one way.</td><td>no_counterpart</td></tr>
+<tr><td><b>Frozen mechanic profile</b> <span class="tag have">built</span></td><td>The validated rules of one world frozen under an id before any run.</td><td>no_counterpart</td></tr>
+<tr><th colspan="3" class="grp">Who learns of it</th></tr>
+<tr><td><b>Observation (sensor)</b> <span class="tag have">built</span></td><td>What one actor can see of the world now, filtered by place and by information delivery.</td><td>no_counterpart</td></tr>
+<tr><td><b>Information and delivery (channel)</b> <span class="tag have">built</span></td><td>An information entity and its delivery rows: who has been told what, by which channel, and when; a word said across the world reaches no one without a delivery.</td><td>specializes sci:RelationInstance (information, recipient)</td></tr>
+</tbody></table></div>
+<!-- types:end -->
 <h2>Your decisions</h2>
 <p class="lede"><b>Nothing is waiting on you.</b> Decided 1-5 and the constraints, decisions and norms split are recorded above with your words. Of the questions this plan adds, Q74 (the report's size) is settled by measurement; Q78 (what the judge gets before a rule exists), Q79 (whether the rule language can express a ruling), Q80 (what "wait" does with the attempt) and Q81 (how old runs replay) are agent calls, resolved with their evidence; Q75 and Q76 are settled by argument and prior art inside the plan. Q77 (the wiki cap check failing on main) is an agent's housekeeping question, not part of this plan.</p>
 
