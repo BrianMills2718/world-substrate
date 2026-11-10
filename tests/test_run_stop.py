@@ -142,3 +142,118 @@ def test_the_setting_is_checked():
                 {"mode": "every_round", "quiet_rounds": 3}, "quiet"):
         with pytest.raises(ValueError):
             run_stop.parse_run_stop(bad)
+
+
+# Round and spending limits (Brian, 2026-11-10: "i should be able to stop a world based on budget or number of rounds
+# or a natural langue stopping potin that the judge assesses once we build him"). The recorded cost is faked: no AI.
+
+class FakeCost:
+    """Stands in for llm_client's recorded cost of this request's trace: each round adds `per_round` dollars."""
+
+    def __init__(self, per_round: float):
+        self.per_round, self.calls = per_round, 0
+
+    def __call__(self) -> float:
+        self.calls += 1
+        return self.per_round * (self.calls - 1)
+
+
+@pytest.mark.req("world-builder-page/a-run-stops-at-the-round-limit-you-set")
+def test_a_run_stops_at_the_round_limit_you_set():
+    trace, _, _ = run_world(BUNDLE, _no_finish_line(), policy="scripted", max_turns=10,
+                            run_stop={"mode": "every_round", "max_rounds": 5})
+    assert trace["summary"]["turns"] == 5
+    assert trace["summary"]["stopped"] == {"reason": "round_limit", "round": 5, "max_rounds": 5,
+                                           "why": "Stopped at round 5: the limit of 5 rounds you set."}
+
+
+@pytest.mark.req("world-builder-page/a-run-stops-at-the-round-limit-you-set")
+def test_the_round_limit_counts_the_whole_live_run_across_one_round_requests():
+    stop = {"mode": "every_round", "max_rounds": 3}
+    first, _, _ = run_world(BUNDLE, _no_finish_line(), policy="scripted", max_turns=2, run_stop=stop)
+    assert first["summary"]["stopped"] == {"reason": "round_cap", "round": 2}
+    second, _, _ = run_world(BUNDLE, _no_finish_line(), policy="scripted", max_turns=1, run_stop=stop,
+                             start_snapshot=first["final_snapshot"], turn_offset=2)
+    assert second["summary"]["stopped"]["reason"] == "round_limit" and second["summary"]["stopped"]["round"] == 3
+    # A request past the limit plays nothing and says so again.
+    third, _, _ = run_world(BUNDLE, _no_finish_line(), policy="scripted", max_turns=1, run_stop=stop,
+                            start_snapshot=second["final_snapshot"], turn_offset=3)
+    assert third["summary"]["turns"] == 0 and third["summary"]["stopped"]["reason"] == "round_limit"
+
+
+@pytest.mark.req("world-builder-page/a-run-stops-once-it-has-spent-its-limit")
+def test_a_run_stops_once_its_recorded_spending_reaches_the_limit():
+    # $0.15 recorded per round against a $0.40 limit: after round 3 the run has spent $0.45, so round 4 never starts.
+    cost = FakeCost(0.15)
+    trace, _, _ = run_world(BUNDLE, _no_finish_line(), policy="scripted", max_turns=10,
+                            run_stop={"mode": "every_round", "max_spend_usd": 0.40}, spent=cost)
+    assert trace["summary"]["turns"] == 3
+    stopped = trace["summary"]["stopped"]
+    assert stopped["reason"] == "budget" and stopped["round"] == 3
+    assert stopped["spent_usd"] == pytest.approx(0.45) and stopped["max_spend_usd"] == 0.40
+    assert stopped["why"] == ("Stopped at round 3: this run had spent $0.45 of its $0.40 limit. A round already under "
+                              "way always finishes, so it went a little over.")
+    assert trace["run_spent_usd"] == pytest.approx(0.45)
+
+
+@pytest.mark.req("world-builder-page/a-run-stops-once-it-has-spent-its-limit")
+def test_spending_carries_across_one_round_requests_and_a_spent_run_plays_no_more():
+    stop = {"mode": "every_round", "max_spend_usd": 0.40}
+    # Earlier requests of this live run spent $0.30; this round's calls are recorded at $0.10.
+    first, _, _ = run_world(BUNDLE, _no_finish_line(), policy="scripted", max_turns=1, run_stop=stop,
+                            run_spent_usd=0.30, spent=FakeCost(0.10))
+    assert first["summary"]["stopped"]["reason"] == "budget"
+    assert first["summary"]["stopped"]["why"] == "Stopped at round 1: this run had spent $0.40 of its $0.40 limit."
+    again, _, _ = run_world(BUNDLE, _no_finish_line(), policy="scripted", max_turns=1, run_stop=stop,
+                            start_snapshot=first["final_snapshot"], turn_offset=1,
+                            run_spent_usd=first["run_spent_usd"], spent=lambda: 0.0)
+    assert again["summary"]["turns"] == 0
+    assert again["summary"]["stopped"]["reason"] == "budget" and again["summary"]["stopped"]["round"] == 1
+
+
+@pytest.mark.req("world-builder-page/whichever-stop-fires-first-wins")
+def test_whichever_stop_fires_first_wins():
+    # Quiet after round 4 (round 1 picks the apples, rounds 2-4 change nothing) beats a 6-round limit and a budget.
+    quiet_first, _, _ = run_world(BUNDLE, _no_finish_line(), policy="scripted", max_turns=10, spent=FakeCost(0.01),
+                                  run_stop={"mode": "quiet", "quiet_rounds": 3, "max_rounds": 6, "max_spend_usd": 1})
+    assert quiet_first["summary"]["stopped"]["reason"] == "quiet_rounds"
+    assert quiet_first["summary"]["stopped"]["round"] == 4
+    limit_first, _, _ = run_world(BUNDLE, _no_finish_line(), policy="scripted", max_turns=10, spent=FakeCost(0.01),
+                                  run_stop={"mode": "quiet", "quiet_rounds": 3, "max_rounds": 2, "max_spend_usd": 1})
+    assert limit_first["summary"]["stopped"]["reason"] == "round_limit"
+    assert limit_first["summary"]["stopped"]["round"] == 2
+    money_first, _, _ = run_world(BUNDLE, _no_finish_line(), policy="scripted", max_turns=10, spent=FakeCost(0.5),
+                                  run_stop={"mode": "quiet", "quiet_rounds": 3, "max_rounds": 6, "max_spend_usd": 1})
+    assert money_first["summary"]["stopped"]["reason"] == "budget"
+    assert money_first["summary"]["stopped"]["round"] == 2
+    # Both limits met after the same round: the money is the reason given.
+    both = run_stop.limit_check({"mode": "every_round", "max_rounds": 2, "max_spend_usd": 0.5}, 2, 0.5)
+    assert both["reason"] == "budget"
+
+
+@pytest.mark.req("world-builder-page/a-world-without-the-setting-runs-every-round")
+def test_a_setting_without_limits_never_reads_the_spending():
+    def boom() -> float:
+        raise AssertionError("spending read without a spending limit")
+
+    trace, _, _ = run_world(BUNDLE, _no_finish_line(), policy="scripted", max_turns=4,
+                            run_stop={"mode": "every_round"}, spent=boom)
+    assert trace["summary"]["stopped"] == {"reason": "round_cap", "round": 4}
+    assert "run_spent_usd" not in trace
+    assert run_stop.parse_run_stop({"mode": "quiet", "quiet_rounds": 6}) == {"mode": "quiet", "quiet_rounds": 6}
+
+
+@pytest.mark.req("world-builder-page/the-stop-setting-is-checked")
+def test_the_limits_are_checked():
+    assert run_stop.parse_run_stop({"mode": "quiet", "max_rounds": 40, "max_spend_usd": 0.5}) == {
+        "mode": "quiet", "quiet_rounds": 6, "max_rounds": 40, "max_spend_usd": 0.5}
+    assert run_stop.parse_run_stop({"mode": "every_round", "max_spend_usd": 1}) == {"mode": "every_round",
+                                                                                  "max_spend_usd": 1.0}
+    assert run_stop.parse_run_stop({"mode": "every_round", "max_rounds": None}) == {"mode": "every_round"}
+    for bad in ({"mode": "quiet", "max_rounds": 0}, {"mode": "quiet", "max_rounds": 501},
+                {"mode": "quiet", "max_rounds": 4.0}, {"mode": "quiet", "max_rounds": True},
+                {"mode": "quiet", "max_spend_usd": 0}, {"mode": "quiet", "max_spend_usd": 100.5},
+                {"mode": "quiet", "max_spend_usd": "1"}, {"mode": "quiet", "max_spend_usd": float("nan")},
+                {"mode": "every_round", "max_rounds": 3, "judge": "stop once agreed"}):
+        with pytest.raises(ValueError):
+            run_stop.parse_run_stop(bad)

@@ -22,7 +22,7 @@ goal:
   boundaries: "world-substrate and its own deploy only; Concordia and Cybernetic Influence v3 read-only; each
     slice merges through ship after scripts/check_project.py exits 0 on the committed change; saved worlds
     still replay unchanged; owner allowance only for live runs."
-  done_when: "Acceptance checks A1-A7 below pass, each judged from the full trace of the run it names."
+  done_when: "Acceptance checks A1-A8 below pass, each judged from the full trace of the run it names."
   do_not_gate_on: "Organisations and institutions beyond single norms; a real-world truth claim for any
     ruling."
   stop_after: 3
@@ -256,8 +256,20 @@ and norms as breakable rules with consequences only when someone acts on them.
 | R8 | Every run keeps its full trace, read before any slice is reported | workspace rule (Trace visibility) | A1-A7 |
 | R9 | A world's setting chooses whether checked rulings install during the run (default) or are held with the attempt pending until approved; the run page lists every ruling | Decided 5 | A4 |
 | R10 | Each saved run records the reaction limit it ran under, and replay uses the recorded value, so runs saved before J0 replay unchanged | goal boundary "saved worlds still replay unchanged" (inferred by agent, Agent technical calls) | A7 |
+| R11 | The person can write a stopping point in plain words ("stop once the team has agreed a budget"); after each round the judge assesses whether it has been reached, and the run stops when it has, as one more condition of the world's "When to stop a run" setting beside quiet rounds, a round limit and a spending limit (whichever fires first) | Brian 2026-11-10 (Stopping point) | A8 |
 
-All ten are required; none is deferred.
+All eleven are required; none is deferred.
+
+### Stopping point (Brian, 2026-11-10)
+
+Brian, 2026-11-10: "i should be able to stop a world based on budget or number of rounds or a natural langue stopping
+potin that the judge assesses once we build him". The round limit and the spending limit are built (`scripts/run_stop.py`,
+`max_rounds` and `max_spend_usd`, OpenSpec requirement "A run stops at a round or spending limit"). The stopping point
+in plain words waits for the judge (slice J5): the world's `run_stop` setting gains an optional `stop_when` text; after
+each round the judge (Concordia's game master, R7) is given that text and the round's world state and answers reached
+or not, with its reason; when reached, the run stops with `reason: stopping_point` and the judge's reason in the run
+page's one line, through the same `limit_check` path, so whichever condition fires first still wins. Its cost counts
+toward the run's spending limit like every other call of the run.
 
 ## Acceptance checks
 
@@ -297,6 +309,11 @@ results below are in the run page's own words; the record files behind each are 
   showing "refused: knock-on effects did not settle within 32 steps (the limit this run ran under)"; a new run
   of the same world has no such limit. The existing test of that refusal
   (`tests/test_open_attempt.py:466-501`) is kept, run against the recorded limit.
+- **A8 (J5):** build a team world with Options, "Stop when" set to "stop once the team has agreed a budget"; run it.
+  When the team agrees a budget, the run stops after that round and the run page says "Stopped at round N: the
+  team has agreed a budget (the judge's reading of your stopping point)", with the judge's reason opening to what
+  it read; in the rounds before, each round's panel shows "stopping point: not yet" with its reason. With a round
+  limit of 3 as well and no agreement by then, the run stops at round 3 on the round limit instead.
 
 ## Slices, in order
 
@@ -310,6 +327,7 @@ traced run.
 | J2 | Judge: turn on Concordia's `EventResolution` for unmatched attempts, given the whole world plus pass 1; it proposes a rule, reads the pass 2 report, then confirms, revises once or withdraws; choices go to the person | conditional on J1 | A2, A3, A5 |
 | J3 | Ruling to rule: install the confirmed rule (or hold it with the attempt pending, per the world's setting); refuse with "no rule could express this" and record a language gap when the rules check rejects it | conditional on J2 | A4 |
 | J4 | Credentials as facts and norms as breakable rules (Ostrom's grammar) | exploration required | A6 |
+| J5 | Stopping point in plain words: `run_stop.stop_when`, assessed by the judge after each round, stopping with `reason: stopping_point` through the existing stop check | conditional on J2 | A8 |
 
 J0 first because it is small, independent and delivers Brian's "100 links deep" alone. J4 last because its
 representation needs a short design step of its own (Uncertainties, U3).

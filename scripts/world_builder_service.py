@@ -432,8 +432,8 @@ def _approval_record(*, bundle: Any, causal: Any, trace: dict[str, Any]) -> dict
 
 
 def _request_summary(path: str, body: dict[str, Any]) -> dict[str, Any]:
-    keep = ("description", "world_kind", "run_stop", "policy", "turns", "turn_offset", "approved", "execution_mode",
-            "async")
+    keep = ("description", "world_kind", "run_stop", "run_spent_usd", "policy", "turns", "turn_offset", "approved",
+            "execution_mode", "async")
     out = {k: body[k] for k in keep if k in body}
     if path == "/readout":
         out["run_trace_ids"] = body.get("run_trace_ids")
@@ -498,6 +498,8 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             "final_snapshot": trace.get("final_snapshot"),
             # The world's last few states for its stop setting (scripts/run_stop.py); only when it has one.
             **({"stop_history": trace["stop_history"]} if "stop_history" in trace else {}),
+            # The run's recorded AI spending so far, when its stop setting has a spending limit.
+            **({"run_spent_usd": trace["run_spent_usd"]} if "run_spent_usd" in trace else {}),
             "approval": value.get("approval"),
         }
     if path == "/clarify":
@@ -2558,6 +2560,13 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             or not all(isinstance(k, str) and len(k) <= 64 for k in stop_history)
         ):
             raise ValueError(f"stop_history must be up to {MAX_QUIET_ROUNDS + 1} short state keys")
+        # What this live run's earlier rounds spent on AI (trace.run_spent_usd, recorded by llm_client), so a spending
+        # limit counts the whole run. Only the visitor's own stop reads it; the daily budget ledger still caps spend.
+        run_spent = body.get("run_spent_usd") if continue_from is not None else None
+        if run_spent is None:
+            run_spent = 0.0
+        if type(run_spent) not in (int, float) or run_spent != run_spent or not 0 <= run_spent <= 10_000:
+            raise ValueError("run_spent_usd must be a dollar amount of at least 0")
         model = _requested_model(body)
         trace_id = _new_trace_id("run")
         if execution_mode == "native_coordination":
@@ -2586,6 +2595,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         briefs=briefs, resident_memory=resident_memory, underway=underway,
                         # Residents say what they try in their own words (docs/plans/open_attempt.md).
                         open_attempts=policy == "resident", run_stop=run_stop, stop_history=stop_history,
+                        run_spent_usd=float(run_spent), spent=lambda: _trace_cost(trace_id),
                     )
                     trace_cost = _trace_cost(trace_id)
                 except Exception:
@@ -2599,6 +2609,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 max_turns=turns, max_budget=RUN_BUDGET, trace_id=trace_id,
                 start_snapshot=continue_from, turn_offset=turn_offset, prior_recent=recent, underway=underway,
                 run_stop=run_stop, stop_history=stop_history,
+                run_spent_usd=float(run_spent), spent=lambda: _trace_cost(trace_id),
             )
             daily_cost = None
         if execution_mode == "authored_world":

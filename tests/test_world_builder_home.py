@@ -108,11 +108,27 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('<legend class="small">When to stop a run</legend>', self.page)
         self.assertIn('<input type="radio" name="run-stop" value="quiet" checked> Stop once nothing is changing', self.page)
         self.assertRegex(self.page, r'<input type="number" id="quiet-rounds" min="1" max="100" step="1" value="6" title="')
-        self.assertIn('<input type="radio" name="run-stop" value="every_round"> Always run every round', self.page)
+        self.assertIn('<input type="radio" name="run-stop" value="every_round"> Don’t stop for being quiet', self.page)
         self.assertTrue(all("title=" in t for t in re.findall(r'<label class="small"[^>]*>', self.page)))
         # Sent with each round of a world that has it; a world saved without it sends nothing and runs every round.
-        self.assertIn("if (world.run_stop) request.run_stop = world.run_stop;", self.page)
+        self.assertIn("if (world.run_stop) request.run_stop = activeStop();", self.page)
         self.assertIn('live.why = live.stopsAt.why + " Press Play to run more rounds anyway.";', self.page)
+
+    @pytest.mark.req("world-builder-page/the-create-page-offers-a-round-and-a-spending-limit")
+    def test_create_page_offers_round_and_spending_limits_off_by_default(self):
+        import re
+        self.assertRegex(self.page, r'<input type="checkbox" id="stop-rounds-on" aria-label="[^"]+"> Stop after')
+        self.assertRegex(self.page, r'<input type="number" id="stop-rounds" min="1" max="500" step="1" value="40" title="')
+        self.assertRegex(self.page, r'<input type="checkbox" id="stop-spend-on" aria-label="[^"]+"> Stop when this run has spent \$')
+        self.assertRegex(self.page, r'<input type="number" id="stop-spend" min="0.01" max="100" step="0.01" value="0.50" title="')
+        self.assertNotRegex(self.page, r'id="stop-(rounds|spend)-on"[^>]*checked')
+        self.assertIn('if ($("stop-rounds-on").checked)', self.page)
+        self.assertIn('if ($("stop-spend-on").checked)', self.page)
+        # The recorded spending goes back with each round; a limit the visitor played past is not sent again.
+        self.assertIn("request.run_spent_usd = live.spent;", self.page)
+        self.assertIn("if (run.trace.run_spent_usd != null) live.spent = run.trace.run_spent_usd;", self.page)
+        self.assertIn('const LIFTS = { round_limit: "max_rounds", budget: "max_spend_usd" };', self.page)
+        self.assertTrue(all("title=" in t for t in re.findall(r'<label class="small"[^>]*>', self.page)))
 
     def test_every_control_has_a_tooltip(self):
         import re

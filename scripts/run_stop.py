@@ -26,6 +26,23 @@ not count.
   after everything was resolved, so some move changed a count in almost every round and a strict rule would never
   have stopped it; the net rule stops it at round 30 of 46.
 
+Two more conditions can be added to either mode; each is optional and the run stops at whichever fires first.
+Brian, 2026-11-10: "i should be able to stop a world based on budget or number of rounds or a natural langue stopping
+potin that the judge assesses once we build him".
+
+- `"max_rounds": N` (1 to 500): stop once round N has been played (`reason: round_limit`). Unlike `round_cap`, which
+  only says a request played every round it asked for (live play asks for one at a time), this is the visitor's own
+  limit for the whole run.
+- `"max_spend_usd": X` (0.01 to 100): stop once this run's AI spending reaches $X (`reason: budget`). The spending is
+  the cost llm_client recorded for this run's own calls (`llm_client.get_cost(trace_id=...)`, the same number the
+  daily budget ledger is settled with), carried across live play's one-round requests in `run_spent_usd`; never an
+  estimate. It is checked before each round: a round already under way always finishes, so a run can go over its
+  limit by up to one round's spending (one round's AI calls are themselves capped by the service's per-request
+  allowance, `RUN_BUDGET`), and the run page line says so when it did.
+
+The third condition Brian named, a stopping point written in plain words that the AI judge assesses after each
+round, waits for the judge (docs/plans/ai_judge.md) and will plug in here as another optional key.
+
 This is a run-loop stopping rule over recorded state, not engine capability (Decision 006).
 """
 from __future__ import annotations
@@ -39,6 +56,10 @@ MAX_QUIET_ROUNDS = 100
 DEFAULT_RUN_STOP = {"mode": "quiet", "quiet_rounds": DEFAULT_QUIET_ROUNDS}
 SETTLED = ("deployed", "rejected")
 DECISION_STATUS = "components.group_decision.status"
+MAX_ROUND_LIMIT = 500
+MIN_SPEND_USD = 0.01
+MAX_SPEND_USD = 100.0
+LIMIT_KEYS = ("max_rounds", "max_spend_usd")
 
 
 def parse_run_stop(value: Any, *, default: dict[str, Any] | None = None) -> dict[str, Any] | None:
@@ -47,15 +68,62 @@ def parse_run_stop(value: Any, *, default: dict[str, Any] | None = None) -> dict
         return None if default is None else dict(default)
     if not isinstance(value, dict):
         raise ValueError("run_stop must be an object")
+    limits = _parse_limits(value)
     mode = value.get("mode")
-    if mode == "every_round" and set(value) == {"mode"}:
-        return {"mode": "every_round"}
-    if mode == "quiet" and set(value) <= {"mode", "quiet_rounds"}:
+    rest = set(value) - set(LIMIT_KEYS)
+    if mode == "every_round" and rest == {"mode"}:
+        return {"mode": "every_round", **limits}
+    if mode == "quiet" and rest <= {"mode", "quiet_rounds"}:
         n = value.get("quiet_rounds", DEFAULT_QUIET_ROUNDS)
         if type(n) is not int or not 1 <= n <= MAX_QUIET_ROUNDS:
             raise ValueError(f"run_stop.quiet_rounds must be a whole number from 1 to {MAX_QUIET_ROUNDS}")
-        return {"mode": "quiet", "quiet_rounds": n}
-    raise ValueError('run_stop must be {"mode": "quiet", "quiet_rounds": N} or {"mode": "every_round"}')
+        return {"mode": "quiet", "quiet_rounds": n, **limits}
+    raise ValueError('run_stop must be {"mode": "quiet", "quiet_rounds": N} or {"mode": "every_round"}, '
+                     'optionally with "max_rounds" and "max_spend_usd"')
+
+
+def _parse_limits(value: dict[str, Any]) -> dict[str, Any]:
+    limits: dict[str, Any] = {}
+    if value.get("max_rounds") is not None:
+        n = value["max_rounds"]
+        if type(n) is not int or not 1 <= n <= MAX_ROUND_LIMIT:
+            raise ValueError(f"run_stop.max_rounds must be a whole number from 1 to {MAX_ROUND_LIMIT}")
+        limits["max_rounds"] = n
+    if value.get("max_spend_usd") is not None:
+        x = value["max_spend_usd"]
+        if type(x) not in (int, float) or x != x or not MIN_SPEND_USD <= x <= MAX_SPEND_USD:
+            raise ValueError(f"run_stop.max_spend_usd must be a dollar amount from {MIN_SPEND_USD} to "
+                             f"{MAX_SPEND_USD:g}")
+        limits["max_spend_usd"] = round(float(x), 2)
+    return limits
+
+
+def limit_check(run_stop: dict[str, Any] | None, round_no: int, spent_usd: float | None) -> dict[str, Any] | None:
+    """The stop record if this run's spending or round limit is reached after round `round_no`, else None.
+
+    Spending is checked first: when both are reached in the same round, the money is the reason given."""
+    if not run_stop:
+        return None
+    limit = run_stop.get("max_spend_usd")
+    if limit is not None and spent_usd is not None and spent_usd >= limit:
+        return budget(round_no, spent_usd, limit)
+    n = run_stop.get("max_rounds")
+    if n is not None and round_no >= n:
+        return round_limit(round_no, n)
+    return None
+
+
+def round_limit(round_no: int, n: int) -> dict[str, Any]:
+    return {"reason": "round_limit", "round": round_no, "max_rounds": n,
+            "why": f"Stopped at round {round_no}: the limit of {n} round{'s' if n != 1 else ''} you set."}
+
+
+def budget(round_no: int, spent_usd: float, limit: float) -> dict[str, Any]:
+    why = f"Stopped at round {round_no}: this run had spent ${spent_usd:.2f} of its ${limit:.2f} limit."
+    if spent_usd > limit:
+        why += " A round already under way always finishes, so it went a little over."
+    return {"reason": "budget", "round": round_no, "spent_usd": round(spent_usd, 6), "max_spend_usd": limit,
+            "why": why}
 
 
 def movable_fields(model: Any) -> frozenset[str]:

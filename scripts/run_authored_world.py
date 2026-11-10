@@ -12,7 +12,7 @@ from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
 from dataclasses import make_dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
@@ -535,6 +535,8 @@ def run_world(
     open_attempts: bool = False,
     run_stop: dict[str, Any] | None = None,
     stop_history: list[str] | None = None,
+    run_spent_usd: float = 0.0,
+    spent: Callable[[], float] | None = None,
 ) -> tuple[dict[str, Any], Engine, CausalModel]:
     if policy not in {"scripted", "llm", "resident"}:
         raise ValueError("policy must be scripted, llm or resident")
@@ -601,7 +603,28 @@ def run_world(
     history: list[str] = [str(k) for k in (stop_history or [])][-(run_stop_rule.MAX_QUIET_ROUNDS + 1):]
     if run_stop and not history:
         history.append(run_stop_rule.state_key(engine.world.material_dict(), stop_fields))
+    # A spending limit (run_stop.max_spend_usd) is checked against what llm_client recorded for this run's own calls:
+    # `run_spent_usd` from earlier requests of the same live run plus this request's trace. Checked before each round,
+    # so a round under way always finishes (scripts/run_stop.py).
+    watch_spend = bool(run_stop and run_stop.get("max_spend_usd") is not None)
+    if watch_spend and spent is None:
+        def spent() -> float:
+            from llm_client import get_cost
+
+            return float(get_cost(trace_id=trace_id) or 0.0)
+
+    spend_seen = [float(run_spent_usd)]  # the last reading; every AI call of a round is made before its check
+
+    def spent_so_far() -> float | None:
+        if not watch_spend:
+            return None
+        spend_seen[0] = float(run_spent_usd) + spent()
+        return spend_seen[0]
+
+    stopped = run_stop_rule.limit_check(run_stop, turn_offset, spent_so_far())
     for turn in range(1, max_turns + 1):
+        if stopped is not None:
+            break
         if causal_model.terminal is not None and causal_model.terminal.reached(engine.world):
             break
         revision = engine.world.revision
@@ -945,8 +968,9 @@ def run_world(
             history.append(run_stop_rule.history_entry(world_now, stop_fields,
                                                        any(row.get("changed") for row in rows.values())))
             del history[:-(run_stop_rule.MAX_QUIET_ROUNDS + 1)]
-            stopped = run_stop_rule.check(run_stop, history, run_stop_rule.decision_status(world_now),
-                                          turn + turn_offset)
+            stopped = (run_stop_rule.limit_check(run_stop, turn + turn_offset, spent_so_far())
+                       or run_stop_rule.check(run_stop, history, run_stop_rule.decision_status(world_now),
+                                              turn + turn_offset))
             if stopped is not None:
                 break
 
@@ -1041,6 +1065,9 @@ def run_world(
         if run_stop.get("mode") == "quiet":
             # Sent back with the next one-round request, so the quiet count carries across live play.
             trace["stop_history"] = history[-(run_stop["quiet_rounds"] + 1):]
+        if watch_spend:
+            # Sent back with the next one-round request, so the spending limit counts the whole live run.
+            trace["run_spent_usd"] = round(spend_seen[0], 6)
     # Open tasks, sent back with the next round so live play keeps following them.
     trace["underway"] = [{k: t[k] for k in sorted(attempts.TASK_KEYS)} for t in open_tasks]
     return trace, engine, causal_model

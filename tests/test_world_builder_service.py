@@ -636,6 +636,57 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertNotIn("stopped", plain["summary"])
         self.assertNotIn("stop_history", plain["trace"])
 
+    @pytest.mark.req("world-builder-page/the-create-page-offers-a-round-and-a-spending-limit")
+    def test_a_new_world_saves_its_round_and_spending_limits(self):
+        stop = {"mode": "quiet", "quiet_rounds": 6, "max_rounds": 40, "max_spend_usd": 0.5}
+        with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "generate_world_bundle", return_value=(BUNDLE, [], FakeResult()),
+        ), patch.object(service, "generate_causal_model", return_value=(CAUSAL, FakeResult())):
+            status, built = self.post("/generate-world", {"description": "an orchard", "run_stop": stop})
+        self.assertEqual(status, 200, built)
+        self.assertEqual(built["run_stop"], stop)
+        with patch.object(service, "generate_world_bundle") as world:
+            status, _ = self.post("/generate-world", {"description": "orchard",
+                                                      "run_stop": {"mode": "quiet", "max_rounds": 501}})
+        self.assertEqual(status, 422)
+        world.assert_not_called()
+
+    @pytest.mark.req("world-builder-page/a-run-stops-once-it-has-spent-its-limit")
+    def test_one_round_requests_carry_the_recorded_spending_and_stop_at_the_limit(self):
+        causal = self._ongoing_causal()
+        stop = {"mode": "every_round", "max_spend_usd": 0.25}
+        body = {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 1, "run_stop": stop}
+        # Each request's round is recorded at $0.10 by llm_client (faked here; no AI is called): nothing is recorded
+        # for a trace before its round is played, $0.10 after.
+        read: set[str] = set()
+
+        def recorded(trace_id: str) -> float:
+            cost = 0.10 if trace_id in read else 0.0
+            read.add(trace_id)
+            return cost
+
+        with patch.object(service, "_trace_cost", side_effect=recorded):
+            status, run = self.post("/run", body)
+            self.assertEqual(status, 200, run)
+            self.assertAlmostEqual(run["trace"]["run_spent_usd"], 0.10)
+            for _ in range(4):
+                if run["summary"]["stopped"]["reason"] == "budget":
+                    break
+                status, run = self.post("/run", {**body, "continue_from": run["trace"]["final_snapshot"],
+                                                 "continue_seal": run["snapshot_seal"], "approval": run["approval"],
+                                                 "turn_offset": run["summary"]["last_turn"],
+                                                 "run_spent_usd": run["trace"]["run_spent_usd"]})
+                self.assertEqual(status, 200, run)
+        self.assertEqual(run["summary"]["stopped"]["round"], 3)
+        self.assertAlmostEqual(run["summary"]["stopped"]["spent_usd"], 0.30)
+        self.assertEqual(run["summary"]["stopped"]["why"],
+                         "Stopped at round 3: this run had spent $0.30 of its $0.25 limit. A round already under way "
+                         "always finishes, so it went a little over.")
+        status, _ = self.post("/run", {**body, "continue_from": run["trace"]["final_snapshot"],
+                                       "continue_seal": run["snapshot_seal"], "approval": run["approval"],
+                                       "turn_offset": 3, "run_spent_usd": -1})
+        self.assertEqual(status, 422)
+
     def test_keep_going_continues_from_the_final_snapshot(self):
         causal = self._ongoing_causal()
         status, first = self.post("/run", {"bundle": BUNDLE, "causal_model": causal, "approved": True, "turns": 4})

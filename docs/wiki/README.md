@@ -166,7 +166,11 @@ would settle it, its owner and sources. The ones that shape the next work:
    rules with one model given the whole scenario, before S5's paid builds or more people-world repair.
 2. **Q12 (Brian, answered 2026-11-10):** "stop condition should be configurable". Each world now has a
    "When to stop a run" setting (stop once nothing is changing after 6 quiet rounds by default, or always run
-   every round), built in PR #356 (`scripts/run_stop.py`).
+   every round), built in PR #356 (`scripts/run_stop.py`). Brian, 2026-11-10: "i should be able to stop a world
+   based on budget or number of rounds or a natural langue stopping potin that the judge assesses once we build him".
+   The same setting now also takes "Stop after N rounds" and "Stop when this run has spent $X" (the cost llm_client
+   recorded for the run's calls, checked before each round), each optional; the run stops at whichever fires first.
+   The plain-words stopping point waits for the judge ([AI judge plan](../plans/ai_judge.md), R11, A8).
 3. **Q14:** the Decision 008 harness exists but the live service does not use it.
 4. **Q34:** declared read scopes are not enforced.
 5. **Q45, Q48, Q49:** retiring hand-written build checks once declared laws cover them; laws that are
