@@ -1,0 +1,415 @@
+{
+ "schema_version": "1.0",
+ "record_type": "acceptance_criteria",
+ "outcome": "Worlds stay faithful as they grow too big for an AI to track: the engine works out every knock-on effect and blocker of an attempt, however long the chain (100 links, 50 at once), and delivers those results to an AI judge with the blockers; the judge decides only what no rule covers, its rulings become checked rules for everyone (installed during the run by default, or held for my approval by the world's setting), the person being bribed decides whether a bribe works, and a mechanism, who holds its credential and the norm about who should use it stay separate, as in Ostrom's grammar, so a password learned by social engineering works for whoever holds it while the breach of 'only Alice should log in' is recorded.",
+ "asked_by": [
+  {
+   "who": "Brian",
+   "date": "2026-11-09",
+   "words": "an ai adjudicator doesnt really scale and that we need to facts to have implications and blockers. like 50 things could propagate down a causal chain 100 links deep taht the llm would not be able to understand so we need that causal chain to automaticlaly rpogate and to deliver the resutls of that propagation to he ai judge along with blockers.",
+   "source": "quoted in docs/plans/ai_judge.md:59 (Why)"
+  },
+  {
+   "who": "Brian",
+   "date": "2026-11-09",
+   "words": "yes i aprpove all those except for whether the bribe works seems like should be a deicsion made by the person being bribed. that is not a rule as much as a decision. maybe we need to discuss the difference between rules/constraints and ddecisions?",
+   "source": "quoted in docs/plans/ai_judge.md:103 (Decided); 'those' are Decided 1-3"
+  },
+  {
+   "who": "Brian",
+   "date": "2026-11-09",
+   "words": "there is a ddifference between as igned release clearing the cargo as a norm and like some programmatic enry with abar code or whateve.r this was deiscussed pretty extneively in the form of hte idea of a password managed comptuer where only 1 person was supped to use it with ehir password but if they could be social engineered for exampel to get a password then someone else woul eb abel to sue it. i liek the ostrom stuff",
+   "source": "quoted in docs/plans/ai_judge.md:149 (Decided: constraints, decisions and norms)"
+  },
+  {
+   "who": "Brian",
+   "date": "2026-11-09",
+   "words": "can we make this configurable? or is that more troubel than it is worth. if so i say yes",
+   "source": "quoted in docs/plans/ai_judge.md:116 (Decided 5); 'this' is the question whether a judge ruling made during a run is installed at once or waits for Brian's approval, and the yes is to making that a per-world setting"
+  }
+ ],
+ "entries": [
+  {
+   "id": "A1",
+   "criterion": "Facts have their implications and blockers worked out automatically: any change of a fact sets off every knock-on effect it implies, and any step a fact blocks is recorded with that blocker, however long the chain; Brian's 50 chains of 100 links finish in the same moment, every step names the step that caused it, and a loop still stops.",
+   "grounded_in": [
+    "Brian 2026-11-09 (Why): \"50 things could propagate down a causal chain 100 links deep\"; requirements R1, R8"
+   ],
+   "demonstration": [
+    "Open evidence/ai-judge/j0/ (saved by slice J0) and its TRACE_READ.md.",
+    "Open the run record of the fixture world with 50 chains of 100 steps in one moment and read the moment's events.",
+    "Open the loop fixture's run record and read the same moment.",
+    "In the same record, open a chain whose step 40 is blocked (the fixture's truck with no fuel) and read that step and the steps after it."
+   ],
+   "expected": "One commit holding 5,000 reaction events, each citing its parent event; no refusal. In the loop world each process and thing fires once in the moment and the moment ends. In the blocked chain, step 40 is recorded as blocked with the fact that blocks it (no fuel) and the chain stops there; the blocker is in the consequence report.",
+   "failure_example": "Broken: the moment is refused with \"reaction limit\" (what happens today past 32 reactions, src/world_substrate/engine.py:1153), a reaction cites no parent, or the loop fires the same pair again. Working: all 5,000 committed with parents, loop stops.",
+   "representation": {
+    "view": "table: the moment's events with their parent ids",
+    "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built"
+  },
+  {
+   "id": "A2",
+   "criterion": "When someone tries something no rule covers, the judge is handed what the engine already worked out, every knock-on effect and blocker, and the judge is Concordia's own game master, not a prompt of ours.",
+   "grounded_in": [
+    "Brian 2026-11-09 (Why): \"deliver the resutls of that propagation to he ai judge along with blockers\"; requirements R2, R7, R8"
+   ],
+   "demonstration": [
+    "Build the port world (canonical example in docs/plans/ai_judge.md) on the World Builder with Create simulation.",
+    "On the run page, open Vik's offer of 40 coins to Rosa.",
+    "Open its consequence report, then its judge call (the Concordia component text and the llm_client trace id)."
+   ],
+   "expected": "The report lists that Vik holds 40 coins and that nothing blocks the hand-over; the judge call's input contains that report word for word, and the call is Concordia's EventResolution game master.",
+   "failure_example": "Broken: a judge call with no engine results in its input, a report missing the coin check, or a ruling produced by a prompt outside Concordia's game master. Working: the report is in the judge's input and the call is the game master's.",
+   "representation": {
+    "view": "composite-linked-view: the run page's attempt row opening its consequence report, judge call and ruling",
+    "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built"
+  },
+  {
+   "id": "A3",
+   "criterion": "The judge only decides what no rule covers and never overrides a blocker the engine found.",
+   "grounded_in": [
+    "Decided 2 (Brian 2026-11-09, \"yes i aprpove all those\"); requirements R3, R8"
+   ],
+   "demonstration": [
+    "Open the J2 fixture run where Vik offers 40 coins he does not have.",
+    "Open his offer on the run page and its trace."
+   ],
+   "expected": "The offer is refused by the engine with the blocker named (Vik holds 0 coins), nothing changes, and the trace shows no judge call for it.",
+   "failure_example": "Broken: a judge call appears for the offer, or the hand-over goes through. Working: refused with the blocker named, no judge call.",
+   "representation": {
+    "view": "composite-linked-view: the run page's attempt row opening its consequence report, judge call and ruling",
+    "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built"
+  },
+  {
+   "id": "A4",
+   "criterion": "A judge ruling becomes a rule that passed the rules check and then decides the same attempt for everyone; the one thing Brian asked to make configurable, whether a checked ruling made during a run is installed at once (default, 'Approved by Create') or waits for his approval ('Wait for my approval'), is a per-world setting, and the run page lists every ruling either way.",
+   "grounded_in": [
+    "Decided 3 and Decided 5 (Brian 2026-11-09: \"can we make this configurable? or is that more troubel than it is worth. if so i say yes\"); requirements R4, R9, R8"
+   ],
+   "demonstration": [
+    "Build the port world with Options, 'Judge rulings during a run' left at Approved by Create; run it.",
+    "On the run page open the ruling list, then the second trader's later bribe offer.",
+    "Build it again with 'Wait for my approval'; run it; open the ruling list and the second offer.",
+    "Press Approve on the held ruling, run the world again, and open the second offer."
+   ],
+   "expected": "Default: a new rule with its rules-check record (review and scripted test) in the run record, and the second offer decided by that rule with no judge call. Wait: nothing installed, a second judge call for the second offer, the held ruling listed with an Approve button; after Approve the new run decides the offer by rule.",
+   "failure_example": "Broken: a second judge call under the default setting, a rule installed during a 'Wait' run, a ruling installed without a rules-check record, or a ruling missing from the run page. Working: as expected for each setting.",
+   "representation": {
+    "view": "composite-linked-view: the run page's attempt row opening its consequence report, judge call and ruling",
+    "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built"
+  },
+  {
+   "id": "A5",
+   "criterion": "Whether a bribe works is decided by the person being bribed, not by the judge or a rule.",
+   "grounded_in": [
+    "Decided 4 (Brian 2026-11-09: \"whether the bribe works seems like should be a deicsion made by the person being bribed\"); requirements R5, R8"
+   ],
+   "demonstration": [
+    "On the port run page, open Vik's offer and follow it to what decided whether Rosa signs."
+   ],
+   "expected": "Rosa's own resident call decides accept or refuse, in her words; the judge's ruling covers only whether coins can change hands.",
+   "failure_example": "Broken: the judge's ruling or a rule says the bribe succeeds or fails. Working: Rosa's resident decides.",
+   "representation": {
+    "view": "composite-linked-view: the run page's attempt row opening its consequence report, judge call and ruling",
+    "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built"
+  },
+  {
+   "id": "A6",
+   "criterion": "What a mechanism checks, who holds a credential and who is supposed to use it are kept apart, written in Ostrom's grammar of institutions: a barcode gate opens for any valid code while 'only signed cargo should pass' is a norm, a password can be phished and then works for whoever holds it, and breaking a norm has consequences only when someone notices and acts.",
+   "grounded_in": [
+    "Brian 2026-11-09: \"a password managed comptuer where only 1 person was supped to use it ... if they could be social engineered for exampel to get a password then someone else woul eb abel to sue it. i liek the ostrom stuff\"; requirement R6, R8"
+   ],
+   "demonstration": [
+    "Open the J4 password fixture run (evidence/ai-judge/j4/) and its TRACE_READ.md.",
+    "Follow Mallory's phishing message to Alice, Alice's reply, and Mallory's login; read the norm breach and what happened after it.",
+    "Open the port run where Rosa signs Vik's release for a bribe; read what opened the gate and the 'only signed, inspected cargo should pass' norm.",
+    "Open the world's norms list in the build record and read each norm's parts."
+   ],
+   "expected": "After the phishing Mallory holds Alice's password (the holder fact changes); the computer logs Mallory in; a norm breach is recorded; a consequence follows only after an observer notices and acts. In the port, the gate opens because it read a valid code, not because of who holds it, and the cargo norm's breach is recorded separately. Each norm is listed in Ostrom's parts: who it applies to, must or must not, the action, the conditions, and the 'or else' with who enforces it.",
+   "failure_example": "Broken: Mallory is refused because 'only Alice can log in' was written as a law; the gate refuses Vik because the release was bought; a norm is punished with nobody noticing; or a norm is a free-text sentence with no Ostrom parts. Working: as expected.",
+   "representation": {
+    "view": "composite-linked-view: the run page's attempt row opening its consequence report, judge call and ruling",
+    "router_record": "docs/planning/declared-laws/router/build-record.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built"
+  }
+ ],
+ "coverage": {
+  "model": "openrouter/anthropic/claude-sonnet-5.5",
+  "judged_at": "2026-11-09T22:42:04-0500",
+  "asked_by_sha256": "f64420b8006715340a8aacf547a8e4af1e658c87e3e4ed9f9b7f980bf25d50ef",
+  "criteria_sha256": "d4af06e8b60cecc4d8495e20faf763a68b7ba32edd371e02be545577970ff3bb",
+  "outcome_sha256": "7e9ee86db3ffcd185857180b5e2cacf14fa3875004ff91b8d0829129353cf07c",
+  "criteria_judged": {
+   "A1": "1d37031b584e9cfa832e2d2015de4d1548c272aecb2d8cfda27ca963a9b96272",
+   "A2": "df5310a4aad7492d4d76710c6bdd8eabc77f54669577be93696a128896685738",
+   "A3": "530688919f6c20ec3f923d45fe580aa50e43f1e5bc584dfa53037a1fca63d6a0",
+   "A4": "89444e5e50022e824a58c536e63e238e46bba536c7294666161e2eb45ef7dcd1",
+   "A5": "6060307c0217ee93b86f13236dccf468e75324e3617358251787b1d4ded13e2f",
+   "A6": "036a0c4c4e9779842abaf8c63b7656ce163eed30d162139292c169db3ae7f6a9"
+  },
+  "deferrals_judged": [],
+  "trace_id": "planning-compliance/goal-coverage/20261109T224147-59198bd2-run1",
+  "cost_usd": 0.06605,
+  "requirements": [
+   {
+    "id": "R1",
+    "requirement": "causal chain propagates automatically",
+    "quote": "we need that causal chain to automaticlaly rpogate",
+    "asked_by_index": 1,
+    "kind": "outcome"
+   },
+   {
+    "id": "R2",
+    "requirement": "chains 100 links deep",
+    "quote": "a causal chain 100 links deep",
+    "asked_by_index": 1,
+    "kind": "outcome"
+   },
+   {
+    "id": "R3",
+    "requirement": "50 things propagating",
+    "quote": "like 50 things could propagate",
+    "asked_by_index": 1,
+    "kind": "outcome"
+   },
+   {
+    "id": "R4",
+    "requirement": "deliver results to AI judge",
+    "quote": "to deliver the resutls of that propagation to he ai judge",
+    "asked_by_index": 1,
+    "kind": "outcome"
+   },
+   {
+    "id": "R5",
+    "requirement": "blockers delivered to judge",
+    "quote": "along with blockers",
+    "asked_by_index": 1,
+    "kind": "outcome"
+   },
+   {
+    "id": "R6",
+    "requirement": "facts have implications",
+    "quote": "we need to facts to have implications and blockers",
+    "asked_by_index": 1,
+    "kind": "outcome"
+   },
+   {
+    "id": "R7",
+    "requirement": "bribe decided by person bribed",
+    "quote": "whether the bribe works seems like should be a deicsion made by the person being bribed",
+    "asked_by_index": 2,
+    "kind": "outcome"
+   },
+   {
+    "id": "R8",
+    "requirement": "rules vs decisions difference",
+    "quote": "maybe we need to discuss the difference between rules/constraints and ddecisions?",
+    "asked_by_index": 2,
+    "kind": "process"
+   },
+   {
+    "id": "R9",
+    "requirement": "norm separate from programmatic entry",
+    "quote": "there is a ddifference between as igned release clearing the cargo as a norm and like some programmatic enry with abar code or whateve.r",
+    "asked_by_index": 3,
+    "kind": "outcome"
+   },
+   {
+    "id": "R10",
+    "requirement": "password social engineering case",
+    "quote": "if they could be social engineered for exampel to get a password then someone else woul eb abel to sue it",
+    "asked_by_index": 3,
+    "kind": "outcome"
+   },
+   {
+    "id": "R11",
+    "requirement": "Ostrom stuff",
+    "quote": "i liek the ostrom stuff",
+    "asked_by_index": 3,
+    "kind": "outcome"
+   },
+   {
+    "id": "R12",
+    "requirement": "make this configurable",
+    "quote": "can we make this configurable?",
+    "asked_by_index": 4,
+    "kind": "outcome"
+   }
+  ],
+  "mappings": [
+   {
+    "requirement_id": "R1",
+    "covered_by": [
+     "A1"
+    ],
+    "coverage_reason": "A1 fails if a changed fact does not set off every knock-on effect automatically in the run record.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome says the engine works out every knock-on effect of an attempt."
+   },
+   {
+    "requirement_id": "R2",
+    "covered_by": [
+     "A1"
+    ],
+    "coverage_reason": "A1 requires chains of 100 steps to complete with 5,000 reaction events.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome names 100 links explicitly."
+   },
+   {
+    "requirement_id": "R3",
+    "covered_by": [
+     "A1"
+    ],
+    "coverage_reason": "A1 requires 50 chains in one moment all finishing, producing 5,000 events.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome says 50 at once."
+   },
+   {
+    "requirement_id": "R4",
+    "covered_by": [
+     "A2"
+    ],
+    "coverage_reason": "A2 fails unless the judge call input contains the consequence report word for word.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome says the engine delivers the results to an AI judge."
+   },
+   {
+    "requirement_id": "R5",
+    "covered_by": [
+     "A2",
+     "A1"
+    ],
+    "coverage_reason": "A2 requires the report with blockers be in the judge input and A1 records blockers in the consequence report.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome says results are delivered with the blockers."
+   },
+   {
+    "requirement_id": "R6",
+    "covered_by": [
+     "A1"
+    ],
+    "coverage_reason": "A1 checks that facts' implications and blockers are worked out automatically.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome covers every knock-on effect and blocker of an attempt."
+   },
+   {
+    "requirement_id": "R7",
+    "covered_by": [
+     "A5"
+    ],
+    "coverage_reason": "A5 fails if anything other than Rosa's own call decides whether the bribe works.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome says the person being bribed decides whether a bribe works."
+   },
+   {
+    "requirement_id": "R8",
+    "covered_by": [],
+    "coverage_reason": "No criterion could show a discussion of rules versus decisions; it is about planning work.",
+    "extent": "none",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "Process requirement, not an outcome line item."
+   },
+   {
+    "requirement_id": "R9",
+    "covered_by": [
+     "A6"
+    ],
+    "coverage_reason": "A6 fails unless the barcode gate opening is kept apart from the signed-cargo norm breach record.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome keeps mechanism, credential holder and norm separate."
+   },
+   {
+    "requirement_id": "R10",
+    "covered_by": [
+     "A6"
+    ],
+    "coverage_reason": "A6 fails unless after phishing Mallory's login works and the breach is recorded.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome says a password learned by social engineering works for whoever holds it and the breach is recorded."
+   },
+   {
+    "requirement_id": "R11",
+    "covered_by": [
+     "A6"
+    ],
+    "coverage_reason": "A6 requires norms listed in Ostrom's parts and written in Ostrom's grammar.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome says as in Ostrom's grammar."
+   },
+   {
+    "requirement_id": "R12",
+    "covered_by": [
+     "A4"
+    ],
+    "coverage_reason": "A4 fails unless a per-world setting switches rulings between installed at once and held for approval.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome says installed by default or held for approval by the world's setting."
+   }
+  ],
+  "agreement": {
+   "runs": 2,
+   "agreed": true,
+   "trace_ids": [
+    "planning-compliance/goal-coverage/20261109T224147-59198bd2-run1",
+    "planning-compliance/goal-coverage/20261109T224147-59198bd2-run2"
+   ],
+   "costs_usd": [
+    0.03266,
+    0.03339
+   ]
+  },
+  "trace": "coverage-trace.json"
+ }
+}

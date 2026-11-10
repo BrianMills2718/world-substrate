@@ -64,6 +64,10 @@ Each spec keeps the wording of the contract it was folded from on 2026-11-09 and
   [/goal launcher](plans/open-attempt.goal.md). S1 and S2 built; S3 (skill rolls) not built.
 - [Plan: worlds declare their own laws](plans/declared_laws.md) and its
   [/goal launcher](plans/declared-laws.goal.md). S1 to S3 built; S4 under way; S5 waits on Q50.
+- [Plan: an AI judge fed by automatic propagation](plans/ai_judge.md) (draft, direction approved
+  2026-11-09; nothing built), its package
+  [planning/ai-judge/planning-package.json](planning/ai-judge/planning-package.json) and
+  [review page](../proposals/ai-judge/review-page/index.html).
 - Planning package: [planning-package.json](planning/planning-package.json),
   [open questions](planning/open-questions.json) (generated from `tools/planning/questions_src.py`),
   [checks](planning/checks.txt), [cold review](planning/cold-review.md). Per plan:
