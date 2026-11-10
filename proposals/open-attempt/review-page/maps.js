@@ -1230,12 +1230,6 @@ window.MAPS = {
     "explain": "Blocks: whether the group-decision family's agenda needs content or should be dropped."
    },
    {
-    "id": "Q12",
-    "label": "Q12: When a people-world run ends",
-    "kind": "BrianQuestion",
-    "explain": "Blocks: how long visitors watch a run, and its cost."
-   },
-   {
     "id": "Q14",
     "label": "Q14: Harness build time not measured",
     "kind": "AgentQuestion",
@@ -1762,18 +1756,6 @@ window.MAPS = {
    {
     "id": "Q3-group-decision",
     "source": "Q3",
-    "target": "group-decision",
-    "label": "bears on"
-   },
-   {
-    "id": "Q12-run-loop",
-    "source": "Q12",
-    "target": "run-loop",
-    "label": "bears on"
-   },
-   {
-    "id": "Q12-group-decision",
-    "source": "Q12",
     "target": "group-decision",
     "label": "bears on"
    },

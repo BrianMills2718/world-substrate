@@ -441,13 +441,15 @@ window.PAGE_DATA = {
    "blocks": "how long visitors watch a run, and its cost",
    "resolves_with": "This is a product call on what a finished story looks like; no test settles it.",
    "owner": "brian",
-   "status": "open",
+   "status": "resolved",
+   "evidence": "Brian, 2026-11-10: \"on d1. stop condition should be configurable.\" Built in PR #356 (BrianMills2718/world-substrate#356): a per-world setting on the Create page, 'When to stop a run', saved with the world like 'Simulate as': stop once nothing is changing after N quiet rounds (default for new worlds, N = 6) or always run every round. scripts/run_stop.py holds the rule; scripts/run_authored_world.py records summary.stopped and the run page says why in one line. With a group decision the run stops once it is deployed or rejected and the state is back where it was N rounds earlier (the agenda churn, Q3, otherwise never stops); on the recorded c1r24 run that is round 30 of 46 (tests/test_run_stop.py). Worlds and runs saved without the setting run every round, as before.",
    "recommendation": "Stop once the decision is deployed or rejected and no one's move has changed anything for 6 rounds (one operating-review period, compile_spec.py:442), and say on the page why it stopped. Gains: in that run, about half the watching time and about $0.12 of $0.24 saved (measured: run total over rounds). Costs: a late surprise after a quiet stretch would be cut off; the visitor can still choose to run more rounds.",
    "default": "Runs keep ending at the round cap the visitor picked.",
    "sources": [
     "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
     "scripts/run_authored_world.py:594",
-    "scripts/run_authored_world.py:40"
+    "scripts/run_authored_world.py:40",
+    "scripts/run_stop.py"
    ],
    "touches": [
     "run-loop",
@@ -2991,12 +2993,6 @@ window.PAGE_DATA = {
     "explain": "Blocks: whether the group-decision family's agenda needs content or should be dropped."
    },
    {
-    "id": "Q12",
-    "label": "Q12: When a people-world run ends",
-    "kind": "BrianQuestion",
-    "explain": "Blocks: how long visitors watch a run, and its cost."
-   },
-   {
     "id": "Q14",
     "label": "Q14: Harness build time not measured",
     "kind": "AgentQuestion",
@@ -3523,18 +3519,6 @@ window.PAGE_DATA = {
    {
     "id": "Q3-group-decision",
     "source": "Q3",
-    "target": "group-decision",
-    "label": "bears on"
-   },
-   {
-    "id": "Q12-run-loop",
-    "source": "Q12",
-    "target": "run-loop",
-    "label": "bears on"
-   },
-   {
-    "id": "Q12-group-decision",
-    "source": "Q12",
     "target": "group-decision",
     "label": "bears on"
    },
