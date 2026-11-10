@@ -1627,7 +1627,7 @@ Q = [
   "status": "open",
   "sources": [
    "docs/plans/estimate_rules.md:448",
-   "docs/plans/ai_judge.md:264"
+   "docs/plans/ai_judge.md:265"
   ],
   "touches": [
    "stopping-point",
