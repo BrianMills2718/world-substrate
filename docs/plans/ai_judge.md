@@ -56,7 +56,8 @@ Planning package: docs/planning/ai-judge/planning-package.json
 
 **Status:** adopted. Brian approved its direction on 2026-11-09 ("i approve", after Decided 5) and building it on
 2026-11-10 ("yes if ti si planned out and you have no quesitons for me"). J0 built 2026-11-10 (no knock-on cap;
-saved runs in `evidence/ai-judge/j0/`); J1, J2, J3 and J5 are next; J4 stays exploration.
+PR #362, live at `d89a446`; saved runs in `evidence/ai-judge/j0/`, live share links in
+`evidence/ai-judge/j0/live-shares.json`); J1, J2, J3 and J5 are next; J4 stays exploration.
 
 ## Why
 
