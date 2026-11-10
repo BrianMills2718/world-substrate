@@ -217,7 +217,8 @@ All nine are required; none is deferred.
 Each is judged from the full trace of the run it names, not its outcome alone.
 
 - **A1 (J0):** a fixture world with a 100-step chain and 50 chains in one moment (5,000 reactions) finishes in
-  one commit; every reaction event cites its parent; a fixture with a loop still fires each pair once. Run:
+  one commit; every reaction event cites its parent; a fixture with a loop still fires each pair once; a chain
+  blocked at step 40 (a truck with no fuel) records that step as blocked with its blocker and stops there. Run:
   `tests/test_knock_on_unbounded.py`, output saved under `evidence/ai-judge/j0/`.
 - **A2 (J1, J2):** in the port run, the judge's call input (its Concordia component text, in the `llm_client`
   trace) contains the engine's results and blockers for Vik's offer, and no prompt outside Concordia's game master
@@ -230,7 +231,9 @@ Each is judged from the full trace of the run it names, not its outcome alone.
   judge again, the run page lists the held ruling, and after Approve a new run decides that offer by rule.
 - **A5 (J2):** Rosa's own resident call decides accept or refuse; the judge's ruling covers only the hand-over.
 - **A6 (J4):** in the password fixture, Mallory phishes Alice's password, the computer logs Mallory in, the norm
-  breach is recorded, and a consequence follows only after an observer acts on it.
+  breach is recorded, and a consequence follows only after an observer acts on it. In the port, the gate opens
+  because it read a valid code, not because of who holds it, and the cargo norm's breach is recorded separately.
+  Each norm is listed in Ostrom's parts (who it applies to, what it requires, under what conditions).
 
 ## Slices, in order
 
