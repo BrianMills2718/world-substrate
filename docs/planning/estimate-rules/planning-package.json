@@ -177,19 +177,15 @@
    "items": [
     {
      "path": "docs/model/ODD.md",
-     "question": "What is inside World Substrate and what talks to it? (context and container views, section 3)"
+     "question": "Where does the planned estimator sit among World Substrate's containers, and what does it talk to? (ODD section 3 container view, drawn on this page with the estimator added)"
     },
     {
      "path": "docs/model/domain.graph.json",
-     "question": "Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?"
+     "question": "Which ideas does the plan rely on, which four are new and only in documents, and how do they relate to the substrate code?"
     },
     {
      "path": "docs/model/open-questions.graph.json",
-     "question": "Which concepts carry the unsettled questions, and whose call is each?"
-    },
-    {
-     "path": "docs/model/metamodel.graph.json",
-     "question": "What kinds of things can any world's rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?"
+     "question": "Which concepts carry this plan's unsettled questions (Q63, Q82-Q86, Q33), and whose call is each?"
     }
    ]
   },
@@ -219,7 +215,11 @@
     "share",
     "gen-rules",
     "build",
-    "stopping-point"
+    "stopping-point",
+    "fingerprint",
+    "attempt",
+    "observation",
+    "rules-review"
    ],
    "cost_basis": {
     "steps": [
@@ -228,7 +228,7 @@
       "cost_per_run_usd": 0.00084,
       "calls_per_run": 30,
       "basis": "measured",
-      "evidence": "llm-cost estimate --task feedback-collector.triage --model jev (2026-11-10): 14,222 calls, $0.3963 in all, $0.0000279 per call, median 656 input and 78 output tokens; the probe evidence/jev/maintenance-estimator-probe-v0.json measured $0.000027 per call (5 calls, trace world-substrate/jev/probe-eb6d836e64). The model registry has no Jev token price; cost is provider-reported. Calls: at most 30 per sawmill run (one chance question a day for 30 days; fewer with the per-run cache), 30 x $0.0000279 = $0.00084."
+      "evidence": "llm-cost estimate --task feedback-collector.triage --model jev (2026-11-10): 14,222 calls, $0.3963 in all, $0.0000279 per call, median 656 input and 78 output tokens; the probe evidence/jev/maintenance-estimator-probe-v0.json measured $0.000027 per call (5 calls, trace world-substrate/jev/probe-eb6d836e64). The model registry has no Jev token price; cost is provider-reported. Calls: at most 30 per sawmill run (one chance question a day for 30 days; fewer with the per-run cache), 30 x $0.0000279 = $0.00084; the one retry on the measured 6.6% of failed calls adds about $0.00006."
      },
      {
       "step": "plain-version comparison, gpt-6-luna variant (E1, once)",
@@ -248,10 +248,10 @@
      },
      {
       "step": "plain-version comparison, Jev variants (E1, once: declared reads and whole world)",
-      "cost_per_run_usd": 0.0062,
+      "cost_per_run_usd": 0.0031,
       "calls_per_run": 20,
       "basis": "guess",
-      "evidence": "10 declared-reads calls at the measured $0.0000279 = $0.00028; 10 whole-world calls guessed at up to 10 times the tokens, so up to $0.000279 each = $0.0028; rounded up to $0.0062 to allow a larger world. Replaced by the measured llm-cost total after E1."
+      "evidence": "10 declared-reads calls at the measured $0.0000279 = $0.00028; 10 whole-world calls guessed at up to 10 times the tokens, so up to $0.000279 each = $0.0028; together up to $0.0031 (docs/plans/estimate_rules.md, LLM call boundary and cost). Replaced by the measured llm-cost total after E1."
      },
      {
       "step": "rules writer (existing call, E2: also writes estimate rules)",
@@ -261,7 +261,7 @@
       "evidence": "llm-cost estimate --task world-substrate-mechanic-authoring (2026-11-10): 68 calls, median $0.0021 per call, median 11,551 input and 1,574 output tokens, 0% cached. Estimate rules add a few lines to its output; no new call."
      }
     ],
-    "cheapest_design": "Cheapest design that still does the job: a chance formula written into the rule by the rules writer (p = 0.03 x days since service) costs nothing per run, but the rule language has no arithmetic between two values (docs/plans/ai_judge.md Decided 3), so it would need a language change of its own, and the curve would be the rules writer's guess fixed at build time. Jev costs under $0.001 per 30-day run with the per-run cache (one call per distinct question and inputs), reads only the declared fields, and needs no language arithmetic. Chosen: Jev with the per-run cache (inferred by agent, 2026-11-10). The binding constraint is latency, not cost: 0.43 s mean per Jev call (measured, ~/projects/data/llm_observability.db, 2026-11-10), about 13 s for 30 calls (Q85). For the judge's stopping point, a Jev chance question would cost about 1/50 of the judge's $0.0016 per check; that option is recorded for the judge plan's J5 (Q86), not taken here."
+    "cheapest_design": "Cheapest design that still does the job: a chance formula written into the rule by the rules writer (p = 0.03 x days since service) costs nothing per run, but the rule language has no arithmetic between two values (docs/plans/ai_judge.md Decided 3), so it would need a language change of its own, and the curve would be the rules writer's guess fixed at build time. Jev costs under $0.001 per 30-day run with the per-run cache (one call per distinct question and inputs), reads only the declared fields, and needs no language arithmetic. Chosen: Jev with the per-run cache (inferred by agent, 2026-11-10). The binding constraint is latency, not cost (measured, ~/projects/data/llm_observability.db, 2026-11-10): successful Jev calls averaged 0.43 s (99th percentile 2.8 s), but 6.6% of calls failed, provider errors after 0.89 s and network errors after 20.2 s on average. With a 5 s timeout per try and one retry (plan Decided 7), an estimate takes about 0.933 x 0.43 + 0.037 x (0.89 + 0.43) + 0.029 x (5 + 0.43) = 0.61 s on average (computed) and at most 10 s before its fallback, about 18 s for a 30-day run; without the timeout about 1.05 s, about 32 s per run (Q85). For the judge's stopping point, a Jev chance question would cost about 1/50 of the judge's $0.0016 per check; that option is recorded for the judge plan's J5 (Q86), not taken here."
    },
    "plain_baseline": {
     "kind": "planned",
@@ -321,5 +321,5 @@
    "path": "docs/planning/estimate-rules/cold-review.md"
   }
  },
- "note": "This is the plan's own package, named by docs/plans/estimate_rules.md's 'Planning package:' line. It shares the repository's open-questions ledger, system model, domain model, metamodel and diagrams with docs/planning/planning-package.json and the declared-laws, open-attempt and ai-judge packages (all rebuilt by tools/planning/build.py, which now also rebuilds every review page). The plan's four new concepts (estimate-rule, estimator, recorded-estimate, recorded-draw) are in the domain model as 'In documents only' (planned, not implemented). Q63 is reopened with Brian's 2026-11-10 words and answered by the plan; its uncertainties are Q82-Q86 (all agent-owned) and the existing Q33 (the run seed, shared with the skill roll). No paid call was made for planning: the plain-version comparison and a 10-call Jev probe (about $0.0003) are E1's first steps. The acceptance criteria cite this plan's own run-page router record, docs/planning/estimate-rules/router/run-page.recommendation.json. Checks were run for this package into docs/planning/estimate-rules/checks.txt."
+ "note": "This is the plan's own package, named by docs/plans/estimate_rules.md's 'Planning package:' line. It shares the repository's open-questions ledger, system model, domain model, metamodel and diagrams with docs/planning/planning-package.json and the declared-laws, open-attempt and ai-judge packages (all rebuilt by tools/planning/build.py, which now also rebuilds every review page). The plan's four new concepts (estimate-rule, estimator, recorded-estimate, recorded-draw) are in the domain model as 'In documents only' (planned, not implemented). Q63 is reopened with Brian's 2026-11-10 words and answered by the plan; its uncertainties are Q82-Q86 (all agent-owned) and the existing Q33 (the run seed, shared with the skill roll). No paid call was made for planning: the plain-version comparison and a 10-call Jev probe (about $0.0003) are E1's first steps. Diagrams: this package lists the container view (ODD section 3, drawn on its page with the estimator added), the domain map and the open-questions map, all drawn on its page. The metamodel graph is left out of this package on purpose: it shows kinds that are built, and the estimate block and the recorded draw are planned, so they are added to docs/model/METAMODEL.md, ODD.md and metamodel.graph.json by slice E1 when they exist; the repository package's page draws the current metamodel. Replay by recorded commands (Engine.replay_commands, src/world_substrate/engine.py:1182) has no node of its own in the domain model: a new built concept must carry a code location in every package's implemented map, including the ai-judge package, which this plan does not edit; the plan cites the code directly (Current truth). The acceptance criteria cite this plan's own run-page router record, docs/planning/estimate-rules/router/run-page.recommendation.json. Checks were run for this package into docs/planning/estimate-rules/checks.txt."
 }

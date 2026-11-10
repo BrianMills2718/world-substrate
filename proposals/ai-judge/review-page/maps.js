@@ -1579,9 +1579,9 @@ window.MAPS = {
    },
    {
     "id": "Q83",
-    "label": "Q83: Declared reads or the whole world",
+    "label": "Q83: Do the declared reads leave out facts Jev needs",
     "kind": "AgentQuestion",
-    "explain": "Blocks: The estimate block's reads field (E1), the cache key and the rule that an estimate never reads the attempt's wording.."
+    "explain": "Blocks: Which fields the E1 sawmill rule declares, and from E2 a rules-check warning when a rule reads too little; not the declared-reads design.."
    },
    {
     "id": "Q84",

@@ -42,13 +42,13 @@ window.MAPS = {
     "id": "engine",
     "label": "Engine",
     "kind": "Substrate",
-    "explain": "Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick. Code: src/world_substrate/engine.py:198."
+    "explain": "Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick. Code: src/world_substrate/engine.py:222."
    },
    {
     "id": "event",
     "label": "Event",
     "kind": "Substrate",
-    "explain": "The record of one attempt or process step: status, checks, changes, an id like r14-e00012. Code: src/world_substrate/engine.py:529."
+    "explain": "The record of one attempt or process step: status, checks, changes, an id like r14-e00012. Code: src/world_substrate/engine.py:572."
    },
    {
     "id": "move",
@@ -60,7 +60,7 @@ window.MAPS = {
     "id": "process",
     "label": "Process",
     "kind": "Substrate",
-    "explain": "A rule the world runs by itself when its checks hold: each round by default, or at once as a knock-on effect when marked immediately. Code: src/world_substrate/engine.py:829."
+    "explain": "A rule the world runs by itself when its checks hold: each round by default, or at once as a knock-on effect when marked immediately. Code: src/world_substrate/engine.py:1095."
    },
    {
     "id": "compiler",
@@ -90,13 +90,13 @@ window.MAPS = {
     "id": "write-scope",
     "label": "Declared write scope",
     "kind": "Substrate",
-    "explain": "The fields a rule says it may change; the Engine refuses any change outside them. Read scopes are recorded, not enforced. Code: src/world_substrate/engine.py:88."
+    "explain": "The fields a rule says it may change; the Engine refuses any change outside them. Read scopes are recorded, not enforced. Code: src/world_substrate/engine.py:136."
    },
    {
     "id": "causal-trace",
     "label": "Causal trace",
     "kind": "Substrate",
-    "explain": "The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. Code: src/world_substrate/engine.py:529."
+    "explain": "The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. Code: src/world_substrate/engine.py:572."
    },
    {
     "id": "world-kind",
@@ -306,7 +306,7 @@ window.MAPS = {
     "id": "affordance",
     "label": "Affordance (offered move)",
     "kind": "Substrate",
-    "explain": "A move the rules say a person can try now, with its open fields; the page a decider picks from or an attempt is read against. Code: src/world_substrate/engine.py:352."
+    "explain": "A move the rules say a person can try now, with its open fields; the page a decider picks from or an attempt is read against. Code: src/world_substrate/engine.py:395."
    },
    {
     "id": "check",
@@ -336,7 +336,7 @@ window.MAPS = {
     "id": "observation",
     "label": "Observation",
     "kind": "Substrate",
-    "explain": "What one actor sees this round: the fields its senses and position allow, never the whole world. Code: src/world_substrate/engine.py:235."
+    "explain": "What one actor sees this round: the fields its senses and position allow, never the whole world. Code: src/world_substrate/engine.py:278."
    },
    {
     "id": "place-way",
@@ -348,7 +348,7 @@ window.MAPS = {
     "id": "knock-on-now",
     "label": "Knock-on that runs now",
     "kind": "Substrate",
-    "explain": "A process marked 'immediately' runs in waves inside the same moment as the attempt or round step that set it off, until nothing more is due (a glass falls, breaks, the water spills, the neighbour hears it); each pair of process and thing fires once per moment, and more than 32 reactions refuses the whole moment. Code: src/world_substrate/engine.py:938."
+    "explain": "A process marked 'immediately' runs in waves inside the same moment as the attempt or round step that set it off, until nothing more is due (a glass falls, breaks, the water spills, the neighbour hears it); each pair of process and thing fires once per moment, which is what ends every chain; new runs have no other cap (J0 of the AI judge plan), a step a failed check stops is recorded with its blocker, and a run recorded before J0 replays under its old cap of 32. Code: src/world_substrate/engine.py:964."
    },
    {
     "id": "skill-roll",
@@ -1579,9 +1579,9 @@ window.MAPS = {
    },
    {
     "id": "Q83",
-    "label": "Q83: Declared reads or the whole world",
+    "label": "Q83: Do the declared reads leave out facts Jev needs",
     "kind": "AgentQuestion",
-    "explain": "Blocks: The estimate block's reads field (E1), the cache key and the rule that an estimate never reads the attempt's wording.."
+    "explain": "Blocks: Which fields the E1 sawmill rule declares, and from E2 a rules-check warning when a rule reads too little; not the declared-reads design.."
    },
    {
     "id": "Q84",

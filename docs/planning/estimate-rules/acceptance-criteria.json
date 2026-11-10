@@ -24,7 +24,7 @@
     "Find a later day whose facts match an earlier day and open it.",
     "Open a day on which Mara serviced the blade."
    ],
-   "expected": "A failure day reads \"chance the blade fails today: 0.31 (Jev, from days since service 9, load 14); roll 0.22; failed\" (the numbers are whatever the run recorded) and opens to the question, the two facts with their values, the model version and the trace id; the saw-stopped and late-order steps follow, each citing the failure; the matching later day says \"same question as day N, answer reused\"; Mara's servicing is her own move with her reason and no chance attached.",
+   "expected": "A failure day reads \"chance the blade fails today: 0.31 (Jev, from days since service 9, load 14); roll 0.22; failed\" (the numbers are whatever the run recorded; Jev is the estimating model, the roll the run's own random number) and opens to the question, the two facts with their values, the model version and the trace id (a link to the full recorded call); the saw-stopped and late-order steps follow, each citing the failure; the matching later day says \"same question as day N, answer reused\"; Mara's servicing is her own move with her reason and no chance attached.",
    "failure_example": "Broken: a failure with no roll shown, a failure whenever the chance is above some value, facts in what Jev read that the rule did not name, Jev asked twice for the same facts, or a chance attached to Mara's decision. Working: every chance event shows chance, source, roll and outcome, and knock-on steps cite it.",
    "representation": {
     "view": "composite-linked-view: the run page's day rows, one line per chance event (chance, source, roll, outcome), opening to the question, the facts read, the model version and trace id, and the knock-on steps it caused",
@@ -34,7 +34,7 @@
    "status": "not built",
    "evidence": [
     "Saved run written by slice E1 under evidence/estimate-rules/e1-sawmill/ with run-log.jsonl and TRACE_READ.md (planned).",
-    "Today no rule uses randomness: docs/plans/open_attempt.md:124; the rule language has no estimate: src/world_substrate/action_authoring.py:893-927."
+    "Today no rule uses randomness: docs/plans/open_attempt.md:124; the rule language has no estimate: src/world_substrate/action_authoring.py:925-958."
    ]
   },
   {
@@ -57,7 +57,7 @@
    "entrypoint": "planned",
    "status": "not built",
    "evidence": [
-    "Replay of recorded commands: src/world_substrate/engine.py:1095-1130; recorded model replies: scripts/replay_build.py:23-49 (Unrecorded).",
+    "Replay of recorded commands: src/world_substrate/engine.py:1182-1222; recorded model replies: scripts/replay_build.py:23-49 (Unrecorded).",
     "Saved runs and test tests/test_estimate_replay.py (planned, E1)."
    ]
   },
@@ -72,7 +72,7 @@
     "Open any day's chance event.",
     "Open the saved run of the same world with the rule's fallback set to refuse."
    ],
-   "expected": "\"estimate unavailable after 2 tries: used the rule's fallback 0.1\" in orange on each day, and the run goes on; with refuse, the day's moment is refused with \"estimate unavailable\" and nothing changed that day.",
+   "expected": "\"estimate unavailable after 2 tries: used the rule's fallback 0.1\" (the fallback is the chance the rule itself declares for when Jev cannot answer) in orange on each day, and the run goes on; with refuse, the day's moment is refused with \"estimate unavailable\" and nothing changed that day.",
    "failure_example": "Broken: a day decided with a chance nobody declared, a failed call not shown, or a partial change on a refused day. Working: the fallback named in orange, or a whole-moment refusal named \"estimate unavailable\".",
    "representation": {
     "view": "composite-linked-view: the chance event's line with the fallback in orange and the failed calls listed when opened",
