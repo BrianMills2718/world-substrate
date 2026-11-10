@@ -1199,7 +1199,7 @@ Q = [
   "owner": "agent",
   "status": "open",
   "sources": [
-   "docs/plans/estimate_rules.md:122",
+   "docs/plans/estimate_rules.md:123",
    "evidence/jev/maintenance-estimator-probe-v0.json:299",
    "docs/decisions/005-native-waltzman-delivery.md:86",
    "scripts/run_jev_estimator_probe.py",
@@ -1550,11 +1550,11 @@ Q = [
   "short": "Does Jev's chance follow the facts",
   "question": "In the sawmill example, does Jev's chance that the blade fails today rise with days since service, or is it flat or coarse? The existing probe's chance answers were coarse (0.6, 0.55) and its choice probabilities were 0 or 1 (evidence/jev/maintenance-estimator-probe-v0.json).",
   "blocks": "Whether a chance roll on Jev gives a believable world in E1 (A1), and whether picks (E3) collapse to a certainty.",
-  "resolves_with": "One probe: 10 Jev calls for days 0-10 at load 14 (about $0.0003, measured per-call cost $0.0000279 from llm-cost estimate --task feedback-collector.triage --model jev), run as E1's first step. If flat, E1 reports it and the rule's question or reads change before the live run.",
+  "resolves_with": "One probe, E1's first step before the live run: 10 Jev calls, one for each of days 1 to 10 since service at load 14 (about $0.0003, measured per-call cost $0.0000279 from llm-cost estimate --task feedback-collector.triage --model jev), run as E1's first step. If flat, E1 reports it and the rule's question or reads change before the live run.",
   "owner": "agent",
   "status": "open",
   "sources": [
-   "docs/plans/estimate_rules.md:405",
+   "docs/plans/estimate_rules.md:454",
    "evidence/jev/maintenance-estimator-probe-v0.json"
   ],
   "touches": [
@@ -1564,14 +1564,14 @@ Q = [
  },
  {
   "id": "Q83",
-  "short": "Declared reads or the whole world",
-  "question": "Should Jev see only the fields an estimate rule declares (days since service, load) or the whole world, as the plain-version rule would start from?",
-  "blocks": "The estimate block's reads field (E1), the cache key and the rule that an estimate never reads the attempt's wording.",
-  "resolves_with": "E1's side-by-side comparison on 10 cases: Jev with the declared reads, Jev with the whole world, and gpt-6-luna with the declared reads (under $0.01, computed in docs/plans/estimate_rules.md 'LLM call boundary and cost'). Declared reads stand unless the whole world is shown better.",
+  "short": "Do the declared reads leave out facts Jev needs",
+  "question": "Jev sees only the fields an estimate rule declares (days since service, load), never the whole world: argument settles that (a whole-world read makes the cache key the whole world and can reach what A5 forbids). Do the sawmill rule's two declared reads leave out facts Jev needs, as the plain version (Jev given the whole world) would show?",
+  "blocks": "Which fields the E1 sawmill rule declares, and from E2 a rules-check warning when a rule reads too little; not the declared-reads design.",
+  "resolves_with": "E1's side-by-side comparison on 10 cases: Jev with the declared reads, Jev with the whole world, and gpt-6-luna with the declared reads (under $0.01, computed in docs/plans/estimate_rules.md 'LLM call boundary and cost'). If the whole-world answers track the facts better, the rule declares more reads; it never reads the whole world.",
   "owner": "agent",
   "status": "open",
   "sources": [
-   "docs/plans/estimate_rules.md:385",
+   "docs/plans/estimate_rules.md:435",
    "docs/plans/open_attempt.md:194"
   ],
   "touches": [
@@ -1588,7 +1588,7 @@ Q = [
   "owner": "agent",
   "status": "open",
   "sources": [
-   "docs/plans/estimate_rules.md:108",
+   "docs/plans/estimate_rules.md:109",
    "src/world_substrate/information.py:57"
   ],
   "touches": [
@@ -1600,13 +1600,13 @@ Q = [
  {
   "id": "Q85",
   "short": "Jev latency in worlds with many chances",
-  "question": "Jev's mean latency is 0.43 s (measured in ~/projects/data/llm_observability.db, 2026-11-10). A sawmill run asks at most 30 times (about 13 s); a world with many estimate rules could ask thousands of times. Does sequential asking fit the run-time targets?",
+  "question": "Successful Jev calls averaged 0.43 s, but 6.6% failed (network failures after 20.2 s on average), measured in ~/projects/data/llm_observability.db, 2026-11-10. With a 5 s timeout and one retry a chance takes about 0.61 s on average and at most 10 s (computed), about 18 s for a 30-day sawmill run; a world with many estimate rules could ask thousands of times. Does sequential asking fit the run-time targets?",
   "blocks": "Worlds with many estimate rules after E1; not E1 itself.",
   "resolves_with": "E1's measured run times; add parallel asking within one moment only if a run shows it is needed.",
   "owner": "agent",
   "status": "open",
   "sources": [
-   "docs/plans/estimate_rules.md:287"
+   "docs/plans/estimate_rules.md:311"
   ],
   "touches": [
    "estimator",
@@ -1622,8 +1622,8 @@ Q = [
   "owner": "agent",
   "status": "open",
   "sources": [
-   "docs/plans/estimate_rules.md:377",
-   "docs/plans/ai_judge.md:263"
+   "docs/plans/estimate_rules.md:421",
+   "docs/plans/ai_judge.md:264"
   ],
   "touches": [
    "stopping-point",

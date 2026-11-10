@@ -182,8 +182,11 @@ on 2026-11-10 from the reading and prior art named with each; they stand as work
    `llm_client.call_decisions`; in a replay it is a reader of the recorded estimates that raises "no recorded
    estimate" for anything missing, the pattern `scripts/replay_build.py` already uses for model calls
    (`recorded_llm_client`, `Unrecorded`, lines 23-49). Replay resubmits recorded commands as today
-   (`Engine.replay_commands`, `src/world_substrate/engine.py:1095`), so the recorded estimate and draw give the
-   same status for each command.
+   (`Engine.replay_commands`, `src/world_substrate/engine.py:1182`), so the recorded estimate and draw give the
+   same status for each command. The recorded reader matches an estimate by event and by the cache key below
+   (model, question, answer type and options, input values): if the world's rule was edited after the run, so its
+   question or reads no longer match the record, the replay stops with "no recorded estimate for this event"
+   instead of reusing an answer to a different question.
 6. **Caching: one call per distinct question per run.** The cache key is (model, question, answer type and its
    options, the canonical values of the declared reads). Because a rule declares everything Jev may read, the
    same key means the same question, so the answer is reused for the rest of the run and recorded as "cached,
@@ -193,21 +196,25 @@ on 2026-11-10 from the reading and prior art named with each; they stand as work
    calls failed (6.6%: 745 provider errors raised as RuntimeError, 585 network errors; failed calls averaged
    9.4 s), read from `~/projects/data/llm_observability.db` on 2026-11-10. `call_decisions` does not retry. One
    retry is the smallest step that keeps a 30-day run from being refused or falling back about twice a run.
+   Each try has a 5 s timeout (`call_decisions` defaults to 30 s). Measured in the same database: successful
+   calls averaged 0.43 s (median 0.26 s, 99th percentile 2.8 s; 61 of 18,671 took over 5 s), provider errors
+   came back in 0.89 s on average, and the 585 network errors waited 20.2 s on average before failing. A 5 s
+   timeout cuts that wait to 5 s and turns about 0.3% of successful calls into a retry.
    Both the failed call and the fallback are recorded on the event, and the run page shows "estimate
    unavailable: used the rule's fallback 0.1" in orange.
 
-## Current truth (read from code at origin/main `43663e9`, 2026-11-10)
+## Current truth (read from code at origin/main `d89a446`, 2026-11-10)
 
 - **Nothing in a world happens by chance.** No rule uses randomness (`docs/plans/open_attempt.md:124`). The skill
   roll (open-attempt S3) is design only: seed, dice and replay reading the dice (`docs/plans/open_attempt.md:182-197`);
   Q33 (where the run seed lives) is open. The domain model marks skill roll and run seed "Theory".
-- **Replay is by recorded commands.** `Engine.replay_commands` (`src/world_substrate/engine.py:1095-1130`)
+- **Replay is by recorded commands.** `Engine.replay_commands` (`src/world_substrate/engine.py:1182-1222`)
   resubmits each recorded command (`action`, `invalid_action` or `advance`) and checks its recorded status. A
   rule that consulted anything outside the world would need its answer recorded to replay.
 - **Recorded model replies already replay.** `scripts/replay_build.py:23-49` answers each model call from the
   recorded reply for the same prompt and raises `Unrecorded` otherwise, never calling a model.
 - **The rule language has no estimate.** Expressions are literal, action field, participant, entity id, owner
-  reference and event id (`src/world_substrate/action_authoring.py:893-927`); every compiled package says
+  reference and event id (`src/world_substrate/action_authoring.py:925-958`); every compiled package says
   `representation="deterministic"` (`:84`, `:278`), while the profile already allows `stochastic` and
   `model-mediated` (`src/world_substrate/profile.py:22`).
 - **Jev is reachable and cheap, not used by any world.** `scripts/run_jev_estimator_probe.py` asked 5 typed
@@ -301,10 +308,28 @@ it changes what a person learns, not a field, and needs its own short design ste
   (RULE-ATOMIC-COMMIT-OR-REFUSAL).
 - **Content kept.** Live calls use `content_persistence="full"` (the default is `metadata_only`): the inputs are
   world fields, not private evidence, and the trace must show them.
-- **Latency, not cost, is the constraint.** Jev's mean latency was 0.43 s (measured, `llm_observability.db`,
-  2026-11-10). A 30-day sawmill run asks at most 30 times, about 13 s in all. A world with many estimate rules
-  could ask thousands of times; E1 asks sequentially and measures, and parallel asking within a moment is added
-  only if a run shows it is needed (Q85).
+- **Latency, not cost, is the constraint.** Measured in `llm_observability.db` (2026-11-10): successful Jev
+  calls averaged 0.43 s, but 6.6% of calls failed, provider errors after 0.89 s and network errors after 20.2 s
+  on average. With the 5 s timeout and one retry (Decided 7), the expected time per estimate is 0.933 x 0.43 s +
+  0.037 x (0.89 + 0.43) s + 0.029 x (5 + 0.43) s = about 0.61 s (computed from those shares), so about 18 s for a
+  30-day sawmill run, and at most 10 s for any one estimate before its fallback. Without the timeout it would be
+  about 1.05 s per estimate, about 32 s per run. A world with many estimate rules could ask thousands of times;
+  E1 asks sequentially and measures, and parallel asking within a moment is added only if a run shows it is
+  needed (Q85).
+- **The moment waits for the estimate.** The estimate is asked inside the commit, so the moment, including a
+  knock-on chain computed in the same moment (Decision 009), waits for it: about 0.6 s expected, 10 s at most.
+  Each run has its own Engine and one canonical world (`docs/model/ODD.md`, section 3), so the wait holds only
+  that run, and the fixpoint itself is unchanged: an estimate rule in a knock-on chain is one more rule whose
+  effects are known once its draw is made.
+- **What leaves the machine.** Jev is reached through `llm_client` and OpenRouter, the same route by which the
+  World Builder already sends a visitor's whole description and world to gpt-6-luna for building and judging
+  (ODD section 3: LLM providers, reached only through `llm_client`). An estimate sends less: the fixed question
+  and the declared field values (the blade's days since service and load). `content_persistence="full"` keeps
+  them in the workspace's own observability database, not with a third party.
+- **Model version.** A rule names the model alias `openrouter/typesafe/jev-1.13`; each estimate records the dated
+  version the provider returned (today `typesafe/jev-1.13-20260917`). A replay never calls Jev, so a later
+  version cannot change a saved run; a version change during or between live runs shows on the run page as a
+  different version string. No pin beyond the alias is needed until a run shows a version change mattered.
 
 ## System model
 
@@ -376,11 +401,13 @@ reads (new, only on a cache miss) -> draw (code) -> outcome effects and knock-on
 - **Jev per call (measured):** `llm-cost estimate --task feedback-collector.triage --model jev` (2026-11-10):
   14,222 calls, $0.3963 in all, $0.0000279 per call, median 656 input and 78 output tokens. The probe's 5 calls
   measured $0.000027 each. The registry has no Jev price; cost is provider-reported.
-- **Sawmill run (E1):** at most 30 calls (one per day; fewer with the cache), 30 x $0.0000279 = $0.00084.
-- **Plain-version comparison (E1, once):** 10 days x 3 variants (below). Jev variants: 20 x $0.0000279 =
-  $0.00056 for declared inputs, and the whole-world variant is larger (guess: up to 10 times the tokens, so up
-  to $0.0056). The gpt-6-luna variant: 10 x (800 input x $0.10/M + 100 output x $0.50/M) = $0.0013 (computed;
-  price from `~/code/llm_client/llm_client/data/default_model_registry.json`). Under $0.01 in all.
+- **Sawmill run (E1):** at most 30 calls (one per day; fewer with the cache), 30 x $0.0000279 = $0.00084; the
+  retry on 6.6% of calls adds about $0.00006.
+- **Plain-version comparison (E1, once):** 10 cases x 3 variants (below). Jev with the declared reads:
+  10 x $0.0000279 = $0.00028 (measured per-call figure). Jev with the whole world: guess, up to 10 times the
+  tokens, so up to 10 x $0.000279 = $0.0028. The two Jev variants: up to $0.0031. The gpt-6-luna variant:
+  10 x (800 input x $0.10/M + 100 output x $0.50/M) = $0.0013 (computed; price from
+  `~/code/llm_client/llm_client/data/default_model_registry.json`). Up to $0.0044 in all, under $0.01.
 - **Rules writer (E2, existing call):** measured `llm-cost estimate --task world-substrate-mechanic-authoring`
   (2026-11-10): 68 calls, median $0.0021 per call (11,551 input and 1,574 output tokens, 0% cached). Estimate
   rules add a few lines to its output; no new call.
@@ -405,13 +432,16 @@ The answer path is Jev's estimate. The plain version, by the workspace rule, is 
 source and the question: Jev given the whole world state rather than the two declared fields. E1 runs, for days
 0, 3, 6, 9 and 12 with and without recent servicing (10 cases), side by side: (a) Jev with the declared reads,
 (b) Jev with the whole world, (c) gpt-6-luna with the declared reads asked for a probability. Read side by side:
-does the chance rise with days since service, do (a) and (b) differ, and does (c) agree. If (b) is no better than
-(a), declared reads stand (they also keep the cache and the "never reads the attempt" rule simple); if (b) is
-better, the rules check warns when a rule reads too little. No Jev call was made for planning.
+does the chance rise with days since service, do (a) and (b) differ, and does (c) agree. Variant (b) is kept as
+the plain-version record the workspace rule asks for, not as a design candidate: argument already rules out Jev
+reading the whole world in a rule, because the cache key would be the whole world (so nothing is reused), and
+the world can hold what A5 forbids an estimate to read. What (b) can change is the declared reads: if (b) tracks
+the facts better than (a), the rule is reading too little, and the fix is to declare more reads (and, from E2,
+a rules-check warning), never to read the whole world (Q83). No Jev call was made for planning.
 
-**Probe proposed, not run:** 10 Jev calls for days 0-10 at load 14 (about $0.0003, measured per-call figure)
-would settle U1 (whether Jev's chance rises with days since service) before E1 starts. It is cheap enough to
-run as E1's first step, so it is not run now.
+**Probe proposed, not run:** 10 Jev calls, one for each of days 1 to 10 since service at load 14 (about
+$0.0003, measured per-call figure), would settle U1 (whether Jev's chance rises with days since service). It is
+E1's first step, before the live run, and cheap enough that it is not run now.
 
 ## Irreversible actions and spend
 
@@ -423,13 +453,15 @@ Spend: owner allowance only; at most $0.05 per E1 run and $0.50 per slice, enfor
 
 - **U1 (agent, Q82):** does Jev's chance rise with the facts it reads (days since service), or is it flat or
   coarse? The probe's chance answers were coarse (0.6, 0.55). Settled by E1's first step (the 10-call probe).
-- **U2 (agent, Q83):** declared reads versus the whole world. Settled by the E1 side-by-side comparison.
+- **U2 (agent, Q83):** whether a rule's declared reads leave out facts Jev needs. Declared reads (not the whole
+  world) are settled by argument (Plain baseline); the E1 side-by-side comparison shows whether the sawmill's
+  two reads are enough.
 - **U3 (agent, Q33, existing):** where the run seed lives, shared with the skill roll. Settled by argument in
   whichever of S3 and E1 lands first: drawn at run start and kept in the run record.
 - **U4 (agent, Q84):** how a chance decides whether an observation reaches a person (E5): an estimate on the
   delivery of an information item rather than a field write. Settled by a short design step opening E5.
-- **U5 (agent, Q85):** latency for worlds with many estimates; settled by E1's measured run and, if needed, a
-  parallel ask within a moment.
+- **U5 (agent, Q85):** latency for worlds with many estimates (about 0.61 s expected per estimate, computed in
+  Agent technical calls); settled by E1's measured run and, if needed, a parallel ask within a moment.
 - **U6 (agent, Q86):** whether J5's stopping point should use Jev; belongs to the judge plan.
 
 ## Needs Brian

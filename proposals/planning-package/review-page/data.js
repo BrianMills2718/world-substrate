@@ -77,7 +77,7 @@ window.PAGE_DATA = {
     "status": "present",
     "path": "docs/model/ODD.md",
     "executes_typed_rules": true,
-    "basis": "src/world_substrate/engine.py:582",
+    "basis": "src/world_substrate/engine.py:597",
     "metamodel": {
      "path": "docs/model/metamodel.graph.json",
      "glossary": "docs/model/METAMODEL.md",
@@ -94,16 +94,16 @@ window.PAGE_DATA = {
     "glossary": "docs/model/DOMAIN.md",
     "implemented": {
      "world": "src/world_substrate/model.py:382",
-     "engine": "src/world_substrate/engine.py:198",
-     "event": "src/world_substrate/engine.py:529",
+     "engine": "src/world_substrate/engine.py:222",
+     "event": "src/world_substrate/engine.py:572",
      "move": "src/world_substrate/action_authoring.py:49",
-     "process": "src/world_substrate/engine.py:829",
+     "process": "src/world_substrate/engine.py:1095",
      "compiler": "src/world_substrate/action_authoring.py:456",
      "policy": "src/world_substrate/policy.py:50",
      "sense": "src/world_substrate/semantic.py:15",
      "profile": "src/world_substrate/profile.py:266",
-     "write-scope": "src/world_substrate/engine.py:88",
-     "causal-trace": "src/world_substrate/engine.py:529",
+     "write-scope": "src/world_substrate/engine.py:136",
+     "causal-trace": "src/world_substrate/engine.py:572",
      "world-kind": "scripts/world_builder_service.py:116",
      "builder": "scripts/world_builder_service.py",
      "approval": "scripts/world_builder_service.py:421",
@@ -136,12 +136,12 @@ window.PAGE_DATA = {
      "person": "spikes/any-scenario-2026-10/scenario_spec.py:41",
      "gen-rules": "scripts/people_world.py:251",
      "waltzman-ref": "reference_worlds/waltzman/components.py:11",
-     "affordance": "src/world_substrate/engine.py:352",
+     "affordance": "src/world_substrate/engine.py:395",
      "check": "src/world_substrate/rules.py:48",
      "attempt": "src/world_substrate/attempt.py:149",
      "attempt-reading": "src/world_substrate/attempt.py:81",
      "unmatched-attempt": "src/world_substrate/attempt.py:25",
-     "observation": "src/world_substrate/engine.py:235",
+     "observation": "src/world_substrate/engine.py:278",
      "place-way": "scripts/generate_world_bundle.py:96",
      "projection": "src/world_substrate/projection.py:44",
      "causal-parent": "src/world_substrate/rules.py:383",
@@ -150,7 +150,7 @@ window.PAGE_DATA = {
      "kitchen": "reference_worlds/kitchen/mechanics.py",
      "mechanic": "src/world_substrate/action_authoring.py:456",
      "entity-component": "src/world_substrate/model.py:223",
-     "knock-on-now": "src/world_substrate/engine.py:938",
+     "knock-on-now": "src/world_substrate/engine.py:964",
      "world-law": "scripts/scaffold_world.py:45",
      "law-check": "src/world_substrate/laws.py:36",
      "resource": "scripts/scaffold_world.py:45",
@@ -724,7 +724,7 @@ window.PAGE_DATA = {
    "resolves_with": "Brian's call: the rule's wording is his (Decision 006), and the earlier resolution was argued by this plan's own author, so it is not settled by agent argument. The argument for: a ramification fixpoint is a rule semantics inside the one existing transition (C+ and Event Calculus), with no new loop, clock or scheduler, bounded at 32 reactions. The argument against: it is new control flow in engine.py, and Concordia's game master or Mesa's step could host the chain instead, one reaction per step.",
    "owner": "brian",
    "status": "resolved",
-   "evidence": "Brian, in session 2026-10-26: \"i approve\", answering this question with its recommendation (allow S2 as rule semantics). Recorded as docs/decisions/009-same-moment-knock-on-effects.md; AGENTS.md, roadmap/README.md and the plan now say so.",
+   "evidence": "Brian, in session 2026-10-26: \"i approve\", answering this question with its recommendation (allow S2 as rule semantics). Recorded as docs/decisions/009-same-moment-knock-on-effects.md; AGENTS.md, roadmap/README.md and the plan now say so. Amended 2026-11-10 (J0 of docs/plans/ai_judge.md, Decision 009): no cap; each pair of process and thing still fires once per moment, which ends every chain, and runs recorded before J0 replay under their old limit of 32.",
    "sources": [
     "roadmap/README.md:120",
     "AGENTS.md:33",
@@ -882,10 +882,10 @@ window.PAGE_DATA = {
    "resolves_with": "Reading the code settles what already blocks it: the interpreter's schema has no outcome field (A1), read_interpretation (src/world_substrate/attempt.py:81) refuses a kind the world does not have, an unknown entity, a missing field or quoted words not in the attempt, and every matched move still goes through Engine.submit, whose checks decide it. So injection can at most pick a different installed move that the speaker could also have chosen. Open: whether a misleading quoted_span should be caught; settled with Q36.",
    "owner": "agent",
    "status": "resolved",
-   "evidence": "Settled by reading the code: injected words cannot add a kind, an entity or an outcome (attempt.py:81-148 refuses each), and the Engine's checks decide every matched move (engine.py:582), so the worst case is a legal move the person did not mean. That is a misreading, owned by Q36, not a new authority path.",
+   "evidence": "Settled by reading the code: injected words cannot add a kind, an entity or an outcome (attempt.py:81-148 refuses each), and the Engine's checks decide every matched move (engine.py:597), so the worst case is a legal move the person did not mean. That is a misreading, owned by Q36, not a new authority path.",
    "sources": [
     "src/world_substrate/attempt.py:81",
-    "src/world_substrate/engine.py:582",
+    "src/world_substrate/engine.py:597",
     "prompts/attempt_interpreter.yaml"
    ],
    "touches": [
@@ -935,7 +935,7 @@ window.PAGE_DATA = {
    "short": "Does S1 close #128",
    "question": "#128 asks that people try from what they believe and discover failure over time, not get a pre-checked menu. S1 lets residents say any attempt, and the tasks goal let a task fail part-way (Q19). Does that close #128?",
    "blocks": "whether #128 stays open on the board",
-   "resolves_with": "Read #128's wanted list against the code: attempts from belief are built (S1, scripts/concordia_residents.py:45), part-way failure is built (Q19, scripts/attempts.py:131), and a person learns an outcome only from what they see (observation, engine.py:235). Close #128 once A3 shows a refused wall attempt chosen from belief in a saved run, citing that row.",
+   "resolves_with": "Read #128's wanted list against the code: attempts from belief are built (S1, scripts/concordia_residents.py:45), part-way failure is built (Q19, scripts/attempts.py:131), and a person learns an outcome only from what they see (observation, engine.py:278). Close #128 once A3 shows a refused wall attempt chosen from belief in a saved run, citing that row.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1096,10 +1096,10 @@ window.PAGE_DATA = {
    "resolves_with": "An argument settles it. The run-time check is the guarantee for every step that runs: it holds for every rule shape, and the build's scripted test run already runs the rules, so a breach there is a build finding for free. It does not see steps the test run never plays; a breach of those shows later as a refusal in live play, named by its law, which is safe but late. A static proof is sound only for add and subtract effects with fixed amounts, so it is an optional speed-up, not the guarantee.",
    "owner": "agent",
    "status": "resolved",
-   "evidence": "Settled by argument 2026-10-28: S2 builds the run-time law check inside Engine.apply's commit, beside the write-scope check (src/world_substrate/engine.py:705), and inside each knock-on wave; a law breach in the test run becomes a build finding sent to the rules writer. The static check is deferred and needs no decision now.",
+   "evidence": "Settled by argument 2026-10-28: S2 builds the run-time law check inside Engine.apply's commit, beside the write-scope check (src/world_substrate/engine.py:720), and inside each knock-on wave; a law breach in the test run becomes a build finding sent to the rules writer. The static check is deferred and needs no decision now.",
    "sources": [
-    "src/world_substrate/engine.py:686",
-    "src/world_substrate/engine.py:938"
+    "src/world_substrate/engine.py:701",
+    "src/world_substrate/engine.py:964"
    ],
    "touches": [
     "law-check",
@@ -1422,7 +1422,7 @@ window.PAGE_DATA = {
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/plans/estimate_rules.md:122",
+    "docs/plans/estimate_rules.md:123",
     "evidence/jev/maintenance-estimator-probe-v0.json:299",
     "docs/decisions/005-native-waltzman-delivery.md:86",
     "scripts/run_jev_estimator_probe.py",
@@ -1438,13 +1438,13 @@ window.PAGE_DATA = {
   {
    "id": "Q64",
    "short": "Meaning is looked up by bare move name",
-   "question": "The Engine attaches a semantic binding by bare action kind (src/world_substrate/engine.py:225, table at src/world_substrate/semantic.py:247), and each binding names a Castaway mechanic id (src/world_substrate/semantic.py:69). Any world whose move is called give, take, fill or pour therefore gets that binding and mechanic id whatever its own rule does; Kitchen and Greenhouse events can carry Castaway mechanic ids. Should bindings be keyed by the installed mechanic instead?",
+   "question": "The Engine attaches a semantic binding by bare action kind (src/world_substrate/engine.py:233, table at src/world_substrate/semantic.py:247), and each binding names a Castaway mechanic id (src/world_substrate/semantic.py:69). Any world whose move is called give, take, fill or pour therefore gets that binding and mechanic id whatever its own rule does; Kitchen and Greenhouse events can carry Castaway mechanic ids. Should bindings be keyed by the installed mechanic instead?",
    "blocks": "Whether an event's semantic_binding and mechanic id can be trusted to describe the rule that actually ran.",
    "resolves_with": "Technical, no run: key the binding by the installed mechanic (or have the profile carry it), and add a test that a non-Castaway world's give event carries no Castaway mechanic id.",
    "owner": "agent",
    "status": "open",
    "sources": [
-    "src/world_substrate/engine.py:225",
+    "src/world_substrate/engine.py:233",
     "src/world_substrate/semantic.py:247",
     "src/world_substrate/semantic.py:69"
    ],
@@ -1530,7 +1530,7 @@ window.PAGE_DATA = {
   {
    "id": "Q69",
    "short": "Hardening: law identity, discovery cap, mechanic errors",
-   "question": "Three hardening gaps from the roadmap queue: the frozen profile id hashes the packages and findings but no compiler or interpreter version (src/world_substrate/profile.py:266); move discovery stops at 256 offered moves with no record (src/world_substrate/action_authoring.py:31, :572); and a mechanic that raises mid-rule is rolled back and re-raised rather than recorded as a refusal (src/world_substrate/engine.py:787, :901). Fix each?",
+   "question": "Three hardening gaps from the roadmap queue: the frozen profile id hashes the packages and findings but no compiler or interpreter version (src/world_substrate/profile.py:266); move discovery stops at 256 offered moves with no record (src/world_substrate/action_authoring.py:31, :572); and a mechanic that raises mid-rule is rolled back and re-raised rather than recorded as a refusal (src/world_substrate/engine.py:802, :901). Fix each?",
    "blocks": "Whether an approval names one exact executable law, whether a decider ever silently misses moves, and whether a broken rule leaves a trace in the run.",
    "resolves_with": "Technical, no paid run: add the compiler version to the frozen identity; record overflow as a finding when discovery reaches the cap; record a mechanic exception as a refused event with the exception text. One test each.",
    "owner": "agent",
@@ -1539,8 +1539,8 @@ window.PAGE_DATA = {
     "src/world_substrate/profile.py:266",
     "src/world_substrate/action_authoring.py:31",
     "src/world_substrate/action_authoring.py:572",
-    "src/world_substrate/engine.py:787",
-    "src/world_substrate/engine.py:901"
+    "src/world_substrate/engine.py:802",
+    "src/world_substrate/engine.py:924"
    ],
    "touches": [
     "profile",
@@ -1695,11 +1695,11 @@ window.PAGE_DATA = {
    "resolves_with": "Argument from the engine code: what discover() computes without a rule, and what a dry run of a proposed rule on a copy of the world gives.",
    "owner": "agent",
    "status": "resolved",
-   "evidence": "Settled by argument (inferred by agent, 2026-11-09, after the cold review's finding 1). The judge works in two passes. Pass 1: the engine computes what needs no new rule, from a fixed selection: engine.discover (src/world_substrate/engine.py:380-440) for the person acting and for each person the attempt names, with each move's checks, plus the current values of the entities the attempt names. discover lists only the moves of the person asked, so the port's 'sign release: blocked, inspected is false' comes from Rosa's page, not Vik's (cold review 2 of 2026-11-09, finding 3); today's runs record a few blocked rows per resident as blocked_by_rules (scripts/run_authored_world.py:601-634), not tied to an attempt. The judge proposes a ruling written as a rule. Pass 2: the engine runs the rules check and test-runs the proposed rule on a copy of the world, giving the consequence report (net changes, blockers, chain length and stopping point); the judge confirms, revises once or withdraws; only then is the rule installed and the attempt settled through it. An attempt an installed rule covers but whose check fails is refused by the engine with no judge call (A3). Plan: docs/plans/ai_judge.md, Canonical example.",
+   "evidence": "Settled by argument (inferred by agent, 2026-11-09, after the cold review's finding 1). The judge works in two passes. Pass 1: the engine computes what needs no new rule, from a fixed selection: engine.discover (src/world_substrate/engine.py:395-455) for the person acting and for each person the attempt names, with each move's checks, plus the current values of the entities the attempt names. discover lists only the moves of the person asked, so the port's 'sign release: blocked, inspected is false' comes from Rosa's page, not Vik's (cold review 2 of 2026-11-09, finding 3); today's runs record a few blocked rows per resident as blocked_by_rules (scripts/run_authored_world.py:601-634), not tied to an attempt. The judge proposes a ruling written as a rule. Pass 2: the engine runs the rules check and test-runs the proposed rule on a copy of the world, giving the consequence report (net changes, blockers, chain length and stopping point); the judge confirms, revises once or withdraws; only then is the rule installed and the attempt settled through it. An attempt an installed rule covers but whose check fails is refused by the engine with no judge call (A3). Plan: docs/plans/ai_judge.md, Canonical example.",
    "sources": [
     "docs/plans/ai_judge.md:91",
     "docs/plans/ai_judge.md:117",
-    "src/world_substrate/engine.py:1005"
+    "src/world_substrate/engine.py:1056"
    ],
    "touches": [
     "consequence-report",
@@ -1756,11 +1756,11 @@ window.PAGE_DATA = {
    "resolves_with": "Argument from the run record: the refusal status is written into the run's commands, so replay must use the limit the run ran under.",
    "owner": "agent",
    "status": "resolved",
-   "evidence": "Settled by argument (inferred by agent, 2026-11-09, after the cold review's finding 2). Each saved run records the reaction limit it ran under; replay uses the recorded value (a record with none ran under 32), so old runs replay unchanged and new runs use the new setting. The refusal status 'reaction_limit' is written into the commands (src/world_substrate/engine.py:1005); tests/test_open_attempt.py:466-501 checks that refusal and is kept, run against the recorded limit.",
+   "evidence": "Settled by argument (inferred by agent, 2026-11-09, after the cold review's finding 2). Each saved run records the reaction limit it ran under; replay uses the recorded value (a record with none ran under 32), so old runs replay unchanged and new runs use the new setting. The refusal status 'reaction_limit' is written into the commands (src/world_substrate/engine.py:1056, recorded as the moment's refusal by _refuse_round, src/world_substrate/engine.py:932-957); tests/test_open_attempt.py:466-501 checks that refusal and is kept, run against the recorded limit.",
    "sources": [
     "docs/plans/ai_judge.md:323",
     "tests/test_open_attempt.py:466",
-    "src/world_substrate/engine.py:1153"
+    "src/world_substrate/engine.py:1246"
    ],
    "touches": [
     "knock-on-now",
@@ -1773,11 +1773,11 @@ window.PAGE_DATA = {
    "short": "Does Jev's chance follow the facts",
    "question": "In the sawmill example, does Jev's chance that the blade fails today rise with days since service, or is it flat or coarse? The existing probe's chance answers were coarse (0.6, 0.55) and its choice probabilities were 0 or 1 (evidence/jev/maintenance-estimator-probe-v0.json).",
    "blocks": "Whether a chance roll on Jev gives a believable world in E1 (A1), and whether picks (E3) collapse to a certainty.",
-   "resolves_with": "One probe: 10 Jev calls for days 0-10 at load 14 (about $0.0003, measured per-call cost $0.0000279 from llm-cost estimate --task feedback-collector.triage --model jev), run as E1's first step. If flat, E1 reports it and the rule's question or reads change before the live run.",
+   "resolves_with": "One probe, E1's first step before the live run: 10 Jev calls, one for each of days 1 to 10 since service at load 14 (about $0.0003, measured per-call cost $0.0000279 from llm-cost estimate --task feedback-collector.triage --model jev), run as E1's first step. If flat, E1 reports it and the rule's question or reads change before the live run.",
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/plans/estimate_rules.md:405",
+    "docs/plans/estimate_rules.md:454",
     "evidence/jev/maintenance-estimator-probe-v0.json"
    ],
    "touches": [
@@ -1787,14 +1787,14 @@ window.PAGE_DATA = {
   },
   {
    "id": "Q83",
-   "short": "Declared reads or the whole world",
-   "question": "Should Jev see only the fields an estimate rule declares (days since service, load) or the whole world, as the plain-version rule would start from?",
-   "blocks": "The estimate block's reads field (E1), the cache key and the rule that an estimate never reads the attempt's wording.",
-   "resolves_with": "E1's side-by-side comparison on 10 cases: Jev with the declared reads, Jev with the whole world, and gpt-6-luna with the declared reads (under $0.01, computed in docs/plans/estimate_rules.md 'LLM call boundary and cost'). Declared reads stand unless the whole world is shown better.",
+   "short": "Do the declared reads leave out facts Jev needs",
+   "question": "Jev sees only the fields an estimate rule declares (days since service, load), never the whole world: argument settles that (a whole-world read makes the cache key the whole world and can reach what A5 forbids). Do the sawmill rule's two declared reads leave out facts Jev needs, as the plain version (Jev given the whole world) would show?",
+   "blocks": "Which fields the E1 sawmill rule declares, and from E2 a rules-check warning when a rule reads too little; not the declared-reads design.",
+   "resolves_with": "E1's side-by-side comparison on 10 cases: Jev with the declared reads, Jev with the whole world, and gpt-6-luna with the declared reads (under $0.01, computed in docs/plans/estimate_rules.md 'LLM call boundary and cost'). If the whole-world answers track the facts better, the rule declares more reads; it never reads the whole world.",
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/plans/estimate_rules.md:385",
+    "docs/plans/estimate_rules.md:435",
     "docs/plans/open_attempt.md:194"
    ],
    "touches": [
@@ -1811,7 +1811,7 @@ window.PAGE_DATA = {
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/plans/estimate_rules.md:108",
+    "docs/plans/estimate_rules.md:109",
     "src/world_substrate/information.py:57"
    ],
    "touches": [
@@ -1823,13 +1823,13 @@ window.PAGE_DATA = {
   {
    "id": "Q85",
    "short": "Jev latency in worlds with many chances",
-   "question": "Jev's mean latency is 0.43 s (measured in ~/projects/data/llm_observability.db, 2026-11-10). A sawmill run asks at most 30 times (about 13 s); a world with many estimate rules could ask thousands of times. Does sequential asking fit the run-time targets?",
+   "question": "Successful Jev calls averaged 0.43 s, but 6.6% failed (network failures after 20.2 s on average), measured in ~/projects/data/llm_observability.db, 2026-11-10. With a 5 s timeout and one retry a chance takes about 0.61 s on average and at most 10 s (computed), about 18 s for a 30-day sawmill run; a world with many estimate rules could ask thousands of times. Does sequential asking fit the run-time targets?",
    "blocks": "Worlds with many estimate rules after E1; not E1 itself.",
    "resolves_with": "E1's measured run times; add parallel asking within one moment only if a run shows it is needed.",
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/plans/estimate_rules.md:287"
+    "docs/plans/estimate_rules.md:311"
    ],
    "touches": [
     "estimator",
@@ -1845,8 +1845,8 @@ window.PAGE_DATA = {
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/plans/estimate_rules.md:377",
-    "docs/plans/ai_judge.md:263"
+    "docs/plans/estimate_rules.md:421",
+    "docs/plans/ai_judge.md:264"
    ],
    "touches": [
     "stopping-point",
@@ -1895,13 +1895,13 @@ window.PAGE_DATA = {
     "id": "engine",
     "label": "Engine",
     "kind": "Substrate",
-    "explain": "Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick. Code: src/world_substrate/engine.py:198."
+    "explain": "Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick. Code: src/world_substrate/engine.py:222."
    },
    {
     "id": "event",
     "label": "Event",
     "kind": "Substrate",
-    "explain": "The record of one attempt or process step: status, checks, changes, an id like r14-e00012. Code: src/world_substrate/engine.py:529."
+    "explain": "The record of one attempt or process step: status, checks, changes, an id like r14-e00012. Code: src/world_substrate/engine.py:572."
    },
    {
     "id": "move",
@@ -1913,7 +1913,7 @@ window.PAGE_DATA = {
     "id": "process",
     "label": "Process",
     "kind": "Substrate",
-    "explain": "A rule the world runs by itself when its checks hold: each round by default, or at once as a knock-on effect when marked immediately. Code: src/world_substrate/engine.py:829."
+    "explain": "A rule the world runs by itself when its checks hold: each round by default, or at once as a knock-on effect when marked immediately. Code: src/world_substrate/engine.py:1095."
    },
    {
     "id": "compiler",
@@ -1943,13 +1943,13 @@ window.PAGE_DATA = {
     "id": "write-scope",
     "label": "Declared write scope",
     "kind": "Substrate",
-    "explain": "The fields a rule says it may change; the Engine refuses any change outside them. Read scopes are recorded, not enforced. Code: src/world_substrate/engine.py:88."
+    "explain": "The fields a rule says it may change; the Engine refuses any change outside them. Read scopes are recorded, not enforced. Code: src/world_substrate/engine.py:136."
    },
    {
     "id": "causal-trace",
     "label": "Causal trace",
     "kind": "Substrate",
-    "explain": "The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. Code: src/world_substrate/engine.py:529."
+    "explain": "The retained chain of events of a run, each naming the move or process, its checks and its changes; the evidence for any claim about a run. Code: src/world_substrate/engine.py:572."
    },
    {
     "id": "world-kind",
@@ -2159,7 +2159,7 @@ window.PAGE_DATA = {
     "id": "affordance",
     "label": "Affordance (offered move)",
     "kind": "Substrate",
-    "explain": "A move the rules say a person can try now, with its open fields; the page a decider picks from or an attempt is read against. Code: src/world_substrate/engine.py:352."
+    "explain": "A move the rules say a person can try now, with its open fields; the page a decider picks from or an attempt is read against. Code: src/world_substrate/engine.py:395."
    },
    {
     "id": "check",
@@ -2189,7 +2189,7 @@ window.PAGE_DATA = {
     "id": "observation",
     "label": "Observation",
     "kind": "Substrate",
-    "explain": "What one actor sees this round: the fields its senses and position allow, never the whole world. Code: src/world_substrate/engine.py:235."
+    "explain": "What one actor sees this round: the fields its senses and position allow, never the whole world. Code: src/world_substrate/engine.py:278."
    },
    {
     "id": "place-way",
@@ -2201,7 +2201,7 @@ window.PAGE_DATA = {
     "id": "knock-on-now",
     "label": "Knock-on that runs now",
     "kind": "Substrate",
-    "explain": "A process marked 'immediately' runs in waves inside the same moment as the attempt or round step that set it off, until nothing more is due (a glass falls, breaks, the water spills, the neighbour hears it); each pair of process and thing fires once per moment, and more than 32 reactions refuses the whole moment. Code: src/world_substrate/engine.py:938."
+    "explain": "A process marked 'immediately' runs in waves inside the same moment as the attempt or round step that set it off, until nothing more is due (a glass falls, breaks, the water spills, the neighbour hears it); each pair of process and thing fires once per moment, which is what ends every chain; new runs have no other cap (J0 of the AI judge plan), a step a failed check stops is recorded with its blocker, and a run recorded before J0 replays under its old cap of 32. Code: src/world_substrate/engine.py:964."
    },
    {
     "id": "skill-roll",
@@ -3432,9 +3432,9 @@ window.PAGE_DATA = {
    },
    {
     "id": "Q83",
-    "label": "Q83: Declared reads or the whole world",
+    "label": "Q83: Do the declared reads leave out facts Jev needs",
     "kind": "AgentQuestion",
-    "explain": "Blocks: The estimate block's reads field (E1), the cache key and the rule that an estimate never reads the attempt's wording.."
+    "explain": "Blocks: Which fields the E1 sawmill rule declares, and from E2 a rules-check warning when a rule reads too little; not the declared-reads design.."
    },
    {
     "id": "Q84",
@@ -4526,7 +4526,7 @@ window.PAGE_DATA = {
     "id": "knock-on-now",
     "label": "Same-moment knock-on",
     "kind": "rules",
-    "explain": "A process with timing immediately, run in waves inside the same moment as the move or round step that triggered it until nothing more is due; each process and thing pair fires once per moment, and more than 32 reactions refuses the whole moment (slice S2 of docs/plans/open_attempt.md, ODD 8.20)."
+    "explain": "A process with timing immediately, run in waves inside the same moment as the move or round step that triggered it until nothing more is due; each process and thing pair fires once per moment, which ends every chain; new runs have no other cap, and a run recorded before J0 of docs/plans/ai_judge.md replays under its old cap of 32 (slice S2 of docs/plans/open_attempt.md, ODD 8.20)."
    },
    {
     "id": "skill-roll",
