@@ -2472,13 +2472,13 @@ window.PAGE_DATA = {
     "id": "judge-ruling",
     "label": "Judge ruling",
     "kind": "Substrate",
-    "explain": "Plan ai-judge J2 (built 2026-11-10): Concordia's game master (EventResolution), given the whole world and pass 1 of the consequence report, proposes a rule for the constraint an unmatched attempt raises (can coins change hands here?); after reading the pass 2 test run of that rule it confirms, revises once or withdraws. Never an outcome or another person's choice. Code: scripts/judge.py."
+    "explain": "Plan ai-judge J2 (built 2026-11-10): Concordia's game master (EventResolution), given the whole world and pass 1 of the consequence report, proposes a rule for the constraint an unmatched attempt raises (can coins change hands here?); after reading the pass 2 test run of that rule it confirms, revises once or withdraws. Never an outcome or another person's choice. Code: scripts/judge.py:288."
    },
    {
     "id": "ruling-rule",
     "label": "Ruling-origin rule",
     "kind": "Substrate",
-    "explain": "Plan ai-judge J3 (built 2026-11-10): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, recording the ruling id and round it came from; it applies to everyone in the same situation and the attempt settles through it. It is run state, sealed with the snapshot, beside the world's own rules (Rulebook). A ruling the language cannot express is refused and recorded as a language gap. Code: scripts/rulings.py."
+    "explain": "Plan ai-judge J3 (built 2026-11-10): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, recording the ruling id and round it came from; it applies to everyone in the same situation and the attempt settles through it. It is run state, sealed with the snapshot, beside the world's own rules (Rulebook). A ruling the language cannot express is refused and recorded as a language gap. Code: scripts/rulings.py:91."
    },
    {
     "id": "credential-holder",
@@ -2496,7 +2496,7 @@ window.PAGE_DATA = {
     "id": "midrun-setting",
     "label": "Mid-run rulings setting",
     "kind": "Substrate",
-    "explain": "Plan ai-judge Decided 5 (J3, built 2026-11-10): a per-world option, 'Judge rulings during a run': Approved by Create (default; a checked ruling is installed at once and the attempt settles through it) or Wait for my approval (the proposed rule is held, the attempt waits as pending, Approve installs the rule and settles it, Reject refuses it; nothing settles without an installed rule). Code: scripts/rulings.py."
+    "explain": "Plan ai-judge Decided 5 (J3, built 2026-11-10): a per-world option, 'Judge rulings during a run': Approved by Create (default; a checked ruling is installed at once and the attempt settles through it) or Wait for my approval (the proposed rule is held, the attempt waits as pending, Approve installs the rule and settles it, Reject refuses it; nothing settles without an installed rule). Code: scripts/rulings.py:47."
    },
    {
     "id": "run-stop",
