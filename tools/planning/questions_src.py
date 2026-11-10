@@ -1336,7 +1336,7 @@ Q = [
   "touches": [
    "check"
   ],
-  "evidence": "Decided by agent, 2026-11-09: remove .github/workflows/native-coordination-linux.yml after folding any test it runs that scripts/check_project.py does not into the project check (workspace rule: local checks gate merges). Not yet implemented; tracked as this session's next step."
+  "evidence": "Done 2026-11-10 (Brian approved Q70): commit 48627b0 removed .github/workflows/native-coordination-linux.yml. Nothing needed folding in: scripts/check_project.py already runs all nine test files the workflow ran (it runs tests/ whole), and tests/test_native_coordination_matrix.py runs the same matrix as scripts/check_native_coordination.py. Restore with git checkout 15c9ddf -- .github/workflows/native-coordination-linux.yml."
  },
  {
   "id": "Q71",
