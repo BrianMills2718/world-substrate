@@ -75,8 +75,9 @@ rigorous causal engine underneath). **Recurring job and baseline:** a visitor de
 run. Today nothing in a world happens by chance: no rule uses randomness (`docs/plans/open_attempt.md:124`), and
 the skill roll that would add the first one is designed but not built (open-attempt S3, Q33 open).
 **Inspectable result:** the sawmill run page and record (canonical example). **Stage and investment boundary:**
-prototype stage; the first slice is one pull request with one live run under $0.05 of owner allowance (computed
-below); no new service, engine or repository.
+prototype stage; the first slice is one pull request with one live run of about $0.06 of owner allowance for two
+people over 30 days, or $0.13 with Waltzman-sized prompts (both computed in LLM call boundary and cost); the run's
+cap is $0.13 so it reaches day 30 either way; no new service, engine or repository.
 
 ## Canonical example
 
@@ -145,9 +146,11 @@ on 2026-11-10 from the reading and prior art named with each; they stand as work
    - **On a move (a constraint on what a person can do):** the move's "otherwise" result may be `block`, which
      refuses the attempt whole and names the estimate as its blocker. Example: the log cart tries to cross the
      ford; Jev estimates the chance the ford is passable from the last three days' rain; on "otherwise" the
-     attempt is refused, "blocked: the ford is too deep today (chance 0.7, roll 0.81)", nothing changes, and the
-     sawmill gets no logs that day. The estimate and the draw are recorded on the refused event, as every
-     refusal is recorded today.
+     attempt is refused, "blocked: the cart could not get across the ford (chance 0.7, roll 0.81)", nothing
+     changes, and the sawmill gets no logs from that attempt. The estimate and the draw are recorded on the
+     refused event, as every refusal is recorded today. The draw is per attempt, as a skill roll is: the chance
+     is cached per question and facts (Decided 6), but each attempt draws its own number, so a second cart on the
+     same wet day may get across. The refusal therefore describes the attempt, not the state of the day.
 
    **Ruled out: a check on the probability itself** ("the blade fails if Jev's chance is over 0.5"). That turns
    a probability into a truth claim, the retired note's second anti-pattern ("P(fire)=0.81 -> fire=true"), and
@@ -264,13 +267,16 @@ in `docs/planning/estimate-rules/acceptance-criteria.json` (field `evidence`).
   `if_unavailable: refuse` shows the day's moment refused with "estimate unavailable" and nothing changed.
 - **A4 (E2):** on the World Builder, describe "a bakery whose oven sometimes fails, more often the longer since
   it was cleaned" and press Create simulation. "See how it works" shows the oven rule with its question, the
-  fields it reads, its fallback and its outcomes in plain words; the run shows oven-failure rows as in A1. A
-  rules writer draft with no fallback is shown rejected by the rules check with "estimate rule needs a fallback".
+  fields it reads, its fallback and its outcomes in plain words; the run shows oven-failure rows as in A1. The
+  saved draft "bakery oven, fallback removed" (that build's oven rule with its fallback deleted, kept with the
+  run as A2 keeps its damaged copy) is run through the rules check and shown rejected with "estimate rule needs
+  a fallback", so a broken check cannot hide behind a writer that happened to include one.
 - **A5 (E1, E5):** in the sawmill run, Jev's recorded input for every estimate contains only the two declared
   fields. In the port run (E5), whether the harbourmaster noticed the hand-over appears as "noticed (chance 0.4,
   roll 0.17)", and what he did after appears as his own move with his reason, with no estimate attached.
-- **A7 (E1):** in the saved run "sawmill blade", the log cart's crossing on a wet day shows "blocked: the ford is
-  too deep today (chance 0.7, roll 0.81)" in orange; the move changed nothing, no logs reach the sawmill that day,
+- **A7 (E1):** in the saved run "sawmill blade", the log cart's crossing on a wet day shows "blocked: the cart
+  could not get across the ford (chance 0.7, roll 0.81)" in orange; the move changed nothing, no logs reach the
+  sawmill from that attempt,
   and opening the refusal shows the question, the rain it read and the draw. A dry day's crossing shows the
   chance, the roll and "crossed".
 - **A6 (E3):** in a world with a pick and an amount (the blade's failure mode; repair takes 1, 2 or 4 days), the
@@ -303,7 +309,10 @@ it changes what a person learns, not a field, and needs its own short design ste
 - **The draw is rule semantics, not a scheduler.** Decision 006 sends "stochastic activation or parameter sweeps"
   to Mesa (`docs/decisions/006-governed-rules-layer-scope.md:25`): that is who acts when. An estimate rule's draw
   decides a rule's outcome inside one commit, exactly as the skill roll's dice do, which the open-attempt plan
-  already put in the engine. No scheduler, cognition or engine is added.
+  already put in the engine. No scheduler, cognition or engine is added. Q27 set the precedent that whether new
+  engine control flow is the capability Decision 006 forbids is Brian's call; he allowed the same-moment fixpoint
+  as rule semantics (Decision 009). Why the estimate stays inside that ruling without a new one is recorded as
+  Q89 (resolved, inferred by agent).
 - **Where the estimate is asked.** Inside the commit, after the rule's ordinary checks pass and before its
   effects, so a refused move never asks Jev. If Jev fails and the rule says `refuse`, the whole moment is refused
   (RULE-ATOMIC-COMMIT-OR-REFUSAL).
@@ -418,7 +427,18 @@ reads (new, only on a cache miss) -> draw (code) -> outcome effects and knock-on
   measured $0.000027 each. The registry has no Jev price; cost is provider-reported.
 - **Sawmill run (E1):** at most 30 calls (one per day; fewer with the cache), 30 x $0.0000279 = $0.00084; the
   retry on 6.6% of calls adds about $0.00006.
-- **Plain-version comparison (E1, once):** 10 cases x 3 variants (below). Jev with the declared reads:
+- **The rest of the live E1 run (existing calls, computed):** A1 needs Mara's own move and reason, so the run
+  also calls the Concordia residents, the attempt interpreter and the readout. Per person per day, the saved
+  airfield run (`evidence/open-attempt/s2-airfield/llm-calls.jsonl`: one person, 9 rounds, 36 resident and 12
+  interpreter calls, gpt-6-luna) made 4 resident calls (1,256 input and 124 output tokens each) and 1.33
+  interpreter calls (993 and 68). At $0.10/M input and $0.50/M output (registry price above) that is
+  4 x $0.000188 + 1.33 x $0.000133 = $0.00093 per person per day. Two people over 30 days: 240 resident calls,
+  $0.045, and 80 interpreter calls, $0.011; one readout call (1,523 and 309 tokens) adds $0.0003. With Jev, about
+  $0.057, so about $0.06 per run. With Waltzman-sized prompts (`evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl`:
+  residents 2,761 and 223 tokens, $0.000388 per call; interpreter 3,231 and 242, $0.000444) the same run is
+  $0.0021 per person per day, about $0.13. The E1 run's cap is $0.13, so a larger prompt cannot stop it before
+  day 30.
+- **Plain-version comparison (E1, once):** 10 cases x 4 variants (below). Jev with the declared reads:
   10 x $0.0000279 = $0.00028 (measured per-call figure). Jev with the whole world: guess, up to 10 times the
   tokens, so up to 10 x $0.000279 = $0.0028. The two Jev variants: up to $0.0031. The gpt-6-luna variant:
   10 x (800 input x $0.10/M + 100 output x $0.50/M) = $0.0013 (computed; price from
@@ -441,7 +461,11 @@ reads (new, only on a cache miss) -> draw (code) -> outcome effects and knock-on
   fit, not proof that Jev's chances are better, so E1 measures it: variant (d) of the comparison (Plain baseline)
   has the rules writer write the sawmill's bands from its description. If the bands and Jev's chances (a) differ
   by no more than 0.1 on at least 8 of the 10 cases, read side by side, E2's rules-writer instructions prefer
-  bands for a chance that depends on one or two facts and keep Jev for the rest (Q88). Jev costs under a tenth
+  bands for a chance that depends on one or two facts and keep Jev for the rest (Q88). Agreement shows only
+  that the two are interchangeable for that chance, not that either is right: nothing here checks Jev against
+  real failure rates (Not in this plan). If they disagree, neither is shown better, so E2 keeps Jev only where
+  the probe (Q82) found Jev's chance following the facts; where Jev's chance is flat, it carries nothing from
+  the facts, and E2 prefers bands for that kind of chance. Jev costs under a tenth
   of a cent per run and needs no language arithmetic. Chosen: Jev with the per-run cache, with declared bands as
   the cheaper rival measured in E1.
 
@@ -476,7 +500,8 @@ E1's first step, before the live run, and cheap enough that it is not run now.
 
 Nothing irreversible: each slice is a pull request (revert with git), and the World Builder deploy is redeployable
 from the previous commit. No deletion of saved worlds or run records, no outreach, no change to other repositories.
-Spend: owner allowance only; at most $0.05 per E1 run and $0.50 per slice, enforced by the run's `max_budget`.
+Spend: owner allowance only; at most $0.13 per E1 run (expected about $0.06 for two people over 30 days;
+computed in LLM call boundary and cost) and $0.50 per slice, enforced by the run's `max_budget`.
 
 ## Uncertainties
 
@@ -494,11 +519,15 @@ Spend: owner allowance only; at most $0.05 per E1 run and $0.50 per slice, enfor
 - **U6 (agent, Q86):** whether J5's stopping point should use Jev; belongs to the judge plan.
 - **U7 (agent, Q88):** whether declared bands written by the rules writer give the same chances as Jev on the
   10 cases; settled by E1's comparison, variant (d), and it decides whether E2 prefers bands for simple chances.
+  Agreement means interchangeable, not correct; where Q82 finds Jev flat, E2 prefers bands.
 
 ## Needs Brian
 
 None open. Which kinds of things a chance may decide is settled by his own split of constraints, decisions and
-norms (the judge plan): a chance decides what the world does, never what a person chooses.
+norms (the judge plan): a chance decides what the world does, never what a person chooses. Whether a draw and a
+Jev call inside the commit count as the engine capability Decision 006 forbids was argued by the agent, not
+asked again, because Decision 009 already allows rule semantics inside the commit and Brian asked for this
+feature; the argument is Q89 (resolved, inferred by agent), and he can reopen it.
 
 ## Not in this plan
 

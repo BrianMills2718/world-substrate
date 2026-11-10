@@ -95,10 +95,10 @@
     "On the World Builder, describe \"a bakery whose oven sometimes fails, more often the longer since it was cleaned\" and press Create simulation.",
     "Open \"See how it works\" and find the oven rule.",
     "Open the run's day rows.",
-    "Open the build record's rules-check list."
+    "Open the saved draft \"bakery oven, fallback removed\" (that build's oven rule with its fallback deleted, kept with the run) and its rules-check result."
    ],
-   "expected": "\"See how it works\" shows the oven rule in plain words: its question, the facts it reads, its fallback and its outcomes; the run shows oven-failure rows as in A1; the build record shows any draft without a fallback rejected with \"estimate rule needs a fallback\".",
-   "failure_example": "Broken: no chance rule at all, an oven that fails on a fixed day, or an installed estimate rule with no fallback. Working: a chance rule in plain words with its fallback, and A1-style rows in the run.",
+   "expected": "\"See how it works\" shows the oven rule in plain words: its question, the facts it reads, its fallback and its outcomes; the run shows oven-failure rows as in A1; the saved draft with its fallback removed is shown rejected by the rules check with \"estimate rule needs a fallback\".",
+   "failure_example": "Broken: no chance rule at all, an oven that fails on a fixed day, an installed estimate rule with no fallback, or the fallback-removed draft passing the rules check. Working: a chance rule in plain words with its fallback, A1-style rows in the run, and the fallback-removed draft rejected by name.",
    "representation": {
     "view": "composite-linked-view: the World Builder's \"See how it works\" rule view beside the run page's day rows",
     "router_record": "docs/planning/estimate-rules/router/run-page.recommendation.json"
@@ -167,7 +167,7 @@
     "Check the sawmill's log count that day.",
     "Open a dry day's crossing."
    ],
-   "expected": "The wet day reads \"blocked: the ford is too deep today (chance 0.7, roll 0.81)\" in orange (the run's own numbers); the refusal opens to the question, the rain it read and the draw; nothing changed, and no logs reached the sawmill that day. The dry day shows the chance, the roll and \"crossed\".",
+   "expected": "The wet day reads \"blocked: the cart could not get across the ford (chance 0.7, roll 0.81)\" in orange (the run's own numbers); the refusal opens to the question, the rain it read and the draw; nothing changed, and no logs reached the sawmill from that attempt (each attempt draws its own number, so another cart the same day may cross). The dry day shows the chance, the roll and \"crossed\".",
    "failure_example": "Broken: the cart crosses whatever the roll, a refusal with no estimate or roll shown, a partial change on a refused crossing, or logs arriving on a blocked day. Working: the blocker names the estimate and roll, and nothing downstream of the blocked crossing happens.",
    "representation": {
     "view": "composite-linked-view: the refused event's line with its blocker in orange, opening to the question, the facts read and the draw",
