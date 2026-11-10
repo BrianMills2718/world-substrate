@@ -23,9 +23,11 @@ def _pull(engine):
 @pytest.mark.req("information-delivery/a-knock-on-step-names-the-step-that-caused-it")
 def test_fifty_chains_of_a_hundred_links_finish_in_one_moment():
     engine, _, _ = build_engine(*fifty_chains(50, 100))
-    started = time.monotonic()
+    # CPU time, not wall time: the bound is on the engine's work, and wall time on a shared machine measures the
+    # load (2026-11-10: 26.6s alone, 128s inside a full suite while two other suites ran, load average 63 on 20 cores).
+    started = time.process_time()
     result = _pull(engine)
-    elapsed = time.monotonic() - started
+    elapsed = time.process_time() - started
     assert result["status"] == "accepted"
     steps = [step for event in result["reactions"] for step in event["reaction_steps"]]
     assert len(steps) == 5000
@@ -48,7 +50,7 @@ def test_fifty_chains_of_a_hundred_links_finish_in_one_moment():
                 parent = by_event[step["caused_by"][0]]
                 assert f"c{c}-{int(n) - 1}" in {s["it"] for s in parent["reaction_steps"]}
                 assert wave_of[step["it"]] == wave_of[f"c{c}-{int(n) - 1}"] + 1
-    assert elapsed < 120, f"5,000 steps took {elapsed:.1f}s"
+    assert elapsed < 120, f"5,000 steps took {elapsed:.1f}s of CPU time"
 
 
 @pytest.mark.req("transition-engine/a-loop-still-ends")
