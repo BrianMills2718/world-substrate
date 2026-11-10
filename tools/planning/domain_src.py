@@ -82,6 +82,8 @@ NODES = [
  ('credential-holder', 'Credential holder', 'Theory', "Plan ai-judge J4 (planned, not implemented): who holds a credential (a password, a signed release) as a fact in the world that can change: told, overheard, copied, forged or phished. The mechanism checks the credential, not the holder.", 'docs/plans/ai_judge.md:204', '—'),
  ('norm', 'Norm', 'Theory', "Plan ai-judge J4 (planned, not implemented): what people expect or forbid (bribery is illegal; only Alice should log in). It can be broken; a breach is recorded and has consequences only when someone notices and acts. Never written as a declared law.", 'docs/plans/ai_judge.md:188', '—'),
  ('midrun-setting', 'Mid-run rulings setting', 'Theory', "Plan ai-judge Decided 5 (planned, not implemented): a per-world option, 'Judge rulings during a run': Approved by Create (default; a checked ruling is installed at once and the attempt settles through it) or Wait for my approval (the proposed rule is held, the attempt waits as pending, Approve installs the rule and settles it, Reject refuses it; nothing settles without an installed rule).", 'docs/plans/ai_judge.md:155', '—'),
+ ('run-stop', 'Run stop setting', 'Substrate', "A per-world setting saved with the world (run_stop): stop once nothing is changing after N quiet rounds or never for being quiet, plus optional limits, a number of rounds (max_rounds) and this run's recorded AI spending (max_spend_usd); checked after each round, the run stops at whichever fires first and records why (Q12; Brian, 2026-11-10).", 'openspec/specs/world-builder-page/spec.md', 'scripts/run_stop.py:101'),
+ ('stopping-point', 'Plain-words stopping point', 'Theory', "Plan ai-judge J5 (planned, not implemented): a stopping point the person writes in plain words ('stop once the team has agreed a budget'), assessed by the judge after each round that changed something, as one more condition of the run stop setting.", 'docs/plans/ai_judge.md:263', '—'),
 ]
 EDGES = [
  ('engine', 'world', 'changes'),
@@ -200,6 +202,10 @@ EDGES = [
  ('ruling-rule', 'mechanic', 'is a'),
  ('midrun-setting', 'ruling-rule', 'decides when installed'),
  ('midrun-setting', 'approval', 'amends'),
+ ('run-stop', 'run-loop', 'ends'),
+ ('budget', 'run-stop', 'is separate from'),
+ ('stopping-point', 'run-stop', 'one condition of'),
+ ('judge-ruling', 'stopping-point', 'same game master assesses'),
  ('credential-holder', 'entity-component', 'is kept in'),
  ('credential-holder', 'information', 'can change by'),
  ('norm', 'world-law', 'is not a'),
