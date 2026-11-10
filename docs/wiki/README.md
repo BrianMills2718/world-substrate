@@ -64,7 +64,7 @@ world needs them.
 | What a world is made of, built versus theory | [Domain model](../model/DOMAIN.md), [metamodel](../model/METAMODEL.md) |
 | What the project does not yet know | [Open questions](../planning/open-questions.json), [planning package](../planning/planning-package.json) |
 | Open attempts, knock-on effects, skill rolls | [Open-attempt plan](../plans/open_attempt.md): S1 and S2 built, S3 not built |
-| Worlds declare their own laws | [Declared-laws plan](../plans/declared_laws.md): S1 to S3 built, S4 under way, S5 waits on Q50 |
+| Worlds declare their own laws | [Declared-laws plan](../plans/declared_laws.md): S1 to S3 built, S4 under way, S5 follows the plain-version comparison (Q60) |
 | Waltzman lineage against the general simulator vision | [Lineage review, 2026-11-07](../audits/waltzman-lineage-review-2026-11-07.md) (recommendations not adopted) |
 | Prior art for attempts, affordances, knock-on effects | [Flexible simulator prior art](../research/flexible-simulator-prior-art-2026-10.md) |
 
@@ -162,9 +162,9 @@ truth; summaries and replays are orientation only.
 The [open questions ledger](../planning/open-questions.json) holds each item with what it blocks, what
 would settle it, its owner and sources. The ones that shape the next work:
 
-1. **Q50 (Brian):** whether the declared-laws plan's paid S5 builds may run.
-2. **Q12, Q16, Q17 (Brian):** stopping a run that has gone quiet; whether `/goal` work needs plan
-   adoption; a view and approval step for the offline any-scenario pipeline.
+1. **Q60 (agent, settled 2026-11-09 by Brian's plain-version rule):** compare today's generated people-world
+   rules with one model given the whole scenario, before S5's paid builds or more people-world repair.
+2. **Q12 (Brian):** whether a run stops by itself once the decision is settled and nothing changes.
 3. **Q14:** the Decision 008 harness exists but the live service does not use it.
 4. **Q34:** declared read scopes are not enforced.
 5. **Q45, Q48, Q49:** retiring hand-written build checks once declared laws cover them; laws that are

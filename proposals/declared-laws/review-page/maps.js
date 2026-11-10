@@ -102,7 +102,7 @@ window.MAPS = {
     "id": "world-kind",
     "label": "World kind",
     "kind": "Substrate",
-    "explain": "Two choices a build makes first: whether the description is about people (people path) or things (causal path), and whether the world is a task, ongoing or open. Code: scripts/world_builder_service.py:113."
+    "explain": "Two choices a build makes first: whether the description is about people (people path) or things (causal path), and whether the world is a task, ongoing or open. Code: scripts/world_builder_service.py:116."
    },
    {
     "id": "builder",
@@ -114,13 +114,13 @@ window.MAPS = {
     "id": "approval",
     "label": "Approval record",
     "kind": "Substrate",
-    "explain": "A person's yes to the rules, stored with the rules' profile id and world fingerprint; every round names it. Code: scripts/world_builder_service.py:418."
+    "explain": "A person's yes to the rules, stored with the rules' profile id and world fingerprint; every round names it. Code: scripts/world_builder_service.py:421."
    },
    {
     "id": "fingerprint",
     "label": "World fingerprint",
     "kind": "Substrate",
-    "explain": "A short hash of the bundle and rules that ties builds, rounds and shares to one world. Code: scripts/world_builder_service.py:381."
+    "explain": "A short hash of the bundle and rules that ties builds, rounds and shares to one world. Code: scripts/world_builder_service.py:384."
    },
    {
     "id": "information",
@@ -132,13 +132,13 @@ window.MAPS = {
     "id": "run-loop",
     "label": "Run loop",
     "kind": "Substrate",
-    "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run. Code: scripts/run_authored_world.py:347."
+    "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run. Code: scripts/run_authored_world.py:714."
    },
    {
     "id": "contention",
     "label": "Lost race",
     "kind": "Substrate",
-    "explain": "When an earlier move this round changed the state, an open attempt is resubmitted as is at the new revision and only its rule's checks decide it; menu paths resubmit the move if still offered, else ask once more. The refused row names the failed checks, not the event that blocked it. Code: scripts/run_authored_world.py:563."
+    "explain": "When an earlier move this round changed the state, an open attempt is resubmitted as is at the new revision and only its rule's checks decide it; menu paths resubmit the move if still offered, else ask once more. The refused row names the failed checks, not the event that blocked it. Code: scripts/run_authored_world.py:740."
    },
    {
     "id": "resident",
@@ -162,25 +162,25 @@ window.MAPS = {
     "id": "build",
     "label": "Build",
     "kind": "Substrate",
-    "explain": "Description to spec, actions, rules, assembly, scripted test run and score. Code: scripts/world_builder_service.py:1541."
+    "explain": "Description to spec, actions, rules, assembly, scripted test run and score. Code: scripts/world_builder_service.py:1591."
    },
    {
     "id": "rules-retry",
     "label": "Rules retry",
     "kind": "Substrate",
-    "explain": "A second rules attempt after a rejection or weak score; skipped after 80 s. Code: scripts/world_builder_service.py:263."
+    "explain": "A second rules attempt after a rejection or weak score; skipped after 80 s. Code: scripts/world_builder_service.py:266."
    },
    {
     "id": "test-run",
     "label": "Scripted test run",
     "kind": "Substrate",
-    "explain": "The build's free run with simple moves that scores the rules and lists long tasks and whether each can fail part-way. Code: scripts/world_builder_service.py:1610."
+    "explain": "The build's free run with simple moves that scores the rules and lists long tasks and whether each can fail part-way. Code: scripts/world_builder_service.py:1797."
    },
    {
     "id": "run-log",
     "label": "Run log",
     "kind": "Substrate",
-    "explain": "One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads. Code: scripts/world_builder_service.py:524."
+    "explain": "One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads. Code: scripts/world_builder_service.py:556."
    },
    {
     "id": "readout",
@@ -198,7 +198,7 @@ window.MAPS = {
     "id": "share",
     "label": "Share link and replay",
     "kind": "Substrate",
-    "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls. Code: scripts/world_builder_service.py:598."
+    "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls. Code: scripts/world_builder_service.py:603."
    },
    {
     "id": "budget",
@@ -378,7 +378,7 @@ window.MAPS = {
     "id": "mechanisms",
     "label": "Mechanisms library",
     "kind": "Reference",
-    "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:58, Q28). Code: src/world_substrate/mechanisms/__init__.py:3."
+    "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:71, Q28). Code: src/world_substrate/mechanisms/__init__.py:3."
    },
    {
     "id": "kitchen",
@@ -433,6 +433,42 @@ window.MAPS = {
     "label": "Independent rules review",
     "kind": "Substrate",
     "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds. Code: scripts/review_rules.py:92."
+   },
+   {
+    "id": "consequence-report",
+    "label": "Consequence report",
+    "kind": "Theory",
+    "explain": "Plan ai-judge J1 (planned, not implemented): what the engine works out for an attempt no rule covers, in two passes. Pass 1, with no new rule: engine.discover for the person acting and for each person the attempt names (their moves, with which checks pass or fail), plus the current values of the entities the attempt names. Pass 2: the judge's proposed rule test-run on a copy of the world, giving its net changes, blockers, chain length and stopping point; the full chain stays in the run record. Code: none yet."
+   },
+   {
+    "id": "judge-ruling",
+    "label": "Judge ruling",
+    "kind": "Theory",
+    "explain": "Plan ai-judge J2 (planned, not implemented): Concordia's game master (EventResolution), given the whole world and pass 1 of the consequence report, proposes a rule for the constraint an unmatched attempt raises (can coins change hands here?); after reading the pass 2 test run of that rule it confirms, revises once or withdraws. Never an outcome or another person's choice. Code: none yet."
+   },
+   {
+    "id": "ruling-rule",
+    "label": "Ruling-origin rule",
+    "kind": "Theory",
+    "explain": "Plan ai-judge J3 (planned, not implemented): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, recording the ruling id and round it came from; it applies to everyone in the same situation and the attempt settles through it. A ruling the language cannot express is refused and recorded as a language gap. Code: none yet."
+   },
+   {
+    "id": "credential-holder",
+    "label": "Credential holder",
+    "kind": "Theory",
+    "explain": "Plan ai-judge J4 (planned, not implemented): who holds a credential (a password, a signed release) as a fact in the world that can change: told, overheard, copied, forged or phished. The mechanism checks the credential, not the holder. Code: none yet."
+   },
+   {
+    "id": "norm",
+    "label": "Norm",
+    "kind": "Theory",
+    "explain": "Plan ai-judge J4 (planned, not implemented): what people expect or forbid (bribery is illegal; only Alice should log in). It can be broken; a breach is recorded and has consequences only when someone notices and acts. Never written as a declared law. Code: none yet."
+   },
+   {
+    "id": "midrun-setting",
+    "label": "Mid-run rulings setting",
+    "kind": "Theory",
+    "explain": "Plan ai-judge Decided 5 (planned, not implemented): a per-world option, 'Judge rulings during a run': Approved by Create (default; a checked ruling is installed at once and the attempt settles through it) or Wait for my approval (the proposed rule is held, the attempt waits as pending, Approve installs the rule and settles it, Reject refuses it; nothing settles without an installed rule). Code: none yet."
    }
   ],
   "edges": [
@@ -1059,6 +1095,102 @@ window.MAPS = {
     "source": "rules-review",
     "target": "build",
     "label": "replaces meaning-guessing checks in"
+   },
+   {
+    "id": "e104",
+    "source": "knock-on-now",
+    "target": "consequence-report",
+    "label": "collected into"
+   },
+   {
+    "id": "e105",
+    "source": "consequence-report",
+    "target": "unmatched-attempt",
+    "label": "describes"
+   },
+   {
+    "id": "e106",
+    "source": "consequence-report",
+    "target": "check",
+    "label": "pass 1 lists"
+   },
+   {
+    "id": "e107",
+    "source": "consequence-report",
+    "target": "test-run",
+    "label": "pass 2 is a"
+   },
+   {
+    "id": "e108",
+    "source": "judge-ruling",
+    "target": "consequence-report",
+    "label": "reads"
+   },
+   {
+    "id": "e109",
+    "source": "judge-ruling",
+    "target": "unmatched-attempt",
+    "label": "decides only"
+   },
+   {
+    "id": "e110",
+    "source": "judge-ruling",
+    "target": "resident",
+    "label": "routes choices to"
+   },
+   {
+    "id": "e111",
+    "source": "ruling-rule",
+    "target": "judge-ruling",
+    "label": "made from"
+   },
+   {
+    "id": "e112",
+    "source": "rules-review",
+    "target": "ruling-rule",
+    "label": "checks"
+   },
+   {
+    "id": "e113",
+    "source": "ruling-rule",
+    "target": "mechanic",
+    "label": "is a"
+   },
+   {
+    "id": "e114",
+    "source": "midrun-setting",
+    "target": "ruling-rule",
+    "label": "decides when installed"
+   },
+   {
+    "id": "e115",
+    "source": "midrun-setting",
+    "target": "approval",
+    "label": "amends"
+   },
+   {
+    "id": "e116",
+    "source": "credential-holder",
+    "target": "entity-component",
+    "label": "is kept in"
+   },
+   {
+    "id": "e117",
+    "source": "credential-holder",
+    "target": "information",
+    "label": "can change by"
+   },
+   {
+    "id": "e118",
+    "source": "norm",
+    "target": "world-law",
+    "label": "is not a"
+   },
+   {
+    "id": "e119",
+    "source": "norm",
+    "target": "observation",
+    "label": "has consequences through"
    }
   ],
   "layout": {
@@ -1114,18 +1246,6 @@ window.MAPS = {
     "label": "Q15: Repository format files not yet added",
     "kind": "AgentQuestion",
     "explain": "Blocks: whether the repo-format check passes."
-   },
-   {
-    "id": "Q16",
-    "label": "Q16: Goals skip the package gate",
-    "kind": "BrianQuestion",
-    "explain": "Blocks: whether the next goal can again run without a current system model and question list."
-   },
-   {
-    "id": "Q17",
-    "label": "Q17: Offline pipeline views",
-    "kind": "BrianQuestion",
-    "explain": "Blocks: whether work goes into the offline pipeline at all."
    },
    {
     "id": "Q26",
@@ -1200,6 +1320,150 @@ window.MAPS = {
     "explain": "Blocks: S4: Q45 retires a check when its incident's saved world is refused by a declared law; with laws left out that test can pass on worlds that still have the bug. Also A1 and A4, whose expected results include a payment law.."
    },
    {
+    "id": "Q51",
+    "label": "Q51: Live network with no lines",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether the Network view can be trusted in a live run; issue #316.."
+   },
+   {
+    "id": "Q52",
+    "label": "Q52: Does the person asked respond",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether requests are worth more work.."
+   },
+   {
+    "id": "Q54",
+    "label": "Q54: People keep trying a closed door",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether residents see enough of the world to choose moves that can succeed; how much of a run is wasted turns.."
+   },
+   {
+    "id": "Q55",
+    "label": "Q55: A flagged world kept without a rewrite",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether the shared Waltzman run (share jyVbywXT8N8F) is fit for Brian to judge under Q50, and whether the plan's S3 (review findings go to the rules writer's revision step) holds on the people-world path.."
+   },
+   {
+    "id": "Q56",
+    "label": "Q56: A rule that writes less than it declared",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether a world's declared write scopes can be read as what its rules actually maintain; a generated rule that silently stops updating a field it owns goes unnoticed.."
+   },
+   {
+    "id": "Q57",
+    "label": "Q57: String fields have no declared values",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether the interpreter and compiler can refuse a value outside a world's vocabulary (a dock, a route, a status) instead of accepting any string.."
+   },
+   {
+    "id": "Q58",
+    "label": "Q58: Promises beyond support (a Commitment kind)",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether a people world can hold a promise one person makes another that is not support for the decision.."
+   },
+   {
+    "id": "Q59",
+    "label": "Q59: Does the people path transfer to a different situation",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether 'describe any scenario' (Decision 007) holds beyond decision-with-concerns situations; feeds Q60.."
+   },
+   {
+    "id": "Q61",
+    "label": "Q61: Outside vocabularies never evaluated",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether the run log's causal fields, the derived scopes and the project's causal claims use an outside vocabulary or stay project-specific.."
+   },
+   {
+    "id": "Q62",
+    "label": "Q62: Meaning coverage beyond the six bound moves",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Adding any overlay term beyond the six bound M1 move kinds, and binding generated move kinds to a meaning.."
+   },
+   {
+    "id": "Q63",
+    "label": "Q63: A non-authoritative estimate as a rule input",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Any world whose rules need a bounded estimate (time to repair, a likelihood) that no installed mechanic computes.."
+   },
+   {
+    "id": "Q64",
+    "label": "Q64: Meaning is looked up by bare move name",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether an event's semantic_binding and mechanic id can be trusted to describe the rule that actually ran.."
+   },
+   {
+    "id": "Q65",
+    "label": "Q65: The bundle schema refuses declared laws",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Any outside tool or test that validates a declared-laws bundle against the published schema.."
+   },
+   {
+    "id": "Q66",
+    "label": "Q66: The read-scope status fact is a constant",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether the status check is evidence about read scopes or only about the spec's text; Q34.."
+   },
+   {
+    "id": "Q67",
+    "label": "Q67: Write-path placeholders bind to any participant",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether a declared write scope limits a rule to the participants it names; listed in the roadmap hardening queue.."
+   },
+   {
+    "id": "Q68",
+    "label": "Q68: No lockfile; donor check needs a missing checkout",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Reproducing a run's exact dependencies, and running the donor check at all.."
+   },
+   {
+    "id": "Q69",
+    "label": "Q69: Hardening: law identity, discovery cap, mechanic errors",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether an approval names one exact executable law, whether a decider ever silently misses moves, and whether a broken rule leaves a trace in the run.."
+   },
+   {
+    "id": "Q71",
+    "label": "Q71: The live build imports spike code",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether spike code is held to the live path's tests and review; whether the spike folder can be archived.."
+   },
+   {
+    "id": "Q72",
+    "label": "Q72: Living-scene profiles refuse a render key the layout reads (plausible)",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether a scene author can set the gather radius the layout documents.."
+   },
+   {
+    "id": "Q73",
+    "label": "Q73: Decision 006's wrong-when names a missing adapter",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether that wrong-when condition can ever be checked.."
+   },
+   {
+    "id": "Q75",
+    "label": "Q75: Constraint question or someone's choice",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: J2's routing step and A5 (Rosa's own resident decides accept or refuse).."
+   },
+   {
+    "id": "Q76",
+    "label": "Q76: How to write norms and credential holders",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: J4's design and A6 (the password fixture: Mallory phishes Alice's password, is logged in, and the breach has consequences only after an observer acts).."
+   },
+   {
+    "id": "Q77",
+    "label": "Q77: Wiki cap and durable-document checks fail on main",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether the wiki-compliance and durable-document checks pass again for every package in this repository.."
+   },
+   {
+    "id": "affordance",
+    "label": "Affordance (offered move)",
+    "kind": "Concept",
+    "explain": "A move the rules say a person can try now, with its open fields; the page a decider picks from or an attempt is read against."
+   },
+   {
     "id": "agenda",
     "label": "Agenda count",
     "kind": "Concept",
@@ -1248,6 +1512,37 @@ window.MAPS = {
     "explain": "One condition on a move or process (actual versus required); a move commits only when every check holds, else the event records which failed."
    },
    {
+    "id": "compiler",
+    "label": "Compiler",
+    "kind": "Concept",
+    "explain": "Turns proposed rules into installed rules and derives what each may read and write."
+   },
+   {
+    "id": "credential-holder",
+    "label": "Credential holder",
+    "kind": "Concept",
+    "dashed": true,
+    "explain": "Plan ai-judge J4 (planned, not implemented): who holds a credential (a password, a signed release) as a fact in the world that can change: told, overheard, copied, forged or phished. The mechanism checks the credential, not the holder."
+   },
+   {
+    "id": "engine",
+    "label": "Engine",
+    "kind": "Concept",
+    "explain": "Applies each attempt atomically or refuses it with a recorded reason; runs due processes each tick."
+   },
+   {
+    "id": "entity-component",
+    "label": "Entity and component",
+    "kind": "Concept",
+    "explain": "An entity is one thing in the world (person, wall, glass, decision) with an id, a label, categories and typed components; a component is a named record of typed fields (boundary.passable, group_decision.status) that checks read and effects write."
+   },
+   {
+    "id": "event",
+    "label": "Event",
+    "kind": "Concept",
+    "explain": "The record of one attempt or process step: status, checks, changes, an id like r14-e00012."
+   },
+   {
     "id": "gen-rules",
     "label": "Generated actions and rules",
     "kind": "Concept",
@@ -1267,16 +1562,55 @@ window.MAPS = {
     "explain": "Decision 008: worlds built by an agent that drafts, checks and edits; scripts/world_harness.py exists but the live service does not call it."
    },
    {
+    "id": "judge-ruling",
+    "label": "Judge ruling",
+    "kind": "Concept",
+    "dashed": true,
+    "explain": "Plan ai-judge J2 (planned, not implemented): Concordia's game master (EventResolution), given the whole world and pass 1 of the consequence report, proposes a rule for the constraint an unmatched attempt raises (can coins change hands here?); after reading the pass 2 test run of that rule it confirms, revises once or withdraws. Never an outcome or another person's choice."
+   },
+   {
+    "id": "law-check",
+    "label": "Law check",
+    "kind": "Concept",
+    "explain": "Plan declared-laws S2 (built): inside the same commit as the write-scope check, every move, round process and knock-on effect is checked against the world's declared laws; a breach refuses the whole step or moment as law_breach and names the law, and nothing changes. A test-run breach is a build finding sent to the rules writer and the world designer."
+   },
+   {
+    "id": "law-fingerprint",
+    "label": "Executable-law fingerprint",
+    "kind": "Concept",
+    "dashed": true,
+    "explain": "Roadmap hardening item: fingerprint the exact executable law and compiler version."
+   },
+   {
+    "id": "mechanic",
+    "label": "Installed mechanic",
+    "kind": "Concept",
+    "explain": "One installed action rule: an action kind's selector, checks, effects and derived reads and writes, compiled and frozen in the profile; the root rule says installed mechanics alone decide what happens."
+   },
+   {
     "id": "mechanisms",
     "label": "Mechanisms library",
     "kind": "Concept",
-    "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:58, Q28)."
+    "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:71, Q28)."
+   },
+   {
+    "id": "norm",
+    "label": "Norm",
+    "kind": "Concept",
+    "dashed": true,
+    "explain": "Plan ai-judge J4 (planned, not implemented): what people expect or forbid (bribery is illegal; only Alice should log in). It can be broken; a breach is recorded and has consequences only when someone notices and acts. Never written as a declared law."
    },
    {
     "id": "observation",
     "label": "Observation",
     "kind": "Concept",
     "explain": "What one actor sees this round: the fields its senses and position allow, never the whole world."
+   },
+   {
+    "id": "people-world",
+    "label": "People world",
+    "kind": "Concept",
+    "explain": "A world built from a description about people: people, information, moments and the fixed people rules."
    },
    {
     "id": "person",
@@ -1291,10 +1625,22 @@ window.MAPS = {
     "explain": "Where things are, and what lies between two places (a door, a brick wall) with whether it is passable; written per world as entities from the bundle contract, and the move rule checks the way."
    },
    {
+    "id": "profile",
+    "label": "Frozen mechanic profile",
+    "kind": "Concept",
+    "explain": "The validated, installed rules of a world, frozen under one id before any run; changing a rule means a new profile."
+   },
+   {
     "id": "readout",
     "label": "Readout",
     "kind": "Concept",
     "explain": "One AI summary of a run whose every cited event id is checked against the run."
+   },
+   {
+    "id": "resident",
+    "label": "Resident",
+    "kind": "Concept",
+    "explain": "One Concordia AI agent per person: sees its brief, memory and what it can see, and answers belief, attempt (in its own words), expected effect and work; the older menu reply picks an offered move."
    },
    {
     "id": "rules-retry",
@@ -1309,10 +1655,34 @@ window.MAPS = {
     "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds."
    },
    {
+    "id": "run-log",
+    "label": "Run log",
+    "kind": "Concept",
+    "explain": "One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads."
+   },
+   {
     "id": "run-loop",
     "label": "Run loop",
     "kind": "Concept",
     "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run."
+   },
+   {
+    "id": "scene-replay",
+    "label": "Scene replay",
+    "kind": "Concept",
+    "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words."
+   },
+   {
+    "id": "sense",
+    "label": "Linguistic Core sense and roles",
+    "kind": "Concept",
+    "explain": "The meaning and participant roles of a move kind, supplied by Linguistic Core; never its effects, quantities or timing."
+   },
+   {
+    "id": "share",
+    "label": "Share link and replay",
+    "kind": "Concept",
+    "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls."
    },
    {
     "id": "skill-roll",
@@ -1320,6 +1690,12 @@ window.MAPS = {
     "kind": "Concept",
     "dashed": true,
     "explain": "Plan S3: a move's outcome depends on a seeded, recorded roll against the person's skill, so someone untrained who flies a helicopter can crash it."
+   },
+   {
+    "id": "support",
+    "label": "Support",
+    "kind": "Concept",
+    "explain": "A member's stance on the decision: none, full or conditional on a concern."
    },
    {
     "id": "task",
@@ -1338,6 +1714,12 @@ window.MAPS = {
     "label": "Unmatched attempt",
     "kind": "Concept",
     "explain": "An attempt no move kind covers: it changes nothing, the person learns nothing came of it, and the run lists it for the rules writer."
+   },
+   {
+    "id": "world-design",
+    "label": "World design (bundle)",
+    "kind": "Concept",
+    "explain": "The build's first AI step: it reads the description and writes the world's people, places, things and starting state as an authoring bundle; plan declared-laws S1 adds the world's resources and laws to its output, and the rules writer receives them as input."
    },
    {
     "id": "world-law",
@@ -1411,12 +1793,6 @@ window.MAPS = {
     "id": "Q14-rules-retry",
     "source": "Q14",
     "target": "rules-retry",
-    "label": "bears on"
-   },
-   {
-    "id": "Q17-build",
-    "source": "Q17",
-    "target": "build",
     "label": "bears on"
    },
    {
@@ -1615,6 +1991,312 @@ window.MAPS = {
     "id": "Q49-rules-review",
     "source": "Q49",
     "target": "rules-review",
+    "label": "bears on"
+   },
+   {
+    "id": "Q51-share",
+    "source": "Q51",
+    "target": "share",
+    "label": "bears on"
+   },
+   {
+    "id": "Q51-build",
+    "source": "Q51",
+    "target": "build",
+    "label": "bears on"
+   },
+   {
+    "id": "Q52-attempt",
+    "source": "Q52",
+    "target": "attempt",
+    "label": "bears on"
+   },
+   {
+    "id": "Q52-resident",
+    "source": "Q52",
+    "target": "resident",
+    "label": "bears on"
+   },
+   {
+    "id": "Q54-resident",
+    "source": "Q54",
+    "target": "resident",
+    "label": "bears on"
+   },
+   {
+    "id": "Q54-attempt",
+    "source": "Q54",
+    "target": "attempt",
+    "label": "bears on"
+   },
+   {
+    "id": "Q55-rules-review",
+    "source": "Q55",
+    "target": "rules-review",
+    "label": "bears on"
+   },
+   {
+    "id": "Q55-build",
+    "source": "Q55",
+    "target": "build",
+    "label": "bears on"
+   },
+   {
+    "id": "Q55-rules-retry",
+    "source": "Q55",
+    "target": "rules-retry",
+    "label": "bears on"
+   },
+   {
+    "id": "Q56-write-scope",
+    "source": "Q56",
+    "target": "write-scope",
+    "label": "bears on"
+   },
+   {
+    "id": "Q56-law-check",
+    "source": "Q56",
+    "target": "law-check",
+    "label": "bears on"
+   },
+   {
+    "id": "Q56-mechanic",
+    "source": "Q56",
+    "target": "mechanic",
+    "label": "bears on"
+   },
+   {
+    "id": "Q57-entity-component",
+    "source": "Q57",
+    "target": "entity-component",
+    "label": "bears on"
+   },
+   {
+    "id": "Q57-attempt-reading",
+    "source": "Q57",
+    "target": "attempt-reading",
+    "label": "bears on"
+   },
+   {
+    "id": "Q57-compiler",
+    "source": "Q57",
+    "target": "compiler",
+    "label": "bears on"
+   },
+   {
+    "id": "Q58-support",
+    "source": "Q58",
+    "target": "support",
+    "label": "bears on"
+   },
+   {
+    "id": "Q58-people-world",
+    "source": "Q58",
+    "target": "people-world",
+    "label": "bears on"
+   },
+   {
+    "id": "Q59-people-world",
+    "source": "Q59",
+    "target": "people-world",
+    "label": "bears on"
+   },
+   {
+    "id": "Q59-group-decision",
+    "source": "Q59",
+    "target": "group-decision",
+    "label": "bears on"
+   },
+   {
+    "id": "Q59-gen-rules",
+    "source": "Q59",
+    "target": "gen-rules",
+    "label": "bears on"
+   },
+   {
+    "id": "Q61-causal-trace",
+    "source": "Q61",
+    "target": "causal-trace",
+    "label": "bears on"
+   },
+   {
+    "id": "Q61-causal-parent",
+    "source": "Q61",
+    "target": "causal-parent",
+    "label": "bears on"
+   },
+   {
+    "id": "Q61-write-scope",
+    "source": "Q61",
+    "target": "write-scope",
+    "label": "bears on"
+   },
+   {
+    "id": "Q62-sense",
+    "source": "Q62",
+    "target": "sense",
+    "label": "bears on"
+   },
+   {
+    "id": "Q63-mechanic",
+    "source": "Q63",
+    "target": "mechanic",
+    "label": "bears on"
+   },
+   {
+    "id": "Q63-skill-roll",
+    "source": "Q63",
+    "target": "skill-roll",
+    "label": "bears on"
+   },
+   {
+    "id": "Q64-sense",
+    "source": "Q64",
+    "target": "sense",
+    "label": "bears on"
+   },
+   {
+    "id": "Q64-mechanic",
+    "source": "Q64",
+    "target": "mechanic",
+    "label": "bears on"
+   },
+   {
+    "id": "Q64-event",
+    "source": "Q64",
+    "target": "event",
+    "label": "bears on"
+   },
+   {
+    "id": "Q65-world-design",
+    "source": "Q65",
+    "target": "world-design",
+    "label": "bears on"
+   },
+   {
+    "id": "Q65-world-law",
+    "source": "Q65",
+    "target": "world-law",
+    "label": "bears on"
+   },
+   {
+    "id": "Q65-builder",
+    "source": "Q65",
+    "target": "builder",
+    "label": "bears on"
+   },
+   {
+    "id": "Q66-write-scope",
+    "source": "Q66",
+    "target": "write-scope",
+    "label": "bears on"
+   },
+   {
+    "id": "Q66-check",
+    "source": "Q66",
+    "target": "check",
+    "label": "bears on"
+   },
+   {
+    "id": "Q67-write-scope",
+    "source": "Q67",
+    "target": "write-scope",
+    "label": "bears on"
+   },
+   {
+    "id": "Q67-engine",
+    "source": "Q67",
+    "target": "engine",
+    "label": "bears on"
+   },
+   {
+    "id": "Q68-check",
+    "source": "Q68",
+    "target": "check",
+    "label": "bears on"
+   },
+   {
+    "id": "Q69-profile",
+    "source": "Q69",
+    "target": "profile",
+    "label": "bears on"
+   },
+   {
+    "id": "Q69-law-fingerprint",
+    "source": "Q69",
+    "target": "law-fingerprint",
+    "label": "bears on"
+   },
+   {
+    "id": "Q69-affordance",
+    "source": "Q69",
+    "target": "affordance",
+    "label": "bears on"
+   },
+   {
+    "id": "Q69-engine",
+    "source": "Q69",
+    "target": "engine",
+    "label": "bears on"
+   },
+   {
+    "id": "Q71-people-world",
+    "source": "Q71",
+    "target": "people-world",
+    "label": "bears on"
+   },
+   {
+    "id": "Q71-build",
+    "source": "Q71",
+    "target": "build",
+    "label": "bears on"
+   },
+   {
+    "id": "Q72-scene-replay",
+    "source": "Q72",
+    "target": "scene-replay",
+    "label": "bears on"
+   },
+   {
+    "id": "Q73-resident",
+    "source": "Q73",
+    "target": "resident",
+    "label": "bears on"
+   },
+   {
+    "id": "Q75-judge-ruling",
+    "source": "Q75",
+    "target": "judge-ruling",
+    "label": "bears on"
+   },
+   {
+    "id": "Q75-resident",
+    "source": "Q75",
+    "target": "resident",
+    "label": "bears on"
+   },
+   {
+    "id": "Q76-norm",
+    "source": "Q76",
+    "target": "norm",
+    "label": "bears on"
+   },
+   {
+    "id": "Q76-credential-holder",
+    "source": "Q76",
+    "target": "credential-holder",
+    "label": "bears on"
+   },
+   {
+    "id": "Q76-world-law",
+    "source": "Q76",
+    "target": "world-law",
+    "label": "bears on"
+   },
+   {
+    "id": "Q77-run-log",
+    "source": "Q77",
+    "target": "run-log",
     "label": "bears on"
    }
   ],

@@ -437,12 +437,12 @@ window.PAGE_DATA = {
   {
    "id": "Q12",
    "short": "When a people-world run ends",
-   "question": "A people-world run ends at the round cap even when nothing has changed for 20 rounds. Should it stop when the decision is settled and nothing changes?",
+   "question": "When should a people-world run stop? Example: the Waltzman run of 2026-10-23 (share FQHXnP_TLKPi) ran 45 rounds at $0.2371 in all. From round 22 every concern was resolved and the decision deployed; in the 23 rounds after that the ten people only repeated moves and nothing changed. Today a run always goes to the round count the visitor picked. Should it stop by itself once the decision is settled and nothing has changed for a while?",
    "blocks": "how long visitors watch a run, and its cost",
    "resolves_with": "This is a product call on what a finished story looks like; no test settles it.",
    "owner": "brian",
    "status": "open",
-   "recommendation": "Stop a people-world run when the decision is deployed or rejected and no person's move has changed anything for one full operating-review period (6 rounds, compile_spec.py:442), and say so on the page.",
+   "recommendation": "Stop once the decision is deployed or rejected and no one's move has changed anything for 6 rounds (one operating-review period, compile_spec.py:442), and say on the page why it stopped. Gains: in that run, about half the watching time and about $0.12 of $0.24 saved (measured: run total over rounds). Costs: a late surprise after a quiet stretch would be cut off; the visitor can still choose to run more rounds.",
    "default": "Runs keep ending at the round cap the visitor picked.",
    "sources": [
     "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
@@ -512,15 +512,15 @@ window.PAGE_DATA = {
    "question": "This repository's work ran as /goal documents, which never pass plan adoption, so nothing required a planning package. Should writing a goal require one?",
    "blocks": "whether the next goal can again run without a current system model and question list",
    "resolves_with": "An argument: Brian approved on 2026-10-21 that every plan carries a planning package, and a goal is a plan. But a hard check would refuse new goals in every repository that has no package yet, so how strictly to enforce it is a priority call.",
-   "owner": "brian",
-   "status": "open",
+   "owner": "agent",
+   "status": "resolved",
    "recommendation": "Make the goal validator (agent-skills, skills/authoring-goals/scripts/validate_goal_authority.py) refuse a goal document without a 'Planning package:' line or a named exemption, so goal-driven repositories meet the same gate as adopted plans.",
-   "default": "The goal-writing skill only tells authors to name the package; nothing refuses a goal without one. This repository's next goal already names its package.",
    "sources": [
     "~/code2/agent-skills/skills/authoring-goals/SKILL.md",
     "git show 0e66a98:docs/plans/waltzman-tasks-slice2.goal.md line 1 (goal retired 2026-11-09)"
    ],
-   "touches": []
+   "touches": [],
+   "evidence": "Decided by agent, 2026-11-09 (technical call): the goal validator will refuse a goal document without a 'Planning package:' line or a named exemption. Not yet implemented; tracked as this session's next step."
   },
   {
    "id": "Q17",
@@ -528,17 +528,17 @@ window.PAGE_DATA = {
    "question": "The offline any-scenario pipeline has no view of its model and checks (G13) and no approval step (G14). Should it get them, or stay an offline spike?",
    "blocks": "whether work goes into the offline pipeline at all",
    "resolves_with": "A scope call; the live path now builds people worlds itself, so the pipeline matters less.",
-   "owner": "brian",
-   "status": "open",
+   "owner": "agent",
+   "status": "resolved",
    "recommendation": "Keep it an offline spike: no views or approval step, since the live World Builder is where people build worlds.",
-   "default": "No work on G13 or G14.",
    "sources": [
     "docs/model/VIEW_COVERAGE.md",
     "docs/decisions/007-any-scenario-path.md"
    ],
    "touches": [
     "build"
-   ]
+   ],
+   "evidence": "Decided by agent, 2026-11-09: the offline any-scenario pipeline stays an offline spike; no work on G13 or G14, since the live World Builder is where people build worlds."
   },
   {
    "id": "Q18",
@@ -1172,9 +1172,8 @@ window.PAGE_DATA = {
    "blocks": "Whether the paid builds in S5, L5, A4 and A6 run now, and which defect is fixed next. Merges under the plan stay ungated by Brian's review; only new paid builds wait.",
    "resolves_with": "Brian's judgement on a working run, not a test: he reads one shared Waltzman run and says what is wrong. Since 2026-11-04 a shared run recorded after #317 and #320 exists: the Waltzman rebuild at 096c129, share jyVbywXT8N8F (evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:3, saved without a readout), but its rules carry a review finding the build kept (no postponement possible, Q55), and the rules are written afresh on each build (5 of 5 needed and no postponement here, 4 of 5 and one postponement in s4-waltzman-2, evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:16), so it is the one to judge only once Q55 is answered or with that caveat stated beside it; the recommendation to keep one saved world and improve it is what makes builds that differ comparable. His first reaction (\"this is blank and doesnt play\") was answered by #328 and #329: a shared run's picture is now drawn from its recorded rounds (scripts/world_builder_home.html:913).",
    "owner": "brian",
-   "status": "open",
+   "status": "resolved",
    "recommendation": "Finished when Brian reads one shared Waltzman run and the people behave believably and something surprising follows from their choices. Keep one saved world and improve it; his reaction to it picks the next fix.",
-   "default": "S5 and other new paid builds wait. The saved Waltzman world stays the one being improved until Brian says otherwise.",
    "sources": [
     "scripts/world_builder_home.html:913",
     "evidence/declared-laws/s4-waltzman-2/TRACE_READ.md:5",
@@ -1183,7 +1182,8 @@ window.PAGE_DATA = {
    "touches": [
     "build",
     "share"
-   ]
+   ],
+   "evidence": "Brian, 2026-11-09: \"believable is just in the cotnext of off the shelf agents if you are talking about that agents simulating people act beleivaby. trying to set a metric for this doesnt make sense and is subjective. we can fine utn that later once everythgin else runs great.\" So believability is the off-the-shelf people agents' job (Concordia), no metric is set for it, and it is tuned only after everything else runs well; the finish line for current work is that the rest of the system works, not a believability score. Paid builds are no longer held for a believability judgement."
   },
   {
    "id": "Q51",
@@ -1357,10 +1357,9 @@ window.PAGE_DATA = {
    "question": "The 2026-11-07 lineage review found that the generated Waltzman world stipulates outcomes its mechanisms should produce: an open concern turns a full supporter's support conditional by rule (spikes/any-scenario-2026-10/compile_spec.py:316) and a remedy resolves a concern by elapsed rounds (:332), so a coordination failure in a run can come from the stipulated procedure rather than from influence. It recommends a bounded comparison on the same cases, today's generated-rule path against a plain model given the whole scenario and an event ledger, before more repair. Should that comparison run before more declared-laws or people-world repair?",
    "blocks": "What the next goal is after the declared-laws slices, and whether a Waltzman run can be shown as evidence of a social mechanism.",
    "resolves_with": "A priority call by Brian: the review's recommendations are proposals and none is adopted (docs/audits/waltzman-lineage-review-2026-11-07.md:121).",
-   "owner": "brian",
-   "status": "open",
+   "owner": "agent",
+   "status": "resolved",
    "recommendation": "Yes: run the bounded comparison first on the existing Waltzman case and one materially different case, starting with the plain version (one model given the whole scenario, each person's view and an event ledger, its proposed changes validated), per the 2026-11-06 plain-version rule; state the question and what result counts against each approach before running, and measure one complete case before any batch.",
-   "default": "Record only: the review stays a reference, the declared-laws plan continues, and runs are not shown as evidence of a social mechanism.",
    "sources": [
     "docs/audits/waltzman-lineage-review-2026-11-07.md:53",
     "docs/audits/waltzman-lineage-review-2026-11-07.md:93",
@@ -1372,7 +1371,8 @@ window.PAGE_DATA = {
     "concern",
     "remedy",
     "waltzman-ref"
-   ]
+   ],
+   "evidence": "Settled by Brian's standing rule, not by asking (core.md, 2026-11-06: an AI answer path starts as the plain version; a stage is added only to close a gap the plain version shows on real cases). Brian, 2026-11-09: \"what is the poitn of the comparison? dont i have urles about this?\" The comparison is therefore required, not optional, and is agent work. Its scope is narrow: Brian's 2026-11-09 point that a model cannot track a 100-link causal chain already rules out a plain-only engine for consequences, so the comparison is only about the social part (do generated people-world rules such as an open concern making support conditional add anything over one model given the whole scenario, each person's view and an event ledger). It goes into the next plan with its cost worked out before any paid run."
   },
   {
    "id": "Q61",
@@ -1548,17 +1548,17 @@ window.PAGE_DATA = {
    "question": ".github/workflows/native-coordination-linux.yml runs the native coordination matrix and tests on GitHub Actions for pull requests touching those paths (last changed in #80, 2026-10-05). The workspace rule is that the repository's own local check gates merges and hosted CI needs Brian's yes. Should the workflow stay?",
    "blocks": "Whether the repository keeps a hosted check beside its local one; nothing merges on it today.",
    "resolves_with": "Brian's call: hosted CI is an ask under the workspace rules, and this documentation rewrite may not delete a check.",
-   "owner": "brian",
-   "status": "open",
+   "owner": "agent",
+   "status": "resolved",
    "recommendation": "Remove the workflow: scripts/check_project.py already runs before every merge through ship, and a hosted job nobody reads only adds noise. Fold any test it runs that the project check does not into the project check first.",
-   "default": "The workflow stays as it is; it does not gate merges.",
    "sources": [
     ".github/workflows/native-coordination-linux.yml",
     "roadmap/README.md:85"
    ],
    "touches": [
     "check"
-   ]
+   ],
+   "evidence": "Decided by agent, 2026-11-09: remove .github/workflows/native-coordination-linux.yml after folding any test it runs that scripts/check_project.py does not into the project check (workspace rule: local checks gate merges). Not yet implemented; tracked as this session's next step."
   },
   {
    "id": "Q71",
@@ -1607,6 +1607,157 @@ window.PAGE_DATA = {
    ],
    "touches": [
     "resident"
+   ]
+  },
+  {
+   "id": "Q74",
+   "short": "Does a consequence report fit the judge's context",
+   "question": "Can the consequence report for the largest saved world fit the judge's context window, so the judge reads the engine's result for an attempt rather than a cut-down one?",
+   "blocks": "J1's record shape (whole chain or net changes) and A2 on large worlds.",
+   "resolves_with": "Argument: work out the token count of the largest saved world and of a long chain from saved run records, and compare with the judge model's window and price steps. No run needed.",
+   "owner": "agent",
+   "status": "resolved",
+   "evidence": "Measured 2026-11-09 from saved worlds. The largest, evidence/waltzman-tasks-slice2/c1r21, is 143,430 characters (bundle 34,863, rules 79,457, largest state 29,110), about 42,200 tokens at the 3.40 characters per token measured on the three plain-baseline calls (evidence/ai-judge/plain-baseline/). One chain step (event plus parent) averages 340 characters over 2,081 steps in saved runs, so a 5,000-step chain is about 500,000 tokens: too large. Answer: the judge gets the whole world plus the test run's net changes (at most the state, about 8,600 tokens), blockers, chain length and stopping point, about 53,000 tokens worst case ($0.006 at $0.10/M input, $0.50/M output); the full chain stays in the run record. The earlier '786 links' figure had no source and is dropped.",
+   "sources": [
+    "docs/plans/ai_judge.md:490",
+    "docs/plans/ai_judge.md:309",
+    "docs/plans/ai_judge.md:406"
+   ],
+   "touches": [
+    "consequence-report",
+    "judge-ruling"
+   ]
+  },
+  {
+   "id": "Q75",
+   "short": "Constraint question or someone's choice",
+   "question": "How does the judge tell a constraint question (can coins change hands here?) from another person's choice (does Rosa accept the bribe?), so that choices always go to the person and never to a ruling?",
+   "blocks": "J2's routing step and A5 (Rosa's own resident decides accept or refuse).",
+   "resolves_with": "Argument, in J2's design: an attempt whose effect needs another resident's act is routed to that resident (the #326 request path, generalised); the judge sees only what remains. One counterexample from the port world would reopen it.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/plans/ai_judge.md:494",
+    "docs/plans/ai_judge.md:153"
+   ],
+   "touches": [
+    "judge-ruling",
+    "resident"
+   ]
+  },
+  {
+   "id": "Q76",
+   "short": "How to write norms and credential holders",
+   "question": "How should a breakable norm and a credential holder be represented in the rules declaration language, without writing a norm as a declared law (which the engine would never let anyone break)?",
+   "blocks": "J4's design and A6 (the password fixture: Mallory phishes Alice's password, is logged in, and the breach has consequences only after an observer acts).",
+   "resolves_with": "Prior art first: Crawford and Ostrom's grammar of institutions, Institutional Grammar 2.0 (Frantz and Siddiki), and Cybernetic Influence v3's split of identity proof, permission, availability and outcome; a short design step opens J4.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/plans/ai_judge.md:497",
+    "docs/plans/ai_judge.md:204"
+   ],
+   "touches": [
+    "norm",
+    "credential-holder",
+    "world-law"
+   ]
+  },
+  {
+   "id": "Q77",
+   "short": "Wiki cap and durable-document checks fail on main",
+   "question": "On origin/main 0dcbcd6 the wiki and Markdown cap check (md_file_cap.py --repo . --ref HEAD) exits 1: the file count is now within the exception limit (143 of 180), but 13 documents are more than two links deep from the entry point (for example docs/VISUAL_FEEDBACK.md, docs/audits/kitchen-contested-world.md) and the durable-document check (durable_docs_check.py --arc42) reports 12 findings (3 arc42 headings, 1 extension label, 2 goal fields and 2 goal context or lineage findings in docs/architecture/arc42.md, and 4 system-model rules whose owner files, scripts/world_builder_service.py (3 rules) and scripts/run_authored_world.py (1), changed after their last review in a commit that only reworded a comment). Should the deep documents be linked closer or retired, and the arc42 and goal fields and rule reviews brought up to date?",
+   "blocks": "Whether the wiki-compliance and durable-document checks pass again for every package in this repository.",
+   "resolves_with": "Argument: read the 13 deep documents and link or retire them by the documentation rules (docs/AGENTS.md); fill the arc42 goal fields from docs/GOAL.md; re-read the 4 rules against the comment-only changes in those two files and set reviewed_at. No run needed.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/planning/ai-judge/checks.txt:3",
+    "docs/planning/ai-judge/checks.txt:32"
+   ],
+   "touches": [
+    "run-log"
+   ]
+  },
+  {
+   "id": "Q78",
+   "short": "What the engine gives the judge before a rule exists",
+   "question": "An attempt no rule covers commits no event, and propagation starts only from a committed event, so what can the engine compute for such an attempt and hand to the judge, and how is Brian's 'deliver the results of that propagation to the judge' met?",
+   "blocks": "J1's report, J2's call order, and A2 and A3.",
+   "resolves_with": "Argument from the engine code: what discover() computes without a rule, and what a dry run of a proposed rule on a copy of the world gives.",
+   "owner": "agent",
+   "status": "resolved",
+   "evidence": "Settled by argument (inferred by agent, 2026-11-09, after the cold review's finding 1). The judge works in two passes. Pass 1: the engine computes what needs no new rule, from a fixed selection: engine.discover (src/world_substrate/engine.py:380-440) for the person acting and for each person the attempt names, with each move's checks, plus the current values of the entities the attempt names. discover lists only the moves of the person asked, so the port's 'sign release: blocked, inspected is false' comes from Rosa's page, not Vik's (cold review 2 of 2026-11-09, finding 3); today's runs record a few blocked rows per resident as blocked_by_rules (scripts/run_authored_world.py:601-634), not tied to an attempt. The judge proposes a ruling written as a rule. Pass 2: the engine runs the rules check and test-runs the proposed rule on a copy of the world, giving the consequence report (net changes, blockers, chain length and stopping point); the judge confirms, revises once or withdraws; only then is the rule installed and the attempt settled through it. An attempt an installed rule covers but whose check fails is refused by the engine with no judge call (A3). Plan: docs/plans/ai_judge.md, Canonical example.",
+   "sources": [
+    "docs/plans/ai_judge.md:91",
+    "docs/plans/ai_judge.md:117",
+    "src/world_substrate/engine.py:1005"
+   ],
+   "touches": [
+    "consequence-report",
+    "judge-ruling",
+    "check",
+    "test-run",
+    "unmatched-attempt"
+   ]
+  },
+  {
+   "id": "Q79",
+   "short": "Can the rule language express a ruling",
+   "question": "Every ruling becomes a rule in the existing declaration language and applies to everyone in the same situation. Can that language express the rulings a judge makes, and what happens when it cannot?",
+   "blocks": "J3's install step and A4's language-gap case.",
+   "resolves_with": "Read the declaration language spec and code, and check 3 sample rulings by hand against the rules check.",
+   "owner": "agent",
+   "status": "resolved",
+   "evidence": "Settled by reading and 3 real rulings (2026-11-09). The language is action-mechanic/v0 (src/world_substrate/action_authoring.py); its expression kinds are literal, action field, participant, entity id, owner reference and event id (action_authoring.py:893-927), with no arithmetic between two values. The three plain-baseline rulings (evidence/ai-judge/plain-baseline/rules-check.json) went through validate_bundle and CausalModel.from_dict: the cafe rule was rejected (a field named 'from' is not an identifier), the shop rule was rejected (participants must exactly name entity_ref fields), and the sawmill rule was accepted but charges one price for 3 logs because price times quantity cannot be written. Answer: the language expresses transfers guarded by checks; it cannot multiply two values or require another person's agreement, which is routed to that person (Decided 4). A ruling the check rejects after one revision is refused with 'no rule could express this' and recorded as a language gap.",
+   "sources": [
+    "docs/plans/ai_judge.md:144",
+    "src/world_substrate/action_authoring.py:893",
+    "evidence/ai-judge/plain-baseline/rules-check.json"
+   ],
+   "touches": [
+    "ruling-rule",
+    "mechanic",
+    "rules-review"
+   ]
+  },
+  {
+   "id": "Q80",
+   "short": "What wait mode does with the attempt",
+   "question": "Under 'Wait for my approval', what happens to the attempt while its ruling is held, given that installed rules alone decide consequences and the judge never writes outcomes?",
+   "blocks": "J3's held-ruling path and A4's wait case.",
+   "resolves_with": "Argument from the invariants: nothing may settle without an installed rule.",
+   "owner": "agent",
+   "status": "resolved",
+   "evidence": "Settled by argument (inferred by agent, 2026-11-09, after the cold review's finding 2). The proposed rule is held, not installed; the attempt waits as pending and changes nothing; later identical attempts join the same pending ruling. On Approve the rule installs and each pending attempt settles through it; on Reject each is refused, naming the rejected ruling. The earlier wording, where a ruling settled its own attempt with nothing installed, was an outcome with no rule and is withdrawn.",
+   "sources": [
+    "docs/plans/ai_judge.md:155",
+    "docs/plans/ai_judge.md:166"
+   ],
+   "touches": [
+    "midrun-setting",
+    "ruling-rule",
+    "approval"
+   ]
+  },
+  {
+   "id": "Q81",
+   "short": "How old runs replay once the cap is gone",
+   "question": "Removing the 32-reaction cap (J0) would change the outcome of saved runs that were refused at the limit; how do saved runs still replay unchanged?",
+   "blocks": "J0 and A7.",
+   "resolves_with": "Argument from the run record: the refusal status is written into the run's commands, so replay must use the limit the run ran under.",
+   "owner": "agent",
+   "status": "resolved",
+   "evidence": "Settled by argument (inferred by agent, 2026-11-09, after the cold review's finding 2). Each saved run records the reaction limit it ran under; replay uses the recorded value (a record with none ran under 32), so old runs replay unchanged and new runs use the new setting. The refusal status 'reaction_limit' is written into the commands (src/world_substrate/engine.py:1005); tests/test_open_attempt.py:466-501 checks that refusal and is kept, run against the recorded limit.",
+   "sources": [
+    "docs/plans/ai_judge.md:323",
+    "tests/test_open_attempt.py:466",
+    "src/world_substrate/engine.py:1153"
+   ],
+   "touches": [
+    "knock-on-now",
+    "run-log",
+    "causal-trace"
    ]
   }
  ],
@@ -2042,6 +2193,42 @@ window.PAGE_DATA = {
     "label": "Independent rules review",
     "kind": "Substrate",
     "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds. Code: scripts/review_rules.py:92."
+   },
+   {
+    "id": "consequence-report",
+    "label": "Consequence report",
+    "kind": "Theory",
+    "explain": "Plan ai-judge J1 (planned, not implemented): what the engine works out for an attempt no rule covers, in two passes. Pass 1, with no new rule: engine.discover for the person acting and for each person the attempt names (their moves, with which checks pass or fail), plus the current values of the entities the attempt names. Pass 2: the judge's proposed rule test-run on a copy of the world, giving its net changes, blockers, chain length and stopping point; the full chain stays in the run record. Code: none yet."
+   },
+   {
+    "id": "judge-ruling",
+    "label": "Judge ruling",
+    "kind": "Theory",
+    "explain": "Plan ai-judge J2 (planned, not implemented): Concordia's game master (EventResolution), given the whole world and pass 1 of the consequence report, proposes a rule for the constraint an unmatched attempt raises (can coins change hands here?); after reading the pass 2 test run of that rule it confirms, revises once or withdraws. Never an outcome or another person's choice. Code: none yet."
+   },
+   {
+    "id": "ruling-rule",
+    "label": "Ruling-origin rule",
+    "kind": "Theory",
+    "explain": "Plan ai-judge J3 (planned, not implemented): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, recording the ruling id and round it came from; it applies to everyone in the same situation and the attempt settles through it. A ruling the language cannot express is refused and recorded as a language gap. Code: none yet."
+   },
+   {
+    "id": "credential-holder",
+    "label": "Credential holder",
+    "kind": "Theory",
+    "explain": "Plan ai-judge J4 (planned, not implemented): who holds a credential (a password, a signed release) as a fact in the world that can change: told, overheard, copied, forged or phished. The mechanism checks the credential, not the holder. Code: none yet."
+   },
+   {
+    "id": "norm",
+    "label": "Norm",
+    "kind": "Theory",
+    "explain": "Plan ai-judge J4 (planned, not implemented): what people expect or forbid (bribery is illegal; only Alice should log in). It can be broken; a breach is recorded and has consequences only when someone notices and acts. Never written as a declared law. Code: none yet."
+   },
+   {
+    "id": "midrun-setting",
+    "label": "Mid-run rulings setting",
+    "kind": "Theory",
+    "explain": "Plan ai-judge Decided 5 (planned, not implemented): a per-world option, 'Judge rulings during a run': Approved by Create (default; a checked ruling is installed at once and the attempt settles through it) or Wait for my approval (the proposed rule is held, the attempt waits as pending, Approve installs the rule and settles it, Reject refuses it; nothing settles without an installed rule). Code: none yet."
    }
   ],
   "edges": [
@@ -2668,6 +2855,102 @@ window.PAGE_DATA = {
     "source": "rules-review",
     "target": "build",
     "label": "replaces meaning-guessing checks in"
+   },
+   {
+    "id": "e104",
+    "source": "knock-on-now",
+    "target": "consequence-report",
+    "label": "collected into"
+   },
+   {
+    "id": "e105",
+    "source": "consequence-report",
+    "target": "unmatched-attempt",
+    "label": "describes"
+   },
+   {
+    "id": "e106",
+    "source": "consequence-report",
+    "target": "check",
+    "label": "pass 1 lists"
+   },
+   {
+    "id": "e107",
+    "source": "consequence-report",
+    "target": "test-run",
+    "label": "pass 2 is a"
+   },
+   {
+    "id": "e108",
+    "source": "judge-ruling",
+    "target": "consequence-report",
+    "label": "reads"
+   },
+   {
+    "id": "e109",
+    "source": "judge-ruling",
+    "target": "unmatched-attempt",
+    "label": "decides only"
+   },
+   {
+    "id": "e110",
+    "source": "judge-ruling",
+    "target": "resident",
+    "label": "routes choices to"
+   },
+   {
+    "id": "e111",
+    "source": "ruling-rule",
+    "target": "judge-ruling",
+    "label": "made from"
+   },
+   {
+    "id": "e112",
+    "source": "rules-review",
+    "target": "ruling-rule",
+    "label": "checks"
+   },
+   {
+    "id": "e113",
+    "source": "ruling-rule",
+    "target": "mechanic",
+    "label": "is a"
+   },
+   {
+    "id": "e114",
+    "source": "midrun-setting",
+    "target": "ruling-rule",
+    "label": "decides when installed"
+   },
+   {
+    "id": "e115",
+    "source": "midrun-setting",
+    "target": "approval",
+    "label": "amends"
+   },
+   {
+    "id": "e116",
+    "source": "credential-holder",
+    "target": "entity-component",
+    "label": "is kept in"
+   },
+   {
+    "id": "e117",
+    "source": "credential-holder",
+    "target": "information",
+    "label": "can change by"
+   },
+   {
+    "id": "e118",
+    "source": "norm",
+    "target": "world-law",
+    "label": "is not a"
+   },
+   {
+    "id": "e119",
+    "source": "norm",
+    "target": "observation",
+    "label": "has consequences through"
    }
   ],
   "layout": {
@@ -2723,18 +3006,6 @@ window.PAGE_DATA = {
     "label": "Q15: Repository format files not yet added",
     "kind": "AgentQuestion",
     "explain": "Blocks: whether the repo-format check passes."
-   },
-   {
-    "id": "Q16",
-    "label": "Q16: Goals skip the package gate",
-    "kind": "BrianQuestion",
-    "explain": "Blocks: whether the next goal can again run without a current system model and question list."
-   },
-   {
-    "id": "Q17",
-    "label": "Q17: Offline pipeline views",
-    "kind": "BrianQuestion",
-    "explain": "Blocks: whether work goes into the offline pipeline at all."
    },
    {
     "id": "Q26",
@@ -2809,12 +3080,6 @@ window.PAGE_DATA = {
     "explain": "Blocks: S4: Q45 retires a check when its incident's saved world is refused by a declared law; with laws left out that test can pass on worlds that still have the bug. Also A1 and A4, whose expected results include a payment law.."
    },
    {
-    "id": "Q50",
-    "label": "Q50: What counts as finished",
-    "kind": "BrianQuestion",
-    "explain": "Blocks: Whether the paid builds in S5, L5, A4 and A6 run now, and which defect is fixed next. Merges under the plan stay ungated by Brian's review; only new paid builds wait.."
-   },
-   {
     "id": "Q51",
     "label": "Q51: Live network with no lines",
     "kind": "AgentQuestion",
@@ -2861,12 +3126,6 @@ window.PAGE_DATA = {
     "label": "Q59: Does the people path transfer to a different situation",
     "kind": "AgentQuestion",
     "explain": "Blocks: Whether 'describe any scenario' (Decision 007) holds beyond decision-with-concerns situations; feeds Q60.."
-   },
-   {
-    "id": "Q60",
-    "label": "Q60: Act on the Waltzman lineage review",
-    "kind": "BrianQuestion",
-    "explain": "Blocks: What the next goal is after the declared-laws slices, and whether a Waltzman run can be shown as evidence of a social mechanism.."
    },
    {
     "id": "Q61",
@@ -2923,12 +3182,6 @@ window.PAGE_DATA = {
     "explain": "Blocks: Whether an approval names one exact executable law, whether a decider ever silently misses moves, and whether a broken rule leaves a trace in the run.."
    },
    {
-    "id": "Q70",
-    "label": "Q70: A hosted CI workflow against the local-checks rule",
-    "kind": "BrianQuestion",
-    "explain": "Blocks: Whether the repository keeps a hosted check beside its local one; nothing merges on it today.."
-   },
-   {
     "id": "Q71",
     "label": "Q71: The live build imports spike code",
     "kind": "AgentQuestion",
@@ -2945,6 +3198,24 @@ window.PAGE_DATA = {
     "label": "Q73: Decision 006's wrong-when names a missing adapter",
     "kind": "AgentQuestion",
     "explain": "Blocks: Whether that wrong-when condition can ever be checked.."
+   },
+   {
+    "id": "Q75",
+    "label": "Q75: Constraint question or someone's choice",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: J2's routing step and A5 (Rosa's own resident decides accept or refuse).."
+   },
+   {
+    "id": "Q76",
+    "label": "Q76: How to write norms and credential holders",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: J4's design and A6 (the password fixture: Mallory phishes Alice's password, is logged in, and the breach has consequences only after an observer acts).."
+   },
+   {
+    "id": "Q77",
+    "label": "Q77: Wiki cap and durable-document checks fail on main",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Whether the wiki-compliance and durable-document checks pass again for every package in this repository.."
    },
    {
     "id": "affordance",
@@ -3007,10 +3278,11 @@ window.PAGE_DATA = {
     "explain": "Turns proposed rules into installed rules and derives what each may read and write."
    },
    {
-    "id": "concern",
-    "label": "Concern",
+    "id": "credential-holder",
+    "label": "Credential holder",
     "kind": "Concept",
-    "explain": "An objection a group holds on a delivered item: open, under remedy or resolved, with answered and remedy_by."
+    "dashed": true,
+    "explain": "Plan ai-judge J4 (planned, not implemented): who holds a credential (a password, a signed release) as a fact in the world that can change: told, overheard, copied, forged or phished. The mechanism checks the credential, not the holder."
    },
    {
     "id": "engine",
@@ -3050,6 +3322,13 @@ window.PAGE_DATA = {
     "explain": "Decision 008: worlds built by an agent that drafts, checks and edits; scripts/world_harness.py exists but the live service does not call it."
    },
    {
+    "id": "judge-ruling",
+    "label": "Judge ruling",
+    "kind": "Concept",
+    "dashed": true,
+    "explain": "Plan ai-judge J2 (planned, not implemented): Concordia's game master (EventResolution), given the whole world and pass 1 of the consequence report, proposes a rule for the constraint an unmatched attempt raises (can coins change hands here?); after reading the pass 2 test run of that rule it confirms, revises once or withdraws. Never an outcome or another person's choice."
+   },
+   {
     "id": "law-check",
     "label": "Law check",
     "kind": "Concept",
@@ -3073,6 +3352,13 @@ window.PAGE_DATA = {
     "label": "Mechanisms library",
     "kind": "Concept",
     "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:71, Q28)."
+   },
+   {
+    "id": "norm",
+    "label": "Norm",
+    "kind": "Concept",
+    "dashed": true,
+    "explain": "Plan ai-judge J4 (planned, not implemented): what people expect or forbid (bribery is illegal; only Alice should log in). It can be broken; a breach is recorded and has consequences only when someone notices and acts. Never written as a declared law."
    },
    {
     "id": "observation",
@@ -3111,12 +3397,6 @@ window.PAGE_DATA = {
     "explain": "One AI summary of a run whose every cited event id is checked against the run."
    },
    {
-    "id": "remedy",
-    "label": "Remedy",
-    "kind": "Concept",
-    "explain": "A fix of a concern that takes 2 rounds; it can be stopped part-way by the concern's holder objecting."
-   },
-   {
     "id": "resident",
     "label": "Resident",
     "kind": "Concept",
@@ -3133,6 +3413,12 @@ window.PAGE_DATA = {
     "label": "Independent rules review",
     "kind": "Concept",
     "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds."
+   },
+   {
+    "id": "run-log",
+    "label": "Run log",
+    "kind": "Concept",
+    "explain": "One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads."
    },
    {
     "id": "run-loop",
@@ -3188,12 +3474,6 @@ window.PAGE_DATA = {
     "label": "Unmatched attempt",
     "kind": "Concept",
     "explain": "An attempt no move kind covers: it changes nothing, the person learns nothing came of it, and the run lists it for the rules writer."
-   },
-   {
-    "id": "waltzman-ref",
-    "label": "Waltzman reference components",
-    "kind": "Concept",
-    "explain": "Trust, risk, readiness and commitment components and analyses of the hand-written Waltzman world."
    },
    {
     "id": "world-design",
@@ -3273,12 +3553,6 @@ window.PAGE_DATA = {
     "id": "Q14-rules-retry",
     "source": "Q14",
     "target": "rules-retry",
-    "label": "bears on"
-   },
-   {
-    "id": "Q17-build",
-    "source": "Q17",
-    "target": "build",
     "label": "bears on"
    },
    {
@@ -3480,18 +3754,6 @@ window.PAGE_DATA = {
     "label": "bears on"
    },
    {
-    "id": "Q50-build",
-    "source": "Q50",
-    "target": "build",
-    "label": "bears on"
-   },
-   {
-    "id": "Q50-share",
-    "source": "Q50",
-    "target": "share",
-    "label": "bears on"
-   },
-   {
     "id": "Q51-share",
     "source": "Q51",
     "target": "share",
@@ -3609,30 +3871,6 @@ window.PAGE_DATA = {
     "id": "Q59-gen-rules",
     "source": "Q59",
     "target": "gen-rules",
-    "label": "bears on"
-   },
-   {
-    "id": "Q60-support",
-    "source": "Q60",
-    "target": "support",
-    "label": "bears on"
-   },
-   {
-    "id": "Q60-concern",
-    "source": "Q60",
-    "target": "concern",
-    "label": "bears on"
-   },
-   {
-    "id": "Q60-remedy",
-    "source": "Q60",
-    "target": "remedy",
-    "label": "bears on"
-   },
-   {
-    "id": "Q60-waltzman-ref",
-    "source": "Q60",
-    "target": "waltzman-ref",
     "label": "bears on"
    },
    {
@@ -3762,12 +4000,6 @@ window.PAGE_DATA = {
     "label": "bears on"
    },
    {
-    "id": "Q70-check",
-    "source": "Q70",
-    "target": "check",
-    "label": "bears on"
-   },
-   {
     "id": "Q71-people-world",
     "source": "Q71",
     "target": "people-world",
@@ -3789,6 +4021,42 @@ window.PAGE_DATA = {
     "id": "Q73-resident",
     "source": "Q73",
     "target": "resident",
+    "label": "bears on"
+   },
+   {
+    "id": "Q75-judge-ruling",
+    "source": "Q75",
+    "target": "judge-ruling",
+    "label": "bears on"
+   },
+   {
+    "id": "Q75-resident",
+    "source": "Q75",
+    "target": "resident",
+    "label": "bears on"
+   },
+   {
+    "id": "Q76-norm",
+    "source": "Q76",
+    "target": "norm",
+    "label": "bears on"
+   },
+   {
+    "id": "Q76-credential-holder",
+    "source": "Q76",
+    "target": "credential-holder",
+    "label": "bears on"
+   },
+   {
+    "id": "Q76-world-law",
+    "source": "Q76",
+    "target": "world-law",
+    "label": "bears on"
+   },
+   {
+    "id": "Q77-run-log",
+    "source": "Q77",
+    "target": "run-log",
     "label": "bears on"
    }
   ],
@@ -4410,6 +4678,6 @@ window.PAGE_DATA = {
   "**Decision 008 versus the live build.** Decision 008 says worlds are built in an agent harness that drafts, checks and edits; the live service builds with fixed calls and a rules retry and does not import `scripts/world_harness.py` (open question Q14).",
   "**The wiki's 'Concepts and terminology' versus this model.** The wiki (`docs/wiki/README.md`) defines engine-level terms only; people, concerns, support, tasks and residents are defined here and in ODD section 11, not there."
  ],
- "next_plan": "---\nplan_id: \"declared-laws\"\ndependencies: []\ndependencies_reviewed: \"2026-10-28\"\nplanning_path: reset\nplanning_path_ref: docs/plans/declared_laws/path-decision.json\nmethod_conformance_receipt: docs/plans/declared_laws/conformance-receipt.json\nstatus: adopted\ngoal:\n  outcome: \"A World Builder world stops depending on a growing list of hand-written checks for past bugs: the AI that designs a world also declares that world's own laws (which goods can only appear or vanish through which moves, and what a move such as a purchase must move each way); the engine refuses any move or knock-on effect that breaks a declared law and names the law; and a separate AI review, not the rules writer, reads the written rules against the description and the laws and lists concrete mismatches for the rules writer to fix.\"\n  canonical_example: \"Paste the pencil description (~/code/.scratch/open-attempt-s2/pencil.txt, the one behind pencil2-pencil14) into https://brianmills.dev/world-builder/ and press Create simulation. The build record lists the world's declared laws in plain words (for example 'pencils are made only by the factory's make move' and 'buying boxed pencils moves boxes to the shop and cash to the factory'); a move whose rules would make pencils from nothing or take boxes without paying is refused in the test run with that law named, and the rules writer is told so; the review lists any rule that contradicts the description (pencil13's buy-boxed-pencils, which paid nothing) by name; and the world that is kept runs with no law refusals from its own rules.\"\n  forbidden_substitutes: \"a fixed list of built-in move types that every world must use (Brian 2026-10-28: it 'destorys the whol e potin'); laws or rules written by hand for the pencil world; pencil-specific or Waltzman-specific code paths; a review by the same call or context that wrote the rules; a review that returns a pass mark instead of findings; retiring a heuristic check without showing that the saved world of each incident it caught is refused by a law or named by the review; laptop runs presented as live; runs without run-log.jsonl and a TRACE_READ.md that scripts/check_trace_reads.py passes; rerunning until a behavior appears and reporting only that run.\"\n  boundaries: \"world-substrate and its own deploy only; Cybernetic Influence v3 and Concordia read-only; each slice merges after scripts/check_project.py exits 0 on the committed change, then deploys and the live commit is confirmed through the health endpoint; saved worlds without laws replay unchanged; owner allowance only, visitor allowance stays $3/day, no new spend route without Brian's yes; free replays of saved worlds before any paid run; publish-checker before anything new goes public; never restart WSL.\"\n  done_when: \"Acceptance checks L1-L8 below pass, each judged from the full trace of the run it names.\"\n  do_not_gate_on: \"a static build-time proof of laws (Q46: deferred); laws of shapes other than totals and pairings (Q43); the AI game master for unmatched attempts (Decision D2 of the open-attempt plan); the open-attempt plan's S3 skill rolls; Brian's review of a run.\"\n  stop_after: 3\nconflict_surfaces:\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/plans/declared_laws.md, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/plans/declared_laws/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/planning/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: proposals/declared-laws/review-page/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: proposals/planning-package/review-page/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: tools/planning/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/model/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: roadmap/README.md, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: src/world_substrate/engine.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: src/world_substrate/laws.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: src/world_substrate/rules.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/build_metamodel.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: src/world_substrate/action_authoring.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/generate_world_bundle.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/scaffold_world.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/generate_causal_model.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/review_rules.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/world_builder_service.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/run_authored_world.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/world_builder_home.html, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: prompts/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: tests/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: evidence/declared-laws/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/catalog.md, access: write}\n---\n# Plan: worlds declare their own laws, the engine enforces them, and an independent review reads the rules\n\nPlanning package: docs/planning/declared-laws/planning-package.json\n\n<!-- planning-compliance-checklist:v1 -->\n## Compliance checklist\n\nWritten by `plan_checklist.py --write`, not by hand. `--check` re-runs the validator and fails\nif any line below differs from what it says now. Unticked pending items are not passes.\n\nManifest: `docs/planning/planning-package.json`\nPackage revision: `c99cbc704c5a`\nVerdict: compliant, 2 pending\n\n- [ ] part investigation: pending\n- [x] part checks: ok\n- [x] part open_questions: ok\n- [x] part system_model: ok\n- [x] part domain_model: ok\n- [x] part diagrams: ok\n- [x] part plan: ok\n- [x] part acceptance: ok\n- [x] part review_page: ok\n- [x] part cold_review: ok\n- [ ] substance route follows from its path decision: failing\n- [x] substance citations resolve: ok\n- [x] substance domain model has a glossary: ok\n- [ ] substance project layer checks against the planning layer: failing\n- [x] substance concepts point at their code: ok\n- [x] substance plan names the concepts it relies on: ok\n- [x] substance type-level model of executable rules: ok\n- [x] substance cold review read this revision: ok\n- [ ] initiative initiative names its home: pending\n- [ ] tiers spectrum rungs 1-11 are cited: failing\n- [ ] tiers production rungs 12-14 are cited when it runs in production: failing\n- [ ] tiers thesaurus separates near-identical names (rung 4): failing\n- [x] coverage goal coverage: ok\n- [x] freshness package is current: ok\n<!-- /planning-compliance-checklist -->\n\n\nThis is the plan's own package. The repository's package (`docs/planning/planning-package.json`, page\n`proposals/planning-package/review-page/`) covers the whole repository; its plan part now points at this plan,\nand both share the checks, open-questions ledger, models and diagrams rebuilt by `tools/planning/` (Q41).\n\nReview page: [proposals/declared-laws/review-page/](../../proposals/declared-laws/review-page/index.html), live at\n<https://hive.brianmills.dev/plans/world-substrate/main/proposals/declared-laws/review-page/>.\n\n## Actor and result\n\n**Actor:** a World Builder visitor (and Brian as owner) who pastes a description and watches the generated world\nrun. **Result they can inspect:** the build record lists the world's declared laws in plain words, every move the\nlaws refused (with the law named), and the independent review's findings; the run page shows a world whose goods\ncome from somewhere and go somewhere. **Stable example:** the pencil description in the front matter.\n\n## Project outcome\n\nProject outcome: roadmap/README.md#actor-recurring-job-and-investment-boundary (generative living worlds on top,\nrigorous causal engine underneath). **External job the World Builder serves:** the visitor (an analyst such as Rand\nWaltzman exploring an influence scenario, a teacher, a planner of a small supply chain) is thinking through how a real\nsituation could play out: who would do what, what would run out, what a change would set off. **Their baseline without\nit:** a tabletop exercise or wargame with people playing the parts, a written scenario, or a spreadsheet or\nstock-and-flow model they build by hand; each is slow to set up, and a spreadsheet keeps the books but does not let\npeople try things freely. **How the World Builder helps:** it turns their plain description into a running world in\nminutes, in which people try moves freely and the books are kept, so they can watch the situation unfold and rerun it.\nThis plan serves that job by making the books right (money and goods neither appear nor vanish except as the world's own\nlaws allow), which a reader needs before trusting what the run shows. **Recurring job and baseline:** a visitor describes a world and watches it run.\nBaseline from pencil2 to pencil14 (2026-10-27/28): each live build found one more way the rules writer got the\nbookkeeping wrong (goods from nothing, stock with nowhere to go, a purchase that pays nothing, a move that changes\nnothing, a malformed field path), and each was fixed by one more hand-written check in\n`scripts/world_builder_service.py:922-1272`, some of which then raised false alarms. pencil14 at `5d6a48e` failed\noutright (422 after about 287 s, job `f0b6d1a3dc0a40848456e6fe2ce172c0`: \"mechanic installer rejected\nshipment-arrival: malformed_path\"; driver log in `evidence/pencil14-build-failure/`). **Inspectable result of this plan:** the canonical example above, live.\n\n## Outcome step\n\nOutcome probe: `roadmap/README.md#canonical-outcome-probe`\nObserved: `evidence/pencil13-trace-audit/TRACE_READ.md`\nStep: step 2 of the probe, \"The builder generates the world (places, things, people, the moves they may attempt) and its rules.\"\nClass: vertical\n\npencil13 is the last live pencil run read round by round: 5 sales moved cash, goods were conserved along factory,\ntruck, shop and customer, and the shop's buy-boxed-pencils move paid the factory nothing, which no check caught.\nEach slice changes the build and the run end to end and ends in a live traced run.\n\n## Why, in one example\n\nThe rules writer is a capable model: it knows that buying pencils means paying for them. But it writes every move as\nraw field changes (\"add 10 to shop.boxes, subtract 10 from factory.boxes\"), and nothing compares those changes with\nwhat it knows. So a purchase that forgets the payment installs and runs (pencil13). Our answer so far was a new\ncheck per mistake, each guessing at meaning from the rules' shape. Brian, 2026-10-28: \"my guess is that you hjave been\nfixing symptoms not root problems\". Fixed move types (transfer, exchange, transform) would stop the mistakes by\nstopping the flexibility; Brian rejected that (\"seems to me liek it destorys the whol e potin of what we are doing\").\nThis plan keeps the moves free and asks the model to state, once, what must hold in this world, then holds the\nrules to it.\n\n## Incidents this plan must catch\n\nOne row per build check that guesses at meaning, with the incident its docstring names (`scripts/world_builder_service.py`)\nand the saved world that shows it, plus the incident no check caught. This is the proof set L6 and S4 use: a check\nretires only when its incident's saved world is refused by a law or named by the review.\n\n| Incident | Saved world | Shape | Caught today by | After this plan |\n| --- | --- | --- | --- | --- |\n| A purchase that pays nothing (buy-boxed-pencils) | pencil13 `3SogfsdEGx9M`, `tests/fixtures/pencil13-kept.json` | pairing | nothing | pairing law refuses it; the review names it |\n| A process restocks goods an action makes (restock-production-inputs) | c4-run14, `evidence/best-of-all-worlds/final-1a5498f/c4-run14.log`, trace `world-builder-live/world/41373883...` | total | `_conjuring_processes` (`:867`) | total law: the good may change only by its making move |\n| A move uses up goods and makes nothing (pack-pencils) | `4VmgkXIVWn4p`, `evidence/vanishing-goods/pencil3-share.json` | total | `_vanishing_moves` (`:1114`) | total law: pencils may leave only by being used |\n| A raw good with two sources (mine-graphite and graphite-renews) | c4-run20, trace `world-builder-live/world/5c2f3bc4...` | total, only if the designer names one source | `_second_source_processes` (`:1143`), report only | total law when declared; otherwise not a mistake |\n| Inputs nobody makes (clay, paint, erasers, ferrules) | pencil2 `NZD33sh3iX29`, `tests/fixtures/pencil2-live.json` | reachability, not a law | `_unsourced_inputs` (`:840`) | the test run's \"never possible\" report and the review |\n| A move needs a component no entity has (ship-pencil-boxes) | pencil4 `iMrL2U84cLCS`, `tests/fixtures/pencil4-live.json` | structure, not a law | `_missing_components` (`:943`) | stays: a structural fact read from the bundle |\n| Stock with nowhere to go (the supplier's clay and paint) | pencil4 `iMrL2U84cLCS` | reachability, not a law (Q43) | `_dead_end_stock` (`:960`) | a test-run report of stock that only grew, and the review |\n| The customer flagged as a dead end though it uses pencils | pencil12, pencil13 | false alarm | `_dead_end_stock` (patched in #275, #277) | goes with the guess |\n| A seller starts with none of what it sells and nothing gives it any | pencil9 `q2sG4d_J7279`, `tests/fixtures/pencil9-live.json` | reachability, not a law | `_starved_holders` (`:1023`) | the test run's \"never possible\" report and the review |\n| Demand that only grows (orders_waiting) | cafe `eFmPomcnsyQq`, `evidence/vanishing-goods/cafe2-share.json` | reachability, not a law | `_unanswered_demand` (`:1130`) | a test-run report of a field that only grew, and the review |\n| Processes carry goods that actors should carry | c4-run16, trace `world-builder-live/world/cde24f89...` | role, not a law | `_moving_processes` (`:1178`) | the review |\n| Malformed field path | pencil14, `evidence/pencil14-build-failure/README.md` | not a law | installer, already refused | unchanged |\n\nLaws catch the bookkeeping rows (four). The reachability rows are about what can never happen or what piles up: no\nlaw refuses them because every total is unchanged, so they move to reports of what the test run saw, which stay, and\nto the review.\n\n## Current truth (read from code 2026-10-28, main `5d6a48e`)\n\n| Have | Where |\n| --- | --- |\n| A move's candidate state is checked for writes outside its declared scope and refused whole | `Engine.apply`, `src/world_substrate/engine.py:686-720` |\n| Knock-on effects settle in waves inside the same commit | `_settle`, `engine.py:896`; Decision 009 |\n| Effects are rows `{participant, path, op: set|add|subtract, value}` | `EFFECT_OPS`, `src/world_substrate/action_authoring.py:42`; rows read at `:1052`, applied at `:1109` |\n| A process (tick or knock-on) that writes outside its scope raises `ScopeViolation` and the state is restored (`engine.py:1005-1015`). A moment is refused only for `reaction_limit`, `_settle` returning `None`: in `Engine.apply` through `_reject` with the move's rule id (`engine.py:760-781`), in `Engine.advance` through `_refuse_round` with the process's rule id, which ends the advance (`engine.py:858-866`, `:871-895`) | `src/world_substrate/engine.py` |\n| A world-specific conservation check exists for one reference world only, \"not a substrate law\" | `assay_conservation`, `src/world_substrate/assay.py:269` |\n| A read-only derived view pairs two give events into one exchange | `src/world_substrate/exchange.py:68` |\n| About fourteen build checks guess meaning from rule shape or report the test run | `scripts/world_builder_service.py:922-1272`, used at `:1700-1760` |\n| The rules writer revises only the moves it changes | `merge_revision`, `scripts/generate_causal_model.py` (#278) |\n| Nothing declares a law, and nothing reviews the rules against the description | absent |\n\n## The three pieces\n\n### Piece 1. The world declares its laws (copy: Petri-net place invariants; Concordia's stock-and-flow ledger)\n\nThe world designer's output gains `resources` and `laws`, each with a plain sentence for the page. A **resource** is\ndeclared once with every place it is kept, because the same thing can sit under different names on different\nentities (pencil13: the customer pays from `customer.cash` into the shop's `business.cash`; Q47):\n`{resource_id, says, kept_in: [{component, field}, ...]}`. A resource's amount on an entity is the sum of the fields\nit is kept in there. Laws come in two shapes and name resources, never raw fields:\n\n- **total**: `{law_id, says, resource: <resource id>, may_change_by: [move or process ids]}`. The resource's amount\n  summed over every entity may change only in a step made by a listed move or process (the factory's `make-pencils`,\n  the customer's `use-pencil`); every other step must leave it unchanged. This is a P-invariant with named exempt\n  transitions, and it covers both \"nothing from nothing\" and \"nothing vanishes\".\n- **pairing**: `{law_id, says, move: <move id>, gives: {resource, from, to}, pays: {resource, from, to}}`, where\n  `from` and `to` are the move's participant roles. Every step of that move that moves `gives` from one to the other\n  must also move `pays` the other way, both non-zero. \"A purchase moves goods one way and payment the other.\"\n\nLaws do not cover stock with nowhere to go: piling up leaves every total unchanged, so it is a reachability question\n(Q43), left to the test-run report and the review. A law can itself be wrong for the world; the review reads the\nlaws against the description too (Q48).\n\nLaws name the world's own fields and moves. There is no fixed list of goods or moves; the designer writes the\nlaws\nfor whatever the description holds. A world with no `laws` behaves exactly as today. The rules writer sees the laws as\ninput and is told every move must keep them.\n\n### Piece 2. The engine enforces declared laws (extends the existing scope check)\n\n`src/world_substrate/laws.py` holds one pure function, `law_breaches(laws, before, after, step_id)`, called at every\ncommit point. Two cases, because moves and processes are refused differently today:\n\n- **A move** (`Engine.apply`, right after the write-scope check at `engine.py:686-720`): a breach refuses the whole\n  step with status `law_breach` and a failed check that quotes the law's `says` sentence, exactly as a scope\n  violation of a move does today: nothing changes, the refusal event is recorded.\n- **A process** (a tick in `Engine.advance`, or a knock-on wave in `_settle`): today a scope breach here raises\n  `ScopeViolation` and the state is restored with no event (`engine.py:1005-1015`), because a process is\n  engine-trusted. A law breach is different: it is a mistake in model-written rules, so it must be recorded, not a\n  crash. `_apply_process` runs the law check after its scope check and reports a breach (the process id and the law)\n  instead of committing. `_settle` then stops and returns a refusal record, `{status, process_id, law_id, says}`, in\n  place of today's bare `None` (which becomes the same record with status `reaction_limit`). The two callers refuse\n  the whole moment as they refuse `reaction_limit` today:\n  - **in `Engine.apply`** (a move's knock-on effects): the world is restored and `_reject` records the move refused\n    with status `law_breach`; the event carries the move's rule id, and its failed check quotes the law's sentence\n    and names the process that broke it;\n  - **in `Engine.advance`** (a tick process, or the knock-on effects of one): `_refuse_round` gains `status` and\n    `check` arguments; the tick is undone and one event with status `law_breach` carries the process's rule id and\n    the law. As with `reaction_limit` today, the advance returns there: later steps of a multi-step advance do not\n    run, and the next round starts from the restored state. Because the build's scripted test run runs the rules, a breach there is\na build finding sent to the rules writer by name (Q46). This is the existing invariant \"Mechanics propose; one\nenclosing transition validates and commits or refuses\" (AGENTS.md), with the world's own laws added to what the\nenclosing transition validates; it adds no loop, clock or scheduler (Decision 006).\n\n### Piece 3. An independent review reads the rules (copy: LLM+P and Guan et al. 2023 validator feedback)\n\n`scripts/review_rules.py`: one typed `llm_client` call, a different model family from the rules writer, with a fresh\ncontext holding only the description, the laws and the compiled rules. It returns findings, each\n`{rule_id, description_words, problem}`, never a pass mark (Q44). Findings go to the rules writer's existing revision\nstep (`merge_revision`), and the build record lists them. Laws catch bookkeeping; the review catches meaning a law\ncannot state (a move that changes nothing, a rule that contradicts the description).\n\n## Requirements\n\n| Id | Requirement (source) | Fails when | Control | Status |\n| --- | --- | --- | --- | --- |\n| R1 | Moves stay free; no fixed move types (Brian 2026-10-28) | a law shape forces a move into a template | laws constrain totals and pairings only; L1 | Built and run live (S1: #280, `evidence/declared-laws/s1-pencil/`) |\n| R2 | The world's own laws are written by the AI that designs it (Brian 2026-10-28 design 1) | laws are hand-written or pencil-specific | L1 on the live pencil build and S5's other descriptions | Built (S1); S5 planned |\n| R3 | The engine enforces declared laws generically and names the law (design 2) | a breach commits, or a refusal names no law | L2, L3 | Built (S2: `src/world_substrate/laws.py`, `tests/test_laws.py`); L3 live half runs on the deployed build |\n| R4 | A separate review checks rules against description and laws (design 3) | the reviewer is the writer, or returns a verdict | L4 | Built (S3); live check `evidence/declared-laws/s3-pencil/`: L4 held, L5 failed (an unreviewed try was kept; rank and reviewer prompt fixed; the reviewer now sees starting values and preview law refusals reach the build record, #293); second build `evidence/declared-laws/s3-pencil-2/`: no review ran because the last try of each structure failed to compile (fixed: the best unreviewed try is now reviewed), and its replay names the starved shop; third build `evidence/declared-laws/s3-pencil-3/`: both reviews ran and named the missing arrival, the redesign wrote it, and the compiler refused it because the destination field may be empty (fixed: `ref:` links accept `entity_ref_or_null`; the free replay then delivers and sells); fourth build `evidence/declared-laws/s3-pencil-4/`: both reviews ran, the redesign added the moves the first review asked for, and the whole chain ran live to a sale, but the dry run had said eight moves were never offered because discovery stopped at 256 moves before reaching the right buyer (fixed: discovery narrows participants by their own checks first; the free replay offers every move and sells 7); the same build kept a try in which pencils could never be sold over one that ran every move, because an ongoing world counted as alive only with a world process (fixed: alive is what the test run saw, still active at the end; the recorded build replayed with today's code keeps a try that offers every move); the free check over saved worlds (`scripts/check_saved_worlds.py`, 12 of 25 whole) showed the rewrite was told the wrong gap: when a step's only source was refused by a law every time, the note named the source as if it ran, a role no one fits gave an empty note, and a check's comparison was left out (fixed: the note names the law and what it found, the role and the part its closest fit lacks, and the comparison) |\n| R5 | Validation stops growing one check per bug | a heuristic retires without proof, or a new one is added | L6 | Planned (S4) |\n| R6 | Saved worlds replay unchanged (AGENTS.md invariants) | a world with no laws behaves differently | L7 | Planned in every slice |\n| R7 | Every run is readable in full (core rules) | a law refusal or review call is missing from the trace | L8 | Planned in every slice |\n\n## Acceptance checks\n\n| Id | Check | Run and what its trace must show |\n| --- | --- | --- |\n| L1 | The designer declares laws in the world's own terms | `evidence/declared-laws/s1-pencil/`: the build record's `laws` names the pencil world's own resources and moves, each with a `says` sentence; no law was hand-edited (the bundle's laws equal the model reply in the trace) |\n| L2 | A step that breaks a total or a pairing is refused whole, law named | `tests/test_laws.py`: the pencil13 fixture's buy-boxed-pencils with a pairing law gives status `law_breach`, world unchanged, failed check quotes the law; a make move outside `may_change_by` is refused the same way; a move whose knock-on wave breaks a law is refused through `_reject` (status `law_breach`, the move's rule id, a failed check naming the process and quoting the law); a tick process that breaks a law is refused through `_refuse_round` (status `law_breach`, the process's rule id, the law quoted) and the advance stops there; a write-scope breach by a process still raises `ScopeViolation` |\n| L3 | A test-run breach reaches the rules writer by name | `evidence/declared-laws/s2-pencil/`: if the test run refused a step, the next rules call's request quotes the law; if none was refused, the TRACE_READ says so and L2 carries the claim |\n| L4 | The review is independent and returns findings | `evidence/declared-laws/s3-pencil/`: the review call's model differs from the rules writer's, its request holds only description, laws and rules, and its reply is a findings list; run on `tests/fixtures/pencil13-kept.json` it names buy-boxed-pencils |\n| L5 | The canonical example runs live | `evidence/declared-laws/s3-pencil/` (or S5): the kept world's run shows sales moving cash both ways, no law refusals from its own rules, and the build record lists laws and findings |\n| L6 | Each retired heuristic is covered | `evidence/declared-laws/s4-retire/README.md`: per retired check, every incident it caught (table above) is refused by a law or named by the review on its saved world; checks that report the test run stay |\n| L7 | Existing worlds replay unchanged | `scripts/check_project.py` on each slice's merge commit, exit 0, with the open-attempt plan's A8 replay tests named passing |\n| L8 | Every run is fully traced | each `evidence/declared-laws/<run>/` has `run-log.jsonl` and a `TRACE_READ.md` that passes `scripts/check_trace_reads.py`, read by the implementing agent before reporting |\n\n## What Brian judges on the working page\n\nL1-L8 are the agent's checks. What a person opens and sees to decide it works is in\n`docs/planning/declared-laws/acceptance-criteria.json`, each with steps on the World Builder, the expected result\nand a broken case that looks different:\n\n| Id | Criterion | Broken case to tell it apart |\n| --- | --- | --- |\n| A1 | The build record shows the world's own laws in plain words | no laws, or laws naming things the world lacks |\n| A2 | A move that breaks a law is refused and the page names the law | pencil13's buy-boxed-pencils shows as done with no payment |\n| A3 | The review names where rules miss the description, quoting it | empty, \"looks good\", or findings with no quoted words |\n| A4 | The pencil world runs with every sale paying | goods move and cash does not; or the build fails (pencil14) |\n| A5 | Moves stay free, in each world's own terms, with no fixed move kinds | every move labelled transfer, exchange or transform |\n| A6 | Four very different descriptions (pencil, airfield, kitchen, the long Waltzman scenario) each build a world that keeps its own laws | pencil laws reworded, a committed step that breaks a law, or only pencils work |\n| A7 | Mistakes are caught by laws and the review, not a growing list of hand-written checks | a new mistake fixed by adding another guess check |\n\n## Success and disproof\n\n**What L1-L8 are:** the agent's acceptance checks for R1-R7, one row each in the table above. Each is a direct check\nof the claimed property, not a stand-in for it: L1 reads the laws themselves in the build record and compares them\nwith the designer's reply; L2 and L3 read the refusal events and the rules writer's next request; L4 reads the review\ncall's model, request and findings; L5 reads the kept world's own run, sale by sale; L6 replays each incident's saved\nworld and reads whether a law or a finding names it; L7 replays law-free saved worlds; L8 reads each run's trace\nfiles. A test count, a merged pull request or a status line alone satisfies none of them.\n\n**Success:** L1-L8 pass, each judged from the full trace of the run it names. **Disproof:** any of these in a named\nrun's trace: a law that names a field or move the world does not have; a committed step whose before and after break a\ndeclared law; a refusal without the law's sentence; a review call sharing the rules writer's model or conversation; a\nretired check with an incident neither a law nor the review catches; a law-free saved world whose replay differs.\nTrace review: the implementing agent reads every law refusal, every review finding and a sample of at least five\nordinary steps per run, and writes `TRACE_READ.md`; each of L1-L8 is expected `pass`. Where each trace lives:\nL1, L3, L4, L5 and L6 in `evidence/declared-laws/<run>/run-log.jsonl` (with `TRACE_READ.md` beside it) plus the\n`llm_client` trace ids it records; L2 and L7 in the `scripts/check_project.py` output for the slice's merge commit,\nsaved as `evidence/declared-laws/<slice>/check_project.txt`, with the named tests' assertions read; L8 is the reading\nof those files itself. An acceptance criterion that names only an outcome (\"tests pass\", \"pull request merged\", \"the\nstatus reads ok\") fails this rule; every row names what its trace must show. Exemption: a criterion with no run (a\npure document edit, such as this adoption commit) says so and why in its slice's `TRACE_READ.md`; no criterion\nL1-L8 is exempt.\n\n## When a run fails or surprises us\n\nThis procedure is separate from the anticipated failure modes in Requirements and Uncertainties: those are designed\nfor in advance, while this is what to do when a real run fails or surprises us in a way nobody planned. Keep the run and its trace ids; read the full inputs, prompts, each model and tool call's arguments and results,\nintermediate stages (laws, rules, review findings, test-run refusals) and the output (build record, page) before\nchoosing a fix; cite where it diverged; classify it evidence absent (never retrieved), evidence returned but unused or contradicted, invalid\nexpectation, or unresolved. An unresolved cause permits investigation, not a repair. A repair is verified by a new traced run whose\n`TRACE_READ.md` links the original; the original stays. A new symptom is first asked \"which law or review finding\nshould have caught this?\" and fixed there; a new heuristic check is the last resort and is recorded as a question.\nNever rerun until a behavior appears and report only that run. Review completeness never changes the run verdict.\n\n## Slices, in order\n\n| Slice | What lands | State | Checks |\n| --- | --- | --- | --- |\n| S1 | `resources` and `laws` in the world design contract (`scripts/generate_world_bundle.py`) and its validator; laws passed to the rules writer; build record and page list them | built (#280) | L1, L7, L8; one live pencil build |\n| S2 | `law_breaches` in `src/world_substrate/laws.py`, called in `Engine.apply` after the scope check and in `_apply_process` (ticks and knock-on waves); `_settle` returns a refusal record; `_reject` and `_refuse_round` record `law_breach`; status `law_breach`; test-run breaches become build findings | built (#284) | L2, L3, L7; free replays of saved worlds first |\n| S3 | `scripts/review_rules.py` and its findings into the rules writer's revision step | built (#291-#304; Q44 resolved); on the people-world path a build past its 80 s rewrite limit keeps a world its review flagged (Q55, open) | L4, L5, L8 |\n| S4 | retire the heuristics Q45 names, one by one, each with its incident proof | conditional (Q45; none retired yet) | L6, L7 |\n| S5 | live builds of four varied descriptions in parallel (pencil, airfield, a kitchen, the Waltzman scenario) | waiting on Q50 (S1-S3 built; new paid builds wait for Brian's answer; one Waltzman rebuild ran 2026-11-04 on his yes for that build, `evidence/declared-laws/s4-waltzman-3/`) | L1, L5, L8 per run; read for Q43 counterexamples |\n\nEach slice is its own pull request and leaves a working World Builder.\n\n## Decisions\n\n- **D1 (Brian, 2026-10-28, \"yes lets make it companhy plannign complaint\"):** the three-part design (laws declared\n  by the designer, enforced by the engine, an independent review) replaces fixed move types.\n- **D2 (made, technical):** law checking sits beside the write-scope check inside the existing commit, not in a new\n  engine stage (Q46; Decision 006).\n- **D3 (made, technical):** two law shapes, total and pairing (Q43). Anything else stays an ordinary rule the review reads.\n- **D4 (made, technical):** borrow the semantics of Concordia's `stock_flow_ledger.py` (holders, an outside boundary,\n  `is_conserved`) but do not adopt it: its fixed operation set is the fixed-move-types design Brian rejected.\n\n## System model\n\n- Model: [docs/model/ODD.md](../model/ODD.md); relied on: RULE-ATOMIC-COMMIT-OR-REFUSAL (a law breach changes\n  nothing), RULE-DERIVED-AUTHORITY. Adds: `world-law` (the bundle's `laws`), `law-check` (status `law_breach`),\n  `rules-review` (the build record's `review_findings`). Each is a node in\n  [docs/model/domain.graph.json](../model/domain.graph.json) marked \"in documents only\" until its slice builds it.\n- Scope: this repository's own model, linked from `docs/wiki/README.md`; the scientific-hypergraph mapping is unchanged.\n- Each slice updates ODD.md, `world_substrate_model.toml` and `tests/test_system_model.py` in the same pull request;\n  the drift test must fail on a renamed field before it passes. Views: `owner_run_log` and `home` must show the laws,\n  each law refusal with its sentence, and the review findings; each slice adds its row to `docs/model/VIEW_COVERAGE.md`.\n- The trace must show, per element: the bundle's `laws` as the designer's reply; each `law_breach` event with the law\n  id and before/after; each review call's trace id, model and findings.\n\n## Trace visibility\n\n- Each run's `run-log.jsonl` records the inputs (description, bundle hash), every build step with its time, each model\n  call (designer, rules writer, reviewer, residents) with request messages, typed result and `llm_client` trace id,\n  every engine event with before/after and failed checks (including `law_breach`), and the output (build record, page\n  JSON). Kept for ordinary runs, not only failures; this adoption commit alone is document-only and runs nothing.\n- The model's reasoning, where the model exposes it: each call's reasoning text (OpenRouter `reasoning` field, and\n  the residents' `reasoning` field in `scripts/run_authored_world.py:454`) is kept in the run log with the call, not\n  dropped; a model that exposes none is recorded as such.\n- How to open one: `jq . evidence/declared-laws/<run>/run-log.jsonl`; model calls in the VPS `llm_calls` table by\n  trace id. Who reads and when: the implementing agent reads every run's trace before reporting its slice: every law\n  refusal and review finding in full, and at least five ordinary steps per run across rounds and actors.\n\n## Capability reuse\n\nNo catalogue entry fits, because `reuse_candidates.yml` and `capability_registry.yml` hold approvals, notifications,\nscheduling, document-to-text and search wrappers, none of which check rules or conservation. Model calls go through\nthe shared `llm_client` (listed in `~/code2/workspace/docs/capabilities.md`). No new cross-project capability is added;\nthe law check's and the review's first and only consumer is the World Builder build.\n\n## Prior art and ownership\n\nPrior-art review 2026-10-28 (summarised in Decisions D3-D4): Petri-net place invariants (laws as weighted sums with\nexempt transitions); Concordia contrib `stock_flow_ledger.py` (Apache-2.0, semantics borrowed); LLM+P and Guan et al.\n2023, AutoToS, WorldCoder (a model writes a world model, a validator feeds corrections back); Huang et al. 2023\n(arXiv 2310.01798), SCORE (2404.17140) and Wataoka et al. 2024 (2410.21819): self-review without outside feedback is\nweak and self-preferring, hence D2 of Piece 3. Overall disposition: **compose**, with a small law language of our own.\nPer candidate:\n\n| Candidate | Disposition | What we take |\n| --- | --- | --- |\n| Petri-net place invariants | compose (idea only) | a law is a weighted sum that only named moves may change |\n| Concordia contrib `stock_flow_ledger.py` | bounded exception (semantics borrowed, code not adopted) | holders, an outside boundary, `is_conserved`; its fixed operation set is the fixed-move-types design Brian rejected (D4) |\n| LLM+P, Guan et al. 2023, AutoToS, WorldCoder | compose (method) | a model writes the world model and an outside validator feeds named corrections back to it (Pieces 2 and 3) |\n| Huang et al. 2023, SCORE, Wataoka et al. 2024 | reuse (finding) | the reviewer must be a different model and context from the writer (Piece 3) |\nOwner: World Substrate's rules layer. Parallel-implementation check: one commit path; `grep -n \"def apply\"\nsrc/world_substrate/engine.py` stays one hit and `law_breaches` has one caller per commit site.\n\n## LLM call boundary\n\nBuild call graph: world designer (existing; output gains `laws`) -> rules writer (existing; laws added to its input,\ntest-run law refusals and review findings added to its revision input) -> reviewer (new, one call per build attempt,\nafter compile, before the test run's verdict) -> no further model call. Laws and review findings have no authority to\nchange state: laws only refuse, and findings only reach the rules writer. Rules writer and designer stay on the World\nBuilder's model; the reviewer uses a different family through `llm_client` (Q44). Structured result boundaries:\nthe **world designer** returns the world bundle JSON defined by `_contract()` (`scripts/generate_world_bundle.py:93`),\nparsed with `safe_json_loads` and accepted only by `validate_bundle` (`scripts/scaffold_world.py:45`); S1 adds\n`resources` and `laws` to both, and a reply that fails validation goes back for repair, up to `MAX_REPAIRS`. The\n**rules writer** returns the causal model JSON whose schema `causal_model_schema(bundle)`\n(`scripts/generate_causal_model.py:330`) builds from the bundle, then `tidy_proposal` and the installer check it; a\nrevision is merged by `merge_revision`. The **reviewer** (new, S3) returns `{\"findings\": [{\"rule_id\": str,\n\"description_words\": str, \"problem\": str}]}` through `llm_client`'s typed structured call, with `rule_id` checked\nagainst the compiled rules' ids; any other shape is recorded as a failed review. Failure: a failed or malformed\nreview call is recorded with its error and the build continues without findings, visibly. Tracing: each build's calls\nshare its trace id, as today.\n\nProvider: OpenRouter through `llm_client`; designer and rules writer on the World Builder's `DEFAULT_MODEL`\n(`scripts/run_authored_world.py:38`), the reviewer on a model of another family chosen in S3 (Q44). Spend authority:\nBrian's owner allowance, given for this plan by his 2026-10-28 \"yes\" and his added OpenRouter credit; the visitor\nallowance stays $3/day. Promotion condition: laws and review findings count as working only after an authentic live\nbuild on the deployed service (owner allowance, through the real page) whose `run-log.jsonl` and `TRACE_READ.md` show\nthem; fixture and replay results support a slice but are never reported as live.\n\n## Evaluation design\n\nOne measurement (Q44), for one decision. **Decision it changes:** S4, whether each guessing check retires. If the review\nand the laws together catch every incident a check caught, that check goes; if not, it stays and the miss becomes an\nopen question. **Why argument cannot settle it:** whether a different model, given the description and the rules,\nnotices a payment missing from a purchase is a fact about that model on these worlds; the prior art says self-review\nis weak but says nothing about this reviewer on these rules. **Parity:** every candidate reviewer gets the same input\n(description, laws, compiled rules of each saved incident world, no other context) and the same findings schema, and\nis scored only on whether it names the incident's rule; the heuristics it is compared with run on the same saved\nworlds. **Cost:** about seven saved worlds, one review call each, a few cents and minutes on free replays; a wrong\nretirement would let the next pencil-style bug run unnoticed, which has already cost several paid builds and days.\nWhy measuring is cheaper than choosing now and correcting later: retiring a check is reversible in code, but a wrong\nretirement is found only when a live build ships a broken world to a visitor, after paid builds and a trace read\n(pencil2-pencil14 took about $2 and two days to surface their bugs); the replay costs cents and minutes and runs before\nany retirement. **Under each result:** a reviewer that names an incident's rule lets that check retire in S4; one that\nmisses it keeps the check and opens a question; if no candidate names more than half, S3's review stays advisory and\nS4 retires only checks a law covers.\n\n## Irreversible actions and spend\n\nWho authorizes spend: Brian alone. He authorized this plan's owner-allowance builds on 2026-10-28 (\"yes lets make it\ncompanhy plannign complaint\", with the OpenRouter credit he added: \"there is more money\"); any spend past the caps\nbelow, or any new spend route, needs his yes first. Nothing irreversible: merges are pull requests and deploys redeploy from the previous commit. No deletion of saved\nworlds or run records, no outreach, no change to other repositories. Spend: owner allowance only, after free replays;\nabout $0.15 per live pencil build, at most $1.00 per slice and $3.00 across the plan before reporting; S5's four builds\nare about $0.60. The visitor allowance stays $3/day.\n\n## Uncertainties\n\n- Q50 (Brian, open): what counts as finished. This plan's done_when and do_not_gate_on stay as adopted, so Brian's\n  review gates no merge; his 2026-11-03 objection to repeated rebuilds holds S5's paid builds until he answers.\n- Q43 (agent, resolved by reading): two law shapes cover every logged incident; S5 is read for a counterexample.\n- Q44 (agent, resolved): which model reviews; settled by the review run on the saved incident worlds\n  (`evidence/declared-laws/s3-review-choice/README.md`).\n- Q45 (agent, open): which heuristic checks retire; settled per check in S4.\n- Q46 (agent, resolved by argument): run-time refusal first; a static proof is optional.\n- Q48 (agent, open in part) and Q49 (agent, open): a law too permissive, and a law the designer leaves out.\n- Q55 (agent, open): the 2026-11-04 Waltzman rebuild kept rules its review flagged (no postponement possible); the\n  shared run is judged under Q50 only with that stated.\n- Wrong or missing laws: a designer that declares too few laws catches less, never more wrongly; a designer that\n  declares a wrong law makes the test run refuse a legitimate move, which shows as a law refusal in the build record\n  and goes to the rules writer and the review. L1 and S5's reads check both.\n\n## Activation facts\n\nRecorded in [activation-facts.json](declared_laws/activation-facts.json): shared mechanism yes (the engine and\nthe build serve every world), one empirical comparison (Q44, see Evaluation design), LLM central yes, spend yes (owner\nallowance), deploys yes (see Deployment). Route: [path-decision.json](declared_laws/path-decision.json), reset: this re-plans the World Builder's\nvalidation after the one-check-per-bug approach hit an implementation obstacle (pencil2-pencil14), with no single\nidentified fix. One writer still runs the slices in order. The plan copies\nestablished methods but claims conformance to none, so `claims_external_standard` is false.\n\n## Deployment\n\nEach slice deploys once, after its pull request merges (squash) on `main`. Targets and commands:\n\n| Target | Deploy command | Live check that the new version serves | Rollback |\n| --- | --- | --- | --- |\n| World Builder API on the personal VPS (container `world-builder`, `/srv/apps/world-builder`) and the pages Worker `world-builder-pages` (home, play, build) | `scripts/deploy_world_builder.sh <merged commit>`: runs the local gate unless that tree already passed, then personal-vps `apps/world-builder/deploy.sh` for the API and `deploy/cloudflare/world-builder/build.sh` plus Wrangler for the pages | `curl https://brianmills.dev/world-builder/api/health` reports `build_commit` equal to the merged commit (the script waits for it and exits 3 otherwise); the home page served at <https://brianmills.dev/world-builder/> contains the slice's new text (S1: \"Laws this world keeps\") | API: `ssh personal-vps 'docker tag world-builder:<previous short sha> world-builder:current && cd /srv/apps/world-builder && docker-compose up -d'` (the last 3 image tags are kept); pages: rerun `scripts/deploy_world_builder.sh <previous commit>` |\n\nNo deploy runs while a live run is in progress on the service.\n\n## Durable documents\n\nDurable documents: system_model#ENT-RUN-RECORD, system_model#PROC-TRANSITION, system_model#PROC-PROCESS-TICK, plans\n\nThese roles are declared in the repository's `durable_documents` block (`.agentic/repo.yaml:3-11`): `system_model`\nis `{prose: docs/model/ODD.md, trace: docs/model/trace.yaml}`, where ENT-RUN-RECORD, PROC-TRANSITION and\nPROC-PROCESS-TICK are ids (`docs/model/trace.yaml:22, 28, 31`), and `plans` is `docs/plans/`.\n\nS1 changes ENT-RUN-RECORD (the build record gains `laws`); S2 changes PROC-TRANSITION and PROC-PROCESS-TICK (law\nchecks in each commit and wave); S3 changes ENT-RUN-RECORD (`review_findings`). At completion of each slice,\n`python3 ~/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --plan\ndocs/plans/declared_laws.md --range <adoption revision>..HEAD` must exit 0.\n\n## Authority and non-goals\n\n**Authority:** Brian's \"yes lets make it companhy plannign complaint\" on 2026-10-28 to this design; one agent writes;\nworld-substrate and its own deploy only.\n\n**Non-goals:** fixed move types; laws of shapes other than totals and pairings; a static proof of laws; changes to\nthe open-attempt plan's S3 skill rolls; any change to Cybernetic Influence v3 or Concordia.\n",
+ "next_plan": "---\nplan_id: \"declared-laws\"\ndependencies: []\ndependencies_reviewed: \"2026-10-28\"\nplanning_path: reset\nplanning_path_ref: docs/plans/declared_laws/path-decision.json\nmethod_conformance_receipt: docs/plans/declared_laws/conformance-receipt.json\nstatus: adopted\ngoal:\n  outcome: \"A World Builder world stops depending on a growing list of hand-written checks for past bugs: the AI that designs a world also declares that world's own laws (which goods can only appear or vanish through which moves, and what a move such as a purchase must move each way); the engine refuses any move or knock-on effect that breaks a declared law and names the law; and a separate AI review, not the rules writer, reads the written rules against the description and the laws and lists concrete mismatches for the rules writer to fix.\"\n  canonical_example: \"Paste the pencil description (~/code/.scratch/open-attempt-s2/pencil.txt, the one behind pencil2-pencil14) into https://brianmills.dev/world-builder/ and press Create simulation. The build record lists the world's declared laws in plain words (for example 'pencils are made only by the factory's make move' and 'buying boxed pencils moves boxes to the shop and cash to the factory'); a move whose rules would make pencils from nothing or take boxes without paying is refused in the test run with that law named, and the rules writer is told so; the review lists any rule that contradicts the description (pencil13's buy-boxed-pencils, which paid nothing) by name; and the world that is kept runs with no law refusals from its own rules.\"\n  forbidden_substitutes: \"a fixed list of built-in move types that every world must use (Brian 2026-10-28: it 'destorys the whol e potin'); laws or rules written by hand for the pencil world; pencil-specific or Waltzman-specific code paths; a review by the same call or context that wrote the rules; a review that returns a pass mark instead of findings; retiring a heuristic check without showing that the saved world of each incident it caught is refused by a law or named by the review; laptop runs presented as live; runs without run-log.jsonl and a TRACE_READ.md that scripts/check_trace_reads.py passes; rerunning until a behavior appears and reporting only that run.\"\n  boundaries: \"world-substrate and its own deploy only; Cybernetic Influence v3 and Concordia read-only; each slice merges after scripts/check_project.py exits 0 on the committed change, then deploys and the live commit is confirmed through the health endpoint; saved worlds without laws replay unchanged; owner allowance only, visitor allowance stays $3/day, no new spend route without Brian's yes; free replays of saved worlds before any paid run; publish-checker before anything new goes public; never restart WSL.\"\n  done_when: \"Acceptance checks L1-L8 below pass, each judged from the full trace of the run it names.\"\n  do_not_gate_on: \"a static build-time proof of laws (Q46: deferred); laws of shapes other than totals and pairings (Q43); the AI game master for unmatched attempts (Decision D2 of the open-attempt plan); the open-attempt plan's S3 skill rolls; Brian's review of a run.\"\n  stop_after: 3\nconflict_surfaces:\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/plans/declared_laws.md, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/plans/declared_laws/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/planning/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: proposals/declared-laws/review-page/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: proposals/planning-package/review-page/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: tools/planning/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/model/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: roadmap/README.md, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: src/world_substrate/engine.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: src/world_substrate/laws.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: src/world_substrate/rules.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/build_metamodel.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: src/world_substrate/action_authoring.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/generate_world_bundle.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/scaffold_world.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/generate_causal_model.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/review_rules.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/world_builder_service.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/run_authored_world.py, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: scripts/world_builder_home.html, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: prompts/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: tests/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: evidence/declared-laws/, access: write}\n  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/catalog.md, access: write}\n---\n# Plan: worlds declare their own laws, the engine enforces them, and an independent review reads the rules\n\nPlanning package: docs/planning/declared-laws/planning-package.json\n\n<!-- planning-compliance-checklist:v1 -->\n## Compliance checklist\n\nWritten by `plan_checklist.py --write`, not by hand. `--check` re-runs the validator and fails\nif any line below differs from what it says now. Unticked pending items are not passes.\n\nManifest: `docs/planning/planning-package.json`\nPackage revision: `c99cbc704c5a`\nVerdict: compliant, 2 pending\n\n- [ ] part investigation: pending\n- [x] part checks: ok\n- [x] part open_questions: ok\n- [x] part system_model: ok\n- [x] part domain_model: ok\n- [x] part diagrams: ok\n- [x] part plan: ok\n- [x] part acceptance: ok\n- [x] part review_page: ok\n- [x] part cold_review: ok\n- [ ] substance route follows from its path decision: failing\n- [x] substance citations resolve: ok\n- [x] substance domain model has a glossary: ok\n- [ ] substance project layer checks against the planning layer: failing\n- [x] substance concepts point at their code: ok\n- [x] substance plan names the concepts it relies on: ok\n- [x] substance type-level model of executable rules: ok\n- [x] substance cold review read this revision: ok\n- [ ] initiative initiative names its home: pending\n- [ ] tiers spectrum rungs 1-11 are cited: failing\n- [ ] tiers production rungs 12-14 are cited when it runs in production: failing\n- [ ] tiers thesaurus separates near-identical names (rung 4): failing\n- [x] coverage goal coverage: ok\n- [x] freshness package is current: ok\n<!-- /planning-compliance-checklist -->\n\n\nThis is the plan's own package. The repository's package (`docs/planning/planning-package.json`, page\n`proposals/planning-package/review-page/`) covers the whole repository; its plan part now points at this plan,\nand both share the checks, open-questions ledger, models and diagrams rebuilt by `tools/planning/` (Q41).\n\nReview page: [proposals/declared-laws/review-page/](../../proposals/declared-laws/review-page/index.html), live at\n<https://hive.brianmills.dev/plans/world-substrate/main/proposals/declared-laws/review-page/>.\n\n## Actor and result\n\n**Actor:** a World Builder visitor (and Brian as owner) who pastes a description and watches the generated world\nrun. **Result they can inspect:** the build record lists the world's declared laws in plain words, every move the\nlaws refused (with the law named), and the independent review's findings; the run page shows a world whose goods\ncome from somewhere and go somewhere. **Stable example:** the pencil description in the front matter.\n\n## Project outcome\n\nProject outcome: roadmap/README.md#actor-recurring-job-and-investment-boundary (generative living worlds on top,\nrigorous causal engine underneath). **External job the World Builder serves:** the visitor (an analyst such as Rand\nWaltzman exploring an influence scenario, a teacher, a planner of a small supply chain) is thinking through how a real\nsituation could play out: who would do what, what would run out, what a change would set off. **Their baseline without\nit:** a tabletop exercise or wargame with people playing the parts, a written scenario, or a spreadsheet or\nstock-and-flow model they build by hand; each is slow to set up, and a spreadsheet keeps the books but does not let\npeople try things freely. **How the World Builder helps:** it turns their plain description into a running world in\nminutes, in which people try moves freely and the books are kept, so they can watch the situation unfold and rerun it.\nThis plan serves that job by making the books right (money and goods neither appear nor vanish except as the world's own\nlaws allow), which a reader needs before trusting what the run shows. **Recurring job and baseline:** a visitor describes a world and watches it run.\nBaseline from pencil2 to pencil14 (2026-10-27/28): each live build found one more way the rules writer got the\nbookkeeping wrong (goods from nothing, stock with nowhere to go, a purchase that pays nothing, a move that changes\nnothing, a malformed field path), and each was fixed by one more hand-written check in\n`scripts/world_builder_service.py:922-1272`, some of which then raised false alarms. pencil14 at `5d6a48e` failed\noutright (422 after about 287 s, job `f0b6d1a3dc0a40848456e6fe2ce172c0`: \"mechanic installer rejected\nshipment-arrival: malformed_path\"; driver log in `evidence/pencil14-build-failure/`). **Inspectable result of this plan:** the canonical example above, live.\n\n## Outcome step\n\nOutcome probe: `roadmap/README.md#canonical-outcome-probe`\nObserved: `evidence/pencil13-trace-audit/TRACE_READ.md`\nStep: step 2 of the probe, \"The builder generates the world (places, things, people, the moves they may attempt) and its rules.\"\nClass: vertical\n\npencil13 is the last live pencil run read round by round: 5 sales moved cash, goods were conserved along factory,\ntruck, shop and customer, and the shop's buy-boxed-pencils move paid the factory nothing, which no check caught.\nEach slice changes the build and the run end to end and ends in a live traced run.\n\n## Why, in one example\n\nThe rules writer is a capable model: it knows that buying pencils means paying for them. But it writes every move as\nraw field changes (\"add 10 to shop.boxes, subtract 10 from factory.boxes\"), and nothing compares those changes with\nwhat it knows. So a purchase that forgets the payment installs and runs (pencil13). Our answer so far was a new\ncheck per mistake, each guessing at meaning from the rules' shape. Brian, 2026-10-28: \"my guess is that you hjave been\nfixing symptoms not root problems\". Fixed move types (transfer, exchange, transform) would stop the mistakes by\nstopping the flexibility; Brian rejected that (\"seems to me liek it destorys the whol e potin of what we are doing\").\nThis plan keeps the moves free and asks the model to state, once, what must hold in this world, then holds the\nrules to it.\n\n## Incidents this plan must catch\n\nOne row per build check that guesses at meaning, with the incident its docstring names (`scripts/world_builder_service.py`)\nand the saved world that shows it, plus the incident no check caught. This is the proof set L6 and S4 use: a check\nretires only when its incident's saved world is refused by a law or named by the review.\n\n| Incident | Saved world | Shape | Caught today by | After this plan |\n| --- | --- | --- | --- | --- |\n| A purchase that pays nothing (buy-boxed-pencils) | pencil13 `3SogfsdEGx9M`, `tests/fixtures/pencil13-kept.json` | pairing | nothing | pairing law refuses it; the review names it |\n| A process restocks goods an action makes (restock-production-inputs) | c4-run14, `evidence/best-of-all-worlds/final-1a5498f/c4-run14.log`, trace `world-builder-live/world/41373883...` | total | `_conjuring_processes` (`:867`) | total law: the good may change only by its making move |\n| A move uses up goods and makes nothing (pack-pencils) | `4VmgkXIVWn4p`, `evidence/vanishing-goods/pencil3-share.json` | total | `_vanishing_moves` (`:1114`) | total law: pencils may leave only by being used |\n| A raw good with two sources (mine-graphite and graphite-renews) | c4-run20, trace `world-builder-live/world/5c2f3bc4...` | total, only if the designer names one source | `_second_source_processes` (`:1143`), report only | total law when declared; otherwise not a mistake |\n| Inputs nobody makes (clay, paint, erasers, ferrules) | pencil2 `NZD33sh3iX29`, `tests/fixtures/pencil2-live.json` | reachability, not a law | `_unsourced_inputs` (`:840`) | the test run's \"never possible\" report and the review |\n| A move needs a component no entity has (ship-pencil-boxes) | pencil4 `iMrL2U84cLCS`, `tests/fixtures/pencil4-live.json` | structure, not a law | `_missing_components` (`:943`) | stays: a structural fact read from the bundle |\n| Stock with nowhere to go (the supplier's clay and paint) | pencil4 `iMrL2U84cLCS` | reachability, not a law (Q43) | `_dead_end_stock` (`:960`) | a test-run report of stock that only grew, and the review |\n| The customer flagged as a dead end though it uses pencils | pencil12, pencil13 | false alarm | `_dead_end_stock` (patched in #275, #277) | goes with the guess |\n| A seller starts with none of what it sells and nothing gives it any | pencil9 `q2sG4d_J7279`, `tests/fixtures/pencil9-live.json` | reachability, not a law | `_starved_holders` (`:1023`) | the test run's \"never possible\" report and the review |\n| Demand that only grows (orders_waiting) | cafe `eFmPomcnsyQq`, `evidence/vanishing-goods/cafe2-share.json` | reachability, not a law | `_unanswered_demand` (`:1130`) | a test-run report of a field that only grew, and the review |\n| Processes carry goods that actors should carry | c4-run16, trace `world-builder-live/world/cde24f89...` | role, not a law | `_moving_processes` (`:1178`) | the review |\n| Malformed field path | pencil14, `evidence/pencil14-build-failure/README.md` | not a law | installer, already refused | unchanged |\n\nLaws catch the bookkeeping rows (four). The reachability rows are about what can never happen or what piles up: no\nlaw refuses them because every total is unchanged, so they move to reports of what the test run saw, which stay, and\nto the review.\n\n## Current truth (read from code 2026-10-28, main `5d6a48e`)\n\n| Have | Where |\n| --- | --- |\n| A move's candidate state is checked for writes outside its declared scope and refused whole | `Engine.apply`, `src/world_substrate/engine.py:686-720` |\n| Knock-on effects settle in waves inside the same commit | `_settle`, `engine.py:896`; Decision 009 |\n| Effects are rows `{participant, path, op: set|add|subtract, value}` | `EFFECT_OPS`, `src/world_substrate/action_authoring.py:42`; rows read at `:1052`, applied at `:1109` |\n| A process (tick or knock-on) that writes outside its scope raises `ScopeViolation` and the state is restored (`engine.py:1005-1015`). A moment is refused only for `reaction_limit`, `_settle` returning `None`: in `Engine.apply` through `_reject` with the move's rule id (`engine.py:760-781`), in `Engine.advance` through `_refuse_round` with the process's rule id, which ends the advance (`engine.py:858-866`, `:871-895`) | `src/world_substrate/engine.py` |\n| A world-specific conservation check exists for one reference world only, \"not a substrate law\" | `assay_conservation`, `src/world_substrate/assay.py:269` |\n| A read-only derived view pairs two give events into one exchange | `src/world_substrate/exchange.py:68` |\n| About fourteen build checks guess meaning from rule shape or report the test run | `scripts/world_builder_service.py:922-1272`, used at `:1700-1760` |\n| The rules writer revises only the moves it changes | `merge_revision`, `scripts/generate_causal_model.py` (#278) |\n| Nothing declares a law, and nothing reviews the rules against the description | absent |\n\n## The three pieces\n\n### Piece 1. The world declares its laws (copy: Petri-net place invariants; Concordia's stock-and-flow ledger)\n\nThe world designer's output gains `resources` and `laws`, each with a plain sentence for the page. A **resource** is\ndeclared once with every place it is kept, because the same thing can sit under different names on different\nentities (pencil13: the customer pays from `customer.cash` into the shop's `business.cash`; Q47):\n`{resource_id, says, kept_in: [{component, field}, ...]}`. A resource's amount on an entity is the sum of the fields\nit is kept in there. Laws come in two shapes and name resources, never raw fields:\n\n- **total**: `{law_id, says, resource: <resource id>, may_change_by: [move or process ids]}`. The resource's amount\n  summed over every entity may change only in a step made by a listed move or process (the factory's `make-pencils`,\n  the customer's `use-pencil`); every other step must leave it unchanged. This is a P-invariant with named exempt\n  transitions, and it covers both \"nothing from nothing\" and \"nothing vanishes\".\n- **pairing**: `{law_id, says, move: <move id>, gives: {resource, from, to}, pays: {resource, from, to}}`, where\n  `from` and `to` are the move's participant roles. Every step of that move that moves `gives` from one to the other\n  must also move `pays` the other way, both non-zero. \"A purchase moves goods one way and payment the other.\"\n\nLaws do not cover stock with nowhere to go: piling up leaves every total unchanged, so it is a reachability question\n(Q43), left to the test-run report and the review. A law can itself be wrong for the world; the review reads the\nlaws against the description too (Q48).\n\nLaws name the world's own fields and moves. There is no fixed list of goods or moves; the designer writes the\nlaws\nfor whatever the description holds. A world with no `laws` behaves exactly as today. The rules writer sees the laws as\ninput and is told every move must keep them.\n\n### Piece 2. The engine enforces declared laws (extends the existing scope check)\n\n`src/world_substrate/laws.py` holds one pure function, `law_breaches(laws, before, after, step_id)`, called at every\ncommit point. Two cases, because moves and processes are refused differently today:\n\n- **A move** (`Engine.apply`, right after the write-scope check at `engine.py:686-720`): a breach refuses the whole\n  step with status `law_breach` and a failed check that quotes the law's `says` sentence, exactly as a scope\n  violation of a move does today: nothing changes, the refusal event is recorded.\n- **A process** (a tick in `Engine.advance`, or a knock-on wave in `_settle`): today a scope breach here raises\n  `ScopeViolation` and the state is restored with no event (`engine.py:1005-1015`), because a process is\n  engine-trusted. A law breach is different: it is a mistake in model-written rules, so it must be recorded, not a\n  crash. `_apply_process` runs the law check after its scope check and reports a breach (the process id and the law)\n  instead of committing. `_settle` then stops and returns a refusal record, `{status, process_id, law_id, says}`, in\n  place of today's bare `None` (which becomes the same record with status `reaction_limit`). The two callers refuse\n  the whole moment as they refuse `reaction_limit` today:\n  - **in `Engine.apply`** (a move's knock-on effects): the world is restored and `_reject` records the move refused\n    with status `law_breach`; the event carries the move's rule id, and its failed check quotes the law's sentence\n    and names the process that broke it;\n  - **in `Engine.advance`** (a tick process, or the knock-on effects of one): `_refuse_round` gains `status` and\n    `check` arguments; the tick is undone and one event with status `law_breach` carries the process's rule id and\n    the law. As with `reaction_limit` today, the advance returns there: later steps of a multi-step advance do not\n    run, and the next round starts from the restored state. Because the build's scripted test run runs the rules, a breach there is\na build finding sent to the rules writer by name (Q46). This is the existing invariant \"Mechanics propose; one\nenclosing transition validates and commits or refuses\" (AGENTS.md), with the world's own laws added to what the\nenclosing transition validates; it adds no loop, clock or scheduler (Decision 006).\n\n### Piece 3. An independent review reads the rules (copy: LLM+P and Guan et al. 2023 validator feedback)\n\n`scripts/review_rules.py`: one typed `llm_client` call, a different model family from the rules writer, with a fresh\ncontext holding only the description, the laws and the compiled rules. It returns findings, each\n`{rule_id, description_words, problem}`, never a pass mark (Q44). Findings go to the rules writer's existing revision\nstep (`merge_revision`), and the build record lists them. Laws catch bookkeeping; the review catches meaning a law\ncannot state (a move that changes nothing, a rule that contradicts the description).\n\n## Requirements\n\n| Id | Requirement (source) | Fails when | Control | Status |\n| --- | --- | --- | --- | --- |\n| R1 | Moves stay free; no fixed move types (Brian 2026-10-28) | a law shape forces a move into a template | laws constrain totals and pairings only; L1 | Built and run live (S1: #280, `evidence/declared-laws/s1-pencil/`) |\n| R2 | The world's own laws are written by the AI that designs it (Brian 2026-10-28 design 1) | laws are hand-written or pencil-specific | L1 on the live pencil build and S5's other descriptions | Built (S1); S5 planned |\n| R3 | The engine enforces declared laws generically and names the law (design 2) | a breach commits, or a refusal names no law | L2, L3 | Built (S2: `src/world_substrate/laws.py`, `tests/test_laws.py`); L3 live half runs on the deployed build |\n| R4 | A separate review checks rules against description and laws (design 3) | the reviewer is the writer, or returns a verdict | L4 | Built (S3); live check `evidence/declared-laws/s3-pencil/`: L4 held, L5 failed (an unreviewed try was kept; rank and reviewer prompt fixed; the reviewer now sees starting values and preview law refusals reach the build record, #293); second build `evidence/declared-laws/s3-pencil-2/`: no review ran because the last try of each structure failed to compile (fixed: the best unreviewed try is now reviewed), and its replay names the starved shop; third build `evidence/declared-laws/s3-pencil-3/`: both reviews ran and named the missing arrival, the redesign wrote it, and the compiler refused it because the destination field may be empty (fixed: `ref:` links accept `entity_ref_or_null`; the free replay then delivers and sells); fourth build `evidence/declared-laws/s3-pencil-4/`: both reviews ran, the redesign added the moves the first review asked for, and the whole chain ran live to a sale, but the dry run had said eight moves were never offered because discovery stopped at 256 moves before reaching the right buyer (fixed: discovery narrows participants by their own checks first; the free replay offers every move and sells 7); the same build kept a try in which pencils could never be sold over one that ran every move, because an ongoing world counted as alive only with a world process (fixed: alive is what the test run saw, still active at the end; the recorded build replayed with today's code keeps a try that offers every move); the free check over saved worlds (`scripts/check_saved_worlds.py`, 12 of 25 whole) showed the rewrite was told the wrong gap: when a step's only source was refused by a law every time, the note named the source as if it ran, a role no one fits gave an empty note, and a check's comparison was left out (fixed: the note names the law and what it found, the role and the part its closest fit lacks, and the comparison) |\n| R5 | Validation stops growing one check per bug | a heuristic retires without proof, or a new one is added | L6 | Planned (S4) |\n| R6 | Saved worlds replay unchanged (AGENTS.md invariants) | a world with no laws behaves differently | L7 | Planned in every slice |\n| R7 | Every run is readable in full (core rules) | a law refusal or review call is missing from the trace | L8 | Planned in every slice |\n\n## Acceptance checks\n\n| Id | Check | Run and what its trace must show |\n| --- | --- | --- |\n| L1 | The designer declares laws in the world's own terms | `evidence/declared-laws/s1-pencil/`: the build record's `laws` names the pencil world's own resources and moves, each with a `says` sentence; no law was hand-edited (the bundle's laws equal the model reply in the trace) |\n| L2 | A step that breaks a total or a pairing is refused whole, law named | `tests/test_laws.py`: the pencil13 fixture's buy-boxed-pencils with a pairing law gives status `law_breach`, world unchanged, failed check quotes the law; a make move outside `may_change_by` is refused the same way; a move whose knock-on wave breaks a law is refused through `_reject` (status `law_breach`, the move's rule id, a failed check naming the process and quoting the law); a tick process that breaks a law is refused through `_refuse_round` (status `law_breach`, the process's rule id, the law quoted) and the advance stops there; a write-scope breach by a process still raises `ScopeViolation` |\n| L3 | A test-run breach reaches the rules writer by name | `evidence/declared-laws/s2-pencil/`: if the test run refused a step, the next rules call's request quotes the law; if none was refused, the TRACE_READ says so and L2 carries the claim |\n| L4 | The review is independent and returns findings | `evidence/declared-laws/s3-pencil/`: the review call's model differs from the rules writer's, its request holds only description, laws and rules, and its reply is a findings list; run on `tests/fixtures/pencil13-kept.json` it names buy-boxed-pencils |\n| L5 | The canonical example runs live | `evidence/declared-laws/s3-pencil/` (or S5): the kept world's run shows sales moving cash both ways, no law refusals from its own rules, and the build record lists laws and findings |\n| L6 | Each retired heuristic is covered | `evidence/declared-laws/s4-retire/README.md`: per retired check, every incident it caught (table above) is refused by a law or named by the review on its saved world; checks that report the test run stay |\n| L7 | Existing worlds replay unchanged | `scripts/check_project.py` on each slice's merge commit, exit 0, with the open-attempt plan's A8 replay tests named passing |\n| L8 | Every run is fully traced | each `evidence/declared-laws/<run>/` has `run-log.jsonl` and a `TRACE_READ.md` that passes `scripts/check_trace_reads.py`, read by the implementing agent before reporting |\n\n## What Brian judges on the working page\n\nL1-L8 are the agent's checks. What a person opens and sees to decide it works is in\n`docs/planning/declared-laws/acceptance-criteria.json`, each with steps on the World Builder, the expected result\nand a broken case that looks different:\n\n| Id | Criterion | Broken case to tell it apart |\n| --- | --- | --- |\n| A1 | The build record shows the world's own laws in plain words | no laws, or laws naming things the world lacks |\n| A2 | A move that breaks a law is refused and the page names the law | pencil13's buy-boxed-pencils shows as done with no payment |\n| A3 | The review names where rules miss the description, quoting it | empty, \"looks good\", or findings with no quoted words |\n| A4 | The pencil world runs with every sale paying | goods move and cash does not; or the build fails (pencil14) |\n| A5 | Moves stay free, in each world's own terms, with no fixed move kinds | every move labelled transfer, exchange or transform |\n| A6 | Four very different descriptions (pencil, airfield, kitchen, the long Waltzman scenario) each build a world that keeps its own laws | pencil laws reworded, a committed step that breaks a law, or only pencils work |\n| A7 | Mistakes are caught by laws and the review, not a growing list of hand-written checks | a new mistake fixed by adding another guess check |\n\n## Success and disproof\n\n**What L1-L8 are:** the agent's acceptance checks for R1-R7, one row each in the table above. Each is a direct check\nof the claimed property, not a stand-in for it: L1 reads the laws themselves in the build record and compares them\nwith the designer's reply; L2 and L3 read the refusal events and the rules writer's next request; L4 reads the review\ncall's model, request and findings; L5 reads the kept world's own run, sale by sale; L6 replays each incident's saved\nworld and reads whether a law or a finding names it; L7 replays law-free saved worlds; L8 reads each run's trace\nfiles. A test count, a merged pull request or a status line alone satisfies none of them.\n\n**Success:** L1-L8 pass, each judged from the full trace of the run it names. **Disproof:** any of these in a named\nrun's trace: a law that names a field or move the world does not have; a committed step whose before and after break a\ndeclared law; a refusal without the law's sentence; a review call sharing the rules writer's model or conversation; a\nretired check with an incident neither a law nor the review catches; a law-free saved world whose replay differs.\nTrace review: the implementing agent reads every law refusal, every review finding and a sample of at least five\nordinary steps per run, and writes `TRACE_READ.md`; each of L1-L8 is expected `pass`. Where each trace lives:\nL1, L3, L4, L5 and L6 in `evidence/declared-laws/<run>/run-log.jsonl` (with `TRACE_READ.md` beside it) plus the\n`llm_client` trace ids it records; L2 and L7 in the `scripts/check_project.py` output for the slice's merge commit,\nsaved as `evidence/declared-laws/<slice>/check_project.txt`, with the named tests' assertions read; L8 is the reading\nof those files itself. An acceptance criterion that names only an outcome (\"tests pass\", \"pull request merged\", \"the\nstatus reads ok\") fails this rule; every row names what its trace must show. Exemption: a criterion with no run (a\npure document edit, such as this adoption commit) says so and why in its slice's `TRACE_READ.md`; no criterion\nL1-L8 is exempt.\n\n## When a run fails or surprises us\n\nThis procedure is separate from the anticipated failure modes in Requirements and Uncertainties: those are designed\nfor in advance, while this is what to do when a real run fails or surprises us in a way nobody planned. Keep the run and its trace ids; read the full inputs, prompts, each model and tool call's arguments and results,\nintermediate stages (laws, rules, review findings, test-run refusals) and the output (build record, page) before\nchoosing a fix; cite where it diverged; classify it evidence absent (never retrieved), evidence returned but unused or contradicted, invalid\nexpectation, or unresolved. An unresolved cause permits investigation, not a repair. A repair is verified by a new traced run whose\n`TRACE_READ.md` links the original; the original stays. A new symptom is first asked \"which law or review finding\nshould have caught this?\" and fixed there; a new heuristic check is the last resort and is recorded as a question.\nNever rerun until a behavior appears and report only that run. Review completeness never changes the run verdict.\n\n## Slices, in order\n\n| Slice | What lands | State | Checks |\n| --- | --- | --- | --- |\n| S1 | `resources` and `laws` in the world design contract (`scripts/generate_world_bundle.py`) and its validator; laws passed to the rules writer; build record and page list them | built (#280) | L1, L7, L8; one live pencil build |\n| S2 | `law_breaches` in `src/world_substrate/laws.py`, called in `Engine.apply` after the scope check and in `_apply_process` (ticks and knock-on waves); `_settle` returns a refusal record; `_reject` and `_refuse_round` record `law_breach`; status `law_breach`; test-run breaches become build findings | built (#284) | L2, L3, L7; free replays of saved worlds first |\n| S3 | `scripts/review_rules.py` and its findings into the rules writer's revision step | built (#291-#304; Q44 resolved); on the people-world path a build past its 80 s rewrite limit keeps a world its review flagged (Q55, open) | L4, L5, L8 |\n| S4 | retire the heuristics Q45 names, one by one, each with its incident proof | conditional (Q45; none retired yet) | L6, L7 |\n| S5 | live builds of four varied descriptions in parallel (pencil, airfield, a kitchen, the Waltzman scenario) | follows the plain-version comparison (Q60) (S1-S3 built; Q50 settled 2026-11-09; one Waltzman rebuild ran 2026-11-04 on his yes for that build, `evidence/declared-laws/s4-waltzman-3/`) | L1, L5, L8 per run; read for Q43 counterexamples |\n\nEach slice is its own pull request and leaves a working World Builder.\n\n## Decisions\n\n- **D1 (Brian, 2026-10-28, \"yes lets make it companhy plannign complaint\"):** the three-part design (laws declared\n  by the designer, enforced by the engine, an independent review) replaces fixed move types.\n- **D2 (made, technical):** law checking sits beside the write-scope check inside the existing commit, not in a new\n  engine stage (Q46; Decision 006).\n- **D3 (made, technical):** two law shapes, total and pairing (Q43). Anything else stays an ordinary rule the review reads.\n- **D4 (made, technical):** borrow the semantics of Concordia's `stock_flow_ledger.py` (holders, an outside boundary,\n  `is_conserved`) but do not adopt it: its fixed operation set is the fixed-move-types design Brian rejected.\n\n## System model\n\n- Model: [docs/model/ODD.md](../model/ODD.md); relied on: RULE-ATOMIC-COMMIT-OR-REFUSAL (a law breach changes\n  nothing), RULE-DERIVED-AUTHORITY. Adds: `world-law` (the bundle's `laws`), `law-check` (status `law_breach`),\n  `rules-review` (the build record's `review_findings`). Each is a node in\n  [docs/model/domain.graph.json](../model/domain.graph.json) marked \"in documents only\" until its slice builds it.\n- Scope: this repository's own model, linked from `docs/wiki/README.md`; the scientific-hypergraph mapping is unchanged.\n- Each slice updates ODD.md, `world_substrate_model.toml` and `tests/test_system_model.py` in the same pull request;\n  the drift test must fail on a renamed field before it passes. Views: `owner_run_log` and `home` must show the laws,\n  each law refusal with its sentence, and the review findings; each slice adds its row to `docs/model/VIEW_COVERAGE.md`.\n- The trace must show, per element: the bundle's `laws` as the designer's reply; each `law_breach` event with the law\n  id and before/after; each review call's trace id, model and findings.\n\n## Trace visibility\n\n- Each run's `run-log.jsonl` records the inputs (description, bundle hash), every build step with its time, each model\n  call (designer, rules writer, reviewer, residents) with request messages, typed result and `llm_client` trace id,\n  every engine event with before/after and failed checks (including `law_breach`), and the output (build record, page\n  JSON). Kept for ordinary runs, not only failures; this adoption commit alone is document-only and runs nothing.\n- The model's reasoning, where the model exposes it: each call's reasoning text (OpenRouter `reasoning` field, and\n  the residents' `reasoning` field in `scripts/run_authored_world.py:454`) is kept in the run log with the call, not\n  dropped; a model that exposes none is recorded as such.\n- How to open one: `jq . evidence/declared-laws/<run>/run-log.jsonl`; model calls in the VPS `llm_calls` table by\n  trace id. Who reads and when: the implementing agent reads every run's trace before reporting its slice: every law\n  refusal and review finding in full, and at least five ordinary steps per run across rounds and actors.\n\n## Capability reuse\n\nNo catalogue entry fits, because `reuse_candidates.yml` and `capability_registry.yml` hold approvals, notifications,\nscheduling, document-to-text and search wrappers, none of which check rules or conservation. Model calls go through\nthe shared `llm_client` (listed in `~/code2/workspace/docs/capabilities.md`). No new cross-project capability is added;\nthe law check's and the review's first and only consumer is the World Builder build.\n\n## Prior art and ownership\n\nPrior-art review 2026-10-28 (summarised in Decisions D3-D4): Petri-net place invariants (laws as weighted sums with\nexempt transitions); Concordia contrib `stock_flow_ledger.py` (Apache-2.0, semantics borrowed); LLM+P and Guan et al.\n2023, AutoToS, WorldCoder (a model writes a world model, a validator feeds corrections back); Huang et al. 2023\n(arXiv 2310.01798), SCORE (2404.17140) and Wataoka et al. 2024 (2410.21819): self-review without outside feedback is\nweak and self-preferring, hence D2 of Piece 3. Overall disposition: **compose**, with a small law language of our own.\nPer candidate:\n\n| Candidate | Disposition | What we take |\n| --- | --- | --- |\n| Petri-net place invariants | compose (idea only) | a law is a weighted sum that only named moves may change |\n| Concordia contrib `stock_flow_ledger.py` | bounded exception (semantics borrowed, code not adopted) | holders, an outside boundary, `is_conserved`; its fixed operation set is the fixed-move-types design Brian rejected (D4) |\n| LLM+P, Guan et al. 2023, AutoToS, WorldCoder | compose (method) | a model writes the world model and an outside validator feeds named corrections back to it (Pieces 2 and 3) |\n| Huang et al. 2023, SCORE, Wataoka et al. 2024 | reuse (finding) | the reviewer must be a different model and context from the writer (Piece 3) |\nOwner: World Substrate's rules layer. Parallel-implementation check: one commit path; `grep -n \"def apply\"\nsrc/world_substrate/engine.py` stays one hit and `law_breaches` has one caller per commit site.\n\n## LLM call boundary\n\nBuild call graph: world designer (existing; output gains `laws`) -> rules writer (existing; laws added to its input,\ntest-run law refusals and review findings added to its revision input) -> reviewer (new, one call per build attempt,\nafter compile, before the test run's verdict) -> no further model call. Laws and review findings have no authority to\nchange state: laws only refuse, and findings only reach the rules writer. Rules writer and designer stay on the World\nBuilder's model; the reviewer uses a different family through `llm_client` (Q44). Structured result boundaries:\nthe **world designer** returns the world bundle JSON defined by `_contract()` (`scripts/generate_world_bundle.py:93`),\nparsed with `safe_json_loads` and accepted only by `validate_bundle` (`scripts/scaffold_world.py:45`); S1 adds\n`resources` and `laws` to both, and a reply that fails validation goes back for repair, up to `MAX_REPAIRS`. The\n**rules writer** returns the causal model JSON whose schema `causal_model_schema(bundle)`\n(`scripts/generate_causal_model.py:330`) builds from the bundle, then `tidy_proposal` and the installer check it; a\nrevision is merged by `merge_revision`. The **reviewer** (new, S3) returns `{\"findings\": [{\"rule_id\": str,\n\"description_words\": str, \"problem\": str}]}` through `llm_client`'s typed structured call, with `rule_id` checked\nagainst the compiled rules' ids; any other shape is recorded as a failed review. Failure: a failed or malformed\nreview call is recorded with its error and the build continues without findings, visibly. Tracing: each build's calls\nshare its trace id, as today.\n\nProvider: OpenRouter through `llm_client`; designer and rules writer on the World Builder's `DEFAULT_MODEL`\n(`scripts/run_authored_world.py:38`), the reviewer on a model of another family chosen in S3 (Q44). Spend authority:\nBrian's owner allowance, given for this plan by his 2026-10-28 \"yes\" and his added OpenRouter credit; the visitor\nallowance stays $3/day. Promotion condition: laws and review findings count as working only after an authentic live\nbuild on the deployed service (owner allowance, through the real page) whose `run-log.jsonl` and `TRACE_READ.md` show\nthem; fixture and replay results support a slice but are never reported as live.\n\n## Evaluation design\n\nOne measurement (Q44), for one decision. **Decision it changes:** S4, whether each guessing check retires. If the review\nand the laws together catch every incident a check caught, that check goes; if not, it stays and the miss becomes an\nopen question. **Why argument cannot settle it:** whether a different model, given the description and the rules,\nnotices a payment missing from a purchase is a fact about that model on these worlds; the prior art says self-review\nis weak but says nothing about this reviewer on these rules. **Parity:** every candidate reviewer gets the same input\n(description, laws, compiled rules of each saved incident world, no other context) and the same findings schema, and\nis scored only on whether it names the incident's rule; the heuristics it is compared with run on the same saved\nworlds. **Cost:** about seven saved worlds, one review call each, a few cents and minutes on free replays; a wrong\nretirement would let the next pencil-style bug run unnoticed, which has already cost several paid builds and days.\nWhy measuring is cheaper than choosing now and correcting later: retiring a check is reversible in code, but a wrong\nretirement is found only when a live build ships a broken world to a visitor, after paid builds and a trace read\n(pencil2-pencil14 took about $2 and two days to surface their bugs); the replay costs cents and minutes and runs before\nany retirement. **Under each result:** a reviewer that names an incident's rule lets that check retire in S4; one that\nmisses it keeps the check and opens a question; if no candidate names more than half, S3's review stays advisory and\nS4 retires only checks a law covers.\n\n## Irreversible actions and spend\n\nWho authorizes spend: Brian alone. He authorized this plan's owner-allowance builds on 2026-10-28 (\"yes lets make it\ncompanhy plannign complaint\", with the OpenRouter credit he added: \"there is more money\"); any spend past the caps\nbelow, or any new spend route, needs his yes first. Nothing irreversible: merges are pull requests and deploys redeploy from the previous commit. No deletion of saved\nworlds or run records, no outreach, no change to other repositories. Spend: owner allowance only, after free replays;\nabout $0.15 per live pencil build, at most $1.00 per slice and $3.00 across the plan before reporting; S5's four builds\nare about $0.60. The visitor allowance stays $3/day.\n\n## Uncertainties\n\n- Q50 (Brian, settled 2026-11-09): believability is the off-the-shelf people agents' job, with no metric, tuned\n  only once everything else runs well. S5's paid builds now wait only on the plain-version comparison (Q60).\n- Q43 (agent, resolved by reading): two law shapes cover every logged incident; S5 is read for a counterexample.\n- Q44 (agent, resolved): which model reviews; settled by the review run on the saved incident worlds\n  (`evidence/declared-laws/s3-review-choice/README.md`).\n- Q45 (agent, open): which heuristic checks retire; settled per check in S4.\n- Q46 (agent, resolved by argument): run-time refusal first; a static proof is optional.\n- Q48 (agent, open in part) and Q49 (agent, open): a law too permissive, and a law the designer leaves out.\n- Q55 (agent, open): the 2026-11-04 Waltzman rebuild kept rules its review flagged (no postponement possible); the\n  shared run is read only with that stated.\n- Wrong or missing laws: a designer that declares too few laws catches less, never more wrongly; a designer that\n  declares a wrong law makes the test run refuse a legitimate move, which shows as a law refusal in the build record\n  and goes to the rules writer and the review. L1 and S5's reads check both.\n\n## Activation facts\n\nRecorded in [activation-facts.json](declared_laws/activation-facts.json): shared mechanism yes (the engine and\nthe build serve every world), one empirical comparison (Q44, see Evaluation design), LLM central yes, spend yes (owner\nallowance), deploys yes (see Deployment). Route: [path-decision.json](declared_laws/path-decision.json), reset: this re-plans the World Builder's\nvalidation after the one-check-per-bug approach hit an implementation obstacle (pencil2-pencil14), with no single\nidentified fix. One writer still runs the slices in order. The plan copies\nestablished methods but claims conformance to none, so `claims_external_standard` is false.\n\n## Deployment\n\nEach slice deploys once, after its pull request merges (squash) on `main`. Targets and commands:\n\n| Target | Deploy command | Live check that the new version serves | Rollback |\n| --- | --- | --- | --- |\n| World Builder API on the personal VPS (container `world-builder`, `/srv/apps/world-builder`) and the pages Worker `world-builder-pages` (home, play, build) | `scripts/deploy_world_builder.sh <merged commit>`: runs the local gate unless that tree already passed, then personal-vps `apps/world-builder/deploy.sh` for the API and `deploy/cloudflare/world-builder/build.sh` plus Wrangler for the pages | `curl https://brianmills.dev/world-builder/api/health` reports `build_commit` equal to the merged commit (the script waits for it and exits 3 otherwise); the home page served at <https://brianmills.dev/world-builder/> contains the slice's new text (S1: \"Laws this world keeps\") | API: `ssh personal-vps 'docker tag world-builder:<previous short sha> world-builder:current && cd /srv/apps/world-builder && docker-compose up -d'` (the last 3 image tags are kept); pages: rerun `scripts/deploy_world_builder.sh <previous commit>` |\n\nNo deploy runs while a live run is in progress on the service.\n\n## Durable documents\n\nDurable documents: system_model#ENT-RUN-RECORD, system_model#PROC-TRANSITION, system_model#PROC-PROCESS-TICK, plans\n\nThese roles are declared in the repository's `durable_documents` block (`.agentic/repo.yaml:3-11`): `system_model`\nis `{prose: docs/model/ODD.md, trace: docs/model/trace.yaml}`, where ENT-RUN-RECORD, PROC-TRANSITION and\nPROC-PROCESS-TICK are ids (`docs/model/trace.yaml:22, 28, 31`), and `plans` is `docs/plans/`.\n\nS1 changes ENT-RUN-RECORD (the build record gains `laws`); S2 changes PROC-TRANSITION and PROC-PROCESS-TICK (law\nchecks in each commit and wave); S3 changes ENT-RUN-RECORD (`review_findings`). At completion of each slice,\n`python3 ~/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --plan\ndocs/plans/declared_laws.md --range <adoption revision>..HEAD` must exit 0.\n\n## Authority and non-goals\n\n**Authority:** Brian's \"yes lets make it companhy plannign complaint\" on 2026-10-28 to this design; one agent writes;\nworld-substrate and its own deploy only.\n\n**Non-goals:** fixed move types; laws of shapes other than totals and pairings; a static proof of laws; changes to\nthe open-attempt plan's S3 skill rolls; any change to Cybernetic Influence v3 or Concordia.\n",
  "built_from": "c99cbc7"
 };
