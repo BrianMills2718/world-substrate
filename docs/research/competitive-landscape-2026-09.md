@@ -4,7 +4,7 @@ status: non-authoritative
 reviewed: 2026-09-08
 authority_refs:
   - ../../roadmap/README.md
-  - ../architecture.md
+  - ../architecture/arc42.md
   - ../decisions/004-product-and-adoption-strategy.md
 ---
 

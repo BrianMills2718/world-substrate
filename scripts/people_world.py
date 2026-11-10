@@ -1,4 +1,4 @@
-"""People worlds for the World Builder: the scenario-spec path (docs/plans/scenario_spec_adoption.md).
+"""People worlds for the World Builder: the scenario-spec path (docs/model/ODD.md section 10; the plan docs/plans/scenario_spec_adoption.md is retired).
 
 A description about people (who wants what, who knows what, meetings, decisions) is built through ScenarioSpecV1
 instead of the plain things-and-actions generator: one structured call writes the people with their goals, beliefs

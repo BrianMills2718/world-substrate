@@ -111,7 +111,7 @@ Each gap names what the model says, what the view does instead, the evidence, an
 
 ### G6. Approval is a request flag, not a record
 
-- **Model:** approval is the gate between proposal and execution (Decision 006, `docs/architecture.md` "Causal authoring and installation").
+- **Model:** approval is the gate between proposal and execution (Decision 006, `docs/architecture.md` "Causal authoring and installation", retired 2026-11-09 into [arc42](../architecture/arc42.md); `git show 9cefeee:docs/architecture.md`).
 - **Code:** the server refuses `/run` and `/compare-native-coordination` unless the body says `approved: true` (`world_builder_service.py:957-962`, `:998-1000`); both pages send the literal `approved:true` (`world_builder_home.html:581`, `world_builder_app.js:304`, `:319`). Nothing records who approved which causal model when; the run log has the request flag and a `world_fingerprint` of bundle + model (`:330`), which is the closest substitute.
 - **Reproduced: partly.** The local run log rows from the G2 run carry `request.approved = true` and nothing else about approval. No request was sent without a UI approval (that the server accepts one follows from the code above but was not exercised).
 

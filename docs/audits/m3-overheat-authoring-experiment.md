@@ -4,8 +4,8 @@ status: active
 reviewed_through: 2026-09-04
 authority_refs:
   - ../decisions/003-semantic-mechanical-boundary.md
-  - ../contracts/mechanic-profile-v0.md
-  - ../contracts/transition-envelope-v0.md
+  - ../../openspec/specs/mechanic-installation/spec.md
+  - ../../openspec/specs/transition-engine/spec.md
   - ../../roadmap/README.md
 ---
 

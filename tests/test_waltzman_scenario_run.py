@@ -1,4 +1,4 @@
-"""Waltzman scenario run (docs/plans/waltzman_scenario_run.md, check W4): the assessment's claims hold in the recorded files.
+"""Waltzman scenario run (docs/plans/waltzman_scenario_run.md, retired 2026-11-09; git show cb24858:docs/plans/waltzman_scenario_run.md; check W4): the assessment's claims hold in the recorded files.
 
 Pipeline run waltzman-20261008T123134 and member run run-20261008T125239, copied to
 spikes/any-scenario-2026-10/evidence/waltzman/.

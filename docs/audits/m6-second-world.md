@@ -3,8 +3,7 @@ role: audit
 status: active
 reviewed_through: 2026-09-04
 authority_refs:
-  - ./m2-give-path-audit.md
-  - ../architecture.md
+  - ../architecture/arc42.md
   - ../../roadmap/README.md
 ---
 

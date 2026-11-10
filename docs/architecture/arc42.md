@@ -6,7 +6,7 @@ description: World Substrate architecture in arc42 form - goals, constraints, co
 
 This is the architecture entry point. It states what exists, what is targeted and what is missing, keeping those apart. The exact submodels (every rule, its owner and its test) are in [the system model](../model/ODD.md) and [trace.yaml](../model/trace.yaml); required behavior is in the [OpenSpec capability specs](../../openspec/specs/); current sequencing is in [the roadmap](../../roadmap/README.md); what is not yet known is in [the open questions ledger](../planning/open-questions.json).
 
-On 2026-11-09 this page took over from `docs/architecture.md`, `docs/architecture/GOAL.md` and `docs/source-dispositions.md` and carries their current facts, plus current facts from the audits and research notes named in section 8. Those files are still in the repository, each marked as superseded by this page; they will be retired in a later change once a line-by-line comparison confirms nothing in them is missing here. Where they disagree with this page, this page wins.
+On 2026-11-09 this page took over from `docs/architecture.md`, `docs/architecture/GOAL.md` and `docs/source-dispositions.md` and carries their current facts, plus current facts from the audits, research notes and plans named in section 8. Those files were compared with this page and retired on 2026-11-09; section 8, "Provenance of retired material", lists each with its successor and the commit that restores it.
 
 ## 1. Introduction and goals
 
@@ -101,6 +101,8 @@ The thesis fails if a reviewed, approved world still produces consequences the p
 | A bounded same-moment fixpoint inside the one existing commit is rule semantics, not new engine capability. | [Decision 009](../decisions/009-same-moment-knock-on-effects.md) (Brian, 2026-10-26: "i approve") |
 | Prototype stage, one agent at a time, this repository and its own deploy only; visitor spend capped at $3/day and the owner allowance at $5/day; no new service, engine or repository without Brian's yes. | [roadmap](../../roadmap/README.md), "Actor, recurring job and investment boundary" |
 
+Architecture views name their authority source, cite code ids and state material omissions; the project uses arc42 and does not claim ISO/IEC/IEEE 42010, UML, SysML or KerML conformance (carried from the retired `docs/architecture.md`).
+
 ### Causal claim boundary
 
 A World Substrate causal claim is **internal to a represented world under its installed mechanics**. If an installed rule says an overloaded bridge collapses and that rule commits, the system should be able to explain that the represented overload was consumed by the installed collapse mechanic and produced the represented consequence.
@@ -169,7 +171,7 @@ Source findings that still hold:
 - Collective Competence supplies the anti-double-counting rule: a measured outcome or macro-pattern must not be inserted back as another mechanism.
 - Data Contracts supports explicit composition and observability surfaces, not code adoption.
 
-Cautions: donor revisions identify the inspected evidence, and later donor changes do not silently change World Substrate doctrine; local paths are conveniences while revisions and hashes identify content; Castaway's `world-systems` branch is a linked worktree of `castaway-world`, pushed to `github.com/BrianMills2718/castaway-world`; a compiler can audit declared dependencies only and cannot prove that a mechanic author named every consequential dependency. The donor lineage reasoning is in the [Cybernetic Influence lineage review](../research/cybernetic-influence-lineage-review.md) and the [November 7 Waltzman lineage review](../audits/waltzman-lineage-review-2026-11-07.md).
+Cautions: donor revisions identify the inspected evidence, and later donor changes do not silently change World Substrate doctrine; local paths are conveniences while revisions and hashes identify content; Castaway's `world-systems` branch is a linked worktree of `castaway-world`, pushed to `github.com/BrianMills2718/castaway-world`; worktree changes outside a pinned donor revision are excluded from the inspected evidence; a compiler can audit declared dependencies only and cannot prove that a mechanic author named every consequential dependency. The donor lineage reasoning is in the [Cybernetic Influence lineage review](../research/cybernetic-influence-lineage-review.md) and the [November 7 Waltzman lineage review](../audits/waltzman-lineage-review-2026-11-07.md).
 
 ### External analytical-model imports
 
@@ -235,7 +237,7 @@ The diagram source is [model.c4](model.c4) (LikeC4); its arrows follow each modu
 | CVS import | `scripts/import_cvs_situation.py`, `reference_worlds/cvs_sustainment/` | CVS Situation IR to authoring bundle | cvs-situation-import |
 | Checks | `scripts/check_project.py`, `check_saved_worlds.py`, `check_trace_reads.py`, `deploy_world_builder.sh` | project gate, free replay of saved worlds, trace-read coverage, gated deploy | none |
 
-Reference worlds under `reference_worlds/` (Castaway, Kitchen, Greenhouse, Workshop, Waltzman, CVS sustainment) are fixtures, not engine code. The Workshop world showed the machinery-versus-content split (M6): components are an open typed registry (`model.py:188`), observation needs a location rather than a special actor state (`engine.py:263-270`), and the Workshop keeps its own `pick_up` rule.
+Reference worlds under `reference_worlds/` (Castaway, Kitchen, Greenhouse, Workshop, Waltzman, CVS sustainment) are fixtures, not engine code. The Workshop world showed the machinery-versus-content split (M6): components are an open typed registry (`model.py:188`), observation needs a location rather than a special actor state (`engine.py:263-270`), and the Workshop keeps its own `pick_up` rule. Only revision-currency and entity-existence checks are substrate-universal; a materially different world re-specifies nearly all other checks (M2 give-path audit).
 
 ## 6. Runtime view
 
@@ -253,7 +255,7 @@ Reference worlds under `reference_worlds/` (Castaway, Kitchen, Greenhouse, Works
 
 ### Time and cadence
 
-One canonical simulated timeline with independently scheduled mechanisms is the target; render time, process cadence, resident cognition cadence, institution cadence and analysis cadence are distinct concerns, and only represented simulation time is canonical. What exists: `World.tick` is an integer, `Engine.advance()` checks every registered process each step through `due(world)`, World Builder processes run `each_round` or `immediately`, and the Waltzman fixture has scenario-specific trigger ticks and one represented two-tick meeting (`ActivityState`) whose completion rechecks current state. What does not exist: a first-class future-event scheduler; duration-bearing activities in generated worlds are modelled as tasks under way (`scripts/attempts.py`, ODD 11.4). Target rules carried from the multi-timescale note (`docs/research/multi-timescale-execution-2026-09.md`): a wakeup only creates a process opportunity and the installed mechanic still checks and commits; completion of a duration-bearing activity is a new transition opportunity that rechecks then-current state; resident cognition wakes on meaningful observations rather than every low-level event; render interpolation and analysis sampling never advance canonical time; cadence is separate from fidelity.
+One canonical simulated timeline with independently scheduled mechanisms is the target; render time, process cadence, resident cognition cadence, institution cadence and analysis cadence are distinct concerns, and only represented simulation time is canonical. What exists: `World.tick` is an integer, `Engine.advance()` checks every registered process each step through `due(world)`, World Builder processes run `each_round` or `immediately`, and the Waltzman fixture has scenario-specific trigger ticks and one represented two-tick meeting (`ActivityState`) whose completion rechecks current state. What does not exist: a first-class future-event scheduler; duration-bearing activities in generated worlds are modelled as tasks under way (`scripts/attempts.py`, ODD 11.4). Target rules carried from the multi-timescale note (`docs/research/multi-timescale-execution-2026-09.md`): a wakeup only creates a process opportunity and the installed mechanic still checks and commits; completion of a duration-bearing activity is a new transition opportunity that rechecks then-current state; resident cognition wakes on meaningful observations rather than every low-level event; render interpolation and analysis sampling never advance canonical time; cadence is separate from fidelity. The generic simulation-time and activity schema stays uncommitted: `ActivityState` is scenario-specific (`reference_worlds/waltzman/components.py`) and must not become a universal contract without a second use case.
 
 ## 7. Deployment view
 
@@ -286,6 +288,8 @@ The public service boundary (from the live-authoring audit `docs/audits/live-wor
 | Persistence | canonical snapshots/history/profile IDs and user-world storage | alternate effects |
 | Replay/observer surface | visual/historical projection of represented truth | hidden or invented causal state |
 | Analysis | derived interpretation/measurement | rewriting canonical history |
+
+When the mechanic or institution named as causal authority for a transition is missing, the transition refuses with a visible diagnostic (an unregistered action kind is recorded as `unsupported_action`, `engine.py:624-637`) unless the world profile defines the fallback; a silent permissive default is forbidden. Reputation or selection pressure cannot repair corrupted canonical state; transition integrity is the Engine's job (Agent Ecology 2 review).
 
 ### Composition, actions and processes
 
@@ -321,9 +325,67 @@ Every attempted transition exposes enough to reconstruct its story: observation 
 
 Build the smallest persistent, observable vertical that tests one uncertainty; separate vocabulary, content, mechanics, policy, cognition, canonical state and analysis; require a represented causal bearer and one locally scoped transition authority for every canonical write; keep entities open to unrelated components while each mechanic's reads and writes stay closed; apply only goal-relative accounting and conservation invariants; make unsupported mechanics and residual closure risk visible; prove reuse with a materially different second world before claiming generality.
 
-### Provenance of carried-forward material
+### Provenance of retired material
 
-The facts above are carried from these documents, which are still in the repository and not yet retired: `docs/research/synthesis.md`, `docs/research/world-substrate-strategy-session.md`, `docs/research/multi-timescale-execution-2026-09.md`, `docs/research/living-world-projection-2026-09.md`, `docs/audits/live-world-authoring.md`, `docs/audits/m2-give-path-audit.md`, `docs/audits/m6-second-world.md`, `docs/audits/waltzman-coordination-lab-v0.md`, `docs/audits/waltzman-kitchen-quality-v2.md`, `docs/audits/world-replay-studio.md`, `docs/audits/kitchen-contested-world.md` and `docs/audits/repair-bay-live-preflight.md`. When one is retired, the retiring commit will name its path, reason, successor (this page) and last commit, and `git show <commit>:<path>` will restore it.
+On 2026-11-09 the documents below were compared with their successors and retired with `git rm`; any still-true fact not already carried was folded into the successor first. Restore one with `git show <last commit>:<path>`. The sixteen contracts that were under `docs/contracts/` were folded line for line into the OpenSpec specs, each of which names its source contract and last commit.
+
+| Retired path | Reason | Successor | Last commit |
+| --- | --- | --- | --- |
+| `docs/architecture.md` | superseded by arc42 (facts compared; two still-true rules folded) | `docs/architecture/arc42.md` | `9cefeee` |
+| `docs/architecture/GOAL.md` | superseded by arc42 section 1 (carried nearly verbatim) | `docs/architecture/arc42.md` | `9cefeee` |
+| `docs/source-dispositions.md` | superseded by arc42 section 3 (all rows carried; donor-worktree caution folded) | `docs/architecture/arc42.md` | `9cefeee` |
+| `docs/research/synthesis.md` | conclusions carried by arc42 sections 3, 8, 11 (M1 candidate-count measurement folded) | `docs/architecture/arc42.md` | `75f32bb` |
+| `docs/research/world-substrate-strategy-session.md` | conclusions carried by arc42 (missing-authority fallback rule folded into section 8) | `docs/architecture/arc42.md` | `42a82f8` |
+| `docs/research/multi-timescale-execution-2026-09.md` | target rules carried in arc42 section 6 Time and cadence | `docs/architecture/arc42.md` | `75f32bb` |
+| `docs/research/living-world-projection-2026-09.md` | projection states in arc42 section 8; no-write rule in specs | `docs/architecture/arc42.md` | `bcb2fa2` |
+| `docs/research/agent-ecology2-review.md` | findings in arc42 section 3 and semantic-binding spec (reputation rule folded into section 8) | `docs/architecture/arc42.md` | `8b9c1f9` |
+| `docs/research/jev-world-modeling-exploration-2026-09.md` | exploratory, not adopted; estimate rules folded into open question Q63 | `tools/planning/questions_src.py (Q63)` | `69cc0b6` |
+| `docs/audits/live-world-authoring.md` | service boundary and budget in arc42 section 7; compiler refusals in causal-model-authoring spec | `docs/architecture/arc42.md` | `434141b` |
+| `docs/audits/m2-give-path-audit.md` | custody point in arc42 section 8; universal-checks finding folded into section 5 | `docs/architecture/arc42.md` | `fa725a6` |
+| `docs/audits/waltzman-coordination-lab-v0.md` | carried by arc42 section 6 Waltzman reference world | `docs/architecture/arc42.md` | `2732aac` |
+| `docs/audits/waltzman-kitchen-quality-v2.md` | asset provenance in arc42 section 10; visibility rule in living-scene spec | `docs/architecture/arc42.md` | `b094e24` |
+| `docs/audits/world-replay-studio.md` | carried by scene-replay spec and arc42 section 5 | `openspec/specs/scene-replay/spec.md` | `b42ce05` |
+| `docs/audits/repair-bay-live-preflight.md` | authored-presentation override carried by scene-replay spec | `openspec/specs/scene-replay/spec.md` | `c7d65e1` |
+| `docs/audits/castaway-zero-review.md` | Castaway fill/drink proof carried by scene-replay spec | `openspec/specs/scene-replay/spec.md` | `a1df86a` |
+| `docs/audits/kitchen-zero-review.md` | Kitchen breadth proof carried by scene-replay spec | `openspec/specs/scene-replay/spec.md` | `b770059` |
+| `docs/audits/scene-profile-bootstrap.md` | bootstrap rules carried by scene-replay spec | `openspec/specs/scene-replay/spec.md` | `7ea1955` |
+| `docs/audits/scene-action-presentation-bindings.md` | action bindings carried by scene-replay spec | `openspec/specs/scene-replay/spec.md` | `e1a869b` |
+| `docs/audits/scene-profile-auto-layout.md` | role-grid-v0 and proposed_geometry carried by scene-replay spec | `openspec/specs/scene-replay/spec.md` | `e1a869b` |
+| `docs/audits/workshop-scene-greenfield.md` | item_layout and Workshop proof carried by scene-replay spec | `openspec/specs/scene-replay/spec.md` | `81540cb` |
+| `docs/audits/greenhouse-authoring-proof.md` | Greenhouse zero-review proof folded into scene-replay spec | `openspec/specs/scene-replay/spec.md` | `b42ce05` |
+| `docs/audits/living-scene-embodied-renderer.md` | carried by living-scene spec | `openspec/specs/living-scene/spec.md` | `9494375` |
+| `docs/audits/living-scene-information-feedback.md` | carried by living-scene spec (textContent rule folded) | `openspec/specs/living-scene/spec.md` | `dacc318` |
+| `docs/audits/waltzman-living-scene-profile-v1.md` | checkpoints in evidence/waltzman/living-replay-manifest-v1.json; generic parts in living-scene spec | `openspec/specs/living-scene/spec.md` | `dcd93c3` |
+| `docs/audits/waltzman-living-replay-v1.md` | manifest plus tests enforce it; multi-branch wrapper in living-scene spec | `openspec/specs/living-scene/spec.md` | `2716435` |
+| `docs/audits/waltzman-m1-acceptance-2026-09-09.md` | promotion in roadmap; pending human review folded into roadmap | `roadmap/README.md` | `9c316a3` |
+| `docs/audits/native-waltzman-release-static-readiness-2026-09-19.md` | static review of draft PRs, blockers stale; Decision 005 steps in native-coordination spec | `openspec/specs/native-coordination/spec.md` | `91878f4` |
+| `docs/audits/world-authoring-starter.md` | carried by world-authoring-bundle spec | `openspec/specs/world-authoring-bundle/spec.md` | `d7319ad` |
+| `docs/audits/world-authoring-builder.md` | eight-section UI superseded by world-builder-page spec; stale-mechanics rule in causal-model-authoring spec | `openspec/specs/world-builder-page/spec.md` | `807053e` |
+| `docs/plans/any_scenario_poc.md` | finished plan (C1-C6 met 2026-10-07); outcome folded into Decision 007 | `docs/decisions/007-any-scenario-path.md` | `222e73d` |
+| `docs/plans/any-scenario-poc.goal.md` | finished /goal launcher | `docs/decisions/007-any-scenario-path.md` | `222e73d` |
+| `docs/plans/any_scenario_poc` | plan machinery of the finished plan | `docs/decisions/007-any-scenario-path.md` | `222e73d` |
+| `docs/plans/best-of-all-worlds.goal.md` | finished goal (C1-C6 passed at b7d1dc5); first-round target folded into roadmap | `docs/decisions/008-build-worlds-in-an-agent-harness.md` | `e332eb7` |
+| `docs/plans/linked_process_participants.md` | finished plan (L1-L6 met 2026-10-08); facts in ODD 4 and 8.17 | `docs/model/ODD.md` | `43e1dca` |
+| `docs/plans/linked-process-participants.goal.md` | finished /goal launcher | `docs/model/ODD.md` | `4d2f65b` |
+| `docs/plans/linked_process_participants` | plan machinery of the finished plan | `docs/model/ODD.md` | `4d2f65b` |
+| `docs/plans/run-loop-contention.goal.md` | superseded 2026-10-26 by open_attempt.md, never adopted | `docs/plans/open_attempt.md` | `389f3f8` |
+| `docs/plans/scenario_actors_kept.md` | superseded 2026-10-08 before any work; odd_brief defect folded into ODD 10 | `docs/model/ODD.md` | `49da160` |
+| `docs/plans/scenario-actors-kept.goal.md` | superseded /goal launcher | `docs/model/ODD.md` | `2e409ab` |
+| `docs/plans/scenario_actors_kept` | plan machinery | `docs/model/ODD.md` | `2e409ab` |
+| `docs/plans/scenario_metamodel.md` | never built; Commitment idea carried by open question Q58 | `tools/planning/questions_src.py (Q58)` | `179e519` |
+| `docs/plans/scenario-metamodel.goal.md` | unbuilt /goal launcher | `tools/planning/questions_src.py (Q58)` | `179e519` |
+| `docs/plans/scenario_metamodel` | plan machinery | `tools/planning/questions_src.py (Q58)` | `179e519` |
+| `docs/plans/scenario_spec_adoption.md` | finished plan (S1-S6 met, adopted 2026-10-15); check meanings folded into ODD 10 | `docs/model/ODD.md` | `e092968` |
+| `docs/plans/scenario-spec-adoption.goal.md` | finished /goal launcher | `docs/model/ODD.md` | `757b35c` |
+| `docs/plans/scenario_spec_adoption` | plan machinery | `docs/model/ODD.md` | `757b35c` |
+| `docs/plans/system_model_pipeline.md` | finished plan (M1-M3 done); ODD 10 is the result | `docs/model/ODD.md` | `8232c22` |
+| `docs/plans/system-model-pipeline.goal.md` | finished /goal launcher | `docs/model/ODD.md` | `8232c22` |
+| `docs/plans/system_model_pipeline` | plan machinery | `docs/model/ODD.md` | `8232c22` |
+| `docs/plans/waltzman-belief-and-traces.goal.md` | finished goal (D1-D5 done); trace-read rule in root AGENTS.md | `docs/model/ODD.md` | `352eba6` |
+| `docs/plans/waltzman_scenario_run.md` | finished plan (W1-W5 met); scenario text and first run folded into ODD 10 | `docs/model/ODD.md` | `cb24858` |
+| `docs/plans/waltzman-scenario-run.goal.md` | finished /goal launcher | `docs/model/ODD.md` | `b1d506f` |
+| `docs/plans/waltzman_scenario_run` | plan machinery | `docs/model/ODD.md` | `b1d506f` |
+| `docs/plans/waltzman-tasks-slice2.goal.md` | finished goal (E1-E5 done); check meanings folded into ODD 11.4 | `docs/model/ODD.md` | `6a8e37e` |
 
 ## 9. Architecture decisions
 
@@ -361,7 +423,7 @@ Each item has an entry in [the open questions ledger](../planning/open-questions
 - Semantic binding is looked up by bare action kind (`engine.py:224-226`), so generated worlds' `take` and `fill` events carry Castaway mechanic ids that are not installed.
 - `schemas/world-authoring-bundle-v0.schema.json` rejects every bundle that declares laws.
 - Placeholder write scopes are participant-bounded, not role-specific (`engine.py:110-133`).
-- The discovery cap of 256 truncates silently (`action_authoring.py:31`).
+- The discovery cap of 256 truncates silently (`action_authoring.py:31`). Bounded presentation does not bound candidate generation: measured at M1, Castaway's 69 colocated vessels yielded 4,927 candidate actions and a 73.3 KB prompt (research synthesis).
 - A mechanic exception is rolled back and re-raised, not recorded as a refusal event (`engine.py:785-788`).
 - The law fingerprint omits the compiler version (`profile.py:266-279`).
 - No lockfile or `pyproject.toml`; the project check pins its tools on the command line.

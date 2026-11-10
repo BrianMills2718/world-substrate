@@ -4,7 +4,7 @@ status: non-authoritative
 reviewed: 2026-09-02
 authority_refs:
   - ../../roadmap/README.md
-  - ../architecture.md
+  - ../architecture/arc42.md
   - ../decisions/002-observability-and-replay.md
   - ../decisions/003-semantic-mechanical-boundary.md
 ---

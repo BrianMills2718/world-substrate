@@ -31,7 +31,7 @@ for every round. `scripts/check_trace_reads.py` refuses it otherwise.
 ## 3. Write pass criteria about the real outcome, not a count
 
 **What happened.** "Runs at least 20 rounds without narrowing to one move" let pencil worlds pass where
-pencils could never reach a customer (`docs/plans/best-of-all-worlds.goal.md`, C4 history).
+pencils could never reach a customer (retired goal, `git show e332eb7:docs/plans/best-of-all-worlds.goal.md`, C4 history).
 
 **Instead.** Each criterion names the outcome a person would check ("a pencil is sold to a customer", "each
 group's concern reaches its named country"), and a count is only supporting evidence.

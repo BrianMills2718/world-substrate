@@ -474,7 +474,7 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             "world_fingerprint": _world_fingerprint(bundle, value.get("causal_model")),
             "bundle": bundle,
             "causal_model": value.get("causal_model"),
-            # What a shared run shows beside its rounds (increment 5, best-of-all-worlds.goal.md).
+            # What a shared run shows beside its rounds (increment 5 of the retired best-of-all-worlds goal, git show e332eb7:docs/plans/best-of-all-worlds.goal.md).
             "world_def": value.get("world_def"),
             "world_kind": value.get("world_kind"),
             "people": value.get("people"),

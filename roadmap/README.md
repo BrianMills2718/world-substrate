@@ -45,7 +45,7 @@ Persistent typed canonical state; bounded observations and state-derived afforda
 
 ### Waltzman demo acceptance criteria
 
-The 2026-09-09 stakeholder promotion met ten criteria through the reference world plus the donor authoring path: a living view driven by canonical snapshots and events; represented information with source, recipient, channel and visibility; residents acting through the policy seam; outcomes depending on represented resources and institutions; one simulated timeline; inspectable causality with information kept apart from causal parents; detachable Waltzman analysis; an exact-history intervention fork; a bounded dependency report; and one continuous public experience. Evidence: [promotion record](../evidence/waltzman/public-promotion-2026-09-09.md). Saved user worlds, persistent cognition, generic scheduling and predictive validity were outside that gate.
+The 2026-09-09 stakeholder promotion met ten criteria through the reference world plus the donor authoring path: a living view driven by canonical snapshots and events; represented information with source, recipient, channel and visibility; residents acting through the policy seam; outcomes depending on represented resources and institutions; one simulated timeline; inspectable causality with information kept apart from causal parents; detachable Waltzman analysis; an exact-history intervention fork; a bounded dependency report; and one continuous public experience. Evidence: [promotion record](../evidence/waltzman/public-promotion-2026-09-09.md). Saved user worlds, persistent cognition, generic scheduling and predictive validity were outside that gate. The separate human world-only review of `evidence/renders/waltzman-living-v1.html` (Company Planning #222) has no recorded answer; `evidence/waltzman/m1-acceptance-candidate-v1.json` still reads `pending_human_world_only_review` at tested revision 27164359.
 
 ## Canonical outcome probe
 
@@ -222,7 +222,7 @@ Open pull requests: none on 2026-11-09 (`gh pr list --state open`).
 | P0 | the generated Waltzman world stipulates outcomes its mechanisms should produce (Q60) | lineage review recorded; no change adopted |
 | P1 | hand-written build checks keep growing (Q45) | retire them only when declared laws and the review demonstrably cover the incident |
 | P1 | declared laws can be wrong for the world, or missing (Q48, Q49) | read S4 and S5 builds for counterexamples |
-| P1 | the agent harness is not on the live path (Q14) | measure a harness build against the 150 s first-round target |
+| P1 | the agent harness is not on the live path (Q14) | measure a harness build against the 150 s first-round target (a people build must play its first round within 150 s of Create simulation) |
 | P1 | law fingerprint lacks compiler version; silent discovery truncation; unrecorded mechanic exceptions (Q69) | hardening queue |
 | P1 | write-scope placeholders are not role-bound (Q67) | hardening queue |
 | P2 | read scopes are recorded, not enforced, and the check reports a constant (Q34, Q66) | report honestly first; enforce when a run needs it |

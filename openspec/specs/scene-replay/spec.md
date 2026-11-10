@@ -290,7 +290,12 @@ now closes the breadth gate: five explicit action bindings, two actors, two
 burners, two goals, staged ingredients, shared knife ownership, and the retained
 t10→t11 handoff all generate a zero-review default beside the byte-identical
 polished flagship. A separate synthetic lab profile exercises a custom `scan`
-action. Tests verify image-asset embedding and that the generic renderer contains
+action. Greenhouse, authored after the replay system was fixed, generates a
+zero-review Automatic replay with no Greenhouse code: the shared `take`/`put_down`
+labels use the trace-inferred field name (`item` in Kitchen, `vessel` in
+Greenhouse), and the `water` binding uses `state_effects` to set the plant
+`watered` and the can back to `empty` (folded from the retired
+`docs/audits/greenhouse-authoring-proof.md`). Tests verify image-asset embedding and that the generic renderer contains
 no Kitchen, Castaway, or Workshop entity ids.
 
 Source: inferred by agent (scene profile v0)

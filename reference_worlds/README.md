@@ -20,7 +20,7 @@ Reference worlds prove that the shared substrate supports real end-to-end behavi
 
 The fixture is not a claim that every Waltzman construct belongs in canonical state. Trust/risk/readiness remain detachable analysis. The world represents only the causal facts needed by the bounded scenario: asymmetric brief delivery, explicit commitments to four prerequisites, a two-tick coordination meeting, a coalition decision gate, and a represented stabilization intervention.
 
-See [the Waltzman audit](../docs/audits/waltzman-coordination-lab-v0.md), [information/delivery v0](../openspec/specs/information-delivery/spec.md), and [live projection v0](../openspec/specs/live-projection/spec.md).
+See the Waltzman audit (retired 2026-11-09; `git show 2732aac:docs/audits/waltzman-coordination-lab-v0.md`), [information/delivery v0](../openspec/specs/information-delivery/spec.md), and [live projection v0](../openspec/specs/live-projection/spec.md).
 
 ## Extension rule
 
