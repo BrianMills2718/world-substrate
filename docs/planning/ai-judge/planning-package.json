@@ -1,356 +1,358 @@
 {
- "schema_version": "1.0",
- "record_type": "planning_package",
- "repository": "BrianMills2718/world-substrate",
- "subject_revision": "bcebb76eb9815a4bf2f4cdd7b146b69a4970f193",
- "request": "Brian 2026-11-09 \"i approve\" (to: docs/plans/ai_judge.md, an AI judge fed by automatic propagation, after Decided 5); the plan's 'Planning package:' line names this file",
- "parts": {
-  "checks": {
-   "status": "present",
-   "path": "docs/planning/ai-judge/checks.txt",
-   "results": [
-    {
-     "name": "durable documents (arc42)",
-     "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
-     "exit_status": 1,
-     "counts": {
-      "findings": 12
-     },
-     "tracked_by": "Q77",
-     "note": "12 findings in documents this plan does not touch (docs/architecture/arc42.md goal fields and headings; 4 system-model rules whose owner files changed in a comment-only commit); the same 12 on origin/main 0dcbcd6 itself."
+  "schema_version": "1.0",
+  "record_type": "planning_package",
+  "repository": "BrianMills2718/world-substrate",
+  "subject_revision": "bcebb76eb9815a4bf2f4cdd7b146b69a4970f193",
+  "request": "Brian 2026-11-09 \"i approve\" (to: docs/plans/ai_judge.md, an AI judge fed by automatic propagation, after Decided 5); the plan's 'Planning package:' line names this file",
+  "parts": {
+    "checks": {
+      "status": "present",
+      "path": "docs/planning/ai-judge/checks.txt",
+      "results": [
+        {
+          "name": "durable documents (arc42)",
+          "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
+          "exit_status": 1,
+          "counts": {
+            "findings": 12
+          },
+          "tracked_by": "Q77",
+          "note": "12 findings in documents this plan does not touch (docs/architecture/arc42.md goal fields and headings; 4 system-model rules whose owner files changed in a comment-only commit); the same 12 on origin/main 0dcbcd6 itself."
+        },
+        {
+          "name": "project navigation",
+          "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .",
+          "exit_status": 0,
+          "counts": {
+            "findings": 0
+          }
+        },
+        {
+          "name": "repository format",
+          "command": "python3 $HOME/code2/workspace/scripts/repo_format.py .",
+          "exit_status": 0,
+          "counts": {
+            "compliant": 1,
+            "of": 1
+          }
+        },
+        {
+          "name": "trace reads",
+          "command": "python3 scripts/check_trace_reads.py --root evidence",
+          "exit_status": 0,
+          "counts": {
+            "runs": 33,
+            "problems": 0
+          }
+        },
+        {
+          "name": "wiki and Markdown cap",
+          "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
+          "exit_status": 1,
+          "counts": {
+            "md_files": 144,
+            "exception_limit": 180,
+            "more_than_two_links_deep": 13,
+            "not_linked_from_entry": 0,
+            "durable_findings": 12
+          },
+          "tracked_by": "Q77",
+          "note": "Also exits 1 on origin/main 0dcbcd6 (143 files within the exception limit, 13 deep, 12 durable findings); this change adds docs/plans/ai_judge.md's revision and no new Markdown file."
+        },
+        {
+          "name": "doc reachability",
+          "command": "python3 $HOME/code2/workspace/scripts/doc_reachability.py .",
+          "exit_status": 0,
+          "counts": {
+            "reachable": 121,
+            "unreachable": 0
+          }
+        },
+        {
+          "name": "project check (tests, system model, docs)",
+          "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with pytest-xdist --with gdm-concordia==2.4.0 python scripts/check_project.py",
+          "note": "counts from its line 'Neutral runtime tests: 862 passed, 2 skipped, 222 subtests passed' (pytest-xdist); run on the working tree of this change with the package and page present (its broken-link check needs them)",
+          "exit_status": 0,
+          "counts": {
+            "tests_run": 862,
+            "failed": 0,
+            "skipped": 2,
+            "subtests_passed": 222
+          }
+        }
+      ]
     },
-    {
-     "name": "project navigation",
-     "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .",
-     "exit_status": 0,
-     "counts": {
-      "findings": 0
-     }
+    "open_questions": {
+      "status": "present",
+      "path": "docs/planning/open-questions.json"
     },
-    {
-     "name": "repository format",
-     "command": "python3 $HOME/code2/workspace/scripts/repo_format.py .",
-     "exit_status": 0,
-     "counts": {
-      "compliant": 1,
-      "of": 1
-     }
-    },
-    {
-     "name": "trace reads",
-     "command": "python3 scripts/check_trace_reads.py --root evidence",
-     "exit_status": 0,
-     "counts": {
-      "runs": 33,
-      "problems": 0
-     }
-    },
-    {
-     "name": "wiki and Markdown cap",
-     "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
-     "exit_status": 1,
-     "counts": {
-      "md_files": 144,
-      "exception_limit": 180,
-      "more_than_two_links_deep": 13,
-      "not_linked_from_entry": 0,
-      "durable_findings": 12
-     },
-     "tracked_by": "Q77",
-     "note": "Also exits 1 on origin/main 0dcbcd6 (143 files within the exception limit, 13 deep, 12 durable findings); this change adds docs/plans/ai_judge.md's revision and no new Markdown file."
-    },
-    {
-     "name": "doc reachability",
-     "command": "python3 $HOME/code2/workspace/scripts/doc_reachability.py .",
-     "exit_status": 0,
-     "counts": {
-      "reachable": 121,
-      "unreachable": 0
-     }
-    },
-    {
-     "name": "project check (tests, system model, docs)",
-     "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with pytest-xdist --with gdm-concordia==2.4.0 python scripts/check_project.py",
-     "note": "counts from its line 'Neutral runtime tests: 862 passed, 2 skipped, 222 subtests passed' (pytest-xdist); run on the working tree of this change with the package and page present (its broken-link check needs them)",
-     "exit_status": 0,
-     "counts": {
-      "tests_run": 862,
-      "failed": 0,
-      "skipped": 2,
-      "subtests_passed": 222
-     }
-    }
-   ]
-  },
-  "open_questions": {
-   "status": "present",
-   "path": "docs/planning/open-questions.json"
-  },
-  "system_model": {
-   "status": "present",
-   "path": "docs/model/ODD.md",
-   "executes_typed_rules": true,
-   "basis": "src/world_substrate/engine.py:582",
-   "metamodel": {
-    "path": "docs/model/metamodel.graph.json",
-    "glossary": "docs/model/METAMODEL.md",
-    "maps_onto": {
-     "repository": "BrianMills2718/scientific-hypergraph",
-     "revision": "7b0638fe0aef41c772bb181996516f98be479597",
-     "mapping": "docs/model/metamodel-mapping.json"
-    }
-   }
-  },
-  "domain_model": {
-   "status": "present",
-   "path": "docs/model/domain.graph.json",
-   "glossary": "docs/model/DOMAIN.md",
-   "implemented": {
-    "world": "src/world_substrate/model.py:382",
-    "engine": "src/world_substrate/engine.py:198",
-    "event": "src/world_substrate/engine.py:529",
-    "move": "src/world_substrate/action_authoring.py:49",
-    "process": "src/world_substrate/engine.py:829",
-    "compiler": "src/world_substrate/action_authoring.py:456",
-    "policy": "src/world_substrate/policy.py:50",
-    "sense": "src/world_substrate/semantic.py:15",
-    "profile": "src/world_substrate/profile.py:266",
-    "write-scope": "src/world_substrate/engine.py:88",
-    "causal-trace": "src/world_substrate/engine.py:529",
-    "world-kind": "scripts/world_builder_service.py:113",
-    "builder": "scripts/world_builder_service.py",
-    "approval": "scripts/world_builder_service.py:418",
-    "fingerprint": "scripts/world_builder_service.py:381",
-    "information": "src/world_substrate/information.py:57",
-    "run-loop": "scripts/run_authored_world.py:347",
-    "contention": "scripts/run_authored_world.py:563",
-    "resident": "scripts/concordia_residents.py:44",
-    "task": "scripts/attempts.py:17",
-    "notice": "scripts/attempts.py:234",
-    "build": "scripts/world_builder_service.py:1541",
-    "rules-retry": "scripts/world_builder_service.py:263",
-    "test-run": "scripts/world_builder_service.py:1610",
-    "run-log": "scripts/world_builder_service.py:524",
-    "readout": "scripts/run_readout.py:125",
-    "scene-replay": "scripts/render_scene_replay.py:398",
-    "share": "scripts/world_builder_service.py:598",
-    "budget": "scripts/world_builder_service.py:51",
-    "people-world": "scripts/people_world.py:364",
-    "communicate": "spikes/any-scenario-2026-10/compile_spec.py:56",
-    "moment": "spikes/any-scenario-2026-10/compile_spec.py:48",
-    "work-cycle": "spikes/any-scenario-2026-10/compile_spec.py:517",
-    "group-decision": "spikes/any-scenario-2026-10/compile_spec.py:86",
-    "concern": "spikes/any-scenario-2026-10/compile_spec.py:70",
-    "support": "spikes/any-scenario-2026-10/compile_spec.py:66",
-    "remedy": "spikes/any-scenario-2026-10/compile_spec.py:332",
-    "agenda": "spikes/any-scenario-2026-10/compile_spec.py:101",
-    "rollout": "spikes/any-scenario-2026-10/compile_spec.py:436",
-    "review": "spikes/any-scenario-2026-10/compile_spec.py:442",
-    "person": "spikes/any-scenario-2026-10/scenario_spec.py:41",
-    "gen-rules": "scripts/people_world.py:251",
-    "waltzman-ref": "reference_worlds/waltzman/components.py:11",
-    "affordance": "src/world_substrate/engine.py:352",
-    "check": "src/world_substrate/rules.py:48",
-    "attempt": "src/world_substrate/attempt.py:149",
-    "attempt-reading": "src/world_substrate/attempt.py:81",
-    "unmatched-attempt": "src/world_substrate/attempt.py:25",
-    "observation": "src/world_substrate/engine.py:235",
-    "place-way": "scripts/generate_world_bundle.py:96",
-    "projection": "src/world_substrate/projection.py:44",
-    "causal-parent": "src/world_substrate/rules.py:383",
-    "exchange": "src/world_substrate/exchange.py:68",
-    "mechanisms": "src/world_substrate/mechanisms/__init__.py:3",
-    "kitchen": "reference_worlds/kitchen/mechanics.py",
-    "mechanic": "src/world_substrate/action_authoring.py:456",
-    "entity-component": "src/world_substrate/model.py:223",
-    "knock-on-now": "src/world_substrate/engine.py:938",
-    "world-law": "scripts/scaffold_world.py:45",
-    "law-check": "src/world_substrate/laws.py:36",
-    "resource": "scripts/scaffold_world.py:45",
-    "world-design": "scripts/generate_world_bundle.py:53",
-    "rules-review": "scripts/review_rules.py:92"
-   }
-  },
-  "diagrams": {
-   "status": "present",
-   "items": [
-    {
-     "path": "docs/model/ODD.md",
-     "question": "What is inside World Substrate and what talks to it? (context and container views, section 3)"
-    },
-    {
-     "path": "docs/model/domain.graph.json",
-     "question": "Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?"
-    },
-    {
-     "path": "docs/model/open-questions.graph.json",
-     "question": "Which concepts carry the unsettled questions, and whose call is each?"
-    },
-    {
-     "path": "docs/model/metamodel.graph.json",
-     "question": "What kinds of things can any world's rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?"
-    }
-   ]
-  },
-  "plan": {
-   "status": "present",
-   "path": "docs/plans/ai_judge.md",
-   "relies_on": [
-    "consequence-report",
-    "judge-ruling",
-    "ruling-rule",
-    "credential-holder",
-    "norm",
-    "midrun-setting",
-    "knock-on-now",
-    "causal-parent",
-    "unmatched-attempt",
-    "resident",
-    "rules-review",
-    "approval",
-    "engine",
-    "event",
-    "mechanic",
-    "world-law",
-    "law-check",
-    "information",
-    "observation",
-    "causal-trace",
-    "run-log",
-    "attempt",
-    "check",
-    "test-run",
-    "build",
-    "readout"
-   ],
-   "cost_basis": {
-    "steps": [
-     {
-      "step": "attempt interpreter (existing)",
-      "cost_per_run_usd": 0.009,
-      "calls_per_run": 36,
-      "basis": "measured",
-      "evidence": "llm-cost estimate (2026-11-09): 114 calls, $0.0281, median 1,651 input and 160 output tokens, about $0.00025 per call; 36 calls per run is the attempts read in the saved airfield run (evidence/open-attempt/s1-airfield/run-log.jsonl: 9 rounds, 36 attempts, 10 unmatched)"
-     },
-     {
-      "step": "judge (new: propose, then confirm or revise, only for an unmatched attempt)",
-      "cost_per_run_usd": 0.043,
-      "calls_per_run": 20,
-      "basis": "computed",
-      "computation": {
-       "calls": 20,
-       "input_tokens_per_call": 15000,
-       "input_usd_per_mtok": 0.1,
-       "cached_share": 0,
-       "cached_usd_per_mtok": 0.1,
-       "output_tokens_per_call": 1300,
-       "output_usd_per_mtok": 0.5
-      },
-      "evidence": "Tokens: the three plain-baseline calls measured 9,938-17,922 input and 1,184-1,396 output tokens (llm-cost, trace world-substrate/ai-judge-plain-baseline/b75fd5f42b9742078c798df205243c73, $0.0061 for 3 calls); worst case about 53,000 input tokens for the largest saved world (evidence/waltzman-tasks-slice2/c1r21, 143,430 characters at 3.40 characters per token, plus net changes), $0.006 per call. Calls: 2 per unmatched attempt x 10 unmatched (the saved airfield run). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing (openrouter, checked 2026-11-05); no cached share assumed."
-     },
-     {
-      "step": "rules review (existing, once per proposed rule)",
-      "cost_per_run_usd": 0.49,
-      "calls_per_run": 10,
-      "basis": "computed",
-      "evidence": "Tokens: llm-cost estimate --task world-substrate-rules-review (2026-11-09): 24 calls on earlier review models, median 9,407 input and 2,856 output tokens, 0% cached ($0.699 in all, mean $0.029, which would give $0.29 for 10). Price: the current review model openrouter/google/gemini-4-argon (scripts/review_rules.py:18) has no input/output split in ~/code/llm_client/llm_client/data/default_model_registry.json, only cost $4.00 per million tokens, a 3:1 input/output blend (~/code/llm_client/docs/guides/model-selection.md), used for both. Calls: one review per ruling, 10 per run (the 10 unmatched attempts of the saved airfield run), falling as rulings become rules.",
-      "computation": {
-       "calls": 10,
-       "input_tokens_per_call": 9407,
-       "input_usd_per_mtok": 4.0,
-       "cached_share": 0,
-       "cached_usd_per_mtok": 4.0,
-       "output_tokens_per_call": 2856,
-       "output_usd_per_mtok": 4.0
+    "system_model": {
+      "status": "present",
+      "path": "docs/model/ODD.md",
+      "executes_typed_rules": true,
+      "basis": "src/world_substrate/engine.py:582",
+      "metamodel": {
+        "path": "docs/model/metamodel.graph.json",
+        "glossary": "docs/model/METAMODEL.md",
+        "maps_onto": {
+          "repository": "BrianMills2718/scientific-hypergraph",
+          "revision": "7b0638fe0aef41c772bb181996516f98be479597",
+          "mapping": "docs/model/metamodel-mapping.json"
+        }
       }
-     }
-    ],
-    "cheapest_design": "Decided 3 requires a ruling to pass the World Builder's existing rules check. The model rules review is not a pass mark: it returns findings only and a build goes on without it when it fails (scripts/review_rules.py:1-7), so Decided 3 does not require it for judge rulings; the required part is the free declaration check and test run. Cheaper option recorded: drop the model review for judge rulings, about $0.05 per run instead of $0.54 (interpreter $0.009 + judge $0.043). Chosen: keep the review (inferred by agent, 2026-11-09). Reason: the sawmill case showed the free checks pass a valid but wrong rule (evidence/ai-judge/plain-baseline/sawmill-test-run.json), and the review is the one existing step that reads a rule against the world's description; $0.49 per run is small next to a wrong rule installed for everyone. J2 runs the review on the saved sawmill rule and drops it if it does not flag the single price. The plain version (one judge call per attempt, no test run before install) would save only the confirm call (about $0.02 per run) and installs malformed or wrong rules. The judge is called only for an attempt no rule covers, each ruling becomes a rule so the same attempt never calls it again, and it uses the interpreter's cheap model and route. Total about $0.54 per run with 10 rulings, most of it the rules review."
-   },
-   "plain_baseline": {
-    "kind": "side_by_side",
-    "answer_path": "the judge's ruling for an unmatched attempt, written as a rule in the declaration language",
-    "model": "openrouter/openai/gpt-6-luna",
-    "run": "3 calls on 2026-11-09, trace world-substrate/ai-judge-plain-baseline/b75fd5f42b9742078c798df205243c73, task world-substrate-ai-judge-plain-baseline, $0.0061 and 45.3K tokens (llm-cost); prompt evidence/ai-judge/plain-baseline/prompt.yaml; rules-check verdicts evidence/ai-judge/plain-baseline/rules-check.json",
-    "cases": [
-     {
-      "case": "sawmill offers to pay the logger for 3 cedar logs",
-      "plain_output": "evidence/ai-judge/plain-baseline/pencil-sawmill-buys-logs.json",
-      "built_output": "evidence/declared-laws/s2-pencil-2/run-log.jsonl:5",
-      "finding": "Today's built path recorded the attempt as unmatched and changed nothing. The plain ruling read every value right, named the logger's choice and found a real gap (saw-slats cannot saw logs the sawmill holds). Its rule passed the rules check but is wrong twice: it charges one price for 3 logs (the language has no multiplication), and it moves the logger's logs on the sawmill's move alone, with no agreement from the logger, although its own ruling called the sale the logger's choice: a failure against Decided 4. The existing scripted test run did not catch the price (it tried 1-log purchases only), and a 3-log attempt was accepted, moving 3 logs for 10 coins instead of 30 (evidence/ai-judge/plain-baseline/sawmill-test-run.json)."
-     },
-     {
-      "case": "shop offers the pencil factory $1,000 for pencils",
-      "plain_output": "evidence/ai-judge/plain-baseline/pencil-shop-offers-1000.json",
-      "built_output": "evidence/pencil7-trace-audit/run-log.jsonl:14",
-      "finding": "Today's built path recorded it as unmatched and changed nothing. The plain ruling named the factory's choice correctly, but its rule had no effects and was rejected by the rules check (participants must exactly name entity_ref fields)."
-     },
-     {
-      "case": "waiter picks up the tray",
-      "plain_output": "evidence/ai-judge/plain-baseline/cafe-waiter-picks-up-tray.json",
-      "built_output": "evidence/declared-laws/s4-cafe/run-log.jsonl:12",
-      "finding": "Today's built path recorded it as unmatched and changed nothing. The plain ruling allowed the pickup (the tray is on the counter, so a general move for a waiter to pick up an empty tray from a surface fits) and named the blocker the engine's own checks name (the carry move needs the tray held by the waiter; it is on the counter). Its rule was rejected by the rules check only for its field name ('from' is not an identifier)."
-     }
-    ],
-    "verdict": "The plain version reads the world correctly at these sizes, so the judge's input starts from it (the whole world). It is not enough on its own. Shown: the declaration check stops malformed rules (2 of 3 rejected, rules-check.json). Not shown: that pass 2 stops a wrong but valid rule; the accepted sawmill rule passed the declaration check and the scripted test run (sawmill-test-run.json), so those checks catch malformed rules only, and whether the judge's reading of the test-run report and its one revision catch such a rule is untested until J2. Pass 1 (discover for the person acting and each person named, plus the named entities' values) showed no added value here and is kept only because it costs no call."
-   },
-   "stage_effects": [
-    {
-     "stage": "pass 2, declaration check: the rules check of the proposed rule before it is installed (J1, J3)",
-     "gap": "malformed rules: 2 of 3 plain-version rules were rejected; without this check they would be installed and fail",
-     "status": "shown",
-     "evidence": "evidence/ai-judge/plain-baseline/rules-check.json"
     },
-    {
-     "stage": "pass 2, test run: a proposed rule run on a copy of the world, its report read by the judge before install (J1, J2)",
-     "gap": "a valid but wrong rule (the sawmill rule charges one price for 3 logs and moves logs without the logger's agreement). The existing scripted test run tried only 1-log purchases and flagged nothing; a direct 3-log attempt was accepted, 3 logs for 10 coins. So no deterministic check catches it; whether the judge catches it from the report is untested",
-     "status": "untested",
-     "evidence": "evidence/ai-judge/plain-baseline/sawmill-test-run.json"
+    "domain_model": {
+      "status": "present",
+      "path": "docs/model/domain.graph.json",
+      "glossary": "docs/model/DOMAIN.md",
+      "implemented": {
+        "world": "src/world_substrate/model.py:382",
+        "engine": "src/world_substrate/engine.py:198",
+        "event": "src/world_substrate/engine.py:529",
+        "move": "src/world_substrate/action_authoring.py:49",
+        "process": "src/world_substrate/engine.py:829",
+        "compiler": "src/world_substrate/action_authoring.py:456",
+        "policy": "src/world_substrate/policy.py:50",
+        "sense": "src/world_substrate/semantic.py:15",
+        "profile": "src/world_substrate/profile.py:266",
+        "write-scope": "src/world_substrate/engine.py:88",
+        "causal-trace": "src/world_substrate/engine.py:529",
+        "world-kind": "scripts/world_builder_service.py:113",
+        "builder": "scripts/world_builder_service.py",
+        "approval": "scripts/world_builder_service.py:418",
+        "fingerprint": "scripts/world_builder_service.py:381",
+        "information": "src/world_substrate/information.py:57",
+        "run-loop": "scripts/run_authored_world.py:347",
+        "contention": "scripts/run_authored_world.py:563",
+        "resident": "scripts/concordia_residents.py:44",
+        "task": "scripts/attempts.py:17",
+        "notice": "scripts/attempts.py:234",
+        "build": "scripts/world_builder_service.py:1541",
+        "rules-retry": "scripts/world_builder_service.py:263",
+        "test-run": "scripts/world_builder_service.py:1610",
+        "run-log": "scripts/world_builder_service.py:524",
+        "readout": "scripts/run_readout.py:125",
+        "scene-replay": "scripts/render_scene_replay.py:398",
+        "share": "scripts/world_builder_service.py:598",
+        "budget": "scripts/world_builder_service.py:51",
+        "people-world": "scripts/people_world.py:364",
+        "communicate": "spikes/any-scenario-2026-10/compile_spec.py:56",
+        "moment": "spikes/any-scenario-2026-10/compile_spec.py:48",
+        "work-cycle": "spikes/any-scenario-2026-10/compile_spec.py:517",
+        "group-decision": "spikes/any-scenario-2026-10/compile_spec.py:86",
+        "concern": "spikes/any-scenario-2026-10/compile_spec.py:70",
+        "support": "spikes/any-scenario-2026-10/compile_spec.py:66",
+        "remedy": "spikes/any-scenario-2026-10/compile_spec.py:332",
+        "agenda": "spikes/any-scenario-2026-10/compile_spec.py:101",
+        "rollout": "spikes/any-scenario-2026-10/compile_spec.py:436",
+        "review": "spikes/any-scenario-2026-10/compile_spec.py:442",
+        "person": "spikes/any-scenario-2026-10/scenario_spec.py:41",
+        "gen-rules": "scripts/people_world.py:251",
+        "waltzman-ref": "reference_worlds/waltzman/components.py:11",
+        "affordance": "src/world_substrate/engine.py:352",
+        "check": "src/world_substrate/rules.py:48",
+        "attempt": "src/world_substrate/attempt.py:149",
+        "attempt-reading": "src/world_substrate/attempt.py:81",
+        "unmatched-attempt": "src/world_substrate/attempt.py:25",
+        "observation": "src/world_substrate/engine.py:235",
+        "place-way": "scripts/generate_world_bundle.py:96",
+        "projection": "src/world_substrate/projection.py:44",
+        "causal-parent": "src/world_substrate/rules.py:383",
+        "exchange": "src/world_substrate/exchange.py:68",
+        "mechanisms": "src/world_substrate/mechanisms/__init__.py:3",
+        "kitchen": "reference_worlds/kitchen/mechanics.py",
+        "mechanic": "src/world_substrate/action_authoring.py:456",
+        "entity-component": "src/world_substrate/model.py:223",
+        "knock-on-now": "src/world_substrate/engine.py:938",
+        "world-law": "scripts/scaffold_world.py:45",
+        "law-check": "src/world_substrate/laws.py:36",
+        "resource": "scripts/scaffold_world.py:45",
+        "world-design": "scripts/generate_world_bundle.py:53",
+        "rules-review": "scripts/review_rules.py:92"
+      }
     },
-    {
-     "stage": "one revision after the test run (J2)",
-     "gap": "a rejected or wrong rule from the first proposal (all 3 in the plain baseline) gets one more try before the attempt is refused as a language gap",
-     "status": "untested"
+    "diagrams": {
+      "status": "present",
+      "items": [
+        {
+          "path": "docs/model/ODD.md",
+          "question": "What is inside World Substrate and what talks to it? (context and container views, section 3)"
+        },
+        {
+          "path": "docs/model/domain.graph.json",
+          "question": "Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?"
+        },
+        {
+          "path": "docs/model/open-questions.graph.json",
+          "question": "Which concepts carry the unsettled questions, and whose call is each?"
+        },
+        {
+          "path": "docs/model/metamodel.graph.json",
+          "question": "What kinds of things can any world's rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?"
+        }
+      ]
     },
-    {
-     "stage": "pass 1: engine.discover for the person acting and each person the attempt names, plus the named entities' current values, given to the judge (J1)",
-     "gap": "on worlds too large to read whole, the judge could miss a blocker an installed rule already names for another person involved (Rosa's sign-release blocker is on her page, not Vik's); at today's sizes the plain version read the facts right, so the effect is not shown",
-     "status": "untested"
+    "plan": {
+      "status": "present",
+      "path": "docs/plans/ai_judge.md",
+      "relies_on": [
+        "consequence-report",
+        "judge-ruling",
+        "ruling-rule",
+        "credential-holder",
+        "norm",
+        "midrun-setting",
+        "knock-on-now",
+        "causal-parent",
+        "unmatched-attempt",
+        "resident",
+        "rules-review",
+        "approval",
+        "engine",
+        "event",
+        "mechanic",
+        "world-law",
+        "law-check",
+        "information",
+        "observation",
+        "causal-trace",
+        "run-log",
+        "attempt",
+        "check",
+        "test-run",
+        "build",
+        "readout"
+      ],
+      "cost_basis": {
+        "steps": [
+          {
+            "step": "attempt interpreter (existing)",
+            "cost_per_run_usd": 0.009,
+            "calls_per_run": 36,
+            "basis": "measured",
+            "evidence": "llm-cost estimate (2026-11-09): 114 calls, $0.0281, median 1,651 input and 160 output tokens, about $0.00025 per call; 36 calls per run is the attempts read in the saved airfield run (evidence/open-attempt/s1-airfield/run-log.jsonl: 9 rounds, 36 attempts, 10 unmatched)"
+          },
+          {
+            "step": "judge (new: propose, then confirm or revise, only for an unmatched attempt)",
+            "cost_per_run_usd": 0.043,
+            "calls_per_run": 20,
+            "basis": "computed",
+            "computation": {
+              "calls": 20,
+              "input_tokens_per_call": 15000,
+              "input_usd_per_mtok": 0.1,
+              "cached_share": 0,
+              "cached_usd_per_mtok": 0.1,
+              "output_tokens_per_call": 1300,
+              "output_usd_per_mtok": 0.5
+            },
+            "evidence": "Tokens: the three plain-baseline calls measured 9,938-17,922 input and 1,184-1,396 output tokens (llm-cost, trace world-substrate/ai-judge-plain-baseline/b75fd5f42b9742078c798df205243c73, $0.0061 for 3 calls); worst case about 53,000 input tokens for the largest saved world (evidence/waltzman-tasks-slice2/c1r21, 143,430 characters at 3.40 characters per token, plus net changes), $0.006 per call. Calls: 2 per unmatched attempt x 10 unmatched (the saved airfield run). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing (openrouter, checked 2026-11-05); no cached share assumed."
+          },
+          {
+            "step": "rules review (existing, once per proposed rule)",
+            "cost_per_run_usd": 0.49,
+            "calls_per_run": 10,
+            "basis": "computed",
+            "evidence": "Tokens: llm-cost estimate --task world-substrate-rules-review (2026-11-09): 24 calls on earlier review models, median 9,407 input and 2,856 output tokens, 0% cached ($0.699 in all, mean $0.029, which would give $0.29 for 10). Price: the current review model openrouter/google/gemini-4-argon (scripts/review_rules.py:18) has no input/output split in ~/code/llm_client/llm_client/data/default_model_registry.json, only cost $4.00 per million tokens, a 3:1 input/output blend (~/code/llm_client/docs/guides/model-selection.md), used for both. Calls: one review per ruling, 10 per run (the 10 unmatched attempts of the saved airfield run), falling as rulings become rules.",
+            "computation": {
+              "calls": 10,
+              "input_tokens_per_call": 9407,
+              "input_usd_per_mtok": 4.0,
+              "cached_share": 0,
+              "cached_usd_per_mtok": 4.0,
+              "output_tokens_per_call": 2856,
+              "output_usd_per_mtok": 4.0
+            }
+          }
+        ],
+        "cheapest_design": "Decided 3 requires a ruling to pass the World Builder's existing rules check. The model rules review is not a pass mark: it returns findings only and a build goes on without it when it fails (scripts/review_rules.py:1-7), so Decided 3 does not require it for judge rulings; the required part is the free declaration check and test run. Cheaper option recorded: drop the model review for judge rulings, about $0.05 per run instead of $0.54 (interpreter $0.009 + judge $0.043). Chosen: keep the review (inferred by agent, 2026-11-09). Reason: the sawmill case showed the free checks pass a valid but wrong rule (evidence/ai-judge/plain-baseline/sawmill-test-run.json), and the review is the one existing step that reads a rule against the world's description; $0.49 per run is small next to a wrong rule installed for everyone. J2 runs the review on the saved sawmill rule and drops it if it does not flag the single price. The plain version (one judge call per attempt, no test run before install) would save only the confirm call (about $0.02 per run) and installs malformed or wrong rules. The judge is called only for an attempt no rule covers, each ruling becomes a rule so the same attempt never calls it again, and it uses the interpreter's cheap model and route. Total about $0.54 per run with 10 rulings, most of it the rules review."
+      },
+      "plain_baseline": {
+        "kind": "side_by_side",
+        "answer_path": "the judge's ruling for an unmatched attempt, written as a rule in the declaration language",
+        "model": "openrouter/openai/gpt-6-luna",
+        "run": "3 calls on 2026-11-09, trace world-substrate/ai-judge-plain-baseline/b75fd5f42b9742078c798df205243c73, task world-substrate-ai-judge-plain-baseline, $0.0061 and 45.3K tokens (llm-cost); prompt evidence/ai-judge/plain-baseline/prompt.yaml; rules-check verdicts evidence/ai-judge/plain-baseline/rules-check.json",
+        "cases": [
+          {
+            "case": "sawmill offers to pay the logger for 3 cedar logs",
+            "plain_output": "evidence/ai-judge/plain-baseline/pencil-sawmill-buys-logs.json",
+            "built_output": "evidence/declared-laws/s2-pencil-2/run-log.jsonl:5",
+            "finding": "Today's built path recorded the attempt as unmatched and changed nothing. The plain ruling read every value right, named the logger's choice and found a real gap (saw-slats cannot saw logs the sawmill holds). Its rule passed the rules check but is wrong twice: it charges one price for 3 logs (the language has no multiplication), and it moves the logger's logs on the sawmill's move alone, with no agreement from the logger, although its own ruling called the sale the logger's choice: a failure against Decided 4. The existing scripted test run did not catch the price (it tried 1-log purchases only), and a 3-log attempt was accepted, moving 3 logs for 10 coins instead of 30 (evidence/ai-judge/plain-baseline/sawmill-test-run.json)."
+          },
+          {
+            "case": "shop offers the pencil factory $1,000 for pencils",
+            "plain_output": "evidence/ai-judge/plain-baseline/pencil-shop-offers-1000.json",
+            "built_output": "evidence/pencil7-trace-audit/run-log.jsonl:14",
+            "finding": "Today's built path recorded it as unmatched and changed nothing. The plain ruling named the factory's choice correctly, but its rule had no effects and was rejected by the rules check (participants must exactly name entity_ref fields)."
+          },
+          {
+            "case": "waiter picks up the tray",
+            "plain_output": "evidence/ai-judge/plain-baseline/cafe-waiter-picks-up-tray.json",
+            "built_output": "evidence/declared-laws/s4-cafe/run-log.jsonl:12",
+            "finding": "Today's built path recorded it as unmatched and changed nothing. The plain ruling allowed the pickup (the tray is on the counter, so a general move for a waiter to pick up an empty tray from a surface fits) and named the blocker the engine's own checks name (the carry move needs the tray held by the waiter; it is on the counter). Its rule was rejected by the rules check only for its field name ('from' is not an identifier)."
+          }
+        ],
+        "verdict": "The plain version reads the world correctly at these sizes, so the judge's input starts from it (the whole world). It is not enough on its own. Shown: the declaration check stops malformed rules (2 of 3 rejected, rules-check.json). Not shown: that pass 2 stops a wrong but valid rule; the accepted sawmill rule passed the declaration check and the scripted test run (sawmill-test-run.json), so those checks catch malformed rules only, and whether the judge's reading of the test-run report and its one revision catch such a rule is untested until J2. Pass 1 (discover for the person acting and each person named, plus the named entities' values) showed no added value here and is kept only because it costs no call."
+      },
+      "stage_effects": [
+        {
+          "stage": "pass 2, declaration check: the rules check of the proposed rule before it is installed (J1, J3)",
+          "gap": "malformed rules: 2 of 3 plain-version rules were rejected; without this check they would be installed and fail",
+          "status": "shown",
+          "evidence": "evidence/ai-judge/plain-baseline/rules-check.json"
+        },
+        {
+          "stage": "pass 2, test run: a proposed rule run on a copy of the world, its report read by the judge before install (J1, J2)",
+          "gap": "a valid but wrong rule (the sawmill rule charges one price for 3 logs and moves logs without the logger's agreement). The existing scripted test run tried only 1-log purchases and flagged nothing; a direct 3-log attempt was accepted, 3 logs for 10 coins. So no deterministic check catches it; whether the judge catches it from the report is untested",
+          "status": "untested",
+          "evidence": "evidence/ai-judge/plain-baseline/sawmill-test-run.json"
+        },
+        {
+          "stage": "one revision after the test run (J2)",
+          "gap": "a rejected or wrong rule from the first proposal (all 3 in the plain baseline) gets one more try before the attempt is refused as a language gap",
+          "status": "untested"
+        },
+        {
+          "stage": "pass 1: engine.discover for the person acting and each person the attempt names, plus the named entities' current values, given to the judge (J1)",
+          "gap": "on worlds too large to read whole, the judge could miss a blocker an installed rule already names for another person involved (Rosa's sign-release blocker is on her page, not Vik's); at today's sizes the plain version read the facts right, so the effect is not shown",
+          "status": "untested"
+        }
+      ],
+      "stops": {
+        "searched": [
+          "docs/plans/open_attempt.md Decisions (D2)",
+          "git log --grep='game master' and --grep='judge'",
+          "docs/plans/ai_judge.md 'Current truth'"
+        ],
+        "found": [
+          {
+            "said_on": "2026-10-26",
+            "words": "not yet",
+            "source": "docs/plans/open_attempt.md:160 (Decision D2: letting an AI game master invent an effect for an attempt no rule covers)",
+            "applies_to": "an AI game master deciding attempts no rule covers",
+            "status": "lifted",
+            "lifted_on": "2026-11-09",
+            "lifted_words": "yes i aprpove all those except for whether the bribe works seems like should be a deicsion made by the person being bribed",
+            "lifted_source": "docs/plans/ai_judge.md:133 (Decided 1-4); narrowed: the judge rules on constraints only and its rulings become checked rules, never outcomes"
+          }
+        ]
+      }
+    },
+    "acceptance": {
+      "status": "present",
+      "path": "docs/planning/ai-judge/acceptance-criteria.json"
+    },
+    "review_page": {
+      "status": "present",
+      "path": "proposals/ai-judge/review-page/index.html",
+      "url": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/ai-judge/review-page/"
+    },
+    "cold_review": {
+      "status": "present",
+      "path": "docs/planning/ai-judge/cold-review.md",
+      "verdict": "pass",
+      "reviewed_revision": "f9cd08252d0b404b11d517ac687252b8ca63fcbf"
     }
-   ],
-   "stops": {
-    "searched": [
-     "docs/plans/open_attempt.md Decisions (D2)",
-     "git log --grep='game master' and --grep='judge'",
-     "docs/plans/ai_judge.md 'Current truth'"
-    ],
-    "found": [
-     {
-      "said_on": "2026-10-26",
-      "words": "not yet",
-      "source": "docs/plans/open_attempt.md:160 (Decision D2: letting an AI game master invent an effect for an attempt no rule covers)",
-      "applies_to": "an AI game master deciding attempts no rule covers",
-      "status": "lifted",
-      "lifted_on": "2026-11-09",
-      "lifted_words": "yes i aprpove all those except for whether the bribe works seems like should be a deicsion made by the person being bribed",
-      "lifted_source": "docs/plans/ai_judge.md:133 (Decided 1-4); narrowed: the judge rules on constraints only and its rulings become checked rules, never outcomes"
-     }
-    ]
-   }
   },
-  "acceptance": {
-   "status": "present",
-   "path": "docs/planning/ai-judge/acceptance-criteria.json"
-  },
-  "review_page": {
-   "status": "present",
-   "path": "proposals/ai-judge/review-page/index.html",
-   "url": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/ai-judge/review-page/"
-  },
-  "cold_review": {
-   "status": "missing",
-   "note": "Not yet run; the coordinator runs the planning-compliance-reviewer subagent and saves docs/planning/ai-judge/cold-review.md."
-  }
- },
- "note": "This is the plan's own package, named by docs/plans/ai_judge.md's 'Planning package:' line. It shares the repository's open-questions ledger, system model, domain model, metamodel and diagrams with docs/planning/planning-package.json and the declared-laws and open-attempt packages (all rebuilt by tools/planning/). The plan's six new concepts are in the domain model as 'In documents only' (planned, not implemented); its uncertainties U1-U3 are Q74-Q76 (Q74 resolved by measurement), and the agent's technical calls made in answer to the 2026-11-09 cold review are resolved questions Q78 (two-pass judge), Q79 (rule language gap), Q80 (wait mode) and Q81 (replay under the recorded limit). The plain baseline was run (3 calls, $0.0061, evidence/ai-judge/plain-baseline/). The acceptance criteria cite the run page's own router record, docs/planning/ai-judge/router/run-page.recommendation.json. Checks were rerun for this package into docs/planning/ai-judge/checks.txt; the repository-wide docs/planning/checks.txt is left as its own package recorded it."
+  "note": "This is the plan's own package, named by docs/plans/ai_judge.md's 'Planning package:' line. It shares the repository's open-questions ledger, system model, domain model, metamodel and diagrams with docs/planning/planning-package.json and the declared-laws and open-attempt packages (all rebuilt by tools/planning/). The plan's six new concepts are in the domain model as 'In documents only' (planned, not implemented); its uncertainties U1-U3 are Q74-Q76 (Q74 resolved by measurement), and the agent's technical calls made in answer to the 2026-11-09 cold review are resolved questions Q78 (two-pass judge), Q79 (rule language gap), Q80 (wait mode) and Q81 (replay under the recorded limit). The plain baseline was run (3 calls, $0.0061, evidence/ai-judge/plain-baseline/). The acceptance criteria cite the run page's own router record, docs/planning/ai-judge/router/run-page.recommendation.json. Checks were rerun for this package into docs/planning/ai-judge/checks.txt; the repository-wide docs/planning/checks.txt is left as its own package recorded it."
 }
