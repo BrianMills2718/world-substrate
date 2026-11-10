@@ -437,8 +437,8 @@ window.MAPS = {
    {
     "id": "consequence-report",
     "label": "Consequence report",
-    "kind": "Theory",
-    "explain": "Plan ai-judge J1 (planned, not implemented): what the engine works out for an attempt no rule covers, in two passes. Pass 1, with no new rule: engine.discover for the person acting and for each person the attempt names (their moves, with which checks pass or fail), plus the current values of the entities the attempt names. Pass 2: the judge's proposed rule test-run on a copy of the world, giving its net changes, blockers, chain length and stopping point; the full chain stays in the run record. Code: none yet."
+    "kind": "Substrate",
+    "explain": "What the engine works out for an attempt no rule covers, in two passes (ai-judge J1, built 2026-11-10). Pass 1, with no new rule (pass_one): engine.discover for the person acting and for each person the attempt names (their moves, with which checks pass or fail), plus the current values of everyone and everything named; each run records it on every unmatched attempt (consequence.pass_one). The names come from the interpreter's reading (names). Pass 2 (pass_two): a proposed rule goes through the World Builder's rules check, then is test-run on a copy of the world as it is, giving its net changes, blockers, chain length and stopping point; the full chain stays in the report and summary() leaves it out for the judge. Code: scripts/consequence_report.py:67."
    },
    {
     "id": "judge-ruling",
@@ -1602,6 +1602,12 @@ window.MAPS = {
     "explain": "Blocks: Whether E2's rules-writer instructions prefer declared bands for a chance that depends on one or two facts, keeping Jev for the rest; not E1.."
    },
    {
+    "id": "Q89",
+    "label": "Q89: Reuse or replace the spike's mid-run rule writing",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: J3's install path and the plan's cost basis; not J2, which is built on Concordia's EventResolution and does not use the spike's rule writer.."
+   },
+   {
     "id": "affordance",
     "label": "Affordance (offered move)",
     "kind": "Concept",
@@ -1756,6 +1762,13 @@ window.MAPS = {
     "label": "Mechanisms library",
     "kind": "Concept",
     "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:71, Q28)."
+   },
+   {
+    "id": "midrun-setting",
+    "label": "Mid-run rulings setting",
+    "kind": "Concept",
+    "dashed": true,
+    "explain": "Plan ai-judge Decided 5 (planned, not implemented): a per-world option, 'Judge rulings during a run': Approved by Create (default; a checked ruling is installed at once and the attempt settles through it) or Wait for my approval (the proposed rule is held, the attempt waits as pending, Approve installs the rule and settles it, Reject refuses it; nothing settles without an installed rule)."
    },
    {
     "id": "norm",
@@ -2559,6 +2572,18 @@ window.MAPS = {
     "id": "Q88-gen-rules",
     "source": "Q88",
     "target": "gen-rules",
+    "label": "bears on"
+   },
+   {
+    "id": "Q89-judge-ruling",
+    "source": "Q89",
+    "target": "judge-ruling",
+    "label": "bears on"
+   },
+   {
+    "id": "Q89-midrun-setting",
+    "source": "Q89",
+    "target": "midrun-setting",
     "label": "bears on"
    }
   ],

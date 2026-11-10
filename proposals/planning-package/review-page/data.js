@@ -161,7 +161,8 @@ window.PAGE_DATA = {
      "resource": "scripts/scaffold_world.py:45",
      "world-design": "scripts/generate_world_bundle.py:53",
      "rules-review": "scripts/review_rules.py:75",
-     "run-stop": "scripts/run_stop.py:65"
+     "run-stop": "scripts/run_stop.py:65",
+     "consequence-report": "scripts/consequence_report.py:67"
     }
    },
    "diagrams": {
@@ -1900,6 +1901,41 @@ window.PAGE_DATA = {
     "estimator",
     "gen-rules"
    ]
+  },
+  {
+   "id": "Q89",
+   "short": "Reuse or replace the spike's mid-run rule writing",
+   "question": "This repository's own game master already writes general rules mid-run for attempts no rule covers (spikes/any-scenario-2026-10/midrun.py, Decision 007, ODD 8.19; 27 rules in two saved runs, about $0.10 per attempt). Does J3 reuse its install step and keep-or-drop record, and what do its 27 rules show (general rules or one-offs, and how many pass today's rules check)?",
+   "blocks": "J3's install path and the plan's cost basis; not J2, which is built on Concordia's EventResolution and does not use the spike's rule writer.",
+   "resolves_with": "A free read of rules_written_mid_run in the two summary.json files (spikes/any-scenario-2026-10/evidence/waltzman/run, .../waltzman-spec/run2/run) and of midrun.py's install step before J3 starts; the 27 rules run through the current rules check as a free replay.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/decisions/007-any-scenario-path.md",
+    "docs/model/ODD.md",
+    "docs/plans/ai_judge.md"
+   ],
+   "touches": [
+    "judge-ruling",
+    "midrun-setting"
+   ]
+  },
+  {
+   "id": "Q90",
+   "short": "Do configured resolution steps break 'no judge prompt of our own'",
+   "question": "R7 makes the judge Concordia's EventResolution with no judge prompt of our own, but a typed rule, a pass 2 review and a reached-or-not answer need thinking steps we write. Does passing our own event_resolution_steps and components to EventResolution count as conditioning the game master, or as a judge prompt of our own?",
+   "blocks": "J2's build and J5's stopping-point question.",
+   "resolves_with": "Reading Concordia 2.4.0's event_resolution.py for what the steps and components may supply, then whether that meets R7.",
+   "owner": "agent",
+   "status": "resolved",
+   "evidence": "Read 2026-11-10 (gdm-concordia 2.4.0, concordia/components/game_master/event_resolution.py, __init__ and pre_act): EventResolution takes event_resolution_steps (a sequence of callables over the interactive document, the premise and the active player's name) and a list of component keys whose pre-act text it adds to the document; the putative event is read from the game master's memory. That is its documented extension point. J2 (scripts/judge.py) runs EventResolution on an entity built from Concordia's stock parts, supplies two components (the world; the consequence report) and steps that each ask one typed question whose answer is a rule in the declaration language (prompts/judge_steps.yaml). So there is no judge agent or component of ours, but the question text is our own words; read as configuration. Inferred by agent; Brian may read Decision 006 differently, and then the steps are what to cut. Measured effect on the saved port run: evidence/ai-judge/j2/port/TRACE_READ.md.",
+   "sources": [
+    "docs/plans/ai_judge.md",
+    "docs/decisions/006-governed-rules-layer-scope.md"
+   ],
+   "touches": [
+    "judge-ruling"
+   ]
   }
  ],
  "domain": {
@@ -2338,8 +2374,8 @@ window.PAGE_DATA = {
    {
     "id": "consequence-report",
     "label": "Consequence report",
-    "kind": "Theory",
-    "explain": "Plan ai-judge J1 (planned, not implemented): what the engine works out for an attempt no rule covers, in two passes. Pass 1, with no new rule: engine.discover for the person acting and for each person the attempt names (their moves, with which checks pass or fail), plus the current values of the entities the attempt names. Pass 2: the judge's proposed rule test-run on a copy of the world, giving its net changes, blockers, chain length and stopping point; the full chain stays in the run record. Code: none yet."
+    "kind": "Substrate",
+    "explain": "What the engine works out for an attempt no rule covers, in two passes (ai-judge J1, built 2026-11-10). Pass 1, with no new rule (pass_one): engine.discover for the person acting and for each person the attempt names (their moves, with which checks pass or fail), plus the current values of everyone and everything named; each run records it on every unmatched attempt (consequence.pass_one). The names come from the interpreter's reading (names). Pass 2 (pass_two): a proposed rule goes through the World Builder's rules check, then is test-run on a copy of the world as it is, giving its net changes, blockers, chain length and stopping point; the full chain stays in the report and summary() leaves it out for the judge. Code: scripts/consequence_report.py:67."
    },
    {
     "id": "judge-ruling",
@@ -3503,6 +3539,12 @@ window.PAGE_DATA = {
     "explain": "Blocks: Whether E2's rules-writer instructions prefer declared bands for a chance that depends on one or two facts, keeping Jev for the rest; not E1.."
    },
    {
+    "id": "Q89",
+    "label": "Q89: Reuse or replace the spike's mid-run rule writing",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: J3's install path and the plan's cost basis; not J2, which is built on Concordia's EventResolution and does not use the spike's rule writer.."
+   },
+   {
     "id": "affordance",
     "label": "Affordance (offered move)",
     "kind": "Concept",
@@ -3657,6 +3699,13 @@ window.PAGE_DATA = {
     "label": "Mechanisms library",
     "kind": "Concept",
     "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:71, Q28)."
+   },
+   {
+    "id": "midrun-setting",
+    "label": "Mid-run rulings setting",
+    "kind": "Concept",
+    "dashed": true,
+    "explain": "Plan ai-judge Decided 5 (planned, not implemented): a per-world option, 'Judge rulings during a run': Approved by Create (default; a checked ruling is installed at once and the attempt settles through it) or Wait for my approval (the proposed rule is held, the attempt waits as pending, Approve installs the rule and settles it, Reject refuses it; nothing settles without an installed rule)."
    },
    {
     "id": "norm",
@@ -4460,6 +4509,18 @@ window.PAGE_DATA = {
     "id": "Q88-gen-rules",
     "source": "Q88",
     "target": "gen-rules",
+    "label": "bears on"
+   },
+   {
+    "id": "Q89-judge-ruling",
+    "source": "Q89",
+    "target": "judge-ruling",
+    "label": "bears on"
+   },
+   {
+    "id": "Q89-midrun-setting",
+    "source": "Q89",
+    "target": "midrun-setting",
     "label": "bears on"
    }
   ],
