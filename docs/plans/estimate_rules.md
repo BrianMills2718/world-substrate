@@ -194,7 +194,8 @@ on 2026-11-10 from the reading and prior art named with each; they stand as work
    with the same values share a chance but not an outcome.
 7. **When Jev fails: retry once, then the rule's declared fallback.** Measured: 1,330 of 20,001 recorded Jev
    calls failed (6.6%: 745 provider errors raised as RuntimeError, 585 network errors; failed calls averaged
-   9.4 s), read from `~/projects/data/llm_observability.db` on 2026-11-10. `call_decisions` does not retry. One
+   9.4 s), read from `~/projects/data/llm_observability.db` on 2026-11-10, split by the error type each call
+   records. `call_decisions` does not retry. One
    retry is the smallest step that keeps a 30-day run from being refused or falling back about twice a run.
    Each try has a 5 s timeout (`call_decisions` defaults to 30 s). Measured in the same database: successful
    calls averaged 0.43 s (median 0.26 s, 99th percentile 2.8 s; 61 of 18,671 took over 5 s), provider errors
@@ -284,7 +285,7 @@ traced run.
 | Slice | Change | Epistemic state | Acceptance |
 | --- | --- | --- | --- |
 | E1 | Chance roll only, on a `timing: each_round` process (the blade, a rule) and on one move (the ford crossing, a constraint): the `estimate` block in the language and its checks, the run seed (if S3 has not built it), the injected estimator (live and recorded), the per-run cache, the record on the event, replay, the run page rows; a hand-written sawmill fixture world; one live 30-day run; the plain-version comparison | fully specifiable now | A1, A2, A3, A5 (sawmill part), A7 |
-| E2 | The rules writer declares estimate rules from a description, through the World Builder; the rules check enforces fallback, stakes and declared reads | conditional on E1 | A4 |
+| E2 | The rules writer declares estimate rules from a description, through the World Builder; the rules check enforces fallback, stakes and declared reads; the free test run uses the stand-in estimator (Q87) | conditional on E1 | A4 |
 | E3 | Picks and amounts, when a described world needs one | conditional on E1 | A6 |
 | E4 | Judge-proposed estimate rules: the judge's ruling may contain an `estimate` block, checked and test-run like any ruling | conditional on E2 and the judge plan's J3 | (judge plan A4, with an estimate rule) |
 | E5 | Noticing: an estimate that decides whether an observation reaches a person (information delivery) | exploration required | A5 (port part) |
@@ -330,6 +331,19 @@ it changes what a person learns, not a field, and needs its own short design ste
   version the provider returned (today `typesafe/jev-1.13-20260917`). A replay never calls Jev, so a later
   version cannot change a saved run; a version change during or between live runs shows on the run page as a
   different version string. No pin beyond the alias is needed until a run shows a version change mattered.
+- **The free test run never calls Jev** (Q87). The World Builder test-runs each draft's rules with simple
+  scripted moves for a fixed number of rounds (`run_world(..., policy="scripted")`,
+  `scripts/world_builder_service.py:1845` and `:2215`), and that score is a gate only because it is free and
+  gives the same result every time. In it the estimator is a stand-in that never calls Jev: for each rule it
+  answers 1 and 0 in turn (for a pick or an amount, each option in turn), so every outcome branch of every
+  estimate rule runs, and each answer is recorded as "stand-in estimate (test run)". Calling Jev there would
+  make the gate paid and different on each try; using the rule's fallback would test one branch only, or refuse
+  every moment when the fallback is `refuse`. The stand-in says nothing about how often a branch fires in a real
+  run: the test run checks that the rules work, not how likely their outcomes are.
+- **Spend is counted in the existing ledger.** A live run's Jev calls carry the run's own trace id, so the cost
+  the World Builder already settles into its daily ledger from that trace includes them (`_trace_cost`,
+  `scripts/world_builder_service.py:297`; `_reserve_daily_budget` and `_settle_daily_budget`, :225-238): about
+  $0.0009 per 30-day sawmill run (LLM call boundary and cost). The ledger code is unchanged.
 
 ## System model
 
@@ -337,8 +351,9 @@ it changes what a person learns, not a field, and needs its own short design ste
   RULE-PROJECTION-FROM-CANONICAL-ONLY, and 8.20 knock-on effects (Decision 009). Changed: a world package with an
   estimate rule is `model-mediated`. Adds: `estimate rule` (E1), `recorded estimate` (E1), `recorded draw` (E1,
   shared with the skill roll), `estimator` (E1). Domain nodes for these are added now as "In documents only".
-- Scope: this repository's own model. Not changed: actors, places, information reach (until E5), tasks, the
-  budget ledger.
+- Scope: this repository's own model. Not changed: actors, places, information reach (until E5), tasks. The
+  budget ledger's code is unchanged, but a live run's settled cost now includes its Jev calls (Agent technical
+  calls).
 - Types: [docs/model/METAMODEL.md](../model/METAMODEL.md) gains the estimate block as part of a rule (check ->
   estimate -> outcome effects); each slice updates ODD.md, `world_substrate_model.toml` and
   `tests/test_system_model.py` in the same pull request.
@@ -407,16 +422,28 @@ reads (new, only on a cache miss) -> draw (code) -> outcome effects and knock-on
   10 x $0.0000279 = $0.00028 (measured per-call figure). Jev with the whole world: guess, up to 10 times the
   tokens, so up to 10 x $0.000279 = $0.0028. The two Jev variants: up to $0.0031. The gpt-6-luna variant:
   10 x (800 input x $0.10/M + 100 output x $0.50/M) = $0.0013 (computed; price from
-  `~/code/llm_client/llm_client/data/default_model_registry.json`). Up to $0.0044 in all, under $0.01.
+  `~/code/llm_client/llm_client/data/default_model_registry.json`). Variant (d), declared bands: one rules-writer
+  call, $0.0021 (measured median, next bullet), and no Jev call. Up to $0.0065 in all, under $0.01.
 - **Rules writer (E2, existing call):** measured `llm-cost estimate --task world-substrate-mechanic-authoring`
   (2026-11-10): 68 calls, median $0.0021 per call (11,551 input and 1,574 output tokens, 0% cached). Estimate
   rules add a few lines to its output; no new call.
-- **Cheapest design that still does the job.** A rule-writer formula (p = min(1, 0.03 x days)) costs nothing per
-  run, and it is the cheaper alternative to Jev; but the language has no arithmetic between two values (judge plan
-  Decided 3), so a formula would need a language change of its own, and the curve would be the rules writer's
-  guess, fixed when the world is built. Jev costs under a tenth of a cent per run and
-  needs no language arithmetic. Chosen: Jev, with the per-run cache; the E1 comparison records whether a plain
-  answer differs.
+- **Cheapest design that still does the job.** Two designs cost nothing per run.
+  - A rule-writer formula (p = min(1, 0.03 x days)). The language has no arithmetic between two values (judge
+    plan Decided 3), so a formula would need a language change of its own.
+  - Declared bands: the rule's ordinary checks choose among literal chances the rules writer writes. For the
+    sawmill: under 5 days since service 0.05, 5 to 9 days 0.2, 10 or more 0.4, each drawn against the same run
+    seed. Bands need no arithmetic, no estimator and no Jev call, and a literal chance is exactly the path a
+    rule's `{use: value}` fallback already takes (Decided 7), so E1 gets them with no new code.
+
+  Against bands: every number is the rules writer's guess, fixed when the world is built; the facts count only at
+  the band edges; and the numbers multiply with the facts a chance depends on (3 facts in 3 bands each is 27
+  chances to write and check). Brian also asked for rules that propagate based on Jev. That is an argument about
+  fit, not proof that Jev's chances are better, so E1 measures it: variant (d) of the comparison (Plain baseline)
+  has the rules writer write the sawmill's bands from its description. If the bands and Jev's chances (a) differ
+  by no more than 0.1 on at least 8 of the 10 cases, read side by side, E2's rules-writer instructions prefer
+  bands for a chance that depends on one or two facts and keep Jev for the rest (Q88). Jev costs under a tenth
+  of a cent per run and needs no language arithmetic. Chosen: Jev with the per-run cache, with declared bands as
+  the cheaper rival measured in E1.
 
 **Where estimate rules could serve the judge's stopping point (not taken over).** The judge plan's J5 asks the
 judge, after a changed round, whether a plain-words stopping point has been reached, at about $0.0016 per call
@@ -431,8 +458,10 @@ option (Q86).
 The answer path is Jev's estimate. The plain version, by the workspace rule, is the same model given the whole
 source and the question: Jev given the whole world state rather than the two declared fields. E1 runs, for days
 0, 3, 6, 9 and 12 with and without recent servicing (10 cases), side by side: (a) Jev with the declared reads,
-(b) Jev with the whole world, (c) gpt-6-luna with the declared reads asked for a probability. Read side by side:
-does the chance rise with days since service, do (a) and (b) differ, and does (c) agree. Variant (b) is kept as
+(b) Jev with the whole world, (c) gpt-6-luna with the declared reads asked for a probability, and (d) declared
+bands, literal chances the rules writer writes from the sawmill's description with no Jev call (Cheapest design).
+Read side by side: does the chance rise with days since service, do (a) and (b) differ, does (c) agree, and do
+the bands (d) match (a) closely enough to use instead (Q88). Variant (b) is kept as
 the plain-version record the workspace rule asks for, not as a design candidate: argument already rules out Jev
 reading the whole world in a rule, because the cache key would be the whole world (so nothing is reused), and
 the world can hold what A5 forbids an estimate to read. What (b) can change is the declared reads: if (b) tracks
@@ -463,6 +492,8 @@ Spend: owner allowance only; at most $0.05 per E1 run and $0.50 per slice, enfor
 - **U5 (agent, Q85):** latency for worlds with many estimates (about 0.61 s expected per estimate, computed in
   Agent technical calls); settled by E1's measured run and, if needed, a parallel ask within a moment.
 - **U6 (agent, Q86):** whether J5's stopping point should use Jev; belongs to the judge plan.
+- **U7 (agent, Q88):** whether declared bands written by the rules writer give the same chances as Jev on the
+  10 cases; settled by E1's comparison, variant (d), and it decides whether E2 prefers bands for simple chances.
 
 ## Needs Brian
 
@@ -472,4 +503,8 @@ norms (the judge plan): a chance decides what the world does, never what a perso
 ## Not in this plan
 
 Estimates of people's choices; calibration against real-world failure data; free-number estimates (Jev has none);
-parameter sweeps over many runs (Mesa's job, Decision 006); using Jev for the judge's stopping point (J5's call).
+parameter sweeps over many runs (Mesa's job, Decision 006); using Jev for the judge's stopping point (J5's call);
+carrying a probability through a chain of rules, as a probabilistic logic network such as ProbLog does. Each
+estimate rule draws its own outcome and the knock-on effects follow the drawn outcome, which is how this plan
+reads "propagate"; over many runs, how often a knock-on effect happens is the chained chance, so no second
+machinery is needed.

@@ -188,3 +188,11 @@ Every document still in the repository that the [documentation index](index.md) 
 ## evidence/pencil12-trace-audit
 
 - [Trace read: pencil build oRfOptv0O3f3 (2026-10-28)](../evidence/pencil12-trace-audit/TRACE_READ.md)
+
+## evidence/ai-judge/j0
+
+- [Trace read: fifty chains of a hundred links (J0, acceptance A1)](../evidence/ai-judge/j0/fifty-chains/TRACE_READ.md)
+- [Trace read: a loop of 40 (J0, acceptance A1 "a loop still ends")](../evidence/ai-judge/j0/loop/TRACE_READ.md)
+- [Trace read: truck without fuel (J0, acceptance A1 blocked step)](../evidence/ai-judge/j0/truck-without-fuel/TRACE_READ.md)
+- [Trace read: the same wind chain with J0 (J0, acceptance A7 comparison)](../evidence/ai-judge/j0/wind-chain-now/TRACE_READ.md)
+- [Trace read: wind chain under the old limit of 32 (J0, acceptance A7)](../evidence/ai-judge/j0/wind-chain-old-limit/TRACE_READ.md)
