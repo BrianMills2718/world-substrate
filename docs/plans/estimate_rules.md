@@ -21,7 +21,7 @@ goal:
   boundaries: "world-substrate and its own deploy only; llm_client, Concordia and Mesa read-only; each slice
     merges through ship after scripts/check_project.py exits 0 on the committed change; saved worlds still replay
     unchanged; owner allowance only for live runs."
-  done_when: "Acceptance checks A1-A6 below pass, each judged from the full trace of the run it names."
+  done_when: "Acceptance checks A1-A7 below pass, each judged from the full trace of the run it names."
   do_not_gate_on: "Estimates for people's own choices; calibration of Jev against real-world failure rates;
     estimate rules proposed by the AI judge (E4) before the judge's J3 lands."
   stop_after: 2
@@ -82,7 +82,8 @@ below); no new service, engine or repository.
 
 The sawmill. "A small sawmill: the saw cuts logs into boards while its blade is sound. The blade wears; the longer
 since it was serviced and the harder it is worked, the more likely it breaks. Mara, the sawyer, can service it,
-which takes the day. When the blade breaks, the saw stops, boards stop coming, and the buyer's order runs late."
+which takes the day. When the blade breaks, the saw stops, boards stop coming, and the buyer's order runs late. Logs come by cart
+across a ford, which is too deep to cross after heavy rain."
 
 1. The world has a blade with `days_since_service` (a number a process adds 1 to each day) and `load` (logs cut
    yesterday), and a saw that runs only while the blade is `sound`.
@@ -136,6 +137,17 @@ on 2026-11-10 from the reading and prior art named with each; they stand as work
      per bucket): the engine draws a bucket and writes its declared value. Example: repair takes 1, 2 or 4 days.
      Jev returns no free number (no such question type exists), so an amount is always one of the rule's own
      declared values.
+
+   **Rules and constraints** (Brian's "rules/contstatins"). In the judge plan's terms a constraint is what the
+   world makes possible or impossible, and a rule is what follows. An estimate can serve either:
+   - **On a process (a rule the world runs):** the sawmill blade above; the outcome's effects and knock-on effects
+     follow.
+   - **On a move (a constraint on what a person can do):** the move's "otherwise" result may be `block`, which
+     refuses the attempt whole and names the estimate as its blocker. Example: the log cart tries to cross the
+     ford; Jev estimates the chance the ford is passable from the last three days' rain; on "otherwise" the
+     attempt is refused, "blocked: the ford is too deep today (chance 0.7, roll 0.81)", nothing changes, and the
+     sawmill gets no logs that day. The estimate and the draw are recorded on the refused event, as every
+     refusal is recorded today.
 
    **Ruled out: a check on the probability itself** ("the blade fails if Jev's chance is over 0.5"). That turns
    a probability into a truth claim, the retired note's second anti-pattern ("P(fire)=0.81 -> fire=true"), and
@@ -213,6 +225,7 @@ on 2026-11-10 from the reading and prior art named with each; they stand as work
 | Id | Requirement | Source | Check |
 | --- | --- | --- | --- |
 | R1 | A rule can make an outcome depend on a chance Jev estimates from declared facts, drawn against the run's seed, and its effects and knock-on effects follow as for any rule | Brian 2026-11-10 (Why) | A1 |
+| R10 | A constraint can depend on such a chance: a move whose estimate comes out "otherwise" is refused whole with the estimate named as its blocker, and the refusal is recorded with the estimate and the draw | Brian 2026-11-10 (Why: "rules/contstatins") | A7 |
 | R2 | Each estimate event records the question, the inputs and their values, the answer, the model version returned, the trace id, the cost, whether it was cached, and the draw; the run page shows them | Q63 contract; workspace rule (Trace visibility) | A1 |
 | R3 | A replay reproduces every estimate outcome from the record and never calls Jev; a missing record stops the replay visibly | Q63 contract; goal boundary "saved worlds still replay unchanged" | A2 |
 | R4 | Every estimate rule declares a fallback; when Jev fails twice the rule's fallback applies (or the moment is refused) and the run page says so | arc42 section 8 (`docs/architecture/arc42.md:292`) | A3 |
@@ -220,9 +233,9 @@ on 2026-11-10 from the reading and prior art named with each; they stand as work
 | R6 | The same question with the same inputs is asked once per run | agent (Decided 6); cost | A1 |
 | R7 | The World Builder's rules writer can declare estimate rules from a world description, and the rules check rejects one with no fallback or no stakes | Brian 2026-11-10 (Why: "types of rules/contstatins") | A4 |
 | R8 | Picks among declared options and amounts from declared buckets work the same way as chance rolls | Decided 2 | A6 |
-| R9 | Every run keeps its full trace, read before any slice is reported | workspace rule (Trace visibility) | A1-A6 |
+| R9 | Every run keeps its full trace, read before any slice is reported | workspace rule (Trace visibility) | A1-A7 |
 
-All nine are required. R8 is built when a world needs it (E3); the rest by E2.
+All ten are required. R8 is built when a world needs it (E3); the rest by E2.
 
 ## Acceptance checks
 
@@ -248,6 +261,10 @@ in `docs/planning/estimate-rules/acceptance-criteria.json` (field `evidence`).
 - **A5 (E1, E5):** in the sawmill run, Jev's recorded input for every estimate contains only the two declared
   fields. In the port run (E5), whether the harbourmaster noticed the hand-over appears as "noticed (chance 0.4,
   roll 0.17)", and what he did after appears as his own move with his reason, with no estimate attached.
+- **A7 (E1):** in the saved run "sawmill blade", the log cart's crossing on a wet day shows "blocked: the ford is
+  too deep today (chance 0.7, roll 0.81)" in orange; the move changed nothing, no logs reach the sawmill that day,
+  and opening the refusal shows the question, the rain it read and the draw. A dry day's crossing shows the
+  chance, the roll and "crossed".
 - **A6 (E3):** in a world with a pick and an amount (the blade's failure mode; repair takes 1, 2 or 4 days), the
   run page shows "failure mode: chipped tooth (Jev: chipped 0.6, cracked 0.3, bent 0.1; roll 0.41)" and "repair
   takes 2 days (Jev: 1 day 0.2, 2 days 0.5, 4 days 0.3; roll 0.55)", and the repair's counter uses 2.
@@ -259,7 +276,7 @@ traced run.
 
 | Slice | Change | Epistemic state | Acceptance |
 | --- | --- | --- | --- |
-| E1 | Chance roll only, on a `timing: each_round` process: the `estimate` block in the language and its checks, the run seed (if S3 has not built it), the injected estimator (live and recorded), the per-run cache, the record on the event, replay, the run page rows; a hand-written sawmill fixture world; one live 30-day run; the plain-version comparison | fully specifiable now | A1, A2, A3, A5 (sawmill part) |
+| E1 | Chance roll only, on a `timing: each_round` process (the blade, a rule) and on one move (the ford crossing, a constraint): the `estimate` block in the language and its checks, the run seed (if S3 has not built it), the injected estimator (live and recorded), the per-run cache, the record on the event, replay, the run page rows; a hand-written sawmill fixture world; one live 30-day run; the plain-version comparison | fully specifiable now | A1, A2, A3, A5 (sawmill part), A7 |
 | E2 | The rules writer declares estimate rules from a description, through the World Builder; the rules check enforces fallback, stakes and declared reads | conditional on E1 | A4 |
 | E3 | Picks and amounts, when a described world needs one | conditional on E1 | A6 |
 | E4 | Judge-proposed estimate rules: the judge's ruling may contain an `estimate` block, checked and test-run like any ruling | conditional on E2 and the judge plan's J3 | (judge plan A4, with an estimate rule) |
@@ -318,7 +335,7 @@ it changes what a person learns, not a field, and needs its own short design ste
 Keep the run and its trace id; read its full inputs, the estimates and draws and the output before choosing a
 fix; cite where it diverged; classify the cause as evidence absent, evidence unused or contradicted, invalid
 expectation, or unresolved. An unresolved cause permits investigation, not a fix. Verify a fix with a new traced
-run and keep the original. Trace-review criteria: A1-A6, each `expected_outcome: pass`.
+run and keep the original. Trace-review criteria: A1-A7, each `expected_outcome: pass`.
 
 ## Capability reuse
 

@@ -83,10 +83,11 @@ a{color:var(--have)}
 <span class="chip"><span class="sw miss"></span>Orange, dashed: added by this plan (planned, not built)</span>
 <span class="chip"><span class="sw grey"></span>Grey: what happens today</span>
 </div>
-<p class="lede"><b>The sawmill.</b> "A small sawmill: the saw cuts logs into boards while its blade is sound. The blade wears; the longer since it was serviced and the harder it is worked, the more likely it breaks. Mara, the sawyer, can service it, which takes the day. When the blade breaks, the saw stops, boards stop coming, and the buyer's order runs late." Pick a case; the steps it passes through light up on the left. The numbers are an illustration of what the run page will show, not a run.</p>
+<p class="lede"><b>The sawmill.</b> "A small sawmill: the saw cuts logs into boards while its blade is sound. The blade wears; the longer since it was serviced and the harder it is worked, the more likely it breaks. Mara, the sawyer, can service it, which takes the day. When the blade breaks, the saw stops, boards stop coming, and the buyer's order runs late. Logs come by cart across a ford, which is too deep to cross after heavy rain." Pick a case; the steps it passes through light up on the left. The numbers are an illustration of what the run page will show, not a run.</p>
 <div class="examples" role="group" aria-label="Examples">
 <button data-ex="fails" aria-pressed="true">Day 9: the blade fails</button>
 <button data-ex="holds">Day 4: the blade holds</button>
+<button data-ex="ford">The cart and the ford (a constraint)</button>
 <button data-ex="cached">Same facts again later</button>
 <button data-ex="down">Jev does not answer</button>
 <button data-ex="replay">Replay the run</button>
@@ -128,7 +129,7 @@ a{color:var(--have)}
 </table></div>
 
 <h2 id="requirements">3. Requirements, and how you judge each yourself</h2>
-<p class="lede">Nine requirements (R1-R9), all required; R8 (picks and amounts) is built when a world needs it. Each acceptance check is judged on the run page, from the full trace of the run it names. Full entries, with steps, the view and the record files behind each: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/estimate-rules/acceptance-criteria.json">acceptance-criteria.json</a>. All six are <b style="color:var(--miss)">not built</b>.</p>
+<p class="lede">Ten requirements (R1-R10), all required; R8 (picks and amounts) is built when a world needs it. Each acceptance check is judged on the run page, from the full trace of the run it names. Full entries, with steps, the view and the record files behind each: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/estimate-rules/acceptance-criteria.json">acceptance-criteria.json</a>. All seven are <b style="color:var(--miss)">not built</b>.</p>
 <div class="tablewrap"><table>
 <tr><th>Check</th><th>Requirements</th><th>What you do</th><th>Works when you see</th><th>Broken looks like</th></tr>
 <tr><td>A1 (E1)</td><td>R1, R2, R5, R6, R9</td><td>Open the saved run "sawmill blade" (30 days, live Jev) and open a day the blade failed</td><td>"chance the blade fails today: 0.31 (Jev, from days since service 9, load 14); roll 0.22; failed"; it opens to the question, the two facts, the model version and trace id; the saw-stopped and late-order steps follow, each citing the failure; a later day with the same facts says "same question as day N, answer reused"; Mara's servicing is her own move with her reason</td><td>A failure with no roll shown, the blade failing because the chance was "high", facts Jev read that the rule did not name, or Jev asked twice for the same facts</td></tr>
@@ -136,6 +137,7 @@ a{color:var(--have)}
 <tr><td>A3 (E1)</td><td>R4, R9</td><td>Open the saved run "sawmill blade, Jev down", then the same world with "refuse when unavailable"</td><td>"estimate unavailable after 2 tries: used the rule's fallback 0.1" in orange, and the run goes on; with refuse, the day's moment is refused with "estimate unavailable" and nothing changed</td><td>A day decided by a default nobody declared, or a failure not shown</td></tr>
 <tr><td>A4 (E2)</td><td>R7, R9</td><td>Describe "a bakery whose oven sometimes fails, more often the longer since it was cleaned"; press Create simulation; open "See how it works"</td><td>The oven rule in plain words: its question, the facts it reads, its fallback and its outcomes; oven-failure rows as in A1; a draft with no fallback shown rejected: "estimate rule needs a fallback"</td><td>An oven rule with no fallback installed, or no chance rule at all</td></tr>
 <tr><td>A5 (E1, E5)</td><td>R5, R9</td><td>In the sawmill run, open what Jev read for any day; in the port run (E5), open the harbourmaster's row</td><td>Only the two named facts. "noticed (chance 0.4, roll 0.17)", then what he did as his own move with his reason, with no chance attached</td><td>Jev shown anything else, or a chance deciding what he does</td></tr>
+<tr><td>A7 (E1)</td><td>R10, R9</td><td>In the sawmill run, open a wet day on which the log cart tried to cross the ford, then a dry day</td><td>"blocked: the ford is too deep today (chance 0.7, roll 0.81)" in orange; it opens to the question, the rain it read and the roll; nothing changed and no logs arrived that day. The dry day: the chance, the roll, "crossed"</td><td>The cart crossing whatever the roll, a refusal with no chance or roll shown, or logs arriving on a blocked day</td></tr>
 <tr><td>A6 (E3)</td><td>R8, R9</td><td>Open a run where the broken blade shows a failure mode and the repair takes a number of days</td><td>"failure mode: chipped tooth (Jev: chipped 0.6, cracked 0.3, bent 0.1; roll 0.41)" and "repair takes 2 days (Jev: 1 day 0.2, 2 days 0.5, 4 days 0.3; roll 0.55)"; the repair counter uses 2</td><td>Always the most likely option, or a number of days the rule did not declare</td></tr>
 </table></div>
 
@@ -145,6 +147,7 @@ a{color:var(--have)}
 <tr><th>#</th><th>Decision</th><th>Basis</th></tr>
 <tr><td>1</td><td><b>An estimate is an input, never a fact.</b> Jev's answer becomes an outcome only through the rule's roll; it never becomes world state by itself.</td><td>Open question Q63's contract; the retired Jev note, "borrow estimators; own reality"</td></tr>
 <tr><td>2</td><td><b>Three kinds, matching Jev's three answer types:</b> a chance roll (yes or no), a pick among the rule's own options, and an amount from the rule's own list of values. Always a roll, never "take the most likely" and never "happens if the chance is over 0.5".</td><td>llm_client's typed decisions (<code>NoulQuestion</code>, <code>ChoiceQuestion</code>, <code>ScoreQuestion</code>); "Do LLMs Play Dice?" (COLING 2025): models state chances better than they sample them</td></tr>
+<tr><td>2b</td><td><b>Rules and constraints.</b> On a process (a rule the world runs) the outcome's effects follow. On a move (a constraint on what a person can do) a losing roll may block the move: it is refused whole, with the chance and roll named as the blocker.</td><td>Your "rules/contstatins"; the judge plan's split, where a constraint is what the world makes possible or impossible</td></tr>
 <tr><td>3</td><td><b>What a rule declares:</b> a fixed question, the facts it reads (nothing else reaches Jev), the answer type, the model, a required fallback (refuse, or a declared value) and the effects for each result. No chance roll without stakes.</td><td>The skill roll's rules (<code>docs/plans/open_attempt.md:188-194</code>); architecture section 8: a missing authority refuses visibly unless a fallback is declared</td></tr>
 <tr><td>4</td><td><b>One seed shared with the skill roll.</b> The roll comes from the run's seed and the event; whichever of the two features lands first builds the seed.</td><td><code>docs/plans/open_attempt.md:192</code>; open question Q33</td></tr>
 <tr><td>5</td><td><b>Replay never calls Jev.</b> It reads the recorded answers and stops if one is missing.</td><td>The existing recorded-reply replay (<code>scripts/replay_build.py:23-49</code>)</td></tr>
@@ -168,7 +171,7 @@ a{color:var(--have)}
 <h2 id="plan">6. Built in five slices, each one pull request</h2>
 <div class="tablewrap"><table>
 <tr><th>Slice</th><th>State</th><th>What lands</th><th>How sure we are</th><th>Shown by</th></tr>
-<tr><td>E1</td><td><b style="color:var(--miss)">Planned</b></td><td>Chance rolls on a process: language, seed, estimator, cache, record, replay, run page rows; a hand-written sawmill world; one live 30-day run; the plain-version comparison</td><td>Fully specifiable now</td><td>A1, A2, A3, A5 (sawmill)</td></tr>
+<tr><td>E1</td><td><b style="color:var(--miss)">Planned</b></td><td>Chance rolls on a process (the blade, a rule) and on one move (the ford crossing, a constraint): language, seed, estimator, cache, record, replay, run page rows; a hand-written sawmill world; one live 30-day run; the plain-version comparison</td><td>Fully specifiable now</td><td>A1, A2, A3, A5 (sawmill), A7</td></tr>
 <tr><td>E2</td><td><b style="color:var(--miss)">Planned</b></td><td>The rules writer writes chance rules from a description; the rules check requires a fallback, stakes and named facts</td><td>Depends on E1</td><td>A4</td></tr>
 <tr><td>E3</td><td><b style="color:var(--miss)">Planned</b></td><td>Picks and amounts, when a described world needs one</td><td>Depends on E1</td><td>A6</td></tr>
 <tr><td>E4</td><td><b style="color:var(--miss)">Planned</b></td><td>The AI judge's rulings may contain a chance rule, checked and test-run like any ruling</td><td>Depends on E2 and the judge's J3</td><td>The judge plan's A4, with a chance rule</td></tr>
@@ -201,9 +204,15 @@ a{color:var(--have)}
 <span id="checks"></span>
 <!-- package:start -->
 <h2>The planning package behind this page</h2>
-<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/estimate-rules/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/estimate-rules/checks.txt">checks.txt</a> (Checks pending); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
+<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/estimate-rules/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/estimate-rules/checks.txt">checks.txt</a> (Checks run 2026-11-10 on branch plan/estimate-rules (based on origin/main 43663e9), working tree of this change; the durable-document and wiki-cap failures below are the same on origin/main itself (tracked by Q77)); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
 <div class="tablewrap"><table class="pkg"><thead><tr><th>Check</th><th>Counts</th><th>Result</th></tr></thead><tbody>
-
+<tr><td>durable documents (arc42)</td><td>findings 12 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
+<tr><td>project navigation</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>repository format</td><td>compliant 1, of 1</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>trace reads</td><td>runs 33, problems 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>wiki and Markdown cap</td><td>md files 153, exception limit 180, more than two links deep 13, not linked from entry 6, durable findings 12 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
+<tr><td>doc reachability</td><td>reachable 124, unreachable 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>project check (tests, system model, docs)</td><td>tests run 884, failed 0, skipped 2, subtests passed 222</td><td><span class="tag have">exit 0</span></td></tr>
 </tbody></table></div>
 <h3 class="sub">Open questions: 44 open, 42 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
@@ -286,6 +295,12 @@ holds:{title:"Day 4: the blade holds",setup:"Serviced 4 days ago; yesterday the 
 ["miss","roll","The draw is 0.57, not under 0.08: nothing happens.","recorded draw"],
 ["miss","run page","\"chance the blade fails today: 0.08; roll 0.57; held\".","A1"]],
 out:"A low chance usually holds, but not always: the roll decides, not a threshold."},
+ford:{title:"The log cart tries to cross the ford",setup:"It rained hard for the last three days. Crossing the ford is a move with a chance on it: a constraint on what the carter can do.",stages:["checks","cache","ask","draw","record"],ev:[
+["have","checks","The carter is at the ford with a loaded cart.","ordinary checks"],
+["miss","Jev","Asked: the chance the ford is passable today, from the last three days' rain. Answers 0.7.","recorded estimate"],
+["miss","roll","Draw 0.81, not under 0.7: the move is blocked. \"blocked: the ford is too deep today (chance 0.7, roll 0.81)\", in orange.","refused event with the estimate and roll as its blocker"],
+["have","after","The move changed nothing; no logs reach the sawmill today, so the saw has nothing to cut.","atomic refusal"]],
+out:"A chance can decide what the world makes possible, not only what follows: the blocker names the chance and the roll."},
 cached:{title:"Day 21: the same facts as day 9",setup:"After a service on day 12, by day 21 the blade is again 9 days since service with a load of 14.",stages:["checks","cache","draw","record","effects"],ev:[
 ["miss","cache","Same question, same facts: the answer 0.31 recorded on day 9 is reused. Jev is not asked.","\"same question as day 9, answer reused\""],
 ["miss","roll","Day 21 draws its own number: 0.64. The blade holds this time.","recorded draw"]],

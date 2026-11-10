@@ -1,0 +1,681 @@
+{
+  "record_type": "goal_coverage_trace",
+  "trace_id": "planning-compliance/goal-coverage/20261110T114024-df4c25a9-run1",
+  "task": "planning_compliance.goal_coverage",
+  "requested_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "judged_at": "2026-11-10T11:40:30-0500",
+  "prompt_template": "plugins/company-planning/skills/planning-compliance/scripts/coverage_prompt.yaml",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You check whether a set of acceptance criteria still asks for what a person asked for.\nAgents write acceptance criteria from a person's request, and they tend to rewrite it into\nsomething easier to build: a word like \"graph\" or \"across documents\" disappears and nothing\nnotices. Your job is to notice.\n\nStep 1. Split every quote under ASKED_BY into its distinct requirements: each separate thing\nthe delivered outcome must be, do or show. Split finely: \"a shared map of every store that\nstaff can filter and print\" is five requirements (a map; shared; every store; can be\nfiltered; can be printed). Keep the person's own nouns: a requirement named \"map\" stays\n\"map\", never \"list\" or \"view\". For each requirement give:\n  - id: R1, R2, ... in order;\n  - requirement: a short name in the person's own words (2 to 6 words);\n  - quote: the exact words from the quote that state it, copied character for character\n    (keep their typos);\n  - asked_by_index: the 1-based number of the ASKED_BY quote it comes from;\n  - kind: \"outcome\" (something the delivered thing must be or do), \"constraint\" (a rule about\n    how it is shown or built that a criterion can still check), or \"process\" (a statement\n    about how the planning work or the acceptance criteria themselves are written, which no\n    demonstration of the outcome could show). Use \"process\" only when no working interface\n    could ever demonstrate it.\nWhen two quotes state the same requirement, list it once and quote the clearer one.\nWhen the user message lists REQUIREMENTS ALREADY CUT, do not split those words again: copy each\none unchanged (same id, requirement, quote, asked_by_index and kind) while its quote is still in\nASKED_BY, and cut new requirements only for words they do not cover, numbered after the highest id.\n\nStep 2. For each requirement, decide which criteria cover it. A criterion covers a\nrequirement only when its criterion, demonstration or expected result would fail if the\nrequirement were not met. A criterion that is merely compatible with the requirement, or\nthat is about something nearby, does not cover it. For example a criterion \"open the store\npage and see every store's address\" does not cover \"map\": a list of addresses passes it. List the\ncovering criterion ids, possibly none, and say why in one sentence. Then give the extent:\n\"full\" when the listed criteria together would fail for any way of not meeting the\nrequirement; \"partial\" when they check only one part or one case of it, so something that\nmisses the rest still passes (say in \"missing\" what is left unasked); \"none\" when no\ncriterion covers it.\n\nStep 3. If a requirement is covered by no criterion, check DEFERRALS. A requirement is\ndeferred only when a deferral's words, said by the person, approve leaving that requirement\nout for now. Give the deferral's number, or 0 when none applies. Never treat an agent's note,\na plan or a criterion's own wording as a deferral.\n\nStep 4. For each requirement of kind \"outcome\", say whether the OUTCOME line keeps it, in\nsubstance, and why. An outcome line that says \"staff look up any store\" does not keep\n\"map\", \"filter\" or \"print\".\n\nBe strict and literal. Judge only from the text given."
+    },
+    {
+      "role": "user",
+      "content": "ASKED_BY (the person's own words):\n\n1. Brian, 2026-11-10: <<<im not saying jsut the judge uses jev. i can see there being a way where we have certain types of rules/contstatins that progagte base don jev>>>\n\n\n\nREQUIREMENTS ALREADY CUT (from the last judgment):\n\nR1 [outcome] \"not just the judge uses jev\", quote 1: <<<im not saying jsut the judge uses jev>>>\n\nR2 [outcome] \"rules/constraints that propagate\", quote 1: <<<certain types of rules/contstatins that progagte base don jev>>>\n\n\nOUTCOME (the agent's one-line restatement):\n<<<Certain types of rules and constraints in a world propagate based on Jev, not only the judge's: a rule's outcome, or whether a constraint lets a person's move through, can depend on a chance (later a pick among the rule's options or an amount from its list) that Jev estimates during the run from facts the rule names; the engine rolls against it, the estimate and roll are recorded and shown, the rule's effects and every knock-on effect follow as for any rule, a replay reproduces it with no Jev call, a Jev failure uses the rule's declared fallback visibly, the rules writer can write such rules from a description, and people's own choices are never estimated.>>>\n\nCRITERIA:\n\n[A1] \n  criterion: A rule's outcome propagates based on Jev: each day the sawmill's blade rule asks Jev for today's chance of failure from the two facts it names, the engine rolls against it, the run page shows the chance, its source, the roll and the outcome, and on a failure the usual knock-on effects follow, each citing the failure; the same facts asked again in the run reuse the answer; the sawyer's servicing is her own choice with no estimate attached.\n  demonstration: (1) On the World Builder, open the saved run \"sawmill blade\" (30 days, run live with Jev). (2) Scan the day rows, then open a day the blade failed. (3) Follow the steps after the failure to their causes. (4) Find a later day whose facts match an earlier day and open it. (5) Open a day on which Mara serviced the blade. \n  expected: A failure day reads \"chance the blade fails today: 0.31 (Jev, from days since service 9, load 14); roll 0.22; failed\" (the numbers are whatever the run recorded) and opens to the question, the two facts with their values, the model version and the trace id; the saw-stopped and late-order steps follow, each citing the failure; the matching later day says \"same question as day N, answer reused\"; Mara's servicing is her own move with her reason and no chance attached.\n\n[A2] \n  criterion: A replay reproduces every chance outcome from the record and never calls Jev; a record with an estimate missing stops visibly instead of asking Jev.\n  demonstration: (1) Press Replay on the saved run \"sawmill blade\". (2) Compare its days and outcomes with the original run and read the replay's summary line. (3) Open the saved run \"sawmill blade, estimate removed\" (one recorded estimate deleted) and replay it. \n  expected: The replay shows the same 30 days and outcomes and \"replayed from the record: 0 Jev calls\"; the damaged copy stops at the day with the missing estimate and says \"no recorded estimate for this event\".\n\n[A3] \n  criterion: When Jev fails twice, the rule's declared fallback applies (a declared chance, or refusing the moment), and the run page says so; there is no silent default.\n  demonstration: (1) Open the saved run \"sawmill blade, Jev down\" (estimator forced to fail). (2) Open any day's chance event. (3) Open the saved run of the same world with the rule's fallback set to refuse. \n  expected: \"estimate unavailable after 2 tries: used the rule's fallback 0.1\" in orange on each day, and the run goes on; with refuse, the day's moment is refused with \"estimate unavailable\" and nothing changed that day.\n\n[A4] \n  criterion: The World Builder's rules writer writes estimate rules (a type of rule that propagates based on Jev) from a plain description, and the rules check rejects one with no fallback.\n  demonstration: (1) On the World Builder, describe \"a bakery whose oven sometimes fails, more often the longer since it was cleaned\" and press Create simulation. (2) Open \"See how it works\" and find the oven rule. (3) Open the run's day rows. (4) Open the build record's rules-check list. \n  expected: \"See how it works\" shows the oven rule in plain words: its question, the facts it reads, its fallback and its outcomes; the run shows oven-failure rows as in A1; the build record shows any draft without a fallback rejected with \"estimate rule needs a fallback\".\n\n[A5] \n  criterion: An estimate reads only the facts its rule names and never decides what a person chooses: Jev never sees the attempt's wording or a resident's reasoning, and in the port the chance only decides whether the harbourmaster notices; what he does after is his own choice.\n  demonstration: (1) In the saved run \"sawmill blade\", open what Jev read for any day. (2) In the saved port run (E5), open the harbourmaster's row after Vik's hand-over. (3) Open what he did next. \n  expected: The sawmill's Jev input holds only days since service and load. The port row reads \"noticed (chance 0.4, roll 0.17)\" (the run's own numbers), and his next act is his own move with his reason, with no chance attached.\n\n[A6] \n  criterion: Picks among a rule's declared options and amounts from its declared values work like chance rolls: drawn by Jev's probabilities, never the most likely option every time, and never a value the rule did not declare.\n  demonstration: (1) Open the saved run in which the blade's failure mode is picked and the repair time is an amount (1, 2 or 4 days). (2) Open a failure day's two rows. (3) Follow the repair counter on the days after. \n  expected: \"failure mode: chipped tooth (Jev: chipped 0.6, cracked 0.3, bent 0.1; roll 0.41)\" and \"repair takes 2 days (Jev: 1 day 0.2, 2 days 0.5, 4 days 0.3; roll 0.55)\" (the run's own numbers), and the repair counter uses 2 days.\n\n[A7] \n  criterion: A constraint propagates based on Jev: whether a move is possible at all can depend on a chance Jev estimates; on the losing roll the move is refused whole with the estimate named as its blocker, nothing changes, and what depended on it does not happen.\n  demonstration: (1) In the saved run \"sawmill blade\", open a wet day on which the log cart tried to cross the ford. (2) Open the refusal. (3) Check the sawmill's log count that day. (4) Open a dry day's crossing. \n  expected: The wet day reads \"blocked: the ford is too deep today (chance 0.7, roll 0.81)\" in orange (the run's own numbers); the refusal opens to the question, the rain it read and the draw; nothing changed, and no logs reached the sawmill that day. The dry day shows the chance, the roll and \"crossed\".\n\n\nDEFERRALS:\n\nnone recorded"
+    }
+  ],
+  "response_schema": {
+    "$defs": {
+      "Requirement": {
+        "properties": {
+          "id": {
+            "description": "R1, R2, ... in order",
+            "title": "Id",
+            "type": "string"
+          },
+          "requirement": {
+            "description": "short name in the person's own words, 2 to 6 words",
+            "title": "Requirement",
+            "type": "string"
+          },
+          "quote": {
+            "description": "the exact words from the ASKED_BY quote that state it, copied verbatim",
+            "title": "Quote",
+            "type": "string"
+          },
+          "asked_by_index": {
+            "description": "1-based number of the ASKED_BY quote it comes from",
+            "title": "Asked By Index",
+            "type": "integer"
+          },
+          "kind": {
+            "enum": [
+              "outcome",
+              "constraint",
+              "process"
+            ],
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "requirement",
+          "quote",
+          "asked_by_index",
+          "kind"
+        ],
+        "title": "Requirement",
+        "type": "object"
+      },
+      "SuppliedCriterionMapping": {
+        "properties": {
+          "requirement_id": {
+            "title": "Requirement Id",
+            "type": "string"
+          },
+          "covered_by": {
+            "description": "ids of the criteria that would fail if the requirement were not met",
+            "items": {
+              "enum": [
+                "A1",
+                "A2",
+                "A3",
+                "A4",
+                "A5",
+                "A6",
+                "A7"
+              ],
+              "type": "string"
+            },
+            "title": "Covered By",
+            "type": "array"
+          },
+          "coverage_reason": {
+            "description": "one sentence: why these criteria cover it, or why none does",
+            "title": "Coverage Reason",
+            "type": "string"
+          },
+          "extent": {
+            "description": "full: the criteria fail for any way of missing it; partial: they check only part of it; none",
+            "enum": [
+              "full",
+              "partial",
+              "none"
+            ],
+            "title": "Extent",
+            "type": "string"
+          },
+          "missing": {
+            "description": "for partial: the part no criterion asks for; empty otherwise",
+            "title": "Missing",
+            "type": "string"
+          },
+          "deferral": {
+            "description": "1-based number of the DEFERRAL that approves leaving it out, or 0",
+            "title": "Deferral",
+            "type": "integer"
+          },
+          "in_outcome": {
+            "description": "whether the OUTCOME line keeps this requirement (true for non-outcome kinds)",
+            "title": "In Outcome",
+            "type": "boolean"
+          },
+          "outcome_reason": {
+            "description": "one sentence on the outcome line",
+            "title": "Outcome Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "requirement_id",
+          "covered_by",
+          "coverage_reason",
+          "extent",
+          "missing",
+          "deferral",
+          "in_outcome",
+          "outcome_reason"
+        ],
+        "title": "SuppliedCriterionMapping",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "requirements": {
+        "items": {
+          "$ref": "#/$defs/Requirement"
+        },
+        "title": "Requirements",
+        "type": "array"
+      },
+      "mappings": {
+        "items": {
+          "$ref": "#/$defs/SuppliedCriterionMapping"
+        },
+        "title": "Mappings",
+        "type": "array"
+      }
+    },
+    "required": [
+      "requirements",
+      "mappings"
+    ],
+    "title": "SuppliedCriteriaJudgment",
+    "type": "object"
+  },
+  "calls": [
+    {
+      "trace_id": "planning-compliance/goal-coverage/20261110T114024-df4c25a9-run1",
+      "model": "openrouter/anthropic/claude-sonnet-5.5",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You check whether a set of acceptance criteria still asks for what a person asked for.\nAgents write acceptance criteria from a person's request, and they tend to rewrite it into\nsomething easier to build: a word like \"graph\" or \"across documents\" disappears and nothing\nnotices. Your job is to notice.\n\nStep 1. Split every quote under ASKED_BY into its distinct requirements: each separate thing\nthe delivered outcome must be, do or show. Split finely: \"a shared map of every store that\nstaff can filter and print\" is five requirements (a map; shared; every store; can be\nfiltered; can be printed). Keep the person's own nouns: a requirement named \"map\" stays\n\"map\", never \"list\" or \"view\". For each requirement give:\n  - id: R1, R2, ... in order;\n  - requirement: a short name in the person's own words (2 to 6 words);\n  - quote: the exact words from the quote that state it, copied character for character\n    (keep their typos);\n  - asked_by_index: the 1-based number of the ASKED_BY quote it comes from;\n  - kind: \"outcome\" (something the delivered thing must be or do), \"constraint\" (a rule about\n    how it is shown or built that a criterion can still check), or \"process\" (a statement\n    about how the planning work or the acceptance criteria themselves are written, which no\n    demonstration of the outcome could show). Use \"process\" only when no working interface\n    could ever demonstrate it.\nWhen two quotes state the same requirement, list it once and quote the clearer one.\nWhen the user message lists REQUIREMENTS ALREADY CUT, do not split those words again: copy each\none unchanged (same id, requirement, quote, asked_by_index and kind) while its quote is still in\nASKED_BY, and cut new requirements only for words they do not cover, numbered after the highest id.\n\nStep 2. For each requirement, decide which criteria cover it. A criterion covers a\nrequirement only when its criterion, demonstration or expected result would fail if the\nrequirement were not met. A criterion that is merely compatible with the requirement, or\nthat is about something nearby, does not cover it. For example a criterion \"open the store\npage and see every store's address\" does not cover \"map\": a list of addresses passes it. List the\ncovering criterion ids, possibly none, and say why in one sentence. Then give the extent:\n\"full\" when the listed criteria together would fail for any way of not meeting the\nrequirement; \"partial\" when they check only one part or one case of it, so something that\nmisses the rest still passes (say in \"missing\" what is left unasked); \"none\" when no\ncriterion covers it.\n\nStep 3. If a requirement is covered by no criterion, check DEFERRALS. A requirement is\ndeferred only when a deferral's words, said by the person, approve leaving that requirement\nout for now. Give the deferral's number, or 0 when none applies. Never treat an agent's note,\na plan or a criterion's own wording as a deferral.\n\nStep 4. For each requirement of kind \"outcome\", say whether the OUTCOME line keeps it, in\nsubstance, and why. An outcome line that says \"staff look up any store\" does not keep\n\"map\", \"filter\" or \"print\".\n\nBe strict and literal. Judge only from the text given."
+        },
+        {
+          "role": "user",
+          "content": "ASKED_BY (the person's own words):\n\n1. Brian, 2026-11-10: <<<im not saying jsut the judge uses jev. i can see there being a way where we have certain types of rules/contstatins that progagte base don jev>>>\n\n\n\nREQUIREMENTS ALREADY CUT (from the last judgment):\n\nR1 [outcome] \"not just the judge uses jev\", quote 1: <<<im not saying jsut the judge uses jev>>>\n\nR2 [outcome] \"rules/constraints that propagate\", quote 1: <<<certain types of rules/contstatins that progagte base don jev>>>\n\n\nOUTCOME (the agent's one-line restatement):\n<<<Certain types of rules and constraints in a world propagate based on Jev, not only the judge's: a rule's outcome, or whether a constraint lets a person's move through, can depend on a chance (later a pick among the rule's options or an amount from its list) that Jev estimates during the run from facts the rule names; the engine rolls against it, the estimate and roll are recorded and shown, the rule's effects and every knock-on effect follow as for any rule, a replay reproduces it with no Jev call, a Jev failure uses the rule's declared fallback visibly, the rules writer can write such rules from a description, and people's own choices are never estimated.>>>\n\nCRITERIA:\n\n[A1] \n  criterion: A rule's outcome propagates based on Jev: each day the sawmill's blade rule asks Jev for today's chance of failure from the two facts it names, the engine rolls against it, the run page shows the chance, its source, the roll and the outcome, and on a failure the usual knock-on effects follow, each citing the failure; the same facts asked again in the run reuse the answer; the sawyer's servicing is her own choice with no estimate attached.\n  demonstration: (1) On the World Builder, open the saved run \"sawmill blade\" (30 days, run live with Jev). (2) Scan the day rows, then open a day the blade failed. (3) Follow the steps after the failure to their causes. (4) Find a later day whose facts match an earlier day and open it. (5) Open a day on which Mara serviced the blade. \n  expected: A failure day reads \"chance the blade fails today: 0.31 (Jev, from days since service 9, load 14); roll 0.22; failed\" (the numbers are whatever the run recorded) and opens to the question, the two facts with their values, the model version and the trace id; the saw-stopped and late-order steps follow, each citing the failure; the matching later day says \"same question as day N, answer reused\"; Mara's servicing is her own move with her reason and no chance attached.\n\n[A2] \n  criterion: A replay reproduces every chance outcome from the record and never calls Jev; a record with an estimate missing stops visibly instead of asking Jev.\n  demonstration: (1) Press Replay on the saved run \"sawmill blade\". (2) Compare its days and outcomes with the original run and read the replay's summary line. (3) Open the saved run \"sawmill blade, estimate removed\" (one recorded estimate deleted) and replay it. \n  expected: The replay shows the same 30 days and outcomes and \"replayed from the record: 0 Jev calls\"; the damaged copy stops at the day with the missing estimate and says \"no recorded estimate for this event\".\n\n[A3] \n  criterion: When Jev fails twice, the rule's declared fallback applies (a declared chance, or refusing the moment), and the run page says so; there is no silent default.\n  demonstration: (1) Open the saved run \"sawmill blade, Jev down\" (estimator forced to fail). (2) Open any day's chance event. (3) Open the saved run of the same world with the rule's fallback set to refuse. \n  expected: \"estimate unavailable after 2 tries: used the rule's fallback 0.1\" in orange on each day, and the run goes on; with refuse, the day's moment is refused with \"estimate unavailable\" and nothing changed that day.\n\n[A4] \n  criterion: The World Builder's rules writer writes estimate rules (a type of rule that propagates based on Jev) from a plain description, and the rules check rejects one with no fallback.\n  demonstration: (1) On the World Builder, describe \"a bakery whose oven sometimes fails, more often the longer since it was cleaned\" and press Create simulation. (2) Open \"See how it works\" and find the oven rule. (3) Open the run's day rows. (4) Open the build record's rules-check list. \n  expected: \"See how it works\" shows the oven rule in plain words: its question, the facts it reads, its fallback and its outcomes; the run shows oven-failure rows as in A1; the build record shows any draft without a fallback rejected with \"estimate rule needs a fallback\".\n\n[A5] \n  criterion: An estimate reads only the facts its rule names and never decides what a person chooses: Jev never sees the attempt's wording or a resident's reasoning, and in the port the chance only decides whether the harbourmaster notices; what he does after is his own choice.\n  demonstration: (1) In the saved run \"sawmill blade\", open what Jev read for any day. (2) In the saved port run (E5), open the harbourmaster's row after Vik's hand-over. (3) Open what he did next. \n  expected: The sawmill's Jev input holds only days since service and load. The port row reads \"noticed (chance 0.4, roll 0.17)\" (the run's own numbers), and his next act is his own move with his reason, with no chance attached.\n\n[A6] \n  criterion: Picks among a rule's declared options and amounts from its declared values work like chance rolls: drawn by Jev's probabilities, never the most likely option every time, and never a value the rule did not declare.\n  demonstration: (1) Open the saved run in which the blade's failure mode is picked and the repair time is an amount (1, 2 or 4 days). (2) Open a failure day's two rows. (3) Follow the repair counter on the days after. \n  expected: \"failure mode: chipped tooth (Jev: chipped 0.6, cracked 0.3, bent 0.1; roll 0.41)\" and \"repair takes 2 days (Jev: 1 day 0.2, 2 days 0.5, 4 days 0.3; roll 0.55)\" (the run's own numbers), and the repair counter uses 2 days.\n\n[A7] \n  criterion: A constraint propagates based on Jev: whether a move is possible at all can depend on a chance Jev estimates; on the losing roll the move is refused whole with the estimate named as its blocker, nothing changes, and what depended on it does not happen.\n  demonstration: (1) In the saved run \"sawmill blade\", open a wet day on which the log cart tried to cross the ford. (2) Open the refusal. (3) Check the sawmill's log count that day. (4) Open a dry day's crossing. \n  expected: The wet day reads \"blocked: the ford is too deep today (chance 0.7, roll 0.81)\" in orange (the run's own numbers); the refusal opens to the question, the rain it read and the draw; nothing changed, and no logs reached the sawmill that day. The dry day shows the chance, the roll and \"crossed\".\n\n\nDEFERRALS:\n\nnone recorded"
+        }
+      ],
+      "status": "valid",
+      "arguments": {
+        "model": "openrouter/anthropic/claude-sonnet-5.5",
+        "reasoning_effort": "medium",
+        "model_policy": "enforce_allowlist",
+        "task": "planning_compliance.goal_coverage",
+        "trace_id": "planning-compliance/goal-coverage/20261110T114024-df4c25a9-run1",
+        "max_budget": 0.5,
+        "timeout": 300,
+        "logical_timeout": 300,
+        "fallback_models": [
+          "openrouter/openai/gpt-6-luna"
+        ]
+      },
+      "observability": "llm_client observability db (~/projects/data/llm_observability.db), by trace_id",
+      "raw_answer": {
+        "requirements": [
+          {
+            "id": "R1",
+            "requirement": "not just the judge uses jev",
+            "quote": "im not saying jsut the judge uses jev",
+            "asked_by_index": 1,
+            "kind": "outcome"
+          },
+          {
+            "id": "R2",
+            "requirement": "rules/constraints that propagate",
+            "quote": "certain types of rules/contstatins that progagte base don jev",
+            "asked_by_index": 1,
+            "kind": "outcome"
+          }
+        ],
+        "mappings": [
+          {
+            "requirement_id": "R1",
+            "covered_by": [
+              "A1",
+              "A4",
+              "A7"
+            ],
+            "coverage_reason": "A1, A4 and A7 would fail unless rules and constraints, not only the judge, use Jev estimates during the run.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line says rules and constraints propagate based on Jev, 'not only the judge's'."
+          },
+          {
+            "requirement_id": "R2",
+            "covered_by": [
+              "A1",
+              "A7"
+            ],
+            "coverage_reason": "A1 checks that a rule's outcome depends on a Jev-estimated chance with knock-on effects, and A7 checks that a constraint's pass or refusal depends on one; both fail otherwise.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line keeps both rules and constraints propagating based on Jev, including knock-on effects."
+          }
+        ]
+      },
+      "cost_usd": 0.01428,
+      "usage": {
+        "prompt_tokens": 4850,
+        "completion_tokens": 458,
+        "total_tokens": 5308,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "cache_creation_tokens": 0,
+          "video_tokens": 0
+        },
+        "cached_tokens": 0,
+        "cache_creation_tokens": 0,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "image_tokens": 0
+        },
+        "reasoning_tokens": 0,
+        "cost_evidence": {
+          "openrouter_cost": 0.01428,
+          "computed_cost": 0.0,
+          "generation_id": "gen-1794328825-XpG3cSDTmD8dMEMqYY0X",
+          "cost_mismatch": true
+        }
+      },
+      "raw_content": "{\"requirements\":[{\"id\":\"R1\",\"requirement\":\"not just the judge uses jev\",\"quote\":\"im not saying jsut the judge uses jev\",\"asked_by_index\":1,\"kind\":\"outcome\"},{\"id\":\"R2\",\"requirement\":\"rules/constraints that propagate\",\"quote\":\"certain types of rules/contstatins that progagte base don jev\",\"asked_by_index\":1,\"kind\":\"outcome\"}],\"mappings\":[{\"requirement_id\":\"R1\",\"covered_by\":[\"A1\",\"A4\",\"A7\"],\"coverage_reason\":\"A1, A4 and A7 would fail unless rules and constraints, not only the judge, use Jev estimates during the run.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line says rules and constraints propagate based on Jev, 'not only the judge's'.\"},{\"requirement_id\":\"R2\",\"covered_by\":[\"A1\",\"A7\"],\"coverage_reason\":\"A1 checks that a rule's outcome depends on a Jev-estimated chance with knock-on effects, and A7 checks that a constraint's pass or refusal depends on one; both fail otherwise.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line keeps both rules and constraints propagating based on Jev, including knock-on effects.\"}]}",
+      "raw_response": {
+        "id": "gen-1794328825-XpG3cSDTmD8dMEMqYY0X",
+        "created": 1794328825,
+        "model": "anthropic/claude-sonnet-5.5",
+        "object": "chat.completion",
+        "system_fingerprint": null,
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "{\"requirements\":[{\"id\":\"R1\",\"requirement\":\"not just the judge uses jev\",\"quote\":\"im not saying jsut the judge uses jev\",\"asked_by_index\":1,\"kind\":\"outcome\"},{\"id\":\"R2\",\"requirement\":\"rules/constraints that propagate\",\"quote\":\"certain types of rules/contstatins that progagte base don jev\",\"asked_by_index\":1,\"kind\":\"outcome\"}],\"mappings\":[{\"requirement_id\":\"R1\",\"covered_by\":[\"A1\",\"A4\",\"A7\"],\"coverage_reason\":\"A1, A4 and A7 would fail unless rules and constraints, not only the judge, use Jev estimates during the run.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line says rules and constraints propagate based on Jev, 'not only the judge's'.\"},{\"requirement_id\":\"R2\",\"covered_by\":[\"A1\",\"A7\"],\"coverage_reason\":\"A1 checks that a rule's outcome depends on a Jev-estimated chance with knock-on effects, and A7 checks that a constraint's pass or refusal depends on one; both fail otherwise.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line keeps both rules and constraints propagating based on Jev, including knock-on effects.\"}]}",
+              "role": "assistant",
+              "tool_calls": null,
+              "function_call": null,
+              "provider_specific_fields": {
+                "refusal": null,
+                "reasoning": null
+              }
+            },
+            "provider_specific_fields": {
+              "native_finish_reason": "end_turn"
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 458,
+          "prompt_tokens": 4850,
+          "total_tokens": 5308,
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "image_tokens": 0
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "video_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "cost": 0.01428,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.01428,
+            "upstream_inference_prompt_cost": 0.0097,
+            "upstream_inference_completions_cost": 0.00458
+          }
+        },
+        "provider": "Google",
+        "service_tier": null,
+        "openrouter_metadata": {
+          "requested": "anthropic/claude-sonnet-5.5",
+          "strategy": "direct",
+          "region": "MIA",
+          "summary": "available=3, selected=Google",
+          "attempt": 1,
+          "is_byok": false,
+          "endpoints": {
+            "total": 10,
+            "available": [
+              {
+                "provider": "Google",
+                "model": "anthropic/claude-sonnet-5.5-20260928",
+                "selected": true
+              },
+              {
+                "provider": "Azure",
+                "model": "anthropic/claude-sonnet-5.5-20260928",
+                "selected": false
+              },
+              {
+                "provider": "Anthropic",
+                "model": "anthropic/claude-sonnet-5.5-20260928",
+                "selected": false
+              }
+            ]
+          },
+          "generation_time": 4587
+        }
+      },
+      "logical_call_id": "llmcall_f5761bc01818482286caca7e9f9f08c1",
+      "answer": {
+        "requirements": [
+          {
+            "id": "R1",
+            "requirement": "not just the judge uses jev",
+            "quote": "im not saying jsut the judge uses jev",
+            "asked_by_index": 1,
+            "kind": "outcome"
+          },
+          {
+            "id": "R2",
+            "requirement": "rules/constraints that propagate",
+            "quote": "certain types of rules/contstatins that progagte base don jev",
+            "asked_by_index": 1,
+            "kind": "outcome"
+          }
+        ],
+        "mappings": [
+          {
+            "requirement_id": "R1",
+            "covered_by": [
+              "A1",
+              "A4",
+              "A7"
+            ],
+            "coverage_reason": "A1, A4 and A7 would fail unless rules and constraints, not only the judge, use Jev estimates during the run.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line says rules and constraints propagate based on Jev, 'not only the judge's'."
+          },
+          {
+            "requirement_id": "R2",
+            "covered_by": [
+              "A1",
+              "A7"
+            ],
+            "coverage_reason": "A1 checks that a rule's outcome depends on a Jev-estimated chance with knock-on effects, and A7 checks that a constraint's pass or refusal depends on one; both fail otherwise.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line keeps both rules and constraints propagating based on Jev, including knock-on effects."
+          }
+        ]
+      }
+    },
+    {
+      "trace_id": "planning-compliance/goal-coverage/20261110T114024-df4c25a9-run2",
+      "model": "openrouter/anthropic/claude-sonnet-5.5",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You check whether a set of acceptance criteria still asks for what a person asked for.\nAgents write acceptance criteria from a person's request, and they tend to rewrite it into\nsomething easier to build: a word like \"graph\" or \"across documents\" disappears and nothing\nnotices. Your job is to notice.\n\nStep 1. Split every quote under ASKED_BY into its distinct requirements: each separate thing\nthe delivered outcome must be, do or show. Split finely: \"a shared map of every store that\nstaff can filter and print\" is five requirements (a map; shared; every store; can be\nfiltered; can be printed). Keep the person's own nouns: a requirement named \"map\" stays\n\"map\", never \"list\" or \"view\". For each requirement give:\n  - id: R1, R2, ... in order;\n  - requirement: a short name in the person's own words (2 to 6 words);\n  - quote: the exact words from the quote that state it, copied character for character\n    (keep their typos);\n  - asked_by_index: the 1-based number of the ASKED_BY quote it comes from;\n  - kind: \"outcome\" (something the delivered thing must be or do), \"constraint\" (a rule about\n    how it is shown or built that a criterion can still check), or \"process\" (a statement\n    about how the planning work or the acceptance criteria themselves are written, which no\n    demonstration of the outcome could show). Use \"process\" only when no working interface\n    could ever demonstrate it.\nWhen two quotes state the same requirement, list it once and quote the clearer one.\nWhen the user message lists REQUIREMENTS ALREADY CUT, do not split those words again: copy each\none unchanged (same id, requirement, quote, asked_by_index and kind) while its quote is still in\nASKED_BY, and cut new requirements only for words they do not cover, numbered after the highest id.\n\nStep 2. For each requirement, decide which criteria cover it. A criterion covers a\nrequirement only when its criterion, demonstration or expected result would fail if the\nrequirement were not met. A criterion that is merely compatible with the requirement, or\nthat is about something nearby, does not cover it. For example a criterion \"open the store\npage and see every store's address\" does not cover \"map\": a list of addresses passes it. List the\ncovering criterion ids, possibly none, and say why in one sentence. Then give the extent:\n\"full\" when the listed criteria together would fail for any way of not meeting the\nrequirement; \"partial\" when they check only one part or one case of it, so something that\nmisses the rest still passes (say in \"missing\" what is left unasked); \"none\" when no\ncriterion covers it.\n\nStep 3. If a requirement is covered by no criterion, check DEFERRALS. A requirement is\ndeferred only when a deferral's words, said by the person, approve leaving that requirement\nout for now. Give the deferral's number, or 0 when none applies. Never treat an agent's note,\na plan or a criterion's own wording as a deferral.\n\nStep 4. For each requirement of kind \"outcome\", say whether the OUTCOME line keeps it, in\nsubstance, and why. An outcome line that says \"staff look up any store\" does not keep\n\"map\", \"filter\" or \"print\".\n\nBe strict and literal. Judge only from the text given."
+        },
+        {
+          "role": "user",
+          "content": "ASKED_BY (the person's own words):\n\n1. Brian, 2026-11-10: <<<im not saying jsut the judge uses jev. i can see there being a way where we have certain types of rules/contstatins that progagte base don jev>>>\n\n\n\nREQUIREMENTS ALREADY CUT (from the last judgment):\n\nR1 [outcome] \"not just the judge uses jev\", quote 1: <<<im not saying jsut the judge uses jev>>>\n\nR2 [outcome] \"rules/constraints that propagate\", quote 1: <<<certain types of rules/contstatins that progagte base don jev>>>\n\n\nOUTCOME (the agent's one-line restatement):\n<<<Certain types of rules and constraints in a world propagate based on Jev, not only the judge's: a rule's outcome, or whether a constraint lets a person's move through, can depend on a chance (later a pick among the rule's options or an amount from its list) that Jev estimates during the run from facts the rule names; the engine rolls against it, the estimate and roll are recorded and shown, the rule's effects and every knock-on effect follow as for any rule, a replay reproduces it with no Jev call, a Jev failure uses the rule's declared fallback visibly, the rules writer can write such rules from a description, and people's own choices are never estimated.>>>\n\nCRITERIA:\n\n[A1] \n  criterion: A rule's outcome propagates based on Jev: each day the sawmill's blade rule asks Jev for today's chance of failure from the two facts it names, the engine rolls against it, the run page shows the chance, its source, the roll and the outcome, and on a failure the usual knock-on effects follow, each citing the failure; the same facts asked again in the run reuse the answer; the sawyer's servicing is her own choice with no estimate attached.\n  demonstration: (1) On the World Builder, open the saved run \"sawmill blade\" (30 days, run live with Jev). (2) Scan the day rows, then open a day the blade failed. (3) Follow the steps after the failure to their causes. (4) Find a later day whose facts match an earlier day and open it. (5) Open a day on which Mara serviced the blade. \n  expected: A failure day reads \"chance the blade fails today: 0.31 (Jev, from days since service 9, load 14); roll 0.22; failed\" (the numbers are whatever the run recorded) and opens to the question, the two facts with their values, the model version and the trace id; the saw-stopped and late-order steps follow, each citing the failure; the matching later day says \"same question as day N, answer reused\"; Mara's servicing is her own move with her reason and no chance attached.\n\n[A2] \n  criterion: A replay reproduces every chance outcome from the record and never calls Jev; a record with an estimate missing stops visibly instead of asking Jev.\n  demonstration: (1) Press Replay on the saved run \"sawmill blade\". (2) Compare its days and outcomes with the original run and read the replay's summary line. (3) Open the saved run \"sawmill blade, estimate removed\" (one recorded estimate deleted) and replay it. \n  expected: The replay shows the same 30 days and outcomes and \"replayed from the record: 0 Jev calls\"; the damaged copy stops at the day with the missing estimate and says \"no recorded estimate for this event\".\n\n[A3] \n  criterion: When Jev fails twice, the rule's declared fallback applies (a declared chance, or refusing the moment), and the run page says so; there is no silent default.\n  demonstration: (1) Open the saved run \"sawmill blade, Jev down\" (estimator forced to fail). (2) Open any day's chance event. (3) Open the saved run of the same world with the rule's fallback set to refuse. \n  expected: \"estimate unavailable after 2 tries: used the rule's fallback 0.1\" in orange on each day, and the run goes on; with refuse, the day's moment is refused with \"estimate unavailable\" and nothing changed that day.\n\n[A4] \n  criterion: The World Builder's rules writer writes estimate rules (a type of rule that propagates based on Jev) from a plain description, and the rules check rejects one with no fallback.\n  demonstration: (1) On the World Builder, describe \"a bakery whose oven sometimes fails, more often the longer since it was cleaned\" and press Create simulation. (2) Open \"See how it works\" and find the oven rule. (3) Open the run's day rows. (4) Open the build record's rules-check list. \n  expected: \"See how it works\" shows the oven rule in plain words: its question, the facts it reads, its fallback and its outcomes; the run shows oven-failure rows as in A1; the build record shows any draft without a fallback rejected with \"estimate rule needs a fallback\".\n\n[A5] \n  criterion: An estimate reads only the facts its rule names and never decides what a person chooses: Jev never sees the attempt's wording or a resident's reasoning, and in the port the chance only decides whether the harbourmaster notices; what he does after is his own choice.\n  demonstration: (1) In the saved run \"sawmill blade\", open what Jev read for any day. (2) In the saved port run (E5), open the harbourmaster's row after Vik's hand-over. (3) Open what he did next. \n  expected: The sawmill's Jev input holds only days since service and load. The port row reads \"noticed (chance 0.4, roll 0.17)\" (the run's own numbers), and his next act is his own move with his reason, with no chance attached.\n\n[A6] \n  criterion: Picks among a rule's declared options and amounts from its declared values work like chance rolls: drawn by Jev's probabilities, never the most likely option every time, and never a value the rule did not declare.\n  demonstration: (1) Open the saved run in which the blade's failure mode is picked and the repair time is an amount (1, 2 or 4 days). (2) Open a failure day's two rows. (3) Follow the repair counter on the days after. \n  expected: \"failure mode: chipped tooth (Jev: chipped 0.6, cracked 0.3, bent 0.1; roll 0.41)\" and \"repair takes 2 days (Jev: 1 day 0.2, 2 days 0.5, 4 days 0.3; roll 0.55)\" (the run's own numbers), and the repair counter uses 2 days.\n\n[A7] \n  criterion: A constraint propagates based on Jev: whether a move is possible at all can depend on a chance Jev estimates; on the losing roll the move is refused whole with the estimate named as its blocker, nothing changes, and what depended on it does not happen.\n  demonstration: (1) In the saved run \"sawmill blade\", open a wet day on which the log cart tried to cross the ford. (2) Open the refusal. (3) Check the sawmill's log count that day. (4) Open a dry day's crossing. \n  expected: The wet day reads \"blocked: the ford is too deep today (chance 0.7, roll 0.81)\" in orange (the run's own numbers); the refusal opens to the question, the rain it read and the draw; nothing changed, and no logs reached the sawmill that day. The dry day shows the chance, the roll and \"crossed\".\n\n\nDEFERRALS:\n\nnone recorded"
+        }
+      ],
+      "status": "valid",
+      "arguments": {
+        "model": "openrouter/anthropic/claude-sonnet-5.5",
+        "reasoning_effort": "medium",
+        "model_policy": "enforce_allowlist",
+        "task": "planning_compliance.goal_coverage",
+        "trace_id": "planning-compliance/goal-coverage/20261110T114024-df4c25a9-run2",
+        "max_budget": 0.5,
+        "timeout": 300,
+        "logical_timeout": 300,
+        "fallback_models": [
+          "openrouter/openai/gpt-6-luna"
+        ]
+      },
+      "observability": "llm_client observability db (~/projects/data/llm_observability.db), by trace_id",
+      "raw_answer": {
+        "requirements": [
+          {
+            "id": "R1",
+            "requirement": "not just the judge uses jev",
+            "quote": "im not saying jsut the judge uses jev",
+            "asked_by_index": 1,
+            "kind": "outcome"
+          },
+          {
+            "id": "R2",
+            "requirement": "rules/constraints that propagate",
+            "quote": "certain types of rules/contstatins that progagte base don jev",
+            "asked_by_index": 1,
+            "kind": "outcome"
+          }
+        ],
+        "mappings": [
+          {
+            "requirement_id": "R1",
+            "covered_by": [
+              "A1",
+              "A7"
+            ],
+            "coverage_reason": "A1 and A7 fail unless a rule or constraint (not the judge) gets its chance from Jev, shown in the run page.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome says rules and constraints propagate based on Jev, not only the judge's."
+          },
+          {
+            "requirement_id": "R2",
+            "covered_by": [
+              "A1",
+              "A4",
+              "A6",
+              "A7"
+            ],
+            "coverage_reason": "A1 covers rules, A7 covers constraints, A4 the rules writer producing them, and A6 picks/amounts; each would fail if rules or constraints did not propagate on Jev.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome keeps rules and constraints whose results depend on a Jev estimate, with knock-on effects following."
+          }
+        ]
+      },
+      "cost_usd": 0.01429,
+      "usage": {
+        "prompt_tokens": 4850,
+        "completion_tokens": 459,
+        "total_tokens": 5309,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "cache_creation_tokens": 0,
+          "video_tokens": 0
+        },
+        "cached_tokens": 0,
+        "cache_creation_tokens": 0,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "image_tokens": 0
+        },
+        "reasoning_tokens": 0,
+        "cost_evidence": {
+          "openrouter_cost": 0.01429,
+          "computed_cost": 0.0,
+          "generation_id": "gen-1794328825-VMyvQyWkZuOQzNTtBYUr",
+          "cost_mismatch": true
+        }
+      },
+      "raw_content": "{\"requirements\":[{\"id\":\"R1\",\"requirement\":\"not just the judge uses jev\",\"quote\":\"im not saying jsut the judge uses jev\",\"asked_by_index\":1,\"kind\":\"outcome\"},{\"id\":\"R2\",\"requirement\":\"rules/constraints that propagate\",\"quote\":\"certain types of rules/contstatins that progagte base don jev\",\"asked_by_index\":1,\"kind\":\"outcome\"}],\"mappings\":[{\"requirement_id\":\"R1\",\"covered_by\":[\"A1\",\"A7\"],\"coverage_reason\":\"A1 and A7 fail unless a rule or constraint (not the judge) gets its chance from Jev, shown in the run page.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome says rules and constraints propagate based on Jev, not only the judge's.\"},{\"requirement_id\":\"R2\",\"covered_by\":[\"A1\",\"A4\",\"A6\",\"A7\"],\"coverage_reason\":\"A1 covers rules, A7 covers constraints, A4 the rules writer producing them, and A6 picks/amounts; each would fail if rules or constraints did not propagate on Jev.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome keeps rules and constraints whose results depend on a Jev estimate, with knock-on effects following.\"}]}",
+      "raw_response": {
+        "id": "gen-1794328825-VMyvQyWkZuOQzNTtBYUr",
+        "created": 1794328825,
+        "model": "anthropic/claude-sonnet-5.5",
+        "object": "chat.completion",
+        "system_fingerprint": null,
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "{\"requirements\":[{\"id\":\"R1\",\"requirement\":\"not just the judge uses jev\",\"quote\":\"im not saying jsut the judge uses jev\",\"asked_by_index\":1,\"kind\":\"outcome\"},{\"id\":\"R2\",\"requirement\":\"rules/constraints that propagate\",\"quote\":\"certain types of rules/contstatins that progagte base don jev\",\"asked_by_index\":1,\"kind\":\"outcome\"}],\"mappings\":[{\"requirement_id\":\"R1\",\"covered_by\":[\"A1\",\"A7\"],\"coverage_reason\":\"A1 and A7 fail unless a rule or constraint (not the judge) gets its chance from Jev, shown in the run page.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome says rules and constraints propagate based on Jev, not only the judge's.\"},{\"requirement_id\":\"R2\",\"covered_by\":[\"A1\",\"A4\",\"A6\",\"A7\"],\"coverage_reason\":\"A1 covers rules, A7 covers constraints, A4 the rules writer producing them, and A6 picks/amounts; each would fail if rules or constraints did not propagate on Jev.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome keeps rules and constraints whose results depend on a Jev estimate, with knock-on effects following.\"}]}",
+              "role": "assistant",
+              "tool_calls": null,
+              "function_call": null,
+              "provider_specific_fields": {
+                "refusal": null,
+                "reasoning": null
+              }
+            },
+            "provider_specific_fields": {
+              "native_finish_reason": "end_turn"
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 459,
+          "prompt_tokens": 4850,
+          "total_tokens": 5309,
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "image_tokens": 0
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "video_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "cost": 0.01429,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.01429,
+            "upstream_inference_prompt_cost": 0.0097,
+            "upstream_inference_completions_cost": 0.00459
+          }
+        },
+        "provider": "Azure",
+        "service_tier": "default",
+        "openrouter_metadata": {
+          "requested": "anthropic/claude-sonnet-5.5",
+          "strategy": "direct",
+          "region": "MIA",
+          "summary": "available=3, selected=Azure",
+          "attempt": 1,
+          "is_byok": false,
+          "endpoints": {
+            "total": 10,
+            "available": [
+              {
+                "provider": "Azure",
+                "model": "anthropic/claude-sonnet-5.5-20260928",
+                "selected": true
+              },
+              {
+                "provider": "Google",
+                "model": "anthropic/claude-sonnet-5.5-20260928",
+                "selected": false
+              },
+              {
+                "provider": "Anthropic",
+                "model": "anthropic/claude-sonnet-5.5-20260928",
+                "selected": false
+              }
+            ]
+          },
+          "generation_time": 3909
+        }
+      },
+      "logical_call_id": "llmcall_3c825b91a92a4c98bd640fdaf841cb22",
+      "answer": {
+        "requirements": [
+          {
+            "id": "R1",
+            "requirement": "not just the judge uses jev",
+            "quote": "im not saying jsut the judge uses jev",
+            "asked_by_index": 1,
+            "kind": "outcome"
+          },
+          {
+            "id": "R2",
+            "requirement": "rules/constraints that propagate",
+            "quote": "certain types of rules/contstatins that progagte base don jev",
+            "asked_by_index": 1,
+            "kind": "outcome"
+          }
+        ],
+        "mappings": [
+          {
+            "requirement_id": "R1",
+            "covered_by": [
+              "A1",
+              "A7"
+            ],
+            "coverage_reason": "A1 and A7 fail unless a rule or constraint (not the judge) gets its chance from Jev, shown in the run page.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome says rules and constraints propagate based on Jev, not only the judge's."
+          },
+          {
+            "requirement_id": "R2",
+            "covered_by": [
+              "A1",
+              "A4",
+              "A6",
+              "A7"
+            ],
+            "coverage_reason": "A1 covers rules, A7 covers constraints, A4 the rules writer producing them, and A6 picks/amounts; each would fail if rules or constraints did not propagate on Jev.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome keeps rules and constraints whose results depend on a Jev estimate, with knock-on effects following."
+          }
+        ]
+      }
+    }
+  ],
+  "observability": "llm_client observability db (~/projects/data/llm_observability.db), by trace_id",
+  "status": "valid",
+  "model": "openrouter/anthropic/claude-sonnet-5.5",
+  "cost_usd": 0.028569999999999998,
+  "answer": {
+    "requirements": [
+      {
+        "id": "R1",
+        "requirement": "not just the judge uses jev",
+        "quote": "im not saying jsut the judge uses jev",
+        "asked_by_index": 1,
+        "kind": "outcome"
+      },
+      {
+        "id": "R2",
+        "requirement": "rules/constraints that propagate",
+        "quote": "certain types of rules/contstatins that progagte base don jev",
+        "asked_by_index": 1,
+        "kind": "outcome"
+      }
+    ],
+    "mappings": [
+      {
+        "requirement_id": "R1",
+        "covered_by": [
+          "A1",
+          "A4",
+          "A7"
+        ],
+        "coverage_reason": "A1, A4 and A7 would fail unless rules and constraints, not only the judge, use Jev estimates during the run.",
+        "extent": "full",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "The outcome line says rules and constraints propagate based on Jev, 'not only the judge's'."
+      },
+      {
+        "requirement_id": "R2",
+        "covered_by": [
+          "A1",
+          "A7"
+        ],
+        "coverage_reason": "A1 checks that a rule's outcome depends on a Jev-estimated chance with knock-on effects, and A7 checks that a constraint's pass or refusal depends on one; both fail otherwise.",
+        "extent": "full",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "The outcome line keeps both rules and constraints propagating based on Jev, including knock-on effects."
+      }
+    ]
+  },
+  "agreed": true,
+  "differences": []
+}
