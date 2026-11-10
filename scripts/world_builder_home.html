@@ -791,8 +791,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         });
         (turn.blocked_reactions || []).filter((b) => inMoment.has(b.after) || b.after === m.trigger).forEach((b) => {
           const li = document.createElement("li"); li.className = "blocked";
-          const why = b.failed.map((f) => `${f.check} was not true` + (f.actual !== undefined && f.actual !== null ? ` (it was ${JSON.stringify(f.actual)})` : "")).join("; ");
-          li.append(`blocked: ${labelFor(b.it)}: ${words(b.rule_id)} did not happen, because ${why}. Nothing followed from it. `);
+          const why = b.failed.map((f) => `“${f.check}” was not true` + (f.actual !== undefined && f.actual !== null ? ` (it was ${JSON.stringify(f.actual)})` : "")).join("; ");
+          li.append(`blocked: ${words(b.rule_id)} (${labelFor(b.it)}) did not happen: ${why}. Nothing followed from it. `);
           const a = document.createElement("a"); a.href = "#" + key(b.after, null); a.textContent = `After ${b.after}`;
           const last = (stepsOf[b.after] || []); if (last.length) a.href = "#" + key(b.after, last[last.length - 1]);
           li.append(a); list.append(li);

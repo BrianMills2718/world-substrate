@@ -41,7 +41,7 @@
      "command": "python3 scripts/check_trace_reads.py --root evidence",
      "exit_status": 0,
      "counts": {
-      "runs": 33,
+      "runs": 38,
       "problems": 0
      }
     },
