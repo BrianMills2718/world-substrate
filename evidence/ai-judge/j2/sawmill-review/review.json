@@ -1,0 +1,25 @@
+{
+ "what": "J2 measurement (docs/plans/ai_judge.md, \"LLM call boundary and cost\"): does the existing model rules review flag the\nplain version's sawmill rule, which charges the price once rather than per log? One paid call on the review model.\n\nInput: the sawmill world as built (evidence/declared-laws/s2-pencil-2/run-log.jsonl line 1) with the plain version's\naccepted rule added (evidence/ai-judge/plain-baseline/pencil-sawmill-buys-logs.json). Output: review.json beside this.",
+ "review_model": "openrouter/google/gemini-4-argon",
+ "trace_id": "world-substrate/ai-judge-j2/sawmill-review/3d12db274fe742d8b05fa722b2d9fbfe",
+ "cost_usd": 0.035116,
+ "rule_id": "buy-cedar-logs",
+ "findings": [
+  {
+   "rule_id": "saw-slats",
+   "description_words": "Specialist businesses continually make, move, and sell pencils through a recurring supply chain.",
+   "problem": "Sawing logs into slats reduces the world's total of the cedar resource (which counts standing cedar and business logs), but the cedar-total law only allows cut-cedar to change that total, so saw-slats will always be refused by the law. In addition, saw-slats takes logs directly from the logger for free instead of sawing the logs the sawmill bought with buy-cedar-logs."
+  },
+  {
+   "rule_id": "deliver-pencil-shipment",
+   "description_words": "Specialist businesses continually make, move, and sell pencils through a recurring supply chain.",
+   "problem": "The first effect of deliver-pencil-shipment subtracts the carrier's shipment cargo from itself, reducing it to zero before the second effect adds the carrier's shipment cargo to the shop's packed_pencils. This either transfers zero pencils to the shop and destroys the cargo (which the pencils-total law also refuses) or relies on reading the already-zeroed field."
+  },
+  {
+   "rule_id": "customer-demand-arrives",
+   "description_words": "Specialist businesses continually make, move, and sell pencils through a recurring supply chain.",
+   "problem": "The customer starts with waiting_for_pencils set to 1 and buy-pencil reduces it by 1 on each purchase, but customer-demand-arrives only increases the shop's waiting_customers count and never increments the co-located customer's waiting_for_pencils count. After a single purchase, no further pencils can ever be sold."
+  }
+ ],
+ "findings_on_the_rule": []
+}

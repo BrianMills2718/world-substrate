@@ -562,6 +562,8 @@ def _record_response(status: int, value: dict[str, Any]) -> None:
     }
     if request.get("engine_events") is not None and status < 400:
         entry["result"]["engine_events"] = request["engine_events"]
+    if request.get("judge_test_runs") and status < 400:
+        entry["result"]["judge_test_runs"] = request["judge_test_runs"]
     try:
         directory = _run_log_dir()
         directory.mkdir(parents=True, exist_ok=True)
@@ -611,6 +613,23 @@ def _logged_entries(trace_ids: set[str]) -> dict[str, dict[str, Any]]:
         if len(found) == len(trace_ids):
             break
     return found
+
+
+def _judge_test_runs(trace: dict[str, Any]) -> dict[str, list[Any]]:
+    """Each judge test run in full, by the attempt's event id, for the run log (ai-judge plan J2). In the trace each
+    is replaced by what the judge read (`consequence_report.summary`: no chain, net changes grouped past 40)."""
+    from scripts.consequence_report import summary
+
+    full: dict[str, list[Any]] = {}
+    for turn in trace.get("transcript") or []:
+        for row in (turn.get("actors") or {}).values():
+            tests = ((row or {}).get("judge") or {}).get("tests") or []
+            if not tests:
+                continue
+            full[str(row.get("event_id"))] = [t.get("test_run") for t in tests]
+            for t in tests:
+                t["test_run"] = summary({"test_run": t.get("test_run")})["test_run"]
+    return full
 
 
 def _mark_refused_world_changes(transcript: list[dict[str, Any]], engine_events: list[dict[str, Any]]) -> None:
@@ -2654,6 +2673,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         briefs=briefs, resident_memory=resident_memory, underway=underway,
                         # Residents say what they try in their own words (docs/plans/open_attempt.md).
                         open_attempts=policy == "resident", run_stop=run_stop, stop_history=stop_history,
+                        # Concordia's game master rules on each attempt no installed rule covers (ai-judge plan J2).
+                        judge=policy == "resident",
                         run_spent_usd=float(run_spent), spent=lambda: _trace_cost(trace_id),
                     )
                     trace_cost = _trace_cost(trace_id)
@@ -2682,6 +2703,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         request = _REQUEST.get()
         if request is not None and engine_events is not None:
             request["engine_events"] = engine_events
+        # Likewise each judge test run in full (a 5,000-step chain is 1.3 MB); the page keeps what the judge read.
+        judge_test_runs = _judge_test_runs(trace)
+        if request is not None and judge_test_runs:
+            request["judge_test_runs"] = judge_test_runs
         self._json(
             HTTPStatus.OK,
             {
