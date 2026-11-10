@@ -20,8 +20,8 @@ goal:
     slice merges through ship after scripts/check_project.py exits 0 on the committed change; saved worlds
     still replay unchanged; owner allowance only for live runs."
   done_when: "Acceptance checks A1-A6 below pass, each judged from the full trace of the run it names."
-  do_not_gate_on: "Brian's answer on approval of mid-run rulings (Needs Brian, 1) until slice J3; organisations
-    and institutions beyond single norms; a real-world truth claim for any ruling."
+  do_not_gate_on: "Organisations and institutions beyond single norms; a real-world truth claim for any
+    ruling."
   stop_after: 3
 conflict_surfaces:
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/plans/ai_judge.md, access: write}
@@ -114,6 +114,20 @@ difference between rules/constraints and ddecisions?"
    rules check, applies to everyone from then on, and the engine propagates its effects.
 4. **Exception: another person's choice is a decision, not a rule.** Whether a bribe works is decided by the
    person being bribed, not by the judge and not by a rule.
+5. **Mid-run rulings: a setting, approved by default.** Source: Brian, 2026-11-09, "can we make this
+   configurable? or is that more troubel than it is worth. if so i say yes". Each world gets a setting under
+   Options on the Create page, "Judge rulings during a run":
+   - **Approved by Create** (default): a ruling that passes the rules check is installed at once and decides
+     later identical attempts in the same run.
+   - **Wait for my approval**: the ruling settles only the attempt it was made for (a run cannot pause for a
+     person), nothing is installed, a later identical attempt asks the judge again, and the run page lists the
+     held ruling with an Approve button that installs it for later runs.
+
+   Either way the run page lists every ruling. The setting travels with the world the way "Simulate as" does
+   (`scripts/world_builder_service.py:1603`, saved at `:478` and `:645`). Agent's basis for calling it cheap: both
+   settings use the same install step; "wait" skips it during the run and the Approve button calls it afterwards.
+   Extra work over the default alone is one Options control, one saved field, one branch, one button and its
+   endpoint, and a test per setting (guess: under a day of agent work).
 
 ## Decided: constraints, decisions and norms
 
@@ -180,7 +194,7 @@ and norms as breakable rules with consequences only when someone acts on them.
   effects for uncovered attempts (`docs/plans/open_attempt.md`, Decisions). Brian's 2026-11-09 approval above
   replaces it with a narrower judge: rulings on constraints only, which become checked rules.
 - **Approval comes before a run.** Pressing Create simulation is the approval (RULE-APPROVAL-BEFORE-RUN,
-  `docs/model/ODD.md` 8.7); no rule is installed mid-run today. Slice J3 changes this (Needs Brian, 1).
+  `docs/model/ODD.md` 8.7); no rule is installed mid-run today. Slice J3 changes this (Decided 5).
 
 ## Requirements
 
@@ -194,8 +208,9 @@ and norms as breakable rules with consequences only when someone acts on them.
 | R6 | Mechanism, credential holder and norm are separate; a credential can change hands; a norm can be broken | Decided (norms) | A6 |
 | R7 | The judge is Concordia's game master, conditioned on our data; no judge prompt of our own | Decision 006 | A2 (trace) |
 | R8 | Every run keeps its full trace, read before any slice is reported | workspace rule (Trace visibility) | A1-A6 |
+| R9 | A world's setting chooses whether checked rulings install during the run (default) or wait for approval; the run page lists every ruling | Decided 5 | A4 |
 
-All eight are required; none is deferred.
+All nine are required; none is deferred.
 
 ## Acceptance checks
 
@@ -209,8 +224,10 @@ Each is judged from the full trace of the run it names, not its outcome alone.
   produced the ruling.
 - **A3 (J2):** a fixture attempt that hits an engine blocker (Vik offers coins he does not have) is refused by
   the engine with the blocker named; the judge is not called.
-- **A4 (J3):** the ruling appears as a new rule that passed the rules check (review record and scripted test in
-  the run record); a later identical offer by another trader is decided by that rule with no judge call.
+- **A4 (J3):** with the default setting, the ruling appears as a new rule that passed the rules check (review
+  record and scripted test in the run record), and a later identical offer by another trader is decided by that
+  rule with no judge call. With "Wait for my approval", the same run installs nothing, the later offer calls the
+  judge again, the run page lists the held ruling, and after Approve a new run decides that offer by rule.
 - **A5 (J2):** Rosa's own resident call decides accept or refuse; the judge's ruling covers only the hand-over.
 - **A6 (J4):** in the password fixture, Mallory phishes Alice's password, the computer logs Mallory in, the norm
   breach is recorded, and a consequence follows only after an observer acts on it.
@@ -225,7 +242,7 @@ traced run.
 | J0 | Remove the 32-reaction cap; keep once-per-pair-per-moment | fully specifiable now | A1 |
 | J1 | Consequence report: every reaction and blocker of an attempt, as one record the judge and page can read | fully specifiable now | A2 (data) |
 | J2 | Judge: turn on Concordia's `EventResolution` for unmatched attempts, conditioned on the consequence report; route choices to the person | conditional on J1 | A2, A3, A5 |
-| J3 | Ruling to rule: the ruling goes through the World Builder rules check, is installed, applies to everyone | conditional on Needs Brian 1 | A4 |
+| J3 | Ruling to rule: the ruling goes through the World Builder rules check, is installed (or held, per the world's setting), applies to everyone | conditional on J2 | A4 |
 | J4 | Credentials as facts and norms as breakable rules (Ostrom's grammar) | exploration required | A6 |
 
 J0 first because it is small, independent and delivers Brian's "100 links deep" alone. J4 last because its
@@ -247,7 +264,8 @@ representation needs a short design step of its own (Uncertainties, U3).
 
 - Model: [docs/model/ODD.md](../model/ODD.md). Relied on: RULE-ATOMIC-COMMIT-OR-REFUSAL (a refused attempt
   changes nothing), RULE-PROJECTION-FROM-CANONICAL-ONLY, RULE-DURABLE-RUN-RECORD. Changed:
-  RULE-APPROVAL-BEFORE-RUN gains one exception for checked judge rulings (J3, only after Needs Brian 1); 8.20
+  RULE-APPROVAL-BEFORE-RUN gains one exception for checked judge rulings when the world's setting allows it
+  (J3, Decided 5); 8.20
   knock-on effects loses the reaction limit (J0). Adds: `consequence report` (J1), `judge ruling` (J2),
   `ruling-origin rule` (J3), `credential holder` fact and `norm` (J4).
 - Scope: this repository's own model, linked from the documentation entry point. Not changed: actors, places,
@@ -299,7 +317,7 @@ for every model call. No new cross-project capability.
 
 Call graph per round: resident (existing) -> attempt interpreter (existing) -> engine (code) -> judge (new, only
 for an unmatched attempt, after the engine's report) -> rules review (existing, only when a ruling is proposed).
-Same model and route as the interpreter (`openrouter/openai/gpt-6-luna`, `scripts/run_authored_world.py:37`).
+Same model and route as the interpreter (`openrouter/openai/gpt-6-luna`, `scripts/run_authored_world.py:38`).
 
 Cost basis, worked out from measured history (`llm-cost cost --group-by task --days 30`, 2026-11-09):
 
@@ -329,11 +347,7 @@ run's `max_budget`.
 
 ## Needs Brian
 
-1. **Mid-run rulings and approval.** Today pressing Create simulation is the only approval, and nothing is
-   installed during a run (RULE-APPROVAL-BEFORE-RUN). Decided 3 means a ruling becomes a rule during a run, after
-   the rules check but with no person approving it. Recommendation: yes, pressing Create also approves checked
-   rulings made during that run, and the run page lists each one. Answer "approve mid-run rulings" or "rulings wait
-   for my approval".
+None open. Mid-run rulings and approval was answered on 2026-11-09 (Decided 5).
 
 ## Not in this plan
 
