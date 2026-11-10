@@ -1,0 +1,7 @@
+remotes:
+  - git_url: git@github-personal:BrianMills2718/code2-workspace.git
+    ref: main
+    # lefthook never refreshes its cached copy of the shared config on its own; re-fetch it once a day.
+    refetch_frequency: 24h
+    configs:
+      - hooks/base.yml

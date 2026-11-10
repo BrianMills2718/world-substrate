@@ -1,0 +1,99 @@
+// World Substrate building blocks (arc42 section 5). An arrow means "imports or calls",
+// checked against the import lines of each module on 2026-11-09 (branch docs/cleanup-2026-11-09).
+// No component carries python metadata yet, so `code2check arch gen` produces no import
+// contracts from this file; add metadata only after every real import is drawn.
+specification {
+  element system
+  element component
+  element store
+}
+model {
+  page = component 'World Builder page' {
+    description 'scripts/world_builder_home.html, world_builder_app.js: one box and Create simulation; live play; build record'
+  }
+  service = component 'World Builder service' {
+    description 'scripts/world_builder_service.py: same-origin HTTP API, jobs, budget ledger, run log, share links'
+  }
+  generation = component 'World generation' {
+    description 'scripts/generate_world_bundle.py, generate_causal_model.py, scaffold_world.py, review_rules.py'
+  }
+  peopleworld = component 'People-world path' {
+    description 'scripts/people_world.py plus spikes/any-scenario-2026-10/'
+  }
+  driver = component 'Run driver' {
+    description 'scripts/run_authored_world.py, attempts.py, concordia_residents.py'
+  }
+  substrate = system 'world_substrate package' {
+    description 'src/world_substrate/'
+    compiler = component 'Rule compiler' {
+      description 'action_authoring.py: causal model to rules and processes with derived authority'
+    }
+    profile = component 'Mechanic profile and assays' {
+      description 'profile.py, assay.py, authoring.py'
+    }
+    engine = component 'Engine' {
+      description 'engine.py: discover, apply, advance; write-scope enforcement; same-moment settling'
+    }
+    rules = component 'Rules' {
+      description 'rules.py: action rules and processes'
+    }
+    laws = component 'Declared laws' {
+      description 'laws.py: a world own laws checked at every commit'
+    }
+    semantic = component 'Semantic binding' {
+      description 'semantic.py, semantic_relation.py'
+    }
+    information = component 'Information' {
+      description 'information.py: represented information and per-observer visibility'
+    }
+    canonical = component 'Canonical model' {
+      description 'model.py: World, entities, typed components, material hash and revision'
+    }
+    policy = component 'Policies' {
+      description 'policy.py: scripted and LLM selection among Engine-minted action ids'
+    }
+    projection = component 'Projection and scenes' {
+      description 'projection.py, living_scene.py: snapshot plus event deltas; read only'
+    }
+  }
+  replay = component 'Replay and studios' {
+    description 'scripts/render_scene_replay.py, render_replay_studio.py: read-only views over retained traces'
+  }
+  traces = store 'Run logs and retained traces' {
+    description 'run-log.jsonl, llm_client traces, evidence/ folders'
+  }
+
+  page -> service 'HTTP, same origin'
+  service -> generation 'propose structure and rules'
+  service -> peopleworld 'worlds about people'
+  service -> driver 'install and run'
+  service -> compiler 'compile approved rules'
+  service -> traces 'writes run log'
+  generation -> compiler 'compiles proposed rules'
+  driver -> compiler 'compiles'
+  driver -> engine 'runs steps'
+  driver -> policy 'chooses moves'
+  driver -> profile 'installs'
+  compiler -> profile 'builds a profile'
+  compiler -> rules 'emits rules'
+  compiler -> canonical 'reads paths'
+  profile -> engine 'assays run on'
+  policy -> engine 'selects action ids'
+  engine -> rules 'applies'
+  engine -> laws 'checks each commit'
+  engine -> semantic 'cites senses'
+  engine -> information 'delivers'
+  engine -> canonical 'commits all or none'
+  projection -> information 'reads visibility'
+  replay -> traces 'reads'
+}
+views {
+  view index {
+    title 'World Substrate building blocks'
+    include *
+  }
+  view substrate of substrate {
+    title 'Inside the world_substrate package'
+    include *
+  }
+}

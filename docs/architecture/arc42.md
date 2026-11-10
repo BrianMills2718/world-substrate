@@ -6,7 +6,7 @@ description: World Substrate architecture in arc42 form - goals, constraints, co
 
 This is the architecture entry point. It states what exists, what is targeted and what is missing, keeping those apart. The exact submodels (every rule, its owner and its test) are in [the system model](../model/ODD.md) and [trace.yaml](../model/trace.yaml); required behavior is in the [OpenSpec capability specs](../../openspec/specs/); current sequencing is in [the roadmap](../../roadmap/README.md); what is not yet known is in [the open questions ledger](../planning/open-questions.json).
 
-On 2026-11-09 this page absorbed `docs/architecture.md` (last commit `0e66a98`), `docs/architecture/GOAL.md` (`2e4aa47`) and `docs/source-dispositions.md`, plus the current facts of the retired audits and research notes named in section 8; `git show <commit>:<former path>` restores any of them.
+On 2026-11-09 this page took over from `docs/architecture.md`, `docs/architecture/GOAL.md` and `docs/source-dispositions.md` and carries their current facts, plus current facts from the audits and research notes named in section 8. Those files are still in the repository, each marked as superseded by this page; they will be retired in a later change once a line-by-line comparison confirms nothing in them is missing here. Where they disagree with this page, this page wins.
 
 ## 1. Introduction and goals
 
@@ -209,7 +209,7 @@ What is actually integrated, against what Decision 004 selected in 2026-09: Conc
 
 ## 5. Building block view
 
-The diagram source is [model.c4](model.c4) (LikeC4). Each block names its spec.
+The diagram source is [model.c4](model.c4) (LikeC4); its arrows follow each module's imports as of 2026-11-09 and are not yet enforced as import contracts. Each block names its spec.
 
 | Block | Code | Responsibility | Spec |
 | --- | --- | --- | --- |
@@ -253,7 +253,7 @@ Reference worlds under `reference_worlds/` (Castaway, Kitchen, Greenhouse, Works
 
 ### Time and cadence
 
-One canonical simulated timeline with independently scheduled mechanisms is the target; render time, process cadence, resident cognition cadence, institution cadence and analysis cadence are distinct concerns, and only represented simulation time is canonical. What exists: `World.tick` is an integer, `Engine.advance()` checks every registered process each step through `due(world)`, World Builder processes run `each_round` or `immediately`, and the Waltzman fixture has scenario-specific trigger ticks and one represented two-tick meeting (`ActivityState`) whose completion rechecks current state. What does not exist: a first-class future-event scheduler; duration-bearing activities in generated worlds are modelled as tasks under way (`scripts/attempts.py`, ODD 11.4). Target rules carried from the retired multi-timescale note: a wakeup only creates a process opportunity and the installed mechanic still checks and commits; completion of a duration-bearing activity is a new transition opportunity that rechecks then-current state; resident cognition wakes on meaningful observations rather than every low-level event; render interpolation and analysis sampling never advance canonical time; cadence is separate from fidelity.
+One canonical simulated timeline with independently scheduled mechanisms is the target; render time, process cadence, resident cognition cadence, institution cadence and analysis cadence are distinct concerns, and only represented simulation time is canonical. What exists: `World.tick` is an integer, `Engine.advance()` checks every registered process each step through `due(world)`, World Builder processes run `each_round` or `immediately`, and the Waltzman fixture has scenario-specific trigger ticks and one represented two-tick meeting (`ActivityState`) whose completion rechecks current state. What does not exist: a first-class future-event scheduler; duration-bearing activities in generated worlds are modelled as tasks under way (`scripts/attempts.py`, ODD 11.4). Target rules carried from the multi-timescale note (`docs/research/multi-timescale-execution-2026-09.md`): a wakeup only creates a process opportunity and the installed mechanic still checks and commits; completion of a duration-bearing activity is a new transition opportunity that rechecks then-current state; resident cognition wakes on meaningful observations rather than every low-level event; render interpolation and analysis sampling never advance canonical time; cadence is separate from fidelity.
 
 ## 7. Deployment view
 
@@ -267,7 +267,7 @@ One canonical simulated timeline with independently scheduled mechanisms is the 
 
 Shipping is one command, `scripts/deploy_world_builder.sh [rev]`: it runs the gate, deploys the backend and pages, checks the live page matches the build and reports the backend commit. Browser and measurement checks in `scripts/e2e/` and `scripts/measure_world_builder.py` spend the owner allowance, never the public budget.
 
-The public service boundary (from the retired live-authoring audit, checked against today's code): public calls must be same-origin, are rate-limited and have a 512,000-byte body cap (`world_builder_service.py:46`, `:306-314`); every model call reserves its whole cap from the `world-builder-llm-budget/v1` ledger under one lock before it runs and settles afterwards (`:129-203`), so concurrent jobs cannot overspend; visitors share $3.00 a day (`DAILY_LLM_BUDGET`, `:52`) and the owner, by password, has $5.00 a day (`OWNER_DAILY_BUDGET`, `:60`); up to four AI jobs run at once (`:142-146`); trace ids are `world-builder-live/<kind>/<uuid>` (`scripts/generate_world_bundle.py:146-155`).
+The public service boundary (from the live-authoring audit `docs/audits/live-world-authoring.md`, checked against today's code): public calls must be same-origin, are rate-limited and have a 512,000-byte body cap (`world_builder_service.py:46`, `:306-314`); every model call reserves its whole cap from the `world-builder-llm-budget/v1` ledger under one lock before it runs and settles afterwards (`:129-203`), so concurrent jobs cannot overspend; visitors share $3.00 a day (`DAILY_LLM_BUDGET`, `:52`) and the owner, by password, has $5.00 a day (`OWNER_DAILY_BUDGET`, `:60`); up to four AI jobs run at once (`:142-146`); trace ids are `world-builder-live/<kind>/<uuid hex>` (`TRACE_ROOT` at `world_builder_service.py:128`, built at `:522`).
 
 ## 8. Crosscutting concepts
 
@@ -295,7 +295,7 @@ Entities have stable identity and typed components; independent mechanics operat
 
 Before implementing a named phenomenon as a mechanic, ask: if all lower-level events were held fixed and this named phenomenon were removed, would the world's later transitions or affordances change? If not, it is a derived description, not a new state-writing mechanic. `exchange` can describe two reciprocal `give` events without reapplying transfer; an escrow contract becomes causal because it holds assets and couples release conditions (unbuilt).
 
-Global coherence fails at the boundaries between individually plausible mechanics, not inside them. The sealed-pot example from the retired strategy session: heat, vaporization, pressure, rupture and flow can each pass their own tests and still duplicate water, read stale enclosure state, implement leakage twice, keep a broken pot containing, compare kilopascals with pascals, or leave heat attached to a pot that no longer exists. The remedy is an explicit boundary per mechanic with declared reads and writes, and composites kept derived unless they add a causal bearer.
+Global coherence fails at the boundaries between individually plausible mechanics, not inside them. The sealed-pot example from the strategy session (`docs/research/world-substrate-strategy-session.md`): heat, vaporization, pressure, rupture and flow can each pass their own tests and still duplicate water, read stale enclosure state, implement leakage twice, keep a broken pot containing, compare kilopascals with pascals, or leave heat attached to a pot that no longer exists. The remedy is an explicit boundary per mechanic with declared reads and writes, and composites kept derived unless they add a causal bearer.
 
 ### Information, cognition and causal ancestry
 
@@ -321,9 +321,9 @@ Every attempted transition exposes enough to reconstruct its story: observation 
 
 Build the smallest persistent, observable vertical that tests one uncertainty; separate vocabulary, content, mechanics, policy, cognition, canonical state and analysis; require a represented causal bearer and one locally scoped transition authority for every canonical write; keep entities open to unrelated components while each mechanic's reads and writes stay closed; apply only goal-relative accounting and conservation invariants; make unsupported mechanics and residual closure risk visible; prove reuse with a materially different second world before claiming generality.
 
-### Provenance of retired material
+### Provenance of carried-forward material
 
-The facts above absorb these retired documents (restore with `git show <commit>:<path>`): `docs/research/synthesis.md`, `docs/research/world-substrate-strategy-session.md`, `docs/research/multi-timescale-execution-2026-09.md`, `docs/research/living-world-projection-2026-09.md`, `docs/audits/live-world-authoring.md`, `docs/audits/m2-give-path-audit.md`, `docs/audits/m6-second-world.md`, `docs/audits/waltzman-coordination-lab-v0.md`, `docs/audits/waltzman-kitchen-quality-v2.md`, `docs/audits/world-replay-studio.md`, `docs/audits/kitchen-contested-world.md` and `docs/audits/repair-bay-live-preflight.md`. Each one's last commit is listed in the commit that retired it.
+The facts above are carried from these documents, which are still in the repository and not yet retired: `docs/research/synthesis.md`, `docs/research/world-substrate-strategy-session.md`, `docs/research/multi-timescale-execution-2026-09.md`, `docs/research/living-world-projection-2026-09.md`, `docs/audits/live-world-authoring.md`, `docs/audits/m2-give-path-audit.md`, `docs/audits/m6-second-world.md`, `docs/audits/waltzman-coordination-lab-v0.md`, `docs/audits/waltzman-kitchen-quality-v2.md`, `docs/audits/world-replay-studio.md`, `docs/audits/kitchen-contested-world.md` and `docs/audits/repair-bay-live-preflight.md`. When one is retired, the retiring commit will name its path, reason, successor (this page) and last commit, and `git show <commit>:<path>` will restore it.
 
 ## 9. Architecture decisions
 
@@ -350,7 +350,7 @@ Decision 006's "wrong when" names a `CognitionAdapter` path that does not exist 
 | Reproducible behavior where claimed | three fresh Kitchen runs reproduced Bo's fill at t9, the handoff at t10, Ama taking the knife at t11 and the terminal at t17 (`evidence/kitchen/full-service-replication-v1-summary.json`) | Kitchen replication |
 | Generality | Kitchen, Greenhouse, Orchard, Repair Bay, Workshop and Waltzman run on the same engine; generated worlds build from descriptions | 23 of 24 builds reached their finish line on 2026-10-23 with gpt-6-luna, 19 of 24 both faithful and finished ([trace read](../../evidence/luna-rules-2026-10-23/TRACE_READ.md)) |
 | Cost | visitor builds within the daily cap | $0.0032 per build measured 2026-10-23 (same trace read) |
-| Asset provenance | Waltzman assets-v2 SVGs under `reference_worlds/waltzman/assets-v2/` were authored for this repository; third-party UI screenshots were inspiration only | retired Kitchen quality v2 audit |
+| Asset provenance | Waltzman assets-v2 SVGs under `reference_worlds/waltzman/assets-v2/` were authored for this repository; third-party UI screenshots were inspiration only | Kitchen quality v2 audit (`docs/audits/waltzman-kitchen-quality-v2.md`) |
 
 ## 11. Risks and technical debt
 

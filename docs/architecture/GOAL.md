@@ -4,6 +4,10 @@ description: Goal, requirements, thesis and non-goals of World Substrate, the go
 
 # World Substrate goal and requirements
 
+> **Superseded on 2026-11-09 by [the arc42 architecture](arc42.md).** This page is kept until a
+> line-by-line comparison confirms arc42 carries all of it, then it will be retired. Where the two
+> disagree, arc42 wins; read arc42 first.
+
 This is the durable statement of what World Substrate is for and how to tell whether it works. It condenses the roadmap's end goal, the operating invariants and Decisions 006 and 007; those stay the editing authorities for their own detail. The implemented system is described in [the system model](../model/ODD.md); its enforced rules and the tests that check them are in [trace.yaml](../model/trace.yaml).
 
 ## 1. Introduction and Goals

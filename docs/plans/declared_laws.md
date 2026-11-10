@@ -38,7 +38,7 @@ conflict_surfaces:
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: prompts/, access: write}
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: tests/, access: write}
   - {kind: repository_path, repository: BrianMills2718/world-substrate, target: evidence/declared-laws/, access: write}
-  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: wiki/catalog.md, access: write}
+  - {kind: repository_path, repository: BrianMills2718/world-substrate, target: docs/catalog.md, access: write}
 ---
 # Plan: worlds declare their own laws, the engine enforces them, and an independent review reads the rules
 
