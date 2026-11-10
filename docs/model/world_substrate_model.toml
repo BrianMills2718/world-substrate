@@ -344,7 +344,7 @@ what = "Fresh or continued run: builds the Engine, then per round each actor (ro
 source = "scripts/run_authored_world.py:215"
 routes = ["POST /run"]
 changes = ["World", "Entity", "Run", "Snapshot"]
-writes = ["world-substrate-contested-run/v3", "no_action", "nothing_left", "underway"]
+writes = ["world-substrate-contested-run/v3", "no_action", "nothing_left", "underway", "refused"]
 schedule = "on request; scripted runs synchronous, AI runs as a job; live play asks for 1 round at a time with continue_from"
 
 [[processes]]
@@ -628,6 +628,12 @@ name = "underway"
 meaning = "Not a move row: the status of a task in a round's `underway` list (#128) that a person started and the world has not yet ended. Ended tasks carry `failed` or `finished`, written by scripts/attempts.py `ended`."
 written_by = ["run"]
 writers = [{ file = "scripts/run_authored_world.py", function = "run_world", line = 638 }]
+
+[[run_row_statuses]]
+name = "refused"
+meaning = "Not a move row: the `status` of a judged attempt's `judge.disposition` (ai-judge J3) when the judge confirmed a ruling but the rules check refused to install its rule against the world as it is now. The ruling is then recorded as withdrawn and the engine decided nothing. A later identical attempt held or refused by a ruling is a move row with status `pending_ruling` or `refused_ruling`."
+written_by = ["run"]
+writers = [{ file = "scripts/run_authored_world.py", function = "run_world", line = 1132 }]
 
 # ------------------------------------------------------------ record schemas --
 # Every `world-substrate-*/vN` (and world-builder-*/vN) identifier the code
