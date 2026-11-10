@@ -65,6 +65,7 @@ def test_a_loop_still_ends_with_each_rule_firing_once_per_thing():
 
 
 @pytest.mark.req("transition-engine/a-blocked-knock-on-step-is-recorded-with-its-blocker")
+@pytest.mark.req("information-delivery/a-stopped-step-is-recorded-with-its-blocker")
 def test_a_blocked_step_is_recorded_with_its_blocker_and_nothing_follows():
     engine, _, _ = build_engine(*truck_without_fuel(40))
     result = _pull(engine)
