@@ -30,14 +30,18 @@ RESULT runs=33 problems=0
 exit 0
 
 == wiki and Markdown cap: python3 /home/brian/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD
-EXCEPTION    151/180  BrianMills2718/world-substrate  -- Active plans with their /goal launchers, cited audits, research notes and one TRACE_READ.md per saved run are the project's development record; scripts/check_trace_reads.py requires a TRACE_READ.md for every run reported as evidence. Each is linked from docs/catalog.md or docs/index.md.
-UNREACHABLE    20  BrianMills2718/world-substrate  -- 7 reader docs not linked from wiki/index.md, 13 more than 2 links deep (e.g. docs/planning/ai-judge/cold-review.md, openspec/changes/archive/2026-11-10-configurable-run-stop/proposal.md, openspec/changes/archive/2026-11-10-configurable-run-stop/specs/world-builder-page/spec.md)
+EXCEPTION    153/180  BrianMills2718/world-substrate  -- Active plans with their /goal launchers, cited audits, research notes and one TRACE_READ.md per saved run are the project's development record; scripts/check_trace_reads.py requires a TRACE_READ.md for every run reported as evidence. Each is linked from docs/catalog.md or docs/index.md.
+UNREACHABLE    19  BrianMills2718/world-substrate  -- 6 reader docs not linked from wiki/index.md, 13 more than 2 links deep (e.g. openspec/changes/archive/2026-11-10-configurable-run-stop/proposal.md, openspec/changes/archive/2026-11-10-configurable-run-stop/specs/world-builder-page/spec.md, openspec/changes/archive/2026-11-10-configurable-run-stop/tasks.md)
 DURABLE    12  BrianMills2718/world-substrate  -- 12 durable-document findings (e.g. GOAL-FIELD role=goal id=Thesis file=docs/architecture/arc42.md: 'Thesis' is missing or placeholder; GOAL-FIELD role=goal id=Thesis disproof file=docs/architecture/arc42.md: 'Thesis disproof' is missing or placeholder)
-REPO  BrianMills2718/world-substrate  md=151  cap=exception  reach=orphans(20)  layout=undeclared(0)  durable=findings(12)
+REPO  BrianMills2718/world-substrate  md=153  cap=exception  reach=orphans(19)  layout=undeclared(0)  durable=findings(12)
 md-file-cap: 1 given repos checked, cap 100: ok=0 exception=1 over=0 not-checked=0; wiki reachability ok=0 orphans=1 no-wiki=0; layout ok=0 findings=0 undeclared=1; durable ok=0 findings=1 undeclared=0   exit 1
 exit 1
 
 == doc reachability: python3 /home/brian/code2/workspace/scripts/doc_reachability.py .
-unreachable from wiki/index.md: docs/planning/ai-judge/cold-review.md
-doc-reachability: 121 reachable, 1 unreachable, 122 tracked .md files
-exit 1
+doc-reachability: 124 reachable, 0 unreachable, 124 tracked .md files
+exit 0
+
+== project check (tests, system model, docs): PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with pytest-xdist --with gdm-concordia==2.4.0 python scripts/check_project.py (run on commit e2ea3d5)
+World Substrate project check passed.
+Neutral runtime tests: 884 passed, 2 skipped, 222 subtests passed in 46.62s
+exit 0

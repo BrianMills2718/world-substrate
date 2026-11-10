@@ -1,7 +1,7 @@
 {
  "schema_version": "1.0",
  "record_type": "acceptance_criteria",
- "outcome": "Certain types of rules and constraints in a world propagate based on Jev, not only the judge's: a rule's outcome can depend on a chance (later a pick among the rule's options or an amount from its list) that Jev estimates during the run from facts the rule names; the engine rolls against it, the estimate and roll are recorded and shown, the rule's effects and every knock-on effect follow as for any rule, a replay reproduces it with no Jev call, a Jev failure uses the rule's declared fallback visibly, the rules writer can write such rules from a description, and people's own choices are never estimated.",
+ "outcome": "Certain types of rules and constraints in a world propagate based on Jev, not only the judge's: a rule's outcome, or whether a constraint lets a person's move through, can depend on a chance (later a pick among the rule's options or an amount from its list) that Jev estimates during the run from facts the rule names; the engine rolls against it, the estimate and roll are recorded and shown, the rule's effects and every knock-on effect follow as for any rule, a replay reproduces it with no Jev call, a Jev failure uses the rule's declared fallback visibly, the rules writer can write such rules from a description, and people's own choices are never estimated.",
  "asked_by": [
   {
    "who": "Brian",
@@ -154,6 +154,107 @@
    "evidence": [
     "Slice E3 (planned), built when a described world needs it."
    ]
+  },
+  {
+   "id": "A7",
+   "criterion": "A constraint propagates based on Jev: whether a move is possible at all can depend on a chance Jev estimates; on the losing roll the move is refused whole with the estimate named as its blocker, nothing changes, and what depended on it does not happen.",
+   "grounded_in": [
+    "Brian 2026-11-10 (Why): \"certain types of rules/contstatins that progagte base don jev\"; the judge plan's constraint (what the world makes possible or impossible); requirements R10, R9"
+   ],
+   "demonstration": [
+    "In the saved run \"sawmill blade\", open a wet day on which the log cart tried to cross the ford.",
+    "Open the refusal.",
+    "Check the sawmill's log count that day.",
+    "Open a dry day's crossing."
+   ],
+   "expected": "The wet day reads \"blocked: the ford is too deep today (chance 0.7, roll 0.81)\" in orange (the run's own numbers); the refusal opens to the question, the rain it read and the draw; nothing changed, and no logs reached the sawmill that day. The dry day shows the chance, the roll and \"crossed\".",
+   "failure_example": "Broken: the cart crosses whatever the roll, a refusal with no estimate or roll shown, a partial change on a refused crossing, or logs arriving on a blocked day. Working: the blocker names the estimate and roll, and nothing downstream of the blocked crossing happens.",
+   "representation": {
+    "view": "composite-linked-view: the refused event's line with its blocker in orange, opening to the question, the facts read and the draw",
+    "router_record": "docs/planning/estimate-rules/router/run-page.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "evidence": [
+    "Slice E1 (planned): the ford crossing move in the hand-written sawmill world; refusals are recorded atomically today (RULE-ATOMIC-COMMIT-OR-REFUSAL, docs/model/ODD.md)."
+   ]
   }
- ]
+ ],
+ "coverage": {
+  "model": "openrouter/anthropic/claude-sonnet-5.5",
+  "judged_at": "2026-11-10T11:40:30-0500",
+  "asked_by_sha256": "9e28a5a1c8da2136f1b7397a5edda5b9f28068d99155ca0610a571045017e7f5",
+  "criteria_sha256": "79d17940dd67e6c6e403de393c1c1eb173d91c7ad93fec4ffca15267bff5996b",
+  "outcome_sha256": "17635968670e98e36af82265c0baee95623fcc9cdcacd50b85d3e59a98298105",
+  "criteria_judged": {
+   "A1": "0b6d45e7e950f4d920c89feee71db44972cabe57eee6481c14696c84d9c1326c",
+   "A2": "ad3cec22aec722688b8db411bcb1eb27d0d9e1a8f434c026a9d291753cea817a",
+   "A3": "423f591a255e49d08fe6cf723919a6a3db700b67adb6795677d28f3e3bb00c73",
+   "A4": "d3a69f5363b90e40f2d99826bffa10fd30b0328e3785ceda8598169530ba995d",
+   "A5": "1d094728e8d8e6addef72c6854bfcf4969659aab9f31cd35f6e33da304327f9a",
+   "A6": "507d89bc5d3bc1f01b3dbb8d0d6112b7fdeea117a501947e3cf24ac957a3e0dd",
+   "A7": "da8a2e655d2c3d699fa0ffa119f240be46064cafc4ff9241d76aa28a3fd22d80"
+  },
+  "deferrals_judged": [],
+  "trace_id": "planning-compliance/goal-coverage/20261110T114024-df4c25a9-run1",
+  "cost_usd": 0.028569999999999998,
+  "requirements": [
+   {
+    "id": "R1",
+    "requirement": "not just the judge uses jev",
+    "quote": "im not saying jsut the judge uses jev",
+    "asked_by_index": 1,
+    "kind": "outcome"
+   },
+   {
+    "id": "R2",
+    "requirement": "rules/constraints that propagate",
+    "quote": "certain types of rules/contstatins that progagte base don jev",
+    "asked_by_index": 1,
+    "kind": "outcome"
+   }
+  ],
+  "mappings": [
+   {
+    "requirement_id": "R1",
+    "covered_by": [
+     "A1",
+     "A4",
+     "A7"
+    ],
+    "coverage_reason": "A1, A4 and A7 would fail unless rules and constraints, not only the judge, use Jev estimates during the run.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome line says rules and constraints propagate based on Jev, 'not only the judge's'."
+   },
+   {
+    "requirement_id": "R2",
+    "covered_by": [
+     "A1",
+     "A7"
+    ],
+    "coverage_reason": "A1 checks that a rule's outcome depends on a Jev-estimated chance with knock-on effects, and A7 checks that a constraint's pass or refusal depends on one; both fail otherwise.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome line keeps both rules and constraints propagating based on Jev, including knock-on effects."
+   }
+  ],
+  "agreement": {
+   "runs": 2,
+   "agreed": true,
+   "trace_ids": [
+    "planning-compliance/goal-coverage/20261110T114024-df4c25a9-run1",
+    "planning-compliance/goal-coverage/20261110T114024-df4c25a9-run2"
+   ],
+   "costs_usd": [
+    0.01428,
+    0.01429
+   ]
+  },
+  "trace": "coverage-trace.json"
+ }
 }
