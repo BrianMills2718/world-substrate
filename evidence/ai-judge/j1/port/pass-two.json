@@ -1,0 +1,381 @@
+{
+ "attempt": "I offer Rosa 40 coins at the customs desk and ask her to release my crate.",
+ "names": [
+  "rosa",
+  "customs-desk",
+  "crate"
+ ],
+ "rule": {
+  "action": {
+   "kind": "hand-coins",
+   "description": "A person hands coins they hold to a person at the same place.",
+   "fields": [
+    {
+     "name": "to",
+     "type": "entity_ref"
+    },
+    {
+     "name": "amount",
+     "type": "integer"
+    }
+   ]
+  },
+  "mechanic": {
+   "schema_version": "world-substrate-action-mechanic/v0",
+   "mechanic_id": "hand-coins",
+   "version": "1",
+   "action_kind": "hand-coins",
+   "rationale": "Coins a person holds can be handed to a person at the same place.",
+   "actor_selector": {
+    "categories": [
+     "actor"
+    ],
+    "components": [
+     "purse"
+    ]
+   },
+   "participants": {
+    "to": {
+     "categories": [
+      "actor"
+     ],
+     "components": [
+      "purse"
+     ]
+    }
+   },
+   "parameters": {
+    "amount": [
+     1
+    ]
+   },
+   "checks": [
+    {
+     "label": "the amount is more than nothing",
+     "left": {
+      "action_field": "amount"
+     },
+     "op": "gt",
+     "right": {
+      "literal": 0
+     }
+    },
+    {
+     "label": "the giver holds that many coins",
+     "left": {
+      "participant": {
+       "name": "actor",
+       "path": "components.purse.coins"
+      }
+     },
+     "op": "gte",
+     "right": {
+      "action_field": "amount"
+     }
+    },
+    {
+     "label": "they are at the same place",
+     "left": {
+      "participant": {
+       "name": "actor",
+       "path": "location.location_id"
+      }
+     },
+     "op": "eq",
+     "right": {
+      "participant": {
+       "name": "to",
+       "path": "location.location_id"
+      }
+     }
+    }
+   ],
+   "effects": [
+    {
+     "participant": "actor",
+     "path": "components.purse.coins",
+     "op": "subtract",
+     "value": {
+      "action_field": "amount"
+     }
+    },
+    {
+     "participant": "to",
+     "path": "components.purse.coins",
+     "op": "add",
+     "value": {
+      "action_field": "amount"
+     }
+    }
+   ],
+   "limits": [
+    "Whether the one handed the coins agrees is their own decision, not part of this rule."
+   ],
+   "tests": [
+    "Handing 40 coins moves 40 coins from the giver to the one handed them."
+   ],
+   "semantic_bindings": [
+    "actor is the giver",
+    "to is the one handed the coins"
+   ]
+  }
+ },
+ "report": {
+  "rules_check": {
+   "ok": true
+  },
+  "test_run": {
+   "move": {
+    "actor": "vik",
+    "kind": "hand-coins",
+    "to": "rosa",
+    "amount": 40
+   },
+   "from_revision": 2,
+   "status": "accepted",
+   "net_changes": [
+    {
+     "entity": "rosa",
+     "path": "components.purse.coins",
+     "before": 0,
+     "after": 40
+    },
+    {
+     "entity": "vik",
+     "path": "components.purse.coins",
+     "before": 40,
+     "after": 0
+    }
+   ],
+   "blockers": [],
+   "chain_length": 0,
+   "stopping_point": {
+    "kind": "settled",
+    "after_step": 0
+   },
+   "chain": [
+    {
+     "event_id": "e00003",
+     "causal_bearer": {
+      "kind": "actor",
+      "id": "vik",
+      "controller": "judge:test-run"
+     },
+     "semantic_binding": null,
+     "observation": {
+      "world_id": "port-live",
+      "revision": 2,
+      "tick": 0,
+      "actor_id": "vik",
+      "entities": {
+       "customs-desk": {
+        "entity_id": "customs-desk",
+        "label": "customs desk",
+        "category_ids": [
+         "place"
+        ],
+        "location": {
+         "location_id": "customs-desk"
+        },
+        "source_pack_id": "world-substrate-port@1",
+        "source_entity_id": "customs-desk"
+       },
+       "vik": {
+        "entity_id": "vik",
+        "label": "Vik",
+        "category_ids": [
+         "actor",
+         "trader"
+        ],
+        "location": {
+         "location_id": "customs-desk"
+        },
+        "source_pack_id": "world-substrate-port@1",
+        "source_entity_id": "vik",
+        "components": {
+         "purse": {
+          "coins": 40
+         }
+        }
+       },
+       "rosa": {
+        "entity_id": "rosa",
+        "label": "Rosa",
+        "category_ids": [
+         "actor",
+         "officer"
+        ],
+        "location": {
+         "location_id": "customs-desk"
+        },
+        "source_pack_id": "world-substrate-port@1",
+        "source_entity_id": "rosa",
+        "components": {
+         "purse": {
+          "coins": 0
+         }
+        }
+       },
+       "crate": {
+        "entity_id": "crate",
+        "label": "crate",
+        "category_ids": [
+         "crate"
+        ],
+        "location": {
+         "location_id": "customs-desk"
+        },
+        "source_pack_id": "world-substrate-port@1",
+        "source_entity_id": "crate",
+        "last_cause_event_id": "e00002",
+        "components": {
+         "cargo": {
+          "inspected": true,
+          "declared": true,
+          "released": false
+         }
+        }
+       }
+      }
+     },
+     "tick": 0,
+     "world_revision": 3,
+     "rule_id": "hand-coins",
+     "rule_version": "1",
+     "cause": "c00003",
+     "status": "accepted",
+     "checks": [
+      {
+       "label": "Base revision is current",
+       "ok": true,
+       "actual": 2,
+       "required": 2
+      },
+      {
+       "label": "Actor exists",
+       "ok": true,
+       "actual": null,
+       "required": null
+      },
+      {
+       "label": "the one acting is allowed to make this move",
+       "ok": true,
+       "actual": null,
+       "required": null
+      },
+      {
+       "label": "the to named exists",
+       "ok": true,
+       "actual": null,
+       "required": null
+      },
+      {
+       "label": "the to named is the right kind of thing for this move",
+       "ok": true,
+       "actual": null,
+       "required": null
+      },
+      {
+       "label": "the amount is more than nothing",
+       "ok": true,
+       "actual": 40,
+       "required": 0
+      },
+      {
+       "label": "the giver holds that many coins",
+       "ok": true,
+       "actual": 40,
+       "required": 40
+      },
+      {
+       "label": "they are at the same place",
+       "ok": true,
+       "actual": "customs-desk",
+       "required": "customs-desk"
+      }
+     ],
+     "declared_read_paths": [
+      "entities.<actor>.category_ids",
+      "entities.<actor>.components.purse",
+      "entities.<actor>.components.purse.coins",
+      "entities.<actor>.location.location_id",
+      "entities.<to>.category_ids",
+      "entities.<to>.components.purse",
+      "entities.<to>.components.purse.coins",
+      "entities.<to>.location.location_id"
+     ],
+     "declared_write_paths": [
+      "entities.<actor>.components.purse.coins",
+      "entities.<actor>.last_cause_event_id",
+      "entities.<to>.components.purse.coins",
+      "entities.<to>.last_cause_event_id"
+     ],
+     "changes": [
+      {
+       "path": "entities.rosa.components.purse.coins",
+       "before": 0,
+       "after": 40
+      },
+      {
+       "path": "entities.rosa.last_cause_event_id",
+       "before": null,
+       "after": "e00003"
+      },
+      {
+       "path": "entities.vik.components.purse.coins",
+       "before": 40,
+       "after": 0
+      },
+      {
+       "path": "entities.vik.last_cause_event_id",
+       "before": null,
+       "after": "e00003"
+      },
+      {
+       "path": "revision",
+       "before": 2,
+       "after": 3
+      }
+     ],
+     "hash_before": "bf230b20ed000d2d834fe74a7e161c534a12f4c2c59b25fa7e98667d7291ddb9",
+     "hash_after": "b9b879fc984ca913db3861bf78fda8fdf69940386855e2483a49f23d9de9d877"
+    }
+   ]
+  }
+ },
+ "what_the_judge_reads": {
+  "rules_check": {
+   "ok": true
+  },
+  "test_run": {
+   "move": {
+    "actor": "vik",
+    "kind": "hand-coins",
+    "to": "rosa",
+    "amount": 40
+   },
+   "from_revision": 2,
+   "status": "accepted",
+   "net_changes": [
+    {
+     "entity": "rosa",
+     "path": "components.purse.coins",
+     "before": 0,
+     "after": 40
+    },
+    {
+     "entity": "vik",
+     "path": "components.purse.coins",
+     "before": 40,
+     "after": 0
+    }
+   ],
+   "blockers": [],
+   "chain_length": 0,
+   "stopping_point": {
+    "kind": "settled",
+    "after_step": 0
+   }
+  }
+ }
+}

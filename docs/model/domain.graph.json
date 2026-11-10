@@ -434,8 +434,8 @@
   {
    "id": "consequence-report",
    "label": "Consequence report",
-   "kind": "Theory",
-   "explain": "Plan ai-judge J1 (planned, not implemented): what the engine works out for an attempt no rule covers, in two passes. Pass 1, with no new rule: engine.discover for the person acting and for each person the attempt names (their moves, with which checks pass or fail), plus the current values of the entities the attempt names. Pass 2: the judge's proposed rule test-run on a copy of the world, giving its net changes, blockers, chain length and stopping point; the full chain stays in the run record. Code: none yet."
+   "kind": "Substrate",
+   "explain": "What the engine works out for an attempt no rule covers, in two passes (ai-judge J1, built 2026-11-10). Pass 1, with no new rule (pass_one): engine.discover for the person acting and for each person the attempt names (their moves, with which checks pass or fail), plus the current values of everyone and everything named; each run records it on every unmatched attempt (consequence.pass_one). The names come from the interpreter's reading (names). Pass 2 (pass_two): a proposed rule goes through the World Builder's rules check, then is test-run on a copy of the world as it is, giving its net changes, blockers, chain length and stopping point; the full chain stays in the report and summary() leaves it out for the judge. Code: scripts/consequence_report.py:67."
   },
   {
    "id": "judge-ruling",
