@@ -456,7 +456,7 @@ Source: inferred by agent (scene profile v0)
 
 ### Requirement: Fresh-world presentation wins over the shared catalog (current code)
 
-When a freshly authored world declares presentation, its declarations win over the shared asset catalog: bootstrap removes catalog bindings that collide with entities the world defines and turns an authored category asset into an exact entity binding (`scripts/run_authored_world.py:1036-1048`). This rule came out of the Repair Bay live proof.
+When a freshly authored world declares presentation, its declarations win over the shared asset catalog: bootstrap removes catalog bindings that collide with entities the world defines and turns an authored category asset into an exact entity binding (`_runtime_catalog` in `scripts/run_authored_world.py`, lines 1085-1102). This rule came out of the Repair Bay live proof.
 
 Source: inferred by agent (Repair Bay live proof; code read on 2026-11-09)
 

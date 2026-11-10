@@ -250,8 +250,10 @@ Every event carries, in addition to the transition fields below:
   process.
 - `semantic_binding` — the Linguistic Core sense and participant roles bound to
   the attempt, or `null` when the action kind has no binding. Six of seven M1
-  action kinds are still unbound, so `null` is the common case and says so
-  rather than being omitted.
+  action kinds are bound (`give`, `drink`, `heat`, `fill`, `take`, `pour`);
+  only `unheat` is unbound (`UNBOUND_ACTION_KINDS` in
+  `src/world_substrate/semantic.py`), and its `null` is written out rather
+  than omitted.
 - `observation` — the bounded, actor-authorised projection the bearer could see
   at the moment it chose, captured before anything mutates. `null` for a
   process, which has no observer, and for an attempt whose actor cannot
