@@ -551,7 +551,7 @@ writers = [{ file = "src/world_substrate/engine.py", function = "apply", line = 
 
 [[engine_events]]
 name = "reaction_limit"
-meaning = "The knock-on effects of an attempt or a round event would pass the reaction limit (32 per moment): the whole moment is refused and nothing commits. Its failed check reads 'Knock-on effects settle within 32 reactions'."
+meaning = "The knock-on effects of an attempt or a round event would pass the run's recorded reaction limit (new runs have none; runs recorded before the AI judge plan's J0 ran under 32): the whole moment is refused and nothing commits. Its failed check reads 'Knock-on effects settle within N reactions'."
 written_by = ["act", "advance"]
 writers = [
   { file = "src/world_substrate/engine.py", function = "apply", line = 802 },

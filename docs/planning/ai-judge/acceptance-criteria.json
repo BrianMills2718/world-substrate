@@ -47,20 +47,20 @@
     "Open the saved run \"loop\" and read the same moment's summary line and steps.",
     "Open the saved run \"truck without fuel\" and read step 40 and what comes after it."
    ],
-   "expected": "\"fifty chains\": the summary line reads \"5,000 steps run, 5,000 with a cause, no refusal\", and each opened step leads to the step that caused it. \"loop\": each rule fires once for each thing and the moment ends. \"truck without fuel\": step 40 shows \"blocked: the truck has no fuel\" in orange, and no step follows it.",
+   "expected": "\"fifty chains\": the summary line reads \"5,000 steps run, 5,000 with a cause, no refusal\", and each opened step leads to the step that caused it. \"loop\": each rule fires once for each thing and the moment ends. \"truck without fuel\": after step 40 comes item 41 in orange, \"blocked: truck leaves (truck) did not happen: “the truck has fuel” was not true (it was 0). Nothing followed from it.\", and no step follows it.",
    "failure_example": "Broken: the moment shows \"refused: knock-on effects did not settle\" (what happens today past 32 steps), the summary line counts fewer steps with a cause than steps run, or the loop fires the same rule for the same thing twice. Working: the summary line reads 5,000 run, 5,000 with a cause, no refusal, and the loop stops.",
    "representation": {
     "view": "composite-linked-view: the run page's moment row with its summary line (steps run, steps with a cause, any refusal), opening each step to the step that caused it and any blocked step to its blocker",
     "router_record": "docs/planning/ai-judge/router/run-page.recommendation.json"
    },
-   "entrypoint": "https://brianmills.dev/world-builder/",
-   "status": "built",
+   "entrypoint": "planned",
+   "status": "not built",
    "evidence": [
     "Saved runs with TRACE_READ.md: evidence/ai-judge/j0/fifty-chains (5,000 steps in 100 waves, 5,000 with a cause, limit null), evidence/ai-judge/j0/loop (40 steps, d1 knocked once more, ends), evidence/ai-judge/j0/truck-without-fuel (blocked truck-leaves after r1-e00041, \"the truck has fuel\" was 0); run-page.png in each.",
     "Tests: tests/test_knock_on_unbounded.py (fifty chains, loop, blocked step, run record moments).",
     "Code: src/world_substrate/engine.py (Engine reaction_limit=None, _settle, _blocked_steps), src/world_substrate/action_authoring.py (near_misses), scripts/run_authored_world.py (_round_reactions, _moments), scripts/world_builder_home.html (knockOnBlocks)."
    ],
-   "status_note": "Built in J0 (2026-11-10). The page words the blocked step with the rule's own failed check and its value: \"blocked: truck: truck leaves did not happen, because the truck has fuel was not true (it was 0). Nothing followed from it.\" rather than \"blocked: the truck has no fuel\" (rewording a check into prose would need a model). Share links for the saved runs are added to evidence once the J0 build is live."
+   "status_note": "Code merged in J0 (2026-11-10) and shown on saved runs locally (evidence below); marked built once the J0 build is live and the three runs are saved there as share links. Ignore the box \"Under way since round 1: Sam — pull\" under the truck run: the several-round task tracker (#128) misreads this test world; it is not part of A1."
   },
   {
    "id": "A2",
@@ -200,14 +200,14 @@
     "view": "composite-linked-view: the run page's replay of a saved run beside a new run of the same world, moment by moment",
     "router_record": "docs/planning/ai-judge/router/run-page.recommendation.json"
    },
-   "entrypoint": "https://brianmills.dev/world-builder/?run=OWjUKGkZzOtr",
-   "status": "built",
+   "entrypoint": "planned",
+   "status": "not built",
    "evidence": [
     "Saved runs with TRACE_READ.md: evidence/ai-judge/j0/wind-chain-old-limit (made with pre-J0 code 43663e9; r1-e00002 refused \"Knock-on effects settle within 32 reactions\", nothing changed) and evidence/ai-judge/j0/wind-chain-now (the same world under J0: 39 steps, no refusal).",
     "Tests: tests/test_knock_on_unbounded.py (a record without a limit replays refused under 32 and a new run is not; a share made before J0 shows the refusal when opened); tests/test_open_attempt.py refusal test kept, run against the recorded limit.",
     "Code: src/world_substrate/engine.py (recorded_reaction_limit, LEGACY_REACTION_LIMIT, replay_commands default 32), scripts/world_builder_service.py (_mark_refused_world_changes, _mark_old_share_refusals), scripts/world_builder_home.html (plainCheck)."
    ],
-   "status_note": "Built in J0 (2026-11-10). The entrypoint is a share link made on the live World Builder before J0 was deployed (build 43663e9): a wind-chain world of 40 dominoes whose knock-on was refused at the old limit of 32."
+   "status_note": "Code merged in J0 (2026-11-10). A run of the wind-chain world (40 dominoes) was saved on the live World Builder before J0 was deployed (build 43663e9), share link ?run=OWjUKGkZzOtr, refused at the old limit of 32; marked built once J0 is live, that link shows the refusal, and a share link of the same world run under J0 sits beside it."
   },
   {
    "id": "A8",

@@ -15,8 +15,8 @@ call under this id; cost 0.0 (measured, run log `cost_usd`).
   `[{rule_id: truck-leaves, it: truck, after: r1-e00041, after_rule: loading-step-done, failed: [{check: "the truck
   has fuel", actual: 0}]}]`. The truck stayed in the yard; nothing followed from it.
 - `knock_on`: `{steps: 40, with_cause: 40, blocked: 1}`; `reaction_limit: null`.
-- Page wording (run-page.png): "blocked: truck: truck leaves did not happen, because the truck has fuel was not true
-  (it was 0). Nothing followed from it. After r1-e00041", in orange with a dashed border after step 40.
+- Page wording (run-page.png): "blocked: truck leaves (truck) did not happen: “the truck has fuel” was not true
+  (it was 0). Nothing followed from it. After r1-e00041", item 41, in orange with a dashed border after step 40.
   Acceptance A1 words it "blocked: the truck has no fuel"; the page states the failed check and its value instead,
   which is the same fact read straight from the rule.
 - Side observation, not J0: the several-round task tracker (#128) opened a task for Sam's pull at `r1-e00001`

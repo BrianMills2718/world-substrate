@@ -43,10 +43,14 @@ Mesa as Decision 006 says.
 
 Brian, 2026-11-09: "50 things could propagate down a causal chain 100 links deep". That is 5,000 steps in one
 moment; the cap of 32 refused it whole. The cap was never what ended loops: a (process, entity) pair already fires
-at most once per moment (`Engine._settle`), and that bound is finite. So J0 removed the cap for new runs
+at most once per moment (`Engine._settle`), and that bound is finite: no effect a rule can declare creates an entity,
+so a moment has at most (number of immediate processes) × (number of entities) steps. If a rule kind that creates
+entities is ever added, this bound must be revisited in the same change. So J0 removed the cap for new runs
 (`Engine(reaction_limit=None)`, `src/world_substrate/engine.py`), kept the once-per-pair rule, and wrote the limit
 each run ran under into its record (`reaction_limit`, `null` for none). A refusal is part of a run's recorded
 commands, so replaying an old run with no cap would change its outcome; old records therefore replay under 32
 (`recorded_reaction_limit`, `LEGACY_REACTION_LIMIT`). Evidence: `tests/test_knock_on_unbounded.py` and the saved runs
 under `evidence/ai-judge/j0/` (50 chains of 100 links in one moment; a loop of 40 that ends; a run refused at 32
-before J0 and the same world run through since).
+before J0 and the same world run through since). Time, measured: the 5,000-step moment takes about 26 s of CPU
+on the local machine (`tests/test_knock_on_unbounded.py`, 2026-11-10, run under other load); a world that size is
+far past any World Builder world built so far.

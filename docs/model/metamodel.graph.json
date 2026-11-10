@@ -123,7 +123,7 @@
    "id": "knock-on-now",
    "label": "Same-moment knock-on",
    "kind": "rules",
-   "explain": "A process with timing immediately, run in waves inside the same moment as the move or round step that triggered it until nothing more is due; each process and thing pair fires once per moment, and more than 32 reactions refuses the whole moment (slice S2 of docs/plans/open_attempt.md, ODD 8.20)."
+   "explain": "A process with timing immediately, run in waves inside the same moment as the move or round step that triggered it until nothing more is due; each process and thing pair fires once per moment, which ends every chain; new runs have no other cap, and a run recorded before J0 of docs/plans/ai_judge.md replays under its old cap of 32 (slice S2 of docs/plans/open_attempt.md, ODD 8.20)."
   },
   {
    "id": "skill-roll",
