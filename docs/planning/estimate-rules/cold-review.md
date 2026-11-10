@@ -1,10 +1,105 @@
-# Cold review, round 3: estimate-rules planning package
+# Cold review, round 4: estimate-rules planning package
+
+Reviewer: the `company-planning:planning-compliance-reviewer` subagent, run once on 2026-11-10 at commit 8fff8596d96fecabecfe86c69ff1e057966054eb (branch plan/estimate-rules-fix). Its report follows word for word; the reviewer wrote the full sha from the task's 8fff859 prefix and said so, and the real full sha is the one above.
+
+The N1–N8 fixes hold up against the files, and nothing blocking remains. A few notes stay, mainly in the new cost basis and in Q89.
+
+Reviewed revision: 8fff859e8cf9fe64ae2ba6cbd2a5a0a0a2e2c0d1 (the HEAD named in the task; I did not re-run `git rev-parse`, so the full sha is unconfirmed beyond the 8fff859 prefix)
+
+I read the repository and the package at that revision and edited nothing.
+
+## Validator
+
+- I ran the validator from the repository root. It reported 7 of 12 substance checks ok, 0 failing and 5 pending.
+- The pending substance items are the guess-basis Jev variants, the planned plain-version comparison and the 3 untested stages.
+- Another 5 checks are pending only because they are required from 2026-11-12 or later (initiative, spectrum rungs, production rungs, thesaurus and system map).
+- Cost basis: 8 AI steps (3 measured, 4 computed, 1 guess).
+- Metamodel: 29 types, all mapped onto scientific-hypergraph@7b0638fe0aef.
+- Stops: searched 4 ways, 0 found.
+- Coverage: 2 requirements, both covered; A1, A2, A3, A4, A5 and A7 were edited after the stored judgment, so the nightly run judges them again.
+- The only FAIL is freshness. It names docs/model/DOMAIN.md, docs/model/ODD.md, docs/model/domain.graph.json, `acceptance-criteria.json`, `estimate_rules.md` and the ai-judge spec. A new review record clears it.
+- My shell wrapper (`| tail`) swallowed the validator's own exit status, so I did not capture it. The "Verdict: not compliant" line is consistent with exit 1.
+- The cold_review part now reports ok because the manifest names the 3286054 report. It will show a stale `revise` verdict until this review is recorded.
+
+## Previous findings
+
+- **B1 (wrong domain anchors): fixed in substance.**
+  - The five anchors were corrected in the domain model and `implemented` map (`build` → 1635, `test-run` → 1844).
+  - At this HEAD those two lines are now an `attempts.append` call and a blank line, because the file shifted. That is line drift, which you excluded, so I do not count it.
+- **N1 (resident, interpreter and readout cost): fixed, with caveats under N-new1.**
+  - Four computed steps now cover residents, interpreter and readout.
+  - From the airfield `llm-calls.jsonl`, the resident mean is 1,256 input and 124 output tokens (36 calls). The interpreter mean is 993 and 68 (12 calls). The readout is 1,523 and 309.
+  - Waltzman: residents 2,761 and 223, interpreter 3,231 and 242. All have zero cached tokens.
+  - The arithmetic reproduces: $0.045, $0.0107, $0.0003, about $0.057 with Jev, and about $0.13 for Waltzman-sized prompts.
+  - The per-call costs recorded in the evidence ($0.000188, $0.000133, $0.000307; Waltzman $0.000388 and $0.000444) match.
+  - The cap is $0.13 in the plan (`estimate_rules.md:~78-80, ~500`), the cost basis and the page.
+- **N2 (`relies_on`): fixed.**
+  - `test-run`, `run-loop`, `budget` and `scene-replay` are added (planning-package.json:227-230).
+  - All four are in the domain graph as implemented Substrate nodes.
+  - I found no further domain concept the plan changes or reads that is missing.
+- **N3 (variant count): fixed.** The plan now says "10 cases x 4 variants". No "3 variants" remains in the plan, the page or the manifest.
+- **N4 (Q88 wording): fixed.** The plan and Q88's ledger text (the Uncertainties section) say agreement shows only that the two are interchangeable, and E2 prefers bands where Q82 finds Jev flat. The wording is in the plan (about line 461 onward); the ledger text itself I did not re-open.
+- **N5 (Decision 006 question): fixed as a record, argument partly weak.**
+  - Q89 exists, is resolved, is marked inferred by agent, and cites Q27.
+  - Its sources check out: Decision 006:25, Decision 009:26, `open_attempt.md:192`, and `estimate_rules.md:315` and `:530`.
+  - The plan's "Needs Brian" paragraph now says he can reopen it.
+  - See N-new2 for the weak point.
+- **N6 (ford refusal wording): fixed.**
+  - The refusal now reads "the cart could not get across the ford", and the plan states that each attempt draws its own number.
+  - The same wording appears in A7, `body.html` and the page's walk-through.
+  - No "too deep today" text remains outside the old review and the stored coverage trace.
+- **N7 (A4 saved draft): fixed.**
+  - The demonstration uses a saved draft "bakery oven, fallback removed".
+  - The failure example says the fallback-removed draft passing the check is the broken case.
+  - A reader could see that fail.
+  - The entry is still `not built` with entrypoint `planned`, so there was nothing to open.
+- **N8 (decisions list): fixed.** The page's "Your decisions" paragraph lists Q82–Q86, Q88, Q87 (settled) and Q89 (settled, can be reopened), and `index.html` matches `body.html`.
+- **N9 (system model, spectrum, goal fields): unchanged.** The WAIT items stay until 2026-11-12.
+- **N10 and N11 (acceptance, open questions): unchanged and still hold.**
+- **Citations added this round: correct.** The new `consequence-report` anchor `scripts/consequence_report.py:67` is `pass_one`, the concept's entry point.
+
+## Checks
+
+- I reran the `llm_calls` aggregation and the saved `llm-calls.jsonl` files read-only. They match the manifest's token counts and per-call costs.
+- The checks block was re-recorded at 590530c with 902 tests passed (902 passed, 2 skipped, 222 subtests passed).
+- I did not rerun `check_project.py`, so I did not confirm the 902 figure or the doc reachability, trace-read or wiki-cap counts myself.
+
+## Blocking findings
+
+None.
+
+## Notes
+
+- **N-new1: cost basis for the E1 live run (planning-package.json cost steps, `estimate_rules.md` around lines 427-445).**
+  - The Waltzman-sized variant mixes the Waltzman token sizes with the airfield call counts.
+  - The Waltzman evidence has 110 resident and 97 interpreter calls, about 0.88 interpreter calls per resident call. The airfield ratio is 0.33, which gives the 80 interpreter calls assumed.
+  - Applying the Waltzman ratio would put the interpreter near $0.09 and the whole run near $0.19, above the $0.13 cap.
+  - The mixed worst case already totals about $0.1298, within 0.2% of the cap, so "reaches day 30 either way" is asserted rather than shown. The claim stands only because the cap was set to the same number.
+  - The sawmill is closer to the airfield world, so $0.06 is plausible.
+  - The plan also assumes one round equals one day and four resident calls per person per round.
+  - I would label the $0.13 figure as an upper estimate and keep the cap with real headroom (for example $0.20).
+- **N-new2: Q89 argument (3) rests on an unbuilt, unratified design.** The skill roll is "designed but not built" and Q33 is open. Decision 009 (the fixpoint) is the real precedent, and arguments (1), (2) and (4) carry the case. Q27's own wording said such calls are Brian's, so the "inferred by agent, can reopen" labelling matters. It is already there, so this is a note.
+- **N-new3: the plain-version comparison is still `planned` and all 3 stages are `untested`.** This is unchanged and shows WAIT. The design does not depend on either. The cheapest-design paragraph argues declared bands against Jev. Q88 names the decision it would change, which is the case for running it rather than arguing it.
+- **Open-questions map.** It excludes resolved Q87 and Q89, and its stated question now says so (planning-package.json diagram entry).
+- **Line drift in existing citations.** At this HEAD, `build` at `world_builder_service.py:1635` and `test-run` at `:1844` have drifted. Excluded as agreed.
+- **Page and render.**
+  - I confirmed from the HTML source that the page draws every part inline. I did not render it in a browser.
+  - Links are `blob/main` on the `BrianMills2718` repository, which is correct for a personal-account repository. They resolve after merge.
+  - Re-running the page builder left the tree clean, so `index.html` is up to date.
+
+Judgments I am unsure about: whether N-new1 should be blocking. I kept it a note because the sawmill run is small, the airfield figures are the closer match, and the page and plan label the $0.13 figure as a cap with its computation shown. N-new2 is also a judgment call.
+
+Verdict: pass
+
+## Earlier reviews of this package
+
+## Earlier review: round 3, at 3286054 (verdict revise)
 
 Reviewed revision: 32860542557cf2698a05669b4b29b5041a7e1818
 
 Branch `plan/estimate-rules`, confirmed with `git rev-parse HEAD`; the base is origin/main d89a446. The previous round read 0c09c1d. I edited no file.
 
-## Validator
+### Validator
 
 I ran `validate_planning_package.py --repo . docs/planning/estimate-rules/planning-package.json` from the repository root and captured its own exit status: **1**.
 
@@ -27,7 +122,7 @@ I ran `validate_planning_package.py --repo . docs/planning/estimate-rules/planni
 
 Nothing fails apart from cold_review.
 
-## Checks I reran (read-only, at HEAD)
+### Checks I reran (read-only, at HEAD)
 
 | Check | Manifest | My run |
 | --- | --- | --- |
@@ -43,7 +138,7 @@ The expected-time arithmetic gives 0.607 s, which matches the stated 0.61 s.
 
 All the checks reproduce.
 
-## Previous round's findings
+### Previous round's findings
 
 1. **Checks did not reproduce (blocking): fixed.** All checks were rerun at 4b5bda9, and they reproduce at HEAD (table above). Each inherited failure names Q77. Doc reachability is now 0 unreachable, because docs/catalog.md links the J0 trace reads.
 2. **Wrong code locations in `implemented` (blocking): partly fixed. It stays blocking (new finding B1).** Engine, event, process, causal-trace, knock-on-now, write-scope, affordance, observation, fingerprint and run-loop now point at the right code. Five entries still point at the wrong code, two of them concepts the plan depends on. The claimed fix, "copied from the repository package, whose implemented map is the current one", carries the same wrong anchors from `tools/planning/domain_src.py`.
@@ -64,9 +159,9 @@ All the checks reproduce.
 11. **Stops (note): unchanged, holds.** I reran `git log -i --grep=jev` and `brian_positions.py "jev estimate probability rule stop"` (keyword-only in that environment). They return the same Jev records the manifest lists, and none is a stop.
 12. **System model, spectrum and initiative (pending).** See N9.
 
-## Findings
+### Findings
 
-### Blocking
+#### Blocking
 
 **B1. domain_model, `docs/planning/estimate-rules/planning-package.json:111, :132, :133, :134, :167` (source: `tools/planning/domain_src.py:12, :33-35, :72`): five concepts still cite the wrong code. Carried over from finding 2.**
 
@@ -81,7 +176,7 @@ All the checks reproduce.
 - **Why it matters:** a reader who follows "build" or "scripted test run" to check what the plan changes lands on unrelated code.
 - **Fix:** correct the five tuples in `domain_src.py` and regenerate. That also fixes the domain graph's explain text and the repository package.
 
-### Notes
+#### Notes
 
 **N1. plan, `docs/plans/estimate_rules.md:78` and `:479`: the live E1 run's resident calls are missing from `cost_basis`.**
 
@@ -164,7 +259,7 @@ Add them.
 - Q82, Q83 and Q85 each propose a measurement that names the decision its result changes. Nothing already in the repository settles any of them: the old probe's coarse answers do not show whether the chance is flat.
 - The sources I opened say what the questions claim: `estimate_rules.md:123, :158, :312, :334, :343, :430, :465, :483, :495`; `ai_judge.md:264`; `005-native-waltzman-delivery.md:86`; `006-governed-rules-layer-scope.md:25`; `arc42.md:292`; `profile.py:22`; `maintenance-estimator-probe-v0.json:299`; `world_builder_service.py:225, :297, :1845, :2215`.
 
-## Judgments I am unsure about
+### Judgments I am unsure about
 
 - **B1.** I kept it blocking because the re-review rule keeps a partly fixed blocking finding blocking, and the fix the author described carries the same errors. Taken on its own, a wrong anchor on a concept whose implemented status is correct is close to the line.
 - **N1.** It could be blocking if the sawmill has three or more people, or Waltzman-sized prompts: the resident and interpreter cost would then exceed the $0.05 cap and A1's 30 days would not be reached. With a small world and two people it most likely fits.
@@ -174,7 +269,7 @@ Verdict: revise
 
 Fix first: B1. Correct the five anchors in `tools/planning/domain_src.py`: `build` → `world_builder_service.py:1635`, `test-run` → `:1842`, `world` → `model.py:424`, `rules-retry` → `world_builder_service.py:110`, `entity-component` → `model.py:188` or `:247`. Then regenerate and re-run the validator. I recommend fixing N1 in the same pass. Everything else is a note.
 
-## After this review (added by the plan's author, not the reviewer)
+### After this review (added by the plan's author, not the reviewer)
 
 This report is the reviewer's own, saved as it came. Its verdict stands: **revise**. No fourth round was run:
 on 2026-11-10 the coordinator asked for this round to be finished, only its blocking finding fixed, and the
