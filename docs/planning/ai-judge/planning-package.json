@@ -12,10 +12,12 @@
     {
      "name": "durable documents (arc42)",
      "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
-     "exit_status": 0,
+     "exit_status": 1,
      "counts": {
-      "findings": 0
-     }
+      "findings": 12
+     },
+     "tracked_by": "Q77",
+     "note": "12 findings in documents this plan does not touch (docs/architecture/arc42.md goal fields and headings; 4 system-model rules whose owner files changed in a comment-only commit); the same 12 on origin/main 0dcbcd6 itself."
     },
     {
      "name": "project navigation",
@@ -48,20 +50,21 @@
      "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
      "exit_status": 1,
      "counts": {
-      "md_files": 208,
+      "md_files": 144,
       "exception_limit": 180,
-      "more_than_two_links_deep": 77,
-      "not_linked_from_entry": 1
+      "more_than_two_links_deep": 13,
+      "not_linked_from_entry": 0,
+      "durable_findings": 12
      },
      "tracked_by": "Q77",
-     "note": "Also exits 1 on origin/main 9cefeee (207 files, 77 deep). The one unlinked document was docs/plans/ai_judge.md, linked from docs/index.md in this change."
+     "note": "Also exits 1 on origin/main 0dcbcd6 (143 files within the exception limit, 13 deep, 12 durable findings); this change adds docs/plans/ai_judge.md's revision and no new Markdown file."
     },
     {
      "name": "doc reachability",
      "command": "python3 $HOME/code2/workspace/scripts/doc_reachability.py .",
      "exit_status": 0,
      "counts": {
-      "reachable": 185,
+      "reachable": 121,
       "unreachable": 0
      }
     },
@@ -213,47 +216,90 @@
     "information",
     "observation",
     "causal-trace",
-    "run-log"
+    "run-log",
+    "attempt",
+    "check",
+    "test-run",
+    "build",
+    "readout"
    ],
    "cost_basis": {
     "steps": [
      {
       "step": "attempt interpreter (existing)",
-      "cost_per_run_usd": 0.0025,
-      "calls_per_run": 10,
+      "cost_per_run_usd": 0.009,
+      "calls_per_run": 36,
       "basis": "measured",
-      "evidence": "llm-cost cost --group-by task --days 30 (2026-11-09): 115 calls, $0.0285, 205.3K tokens, so about $0.00025 per call; 10 calls per run is the plan's guess of uncovered attempts"
+      "evidence": "llm-cost estimate (2026-11-09): 114 calls, $0.0281, median 1,651 input and 160 output tokens, about $0.00025 per call; 36 calls per run is the attempts read in the saved airfield run (evidence/open-attempt/s1-airfield/run-log.jsonl: 9 rounds, 36 attempts, 10 unmatched)"
      },
      {
-      "step": "judge (new, only for an unmatched attempt)",
-      "cost_per_run_usd": 0.03,
-      "calls_per_run": 10,
-      "basis": "guess",
-      "evidence": "guess of 20,000 input tokens per call for a large consequence report times $0.14 per million tokens (the interpreter's measured rate, same model and route, scripts/run_authored_world.py:38); 10 uncovered attempts per run is a guess. Q74 works the report size out before J1."
+      "step": "judge (new: propose, then confirm or revise, only for an unmatched attempt)",
+      "cost_per_run_usd": 0.043,
+      "calls_per_run": 20,
+      "basis": "computed",
+      "computation": {
+       "calls": 20,
+       "input_tokens_per_call": 15000,
+       "input_usd_per_mtok": 0.1,
+       "cached_share": 0,
+       "cached_usd_per_mtok": 0.1,
+       "output_tokens_per_call": 1300,
+       "output_usd_per_mtok": 0.5
+      },
+      "evidence": "Tokens: the three plain-baseline calls measured 9,938-17,922 input and 1,184-1,396 output tokens (llm-cost, trace world-substrate/ai-judge-plain-baseline/b75fd5f42b9742078c798df205243c73, $0.0061 for 3 calls); worst case about 53,000 input tokens for the largest saved world (evidence/waltzman-tasks-slice2/c1r21, 143,430 characters at 3.40 characters per token, plus net changes), $0.006 per call. Calls: 2 per unmatched attempt x 10 unmatched (the saved airfield run). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing (openrouter, checked 2026-11-05); no cached share assumed."
      },
      {
-      "step": "rules review (existing, once per ruling)",
+      "step": "rules review (existing, once per proposed rule)",
       "cost_per_run_usd": 0.29,
       "calls_per_run": 10,
       "basis": "measured",
-      "evidence": "llm-cost cost --group-by task --days 30 (2026-11-09): rules review 24 calls, $0.699, so about $0.029 per ruling; 10 rulings per run is a guess and falls as rulings become rules"
+      "evidence": "llm-cost cost --group-by task --days 30 (2026-11-09): rules review 24 calls, $0.699, mean $0.029 (median $0.0024, p90 $0.077), on earlier review models; the current review model (scripts/review_rules.py:18) has no registry price. 10 reviews per run follows the 10 unmatched attempts of the saved airfield run and falls as rulings become rules."
      }
     ],
-    "cheapest_design": "The judge is called only for an attempt no rule covers, after the engine's report, and each ruling becomes a rule so the same attempt never calls the judge again; the judge uses the interpreter's cheap model and route. A cheaper design (no judge, unmatched attempts change nothing) is today's behaviour, which Brian's request replaces."
+    "cheapest_design": "The plain version, one judge call per unmatched attempt with no test run before install, would save the confirm call (about $0.02 per run), but the plain baseline showed it installs wrong or unusable rules (2 of 3 rejected by the rules check, 1 accepted with a wrong price). So the plan keeps the test run and one confirm call, calls the judge only for an attempt no rule covers, makes each ruling a rule so the same attempt never calls it again, and uses the interpreter's cheap model and route. Total about $0.34 per run with 10 rulings, most of it the existing rules review."
    },
    "plain_baseline": {
-    "kind": "planned",
-    "answer_path": "the judge's ruling for an unmatched attempt (a proposed rule), as shown on the run page",
+    "kind": "side_by_side",
+    "answer_path": "the judge's ruling for an unmatched attempt, written as a rule in the declaration language",
+    "model": "openrouter/openai/gpt-6-luna",
+    "run": "3 calls on 2026-11-09, trace world-substrate/ai-judge-plain-baseline/b75fd5f42b9742078c798df205243c73, task world-substrate-ai-judge-plain-baseline, $0.0061 and 45.3K tokens (llm-cost); prompt evidence/ai-judge/plain-baseline/prompt.yaml; rules-check verdicts evidence/ai-judge/plain-baseline/rules-check.json",
     "cases": [
-     "port: Vik's bribe offer to Rosa",
-     "password computer: Mallory logs in with a phished password"
+     {
+      "case": "sawmill offers to pay the logger for 3 cedar logs",
+      "plain_output": "evidence/ai-judge/plain-baseline/pencil-sawmill-buys-logs.json",
+      "built_output": "evidence/declared-laws/s2-pencil-2/run-log.jsonl:5",
+      "finding": "Today's built path recorded the attempt as unmatched and changed nothing. The plain ruling read every value right, named the logger's choice and found a real gap (saw-slats cannot saw logs the sawmill holds); its rule passed the rules check but charges one price for 3 logs, because the language has no multiplication."
+     },
+     {
+      "case": "shop offers the pencil factory $1,000 for pencils",
+      "plain_output": "evidence/ai-judge/plain-baseline/pencil-shop-offers-1000.json",
+      "built_output": "evidence/pencil7-trace-audit/run-log.jsonl:14",
+      "finding": "Today's built path recorded it as unmatched and changed nothing. The plain ruling named the factory's choice correctly, but its rule had no effects and was rejected by the rules check (participants must exactly name entity_ref fields)."
+     },
+     {
+      "case": "waiter picks up the tray",
+      "plain_output": "evidence/ai-judge/plain-baseline/cafe-waiter-picks-up-tray.json",
+      "built_output": "evidence/declared-laws/s4-cafe/run-log.jsonl:12",
+      "finding": "Today's built path recorded it as unmatched and changed nothing. The plain ruling refused for the same blocker the engine's own checks name (the tray is not on the counter), but its rule was rejected by the rules check (a field named 'from' is not an identifier)."
+     }
     ],
-    "when": "J2: before the judge is given the consequence report component, run the same model on the same two cases with the whole world state and the attempt in one call, and read both rulings side by side"
+    "verdict": "The plain version reads the world correctly at these sizes, so the judge's input starts from it (the whole world). It is not enough on its own: 2 of 3 rules were rejected by the rules check and 1 was accepted but wrong, so pass 2 (rules check and test run of the proposed rule before install, with one revision) is kept. Pass 1 (facts and nearby checks) showed no added value here and is kept only because it costs no call."
    },
    "stage_effects": [
     {
-     "stage": "consequence report given to the judge (J1, J2)",
-     "gap": "Brian, 2026-11-09: an LLM handed a 100-link chain cannot work out the knock-on effects and blockers itself",
+     "stage": "pass 2: rules check and test run of the proposed rule before it is installed (J1, J3)",
+     "gap": "the plain version's rules: 2 of 3 rejected by the rules check, 1 accepted with a wrong price; without this stage they would be installed or silently fail",
+     "status": "shown",
+     "evidence": "evidence/ai-judge/plain-baseline/rules-check.json"
+    },
+    {
+     "stage": "one revision after the test run (J2)",
+     "gap": "a rejected or wrong rule from the first proposal (2 of 3 in the plain baseline) gets one more try before the attempt is refused as a language gap",
+     "status": "untested"
+    },
+    {
+     "stage": "pass 1: facts the attempt touches and nearby rules' checks given to the judge (J1)",
+     "gap": "on worlds too large to read whole, the judge could miss a blocker an installed rule already names; at today's sizes the plain version read the facts right, so the effect is not shown",
      "status": "untested"
     }
    ],
@@ -272,7 +318,7 @@
       "status": "lifted",
       "lifted_on": "2026-11-09",
       "lifted_words": "yes i aprpove all those except for whether the bribe works seems like should be a deicsion made by the person being bribed",
-      "lifted_source": "docs/plans/ai_judge.md:103 (Decided 1-4); narrowed: the judge rules on constraints only and its rulings become checked rules, never outcomes"
+      "lifted_source": "docs/plans/ai_judge.md:124 (Decided 1-4); narrowed: the judge rules on constraints only and its rulings become checked rules, never outcomes"
      }
     ]
    }
@@ -291,5 +337,5 @@
    "note": "Not yet run; the coordinator runs the planning-compliance-reviewer subagent and saves docs/planning/ai-judge/cold-review.md."
   }
  },
- "note": "This is the plan's own package, named by docs/plans/ai_judge.md's 'Planning package:' line. It shares the repository's open-questions ledger, system model, domain model, metamodel and diagrams with docs/planning/planning-package.json and the declared-laws and open-attempt packages (all rebuilt by tools/planning/). The plan's six new concepts are in the domain model as 'In documents only' (planned, not implemented) and its uncertainties U1-U3 are Q74-Q76. Checks were rerun for this package at its subject revision into docs/planning/ai-judge/checks.txt; the repository-wide docs/planning/checks.txt is left as its own package recorded it."
+ "note": "This is the plan's own package, named by docs/plans/ai_judge.md's 'Planning package:' line. It shares the repository's open-questions ledger, system model, domain model, metamodel and diagrams with docs/planning/planning-package.json and the declared-laws and open-attempt packages (all rebuilt by tools/planning/). The plan's six new concepts are in the domain model as 'In documents only' (planned, not implemented); its uncertainties U1-U3 are Q74-Q76 (Q74 resolved by measurement), and the agent's technical calls made in answer to the 2026-11-09 cold review are resolved questions Q78 (two-pass judge), Q79 (rule language gap), Q80 (wait mode) and Q81 (replay under the recorded limit). The plain baseline was run (3 calls, $0.0061, evidence/ai-judge/plain-baseline/). The acceptance criteria cite the run page's own router record, docs/planning/ai-judge/router/run-page.recommendation.json. Checks were rerun for this package into docs/planning/ai-judge/checks.txt; the repository-wide docs/planning/checks.txt is left as its own package recorded it."
 }

@@ -1,0 +1,76 @@
+{
+ "case": "pencil-shop-offers-1000",
+ "source": "evidence/pencil7-trace-audit/run-log.jsonl line 14 (0-based 13), actor shop-business",
+ "source_run_trace_id": "world-builder-live/run/228baebf0f5d491a8eb6e2ff50efd39a",
+ "attempt": "I go to the pencil factory and offer the factory worker $1,000 for a shipment of finished pencils for my shop.",
+ "revision": 111,
+ "trace_id": "world-substrate/ai-judge-plain-baseline/b75fd5f42b9742078c798df205243c73",
+ "model": "openrouter/openai/gpt-6-luna",
+ "cost_usd": 0.0024902,
+ "usage": {
+  "prompt_tokens": 17922,
+  "completion_tokens": 1396,
+  "total_tokens": 19318,
+  "prompt_tokens_details": {
+   "audio_tokens": 0,
+   "cache_write_tokens": 0,
+   "cached_tokens": 0,
+   "cache_creation_tokens": 0,
+   "video_tokens": 0
+  },
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "completion_tokens_details": {
+   "reasoning_tokens": 562,
+   "audio_tokens": 0,
+   "image_tokens": 0
+  },
+  "reasoning_tokens": 562
+ },
+ "engine_blocked_by_rules_in_saved_run": [
+  {
+   "action": {
+    "actor": "shop-business",
+    "kind": "sell-pencils",
+    "base_revision": 111,
+    "controller": "unselected",
+    "customer": "customers",
+    "quantity": 1
+   },
+   "reason": "the shop has a pencil to sell",
+   "failed": [
+    {
+     "check": "the shop has a pencil to sell",
+     "actual": 0,
+     "required": 1
+    }
+   ]
+  }
+ ],
+ "saved_run_outcome": {
+  "status": "unsupported_action",
+  "changed": false,
+  "event_id": "r13-e00008"
+ },
+ "messages_chars": 60709,
+ "output": {
+  "what_the_world_state_says": [
+   "shop-business is at location_id \"shops\" and has cash 10000, pencils 0, and packed_pencils 0.",
+   "pencil-factory is at location_id \"pennsylvania\" and has pencils 0 and packed_pencils 0.",
+   "The factory\u2019s listed location differs from the shop\u2019s location: \"pennsylvania\" versus \"shops\"."
+  ],
+  "blockers": [
+   "No installed move represents going to another location, so the stated trip to the factory is not covered.",
+   "The installed deliver-boxes move is for the carrier and requires the carrier to be at the factory; it does not move goods to the shops. No installed move lets the shop buy a shipment from the factory.",
+   "The factory currently has 0 packed_pencils and 0 pencils, so there are no finished pencils represented there to ship.",
+   "The shop has 10000 cash, but no installed rule transfers the offered $1000 or specifies an acceptance process."
+  ],
+  "knock_on_effects": [
+   "No installed move or process is triggered by making this offer. No cash or pencils change hands, and no shipment is started.",
+   "Even if an offer mechanism were added, supplying a shipment would require finished stock and the factory's agreement; the current snapshot shows no finished stock."
+  ],
+  "whose_choice": "pencil-factory",
+  "ruling": "The world does not currently provide a move for the shop to travel to the factory, make this offer, or buy finished pencils from it, and the factory has no finished stock represented. The factory\u2019s agreement would be its choice; this attempt does not itself transfer money or goods.",
+  "proposed_rule": "{\"action\":{\"kind\":\"offer-finished-pencil-shipment\",\"description\":\"Offer a factory a stated amount for a shipment of finished pencils; making the offer does not compel acceptance or transfer goods or cash.\",\"fields\":[{\"name\":\"quantity\",\"type\":\"integer\"},{\"name\":\"offer_amount\",\"type\":\"number\"}]},\"mechanic\":{\"schema_version\":\"world-substrate-action-mechanic/v0\",\"mechanic_id\":\"offer-finished-pencil-shipment\",\"version\":\"1\",\"action_kind\":\"offer-finished-pencil-shipment\",\"rationale\":\"Represent an offer without deciding whether the factory accepts it or transferring money or goods.\",\"actor_selector\":{\"categories\":[\"shop\"],\"components\":[\"business\"]},\"participants\":{\"factory\":{\"categories\":[\"factory\"],\"components\":[\"business\"]}},\"parameters\":{\"quantity\":[1,2,3,4,5,6,7,8],\"offer_amount\":[1000]},\"checks\":[{\"label\":\"the quantity is positive\",\"left\":{\"action_field\":\"quantity\"},\"op\":\"gt\",\"right\":{\"literal\":0}},{\"label\":\"the offered amount is positive\",\"left\":{\"action_field\":\"offer_amount\"},\"op\":\"gt\",\"right\":{\"literal\":0}},{\"label\":\"the shop and factory are in the same place\",\"left\":{\"participant\":{\"name\":\"actor\",\"path\":\"location.location_id\"}},\"op\":\"eq\",\"right\":{\"participant\":{\"name\":\"factory\",\"path\":\"location.location_id\"}}},{\"label\":\"the factory has enough packed pencils for the proposed shipment\",\"left\":{\"participant\":{\"name\":\"factory\",\"path\":\"components.business.packed_pencils\"}},\"op\":\"gte\",\"right\":{\"action_field\":\"quantity\"}}],\"effects\":[],\"limits\":[\"This move records an offer only. Factory acceptance, payment, travel, and delivery are not represented.\"],\"tests\":[\"An offer can be made only when the shop and factory are colocated and the factory has enough packed pencils.\",\"Making an offer does not transfer cash or pencils.\"],\"semantic_bindings\":[\"The shop offers an amount for packed pencils; acceptance remains the factory's choice.\"]}}"
+ }
+}

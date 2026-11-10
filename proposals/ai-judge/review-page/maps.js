@@ -438,19 +438,19 @@ window.MAPS = {
     "id": "consequence-report",
     "label": "Consequence report",
     "kind": "Theory",
-    "explain": "Plan ai-judge J1 (planned, not implemented): every knock-on effect and blocker the engine works out for one attempt, as one record the judge and the run page read. Code: none yet."
+    "explain": "Plan ai-judge J1 (planned, not implemented): what the engine works out for an attempt no rule covers, in two passes. Pass 1, with no new rule: the facts the attempt touches and which checks of nearby installed rules pass or fail. Pass 2: the judge's proposed rule test-run on a copy of the world, giving its net changes, blockers, chain length and stopping point; the full chain stays in the run record. Code: none yet."
    },
    {
     "id": "judge-ruling",
     "label": "Judge ruling",
     "kind": "Theory",
-    "explain": "Plan ai-judge J2 (planned, not implemented): Concordia's game master (EventResolution), given the consequence report, rules on the constraint an unmatched attempt raises (can coins change hands here?), as a proposed rule, never an outcome or another person's choice. Code: none yet."
+    "explain": "Plan ai-judge J2 (planned, not implemented): Concordia's game master (EventResolution), given the whole world and pass 1 of the consequence report, proposes a rule for the constraint an unmatched attempt raises (can coins change hands here?); after reading the pass 2 test run of that rule it confirms, revises once or withdraws. Never an outcome or another person's choice. Code: none yet."
    },
    {
     "id": "ruling-rule",
     "label": "Ruling-origin rule",
     "kind": "Theory",
-    "explain": "Plan ai-judge J3 (planned, not implemented): a rule made from a judge ruling after it passes the World Builder rules check, recording the ruling id and round it came from; it then decides the same attempt for everyone with no judge call. Code: none yet."
+    "explain": "Plan ai-judge J3 (planned, not implemented): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, recording the ruling id and round it came from; it applies to everyone in the same situation and the attempt settles through it. A ruling the language cannot express is refused and recorded as a language gap. Code: none yet."
    },
    {
     "id": "credential-holder",
@@ -468,7 +468,7 @@ window.MAPS = {
     "id": "midrun-setting",
     "label": "Mid-run rulings setting",
     "kind": "Theory",
-    "explain": "Plan ai-judge Decided 5 (planned, not implemented): a per-world option, 'Judge rulings during a run': Approved by Create (default; a checked ruling is installed at once) or Wait for my approval (the ruling settles only its own attempt and is held for an Approve button). Code: none yet."
+    "explain": "Plan ai-judge Decided 5 (planned, not implemented): a per-world option, 'Judge rulings during a run': Approved by Create (default; a checked ruling is installed at once and the attempt settles through it) or Wait for my approval (the proposed rule is held, the attempt waits as pending, Approve installs the rule and settles it, Reject refuses it; nothing settles without an installed rule). Code: none yet."
    }
   ],
   "edges": [
@@ -1110,72 +1110,84 @@ window.MAPS = {
    },
    {
     "id": "e106",
+    "source": "consequence-report",
+    "target": "check",
+    "label": "pass 1 reads nearby"
+   },
+   {
+    "id": "e107",
+    "source": "consequence-report",
+    "target": "test-run",
+    "label": "pass 2 is a"
+   },
+   {
+    "id": "e108",
     "source": "judge-ruling",
     "target": "consequence-report",
     "label": "reads"
    },
    {
-    "id": "e107",
+    "id": "e109",
     "source": "judge-ruling",
     "target": "unmatched-attempt",
     "label": "decides only"
    },
    {
-    "id": "e108",
+    "id": "e110",
     "source": "judge-ruling",
     "target": "resident",
     "label": "routes choices to"
    },
    {
-    "id": "e109",
+    "id": "e111",
     "source": "ruling-rule",
     "target": "judge-ruling",
     "label": "made from"
    },
    {
-    "id": "e110",
+    "id": "e112",
     "source": "rules-review",
     "target": "ruling-rule",
     "label": "checks"
    },
    {
-    "id": "e111",
+    "id": "e113",
     "source": "ruling-rule",
     "target": "mechanic",
     "label": "is a"
    },
    {
-    "id": "e112",
+    "id": "e114",
     "source": "midrun-setting",
     "target": "ruling-rule",
     "label": "decides when installed"
    },
    {
-    "id": "e113",
+    "id": "e115",
     "source": "midrun-setting",
     "target": "approval",
     "label": "amends"
    },
    {
-    "id": "e114",
+    "id": "e116",
     "source": "credential-holder",
     "target": "entity-component",
     "label": "is kept in"
    },
    {
-    "id": "e115",
+    "id": "e117",
     "source": "credential-holder",
     "target": "information",
     "label": "can change by"
    },
    {
-    "id": "e116",
+    "id": "e118",
     "source": "norm",
     "target": "world-law",
     "label": "is not a"
    },
    {
-    "id": "e117",
+    "id": "e119",
     "source": "norm",
     "target": "observation",
     "label": "has consequences through"
@@ -1458,12 +1470,6 @@ window.MAPS = {
     "explain": "Blocks: Whether that wrong-when condition can ever be checked.."
    },
    {
-    "id": "Q74",
-    "label": "Q74: Does a consequence report fit the judge's context",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: J1's record shape (whole report or a summary of it) and A2 on large worlds.."
-   },
-   {
     "id": "Q75",
     "label": "Q75: Constraint question or someone's choice",
     "kind": "AgentQuestion",
@@ -1477,9 +1483,9 @@ window.MAPS = {
    },
    {
     "id": "Q77",
-    "label": "Q77: Wiki cap check fails on main",
+    "label": "Q77: Wiki cap and durable-document checks fail on main",
     "kind": "AgentQuestion",
-    "explain": "Blocks: Whether the wiki-compliance check passes again for every package in this repository.."
+    "explain": "Blocks: Whether the wiki-compliance and durable-document checks pass again for every package in this repository.."
    },
    {
     "id": "affordance",
@@ -1548,13 +1554,6 @@ window.MAPS = {
     "explain": "An objection a group holds on a delivered item: open, under remedy or resolved, with answered and remedy_by."
    },
    {
-    "id": "consequence-report",
-    "label": "Consequence report",
-    "kind": "Concept",
-    "dashed": true,
-    "explain": "Plan ai-judge J1 (planned, not implemented): every knock-on effect and blocker the engine works out for one attempt, as one record the judge and the run page read."
-   },
-   {
     "id": "credential-holder",
     "label": "Credential holder",
     "kind": "Concept",
@@ -1603,7 +1602,7 @@ window.MAPS = {
     "label": "Judge ruling",
     "kind": "Concept",
     "dashed": true,
-    "explain": "Plan ai-judge J2 (planned, not implemented): Concordia's game master (EventResolution), given the consequence report, rules on the constraint an unmatched attempt raises (can coins change hands here?), as a proposed rule, never an outcome or another person's choice."
+    "explain": "Plan ai-judge J2 (planned, not implemented): Concordia's game master (EventResolution), given the whole world and pass 1 of the consequence report, proposes a rule for the constraint an unmatched attempt raises (can coins change hands here?); after reading the pass 2 test run of that rule it confirms, revises once or withdraws. Never an outcome or another person's choice."
    },
    {
     "id": "law-check",
@@ -2358,18 +2357,6 @@ window.MAPS = {
     "id": "Q73-resident",
     "source": "Q73",
     "target": "resident",
-    "label": "bears on"
-   },
-   {
-    "id": "Q74-consequence-report",
-    "source": "Q74",
-    "target": "consequence-report",
-    "label": "bears on"
-   },
-   {
-    "id": "Q74-judge-ruling",
-    "source": "Q74",
-    "target": "judge-ruling",
     "label": "bears on"
    },
    {

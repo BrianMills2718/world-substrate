@@ -1324,14 +1324,16 @@ Q = [
  {
   "id": "Q74",
   "short": "Does a consequence report fit the judge's context",
-  "question": "Can the consequence report for the largest saved world (786 links) fit the judge's context window, so the judge reads the engine's whole result for an attempt rather than a cut-down one?",
-  "blocks": "J1's record shape (whole report or a summary of it) and A2 on large worlds.",
-  "resolves_with": "Argument: work out the report's token count from the largest saved world (links times tokens per reaction and blocker) before J1, and compare it with the judge model's window. No run needed.",
+  "question": "Can the consequence report for the largest saved world fit the judge's context window, so the judge reads the engine's result for an attempt rather than a cut-down one?",
+  "blocks": "J1's record shape (whole chain or net changes) and A2 on large worlds.",
+  "resolves_with": "Argument: work out the token count of the largest saved world and of a long chain from saved run records, and compare with the judge model's window and price steps. No run needed.",
   "owner": "agent",
-  "status": "open",
+  "status": "resolved",
+  "evidence": "Measured 2026-11-09 from saved worlds. The largest, evidence/waltzman-tasks-slice2/c1r21, is 143,430 characters (bundle 34,863, rules 79,457, largest state 29,110), about 42,200 tokens at the 3.40 characters per token measured on the three plain-baseline calls (evidence/ai-judge/plain-baseline/). One chain step (event plus parent) averages 340 characters over 2,081 steps in saved runs, so a 5,000-step chain is about 500,000 tokens: too large. Answer: the judge gets the whole world plus the test run's net changes (at most the state, about 8,600 tokens), blockers, chain length and stopping point, about 53,000 tokens worst case ($0.006 at $0.10/M input, $0.50/M output); the full chain stays in the run record. The earlier '786 links' figure had no source and is dropped.",
   "sources": [
-   "docs/plans/ai_judge.md:340",
-   "docs/plans/ai_judge.md:243"
+   "docs/plans/ai_judge.md:458",
+   "docs/plans/ai_judge.md:299",
+   "docs/plans/ai_judge.md:396"
   ],
   "touches": [
    "consequence-report",
@@ -1347,8 +1349,8 @@ Q = [
   "owner": "agent",
   "status": "open",
   "sources": [
-   "docs/plans/ai_judge.md:342",
-   "docs/plans/ai_judge.md:114"
+   "docs/plans/ai_judge.md:462",
+   "docs/plans/ai_judge.md:144"
   ],
   "touches": [
    "judge-ruling",
@@ -1364,8 +1366,8 @@ Q = [
   "owner": "agent",
   "status": "open",
   "sources": [
-   "docs/plans/ai_judge.md:345",
-   "docs/plans/ai_judge.md:158"
+   "docs/plans/ai_judge.md:465",
+   "docs/plans/ai_judge.md:195"
   ],
   "touches": [
    "norm",
@@ -1375,18 +1377,99 @@ Q = [
  },
  {
   "id": "Q77",
-  "short": "Wiki cap check fails on main",
-  "question": "The wiki and Markdown cap check (md_file_cap.py --repo . --ref HEAD) exits 1 on origin/main 9cefeee: 207 Markdown files against the repository's exception limit of 180, and 77 documents more than two links deep from the entry point (for example docs/VISUAL_FEEDBACK.md, docs/architecture.md). It exited 0 on 2026-11-06 (docs/planning/checks.txt). Should documents be retired or linked closer, or the exception limit raised with a reason?",
-  "blocks": "Whether the wiki-compliance check passes again for every package in this repository.",
-  "resolves_with": "Argument: read the 77 deep documents and the catalog; retire or relink by the documentation rules (docs/AGENTS.md), or raise the limit with its reason if every file is a required run record. No run needed.",
+  "short": "Wiki cap and durable-document checks fail on main",
+  "question": "On origin/main 0dcbcd6 the wiki and Markdown cap check (md_file_cap.py --repo . --ref HEAD) exits 1: the file count is now within the exception limit (143 of 180), but 13 documents are more than two links deep from the entry point (for example docs/VISUAL_FEEDBACK.md, docs/audits/kitchen-contested-world.md) and the durable-document check (durable_docs_check.py --arc42) reports 12 findings (3 arc42 headings, 1 extension label, 2 goal fields and 2 goal context or lineage findings in docs/architecture/arc42.md, and 4 system-model rules whose owner files, scripts/world_builder_service.py (3 rules) and scripts/run_authored_world.py (1), changed after their last review in a commit that only reworded a comment). Should the deep documents be linked closer or retired, and the arc42 and goal fields and rule reviews brought up to date?",
+  "blocks": "Whether the wiki-compliance and durable-document checks pass again for every package in this repository.",
+  "resolves_with": "Argument: read the 13 deep documents and link or retire them by the documentation rules (docs/AGENTS.md); fill the arc42 goal fields from docs/GOAL.md; re-read the 4 rules against the comment-only changes in those two files and set reviewed_at. No run needed.",
   "owner": "agent",
   "status": "open",
   "sources": [
-   "docs/planning/ai-judge/checks.txt:21",
-   "docs/planning/checks.txt:21"
+   "docs/planning/ai-judge/checks.txt:3",
+   "docs/planning/ai-judge/checks.txt:32"
   ],
   "touches": [
    "run-log"
+  ]
+ },
+ {
+  "id": "Q78",
+  "short": "What the engine gives the judge before a rule exists",
+  "question": "An attempt no rule covers commits no event, and propagation starts only from a committed event, so what can the engine compute for such an attempt and hand to the judge, and how is Brian's 'deliver the results of that propagation to the judge' met?",
+  "blocks": "J1's report, J2's call order, and A2 and A3.",
+  "resolves_with": "Argument from the engine code: what discover() computes without a rule, and what a dry run of a proposed rule on a copy of the world gives.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "Settled by argument (inferred by agent, 2026-11-09, after the cold review's finding 1). The judge works in two passes. Pass 1: the engine computes what needs no new rule, the facts the attempt touches and which checks of nearby installed rules pass or fail (engine.discover's 'blocked' rows, already recorded as blocked_by_rules, scripts/run_authored_world.py:601-634). The judge proposes a ruling written as a rule. Pass 2: the engine runs the rules check and test-runs the proposed rule on a copy of the world, giving the consequence report (net changes, blockers, chain length and stopping point); the judge confirms, revises once or withdraws; only then is the rule installed and the attempt settled through it. An attempt an installed rule covers but whose check fails is refused by the engine with no judge call (A3). Plan: docs/plans/ai_judge.md, Canonical example.",
+  "sources": [
+   "docs/plans/ai_judge.md:90",
+   "docs/plans/ai_judge.md:111",
+   "src/world_substrate/engine.py:1005"
+  ],
+  "touches": [
+   "consequence-report",
+   "judge-ruling",
+   "check",
+   "test-run",
+   "unmatched-attempt"
+  ]
+ },
+ {
+  "id": "Q79",
+  "short": "Can the rule language express a ruling",
+  "question": "Every ruling becomes a rule in the existing declaration language and applies to everyone in the same situation. Can that language express the rulings a judge makes, and what happens when it cannot?",
+  "blocks": "J3's install step and A4's language-gap case.",
+  "resolves_with": "Read the declaration language spec and code, and check 3 sample rulings by hand against the rules check.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "Settled by reading and 3 real rulings (2026-11-09). The language is action-mechanic/v0 (src/world_substrate/action_authoring.py); its expression kinds are literal, action field, participant, entity id, owner reference and event id (action_authoring.py:893-927), with no arithmetic between two values. The three plain-baseline rulings (evidence/ai-judge/plain-baseline/rules-check.json) went through validate_bundle and CausalModel.from_dict: the cafe rule was rejected (a field named 'from' is not an identifier), the shop rule was rejected (participants must exactly name entity_ref fields), and the sawmill rule was accepted but charges one price for 3 logs because price times quantity cannot be written. Answer: the language expresses transfers guarded by checks; it cannot multiply two values or require another person's agreement, which is routed to that person (Decided 4). A ruling the check rejects after one revision is refused with 'no rule could express this' and recorded as a language gap.",
+  "sources": [
+   "docs/plans/ai_judge.md:135",
+   "src/world_substrate/action_authoring.py:893",
+   "evidence/ai-judge/plain-baseline/rules-check.json"
+  ],
+  "touches": [
+   "ruling-rule",
+   "mechanic",
+   "rules-review"
+  ]
+ },
+ {
+  "id": "Q80",
+  "short": "What wait mode does with the attempt",
+  "question": "Under 'Wait for my approval', what happens to the attempt while its ruling is held, given that installed rules alone decide consequences and the judge never writes outcomes?",
+  "blocks": "J3's held-ruling path and A4's wait case.",
+  "resolves_with": "Argument from the invariants: nothing may settle without an installed rule.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "Settled by argument (inferred by agent, 2026-11-09, after the cold review's finding 2). The proposed rule is held, not installed; the attempt waits as pending and changes nothing; later identical attempts join the same pending ruling. On Approve the rule installs and each pending attempt settles through it; on Reject each is refused, naming the rejected ruling. The earlier wording, where a ruling settled its own attempt with nothing installed, was an outcome with no rule and is withdrawn.",
+  "sources": [
+   "docs/plans/ai_judge.md:146",
+   "docs/plans/ai_judge.md:157"
+  ],
+  "touches": [
+   "midrun-setting",
+   "ruling-rule",
+   "approval"
+  ]
+ },
+ {
+  "id": "Q81",
+  "short": "How old runs replay once the cap is gone",
+  "question": "Removing the 32-reaction cap (J0) would change the outcome of saved runs that were refused at the limit; how do saved runs still replay unchanged?",
+  "blocks": "J0 and A7.",
+  "resolves_with": "Argument from the run record: the refusal status is written into the run's commands, so replay must use the limit the run ran under.",
+  "owner": "agent",
+  "status": "resolved",
+  "evidence": "Settled by argument (inferred by agent, 2026-11-09, after the cold review's finding 2). Each saved run records the reaction limit it ran under; replay uses the recorded value (a record with none ran under 32), so old runs replay unchanged and new runs use the new setting. The refusal status 'reaction_limit' is written into the commands (src/world_substrate/engine.py:1005); tests/test_open_attempt.py:466-501 checks that refusal and is kept, run against the recorded limit.",
+  "sources": [
+   "docs/plans/ai_judge.md:313",
+   "tests/test_open_attempt.py:466",
+   "src/world_substrate/engine.py:1153"
+  ],
+  "touches": [
+   "knock-on-now",
+   "run-log",
+   "causal-trace"
   ]
  }
 ]

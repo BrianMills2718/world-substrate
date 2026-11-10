@@ -1,0 +1,8 @@
+{
+ "checked_with": "scripts/scaffold_world.py validate_bundle + src/world_substrate/action_authoring.py CausalModel.from_dict (the deterministic declaration checks; the rules review model and scripted test-run were not run)",
+ "results": {
+  "cafe-waiter-picks-up-tray": "rejected: BundleError: action pick-up-tray field.name must be a Python identifier: 'from'",
+  "pencil-sawmill-buys-logs": "accepted",
+  "pencil-shop-offers-1000": "rejected: ActionDeclarationError: participants must exactly name entity_ref fields []"
+ }
+}

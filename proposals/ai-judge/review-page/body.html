@@ -26,22 +26,25 @@
 <div class="d">A Concordia resident says what it tries in its own words; the interpreter reads it against the installed moves.</div></div>
 <div class="arrow">↓</div>
 <div class="stage have" data-s="rulebook"><span class="t">2. Does a rule cover it?</span><span class="tag">have</span>
-<div class="d">If an installed move fits, the rulebook decides, as today. Today an attempt nothing fits changes nothing.</div></div>
+<div class="d">If an installed move fits, the rulebook decides, as today; if one of its checks fails, the attempt is refused with the blocker named and the judge is not asked. Today an attempt nothing fits changes nothing.</div></div>
 <div class="arrow">↓</div>
-<div class="stage miss" data-s="propagate"><span class="t">3. The engine works out every knock-on and blocker</span><span class="tag">new, J0 and J1</span>
-<div class="d">Knock-on chains run to the end in one moment (the 32-reaction cap goes; each process and thing still fires once per moment, so loops stop). Every effect and blocker goes into one consequence report.</div></div>
+<div class="stage miss" data-s="pass1"><span class="t">3. Pass 1: what the engine knows without a rule</span><span class="tag">new, J1</span>
+<div class="d">Nothing has happened yet, so there is nothing to propagate. The engine gathers the facts the attempt touches (who holds what, who is where, who holds which credential) and which checks of nearby installed rules pass or fail.</div></div>
 <div class="arrow">↓</div>
 <div class="stage miss" data-s="route"><span class="t">4. Someone else's choice goes to them</span><span class="tag">new, J2 (today only plain requests, #326)</span>
 <div class="d">If the attempt needs another person to act (accept, sign, refuse), that person's own resident decides. No judge, no rule.</div></div>
 <div class="arrow">↓</div>
-<div class="stage miss" data-s="judge"><span class="t">5. The judge rules on the gap</span><span class="tag">new, J2</span>
-<div class="d">Concordia's own game master, given the attempt and the consequence report, rules only on what the world makes possible (can coins change hands here?). It never overrides a blocker and never writes an outcome.</div></div>
+<div class="stage miss" data-s="judge"><span class="t">5. The judge proposes a rule</span><span class="tag">new, J2</span>
+<div class="d">Concordia's own game master, given the whole world, the attempt and pass 1, proposes a ruling on what the world makes possible (can coins change hands here?), written as a rule that applies to everyone in that situation. It never writes an outcome.</div></div>
 <div class="arrow">↓</div>
-<div class="stage miss" data-s="rule"><span class="t">6. The ruling becomes a rule</span><span class="tag">new, J3</span>
-<div class="d">The ruling is written as a rule, passes the World Builder's existing rules check, and is installed at once (default) or held for your Approve button, per the world's setting.</div></div>
+<div class="stage miss" data-s="test"><span class="t">6. Pass 2: the engine test-runs that rule</span><span class="tag">new, J0 and J1</span>
+<div class="d">The rules check, then a test run on a copy of the world: every knock-on effect, however long the chain, and every blocker. The judge reads the result and confirms, revises once, or withdraws. If no rule the language allows can express the ruling, the attempt is refused: "no rule could express this".</div></div>
 <div class="arrow">↓</div>
-<div class="stage have" data-s="after"><span class="t">7. From then on the rulebook decides it</span><span class="tag">have, with the new rule</span>
-<div class="d">The same attempt by anyone is decided by the rule, with no judge call; the engine propagates its effects.</div></div>
+<div class="stage miss" data-s="rule"><span class="t">7. The rule is installed, or held</span><span class="tag">new, J3</span>
+<div class="d">Installed at once and the attempt settles through it (default), or held with the attempt pending until you press Approve (installs, settles) or Reject (refuses), per the world's setting. Nothing settles without an installed rule.</div></div>
+<div class="arrow">↓</div>
+<div class="stage have" data-s="after"><span class="t">8. From then on the rulebook decides it</span><span class="tag">have, with the new rule; J0 lifts the chain cap</span>
+<div class="d">The same attempt by anyone is decided by the rule, with no judge call; every knock-on runs to the end in the same moment, each step citing its cause.</div></div>
 </div>
 <div class="trace" id="trace" aria-live="polite"></div>
 </div>
@@ -50,22 +53,23 @@
 <div class="tablewrap"><table>
 <tr><th>Today</th><th>After this plan</th></tr>
 <tr><td>An attempt no rule covers changes nothing (except a request, which reaches the person asked, #326)</td><td>The judge rules on the gap; the ruling becomes a checked rule; the person whose choice it is decides the rest</td></tr>
-<tr><td>A moment with more than 32 knock-on reactions is refused whole (<code>src/world_substrate/engine.py:1153</code>)</td><td>A chain of any length runs to the end in one moment, each step citing the step that caused it</td></tr>
-<tr><td>A blocker is told only to the person who tried</td><td>Every blocker and knock-on is in one consequence report the judge and the run page read</td></tr>
-<tr><td>No rule is ever installed mid-run</td><td>A checked ruling is installed mid-run when the world's setting allows it (default), else held for your approval</td></tr>
+<tr><td>A moment with more than 32 knock-on reactions is refused whole (<code>src/world_substrate/engine.py:1153</code>)</td><td>A chain of any length runs to the end in one moment, each step citing the step that caused it; runs saved under the old limit replay as they were</td></tr>
+<tr><td>A blocker is told only to the person who tried</td><td>The judge reads the facts and nearby blockers first, then the full test run of the rule it proposes, before anything is installed; the run page shows both</td></tr>
+<tr><td>No rule is ever installed mid-run</td><td>A checked ruling is installed mid-run when the world's setting allows it (default), else held with its attempt pending until you approve or reject it</td></tr>
 <tr><td>A password or a signed release is just a string anyone with it can use; nothing records who holds it, and nothing says who should use it</td><td>Who holds a credential is a fact that can change (told, phished, forged); who should use it is a norm that can be broken, with consequences only when someone acts</td></tr>
 </table></div>
 
 <h2 id="requirements">3. Requirements, and how you judge each yourself</h2>
-<p class="lede">Nine requirements (R1-R9), all required, none deferred. Each acceptance check is judged from the full trace of the run it names, not its outcome alone. Full entries, with steps and the view: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/ai-judge/acceptance-criteria.json">acceptance-criteria.json</a>. All six are <b style="color:var(--miss)">not built</b>.</p>
+<p class="lede">Ten requirements (R1-R10), all required, none deferred. Each acceptance check is judged on the run page, from the full trace of the run it names, not its outcome alone. Full entries, with steps, the view and the record files behind each: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/ai-judge/acceptance-criteria.json">acceptance-criteria.json</a>. All seven are <b style="color:var(--miss)">not built</b>.</p>
 <div class="tablewrap"><table>
 <tr><th>Check</th><th>Requirements</th><th>What you do</th><th>Works when you see</th><th>Broken looks like</th></tr>
-<tr><td>A1 (J0)</td><td>R1, R8</td><td>Open the J0 evidence folder's run record for the 100-step fixture (5,000 reactions in one moment) and its loop fixture</td><td>One commit; every reaction names the reaction that caused it; a chain blocked at step 40 (a truck with no fuel) records that blocker and stops there; in the loop world each pair fires once</td><td>The moment refused with "reaction limit", a reaction with no parent, or the loop firing again</td></tr>
-<tr><td>A2 (J1, J2)</td><td>R2, R7, R8</td><td>On the port run page, open Vik's offer and its judge call</td><td>The judge's input lists what the engine worked out (Vik holds 40 coins; nothing blocks the hand-over); the call is Concordia's game master</td><td>A judge call with no engine results in it, or a ruling from a prompt of our own</td></tr>
-<tr><td>A3 (J2)</td><td>R3, R8</td><td>Open the fixture run where Vik offers coins he does not have</td><td>Refused by the engine with the blocker named ("Vik holds 0 coins"); no judge call in the trace</td><td>A judge call, or the hand-over going through</td></tr>
-<tr><td>A4 (J3)</td><td>R4, R9, R8</td><td>Open the port run (default setting); find the second trader's offer. Then the same run with "Wait for my approval"</td><td>Default: a new rule with its rules-check record, and the second offer decided by it, no judge call. Wait: nothing installed, a second judge call, the held ruling listed with an Approve button; after Approve a new run decides it by rule</td><td>A second judge call under the default, a rule installed under "wait", or a ruling missing from the run page</td></tr>
-<tr><td>A5 (J2)</td><td>R5, R8</td><td>On the port run page, open what decided whether Rosa signs</td><td>Rosa's own resident call: accept or refuse, in her words. The ruling covers only the hand-over</td><td>The judge or a rule saying the bribe works</td></tr>
-<tr><td>A6 (J4)</td><td>R6, R8</td><td>Open the password fixture run, then the port run where Rosa signs for a bribe, then the world's norms list</td><td>Mallory phishes Alice's password; the computer logs Mallory in; the breach is recorded; a consequence follows only after an observer acts. The gate opens because it read a valid code. Each norm shows Ostrom's parts: who, must or must not, the action, the conditions, the "or else"</td><td>Mallory refused ("only Alice can log in" written as a law), or punished with nobody noticing</td></tr>
+<tr><td>A1 (J0)</td><td>R1, R8</td><td>Open the saved runs "fifty chains", "loop" and "truck without fuel"</td><td>"fifty chains": summary line "5,000 steps run, 5,000 with a cause, no refusal"; any step opens to its cause. "loop": each rule fires once per thing. "truck without fuel": step 40 "blocked: the truck has no fuel", nothing after it</td><td>"refused: knock-on effects did not settle", fewer steps with a cause than run, or a loop firing twice</td></tr>
+<tr><td>A2 (J1, J2)</td><td>R2, R7, R8</td><td>On the port run page, open Vik's offer</td><td>In order: what the judge was given first, facts and blockers (Vik holds 40 coins; both at the customs desk; "sign release: blocked, inspected is false"), the rule it proposed, the test run (coins move, purse empties, nothing else), its confirmation; the ruling came from the world's game master. In "blocked chain ruling" the test run's blocker ("the truck has no fuel") is in what the judge read</td><td>A blocker missing from what the judge read, the rule installed before its test run was shown to the judge, or a ruling not from the game master</td></tr>
+<tr><td>A3 (J2)</td><td>R3, R8</td><td>Open the saved run "empty purse" (coin rule installed; a trader with no coins offers coins)</td><td>"refused: blocked: holds 0 coins"; nothing changes; "decided by rule, judge not asked"</td><td>A judge call, or coins changing hands</td></tr>
+<tr><td>A4 (J3)</td><td>R4, R9, R8</td><td>Run the port world with each setting; open the ruling list and both traders' offers; press Approve, and in a copy Reject; open "price times quantity"</td><td>Default: "installed, passed the rules check and test run"; second offer "decided by rule". Wait: "held"; both offers "pending: waiting for your approval"; Approve settles both, Reject refuses both. "price times quantity": "no rule could express this", listed as a language gap</td><td>A second judge call under the default; anything settling before Approve; a ruling missing from the list</td></tr>
+<tr><td>A5 (J2)</td><td>R5, R8</td><td>On the port run page, follow Vik's offer to what decided whether Rosa signs</td><td>Rosa's own choice, in her words. The ruling covers only whether coins can change hands</td><td>The judge or a rule saying the bribe works</td></tr>
+<tr><td>A6 (J4)</td><td>R6, R8</td><td>Open the saved run "password", then the port run where Rosa signs for a bribe, then the world's norms list</td><td>Mallory logs in with the phished password; "norm broken: only Alice should log in"; a consequence only after someone who saw it acts. The gate opens because it read a valid code. Following Ostrom's grammar, each norm and rule reads as who; must, must not or may; what; when; and for an enforced rule, otherwise and who enforces it</td><td>Mallory refused ("only Alice can log in" written as a law), or punished with nobody noticing</td></tr>
+<tr><td>A7 (J0)</td><td>R10, R8</td><td>Replay a run saved before the limit was removed that stopped at it; run the same world again</td><td>The replay matches step for step: "refused: knock-on effects did not settle within 32 steps (the limit this run ran under)"; the new run has no such limit</td><td>The old run replays differently, or the new run still stops at 32</td></tr>
 </table></div>
 
 <h2 id="decided">4. Decided</h2>
@@ -74,10 +78,11 @@
 <tr><th>#</th><th>Decision</th><th>Source</th></tr>
 <tr><td>1</td><td><b>Goal.</b> The project goal gains scale: plausible worlds "that stays faithful as worlds grow too big for an AI to track: the engine works out every knock-on effect and blocker, and an AI judge decides using those results."</td><td>Brian, 2026-11-09 (quote above)</td></tr>
 <tr><td>2</td><td><b>Gaps only.</b> The judge decides attempts no rule covers. The rulebook keeps deciding what it covers. The judge never overrides a blocker the engine found.</td><td>Brian, 2026-11-09</td></tr>
-<tr><td>3</td><td><b>Rulings become rules.</b> Written as a new rule, passes the existing rules check, applies to everyone from then on, effects propagated by the engine.</td><td>Brian, 2026-11-09</td></tr>
+<tr><td>3</td><td><b>Rulings become rules.</b> Written as a new rule, passes the existing rules check, applies to everyone from then on, effects propagated by the engine. <i>How a one-off becomes general</i> (inferred by agent): every ruling is written in the existing rule language, so it names a situation, not a person; a ruling the language cannot express (it has no "price times quantity") is refused and recorded as a language gap (Q79).</td><td>Brian, 2026-11-09; the general-rule detail inferred by agent from reading the language and 3 real rulings</td></tr>
 <tr><td>4</td><td><b>Another person's choice is a decision, not a rule.</b> Whether a bribe works is decided by the person being bribed.</td><td>Brian, 2026-11-09 (the "except" above)</td></tr>
-<tr><td>5</td><td><b>Mid-run rulings: a setting, approved by default.</b> Under Options on the Create page, "Judge rulings during a run": <b>Approved by Create</b> (default; a checked ruling is installed at once and decides later identical attempts in the same run) or <b>Wait for my approval</b> (the ruling settles only its own attempt, nothing is installed, a later identical attempt asks the judge again, and the run page lists the held ruling with an Approve button that installs it for later runs). Either way the run page lists every ruling; the setting travels with the world like "Simulate as".</td><td>Brian, 2026-11-09: "can we make this configurable? or is that more troubel than it is worth. if so i say yes"</td></tr>
+<tr><td>5</td><td><b>Mid-run rulings: a setting, approved by default.</b> Under Options on the Create page, "Judge rulings during a run": <b>Approved by Create</b> (default; a checked ruling is installed at once and decides later identical attempts in the same run) or <b>Wait for my approval</b> (the proposed rule is held, not installed; the attempt waits as pending and changes nothing, and later identical attempts join it; Approve installs the rule and settles them, Reject refuses them; nothing settles without an installed rule, inferred by agent, Q80). Either way the run page lists every ruling; the setting travels with the world like "Simulate as".</td><td>Brian, 2026-11-09: "can we make this configurable? or is that more troubel than it is worth. if so i say yes"</td></tr>
 </table></div>
+<p class="lede"><b>The two-pass judge</b> (inferred by agent, Q78). An attempt no rule covers has not happened, so there is nothing yet to propagate. So the judge first gets what the engine knows without a rule (pass 1), proposes a rule, and then sees the engine's full test run of that rule (pass 2) before anything is installed. That is how your "deliver the resutls of that propagation to he ai judge" is met.</p>
 <h3 class="sub">Constraints, decisions and norms</h3>
 <p class="lede">You closed this with "i liek the ostrom stuff" (2026-11-09), after: "there is a ddifference between as igned release clearing the cargo as a norm and like some programmatic enry with abar code or whateve.r ... a password managed comptuer where only 1 person was supped to use it with ehir password but if they could be social engineered for exampel to get a password then someone else woul eb abel to sue it."</p>
 <div class="tablewrap"><table>
@@ -92,14 +97,14 @@
 <h2 id="architecture">5. Architecture: where each piece lives</h2>
 <div class="tablewrap"><table>
 <tr><th>Piece</th><th>Where</th><th>State</th></tr>
-<tr><td>Knock-on effects in one moment</td><td><code>src/world_substrate/engine.py</code> <code>_settle</code> (Decision 009); J0 removes <code>REACTION_LIMIT = 32</code> and amends Decision 009</td><td><b style="color:var(--have)">Built</b>, capped</td></tr>
-<tr><td>Consequence report</td><td>New record attached to the attempt's event (J1); read by the judge and the run page</td><td><b style="color:var(--miss)">Planned</b></td></tr>
-<tr><td>Judge</td><td>Concordia's <code>EventResolution</code> game master, kept off today (<code>scripts/concordia_residents.py:6</code>), turned on only for unmatched attempts and given the report as a component (J2). No judge prompt of our own (Decision 006)</td><td><b style="color:var(--miss)">Planned</b></td></tr>
+<tr><td>Knock-on effects in one moment</td><td><code>src/world_substrate/engine.py</code> <code>_settle</code> (Decision 009); J0 removes <code>REACTION_LIMIT = 32</code>, records the limit each run ran under so saved runs replay unchanged, and amends Decision 009</td><td><b style="color:var(--have)">Built</b>, capped</td></tr>
+<tr><td>Consequence report</td><td>Pass 1 (facts and nearby rules' checks, from <code>engine.discover</code>) and pass 2 (the proposed rule test-run on a copy of the world: net changes, blockers, chain length and stopping point; the full chain in the run record) (J1)</td><td><b style="color:var(--miss)">Planned</b></td></tr>
+<tr><td>Judge</td><td>Concordia's <code>EventResolution</code> game master, kept off today (<code>scripts/concordia_residents.py:6</code>), turned on only for unmatched attempts, given the whole world and pass 1, then the pass 2 test run of its proposed rule (J2). No judge prompt of our own (Decision 006)</td><td><b style="color:var(--miss)">Planned</b></td></tr>
 <tr><td>Ruling-origin rule</td><td>The ruling in the existing rule language, through the World Builder rules check, recording ruling id and round (J3)</td><td><b style="color:var(--miss)">Planned</b></td></tr>
 <tr><td>Mid-run rulings setting</td><td>Options on the Create page, saved with the world like "Simulate as" (<code>scripts/world_builder_service.py:1603</code>); one exception to approval-before-run (ODD 8.7)</td><td><b style="color:var(--miss)">Planned</b></td></tr>
 <tr><td>Credential holder and norm</td><td>A separate breakable-norm declaration; <code>laws.py</code> keeps refusing only true impossibilities (J4)</td><td><b style="color:var(--miss)">Planned</b></td></tr>
 </table></div>
-<p class="lede">Model calls per round: resident (have) → interpreter (have) → engine (code) → judge (new, only for an unmatched attempt, after the engine's report) → rules review (have, only when a ruling is proposed). The six new ideas are drawn, dashed, on the domain map below.</p>
+<p class="lede">Model calls per round: resident (have) → interpreter (have) → engine pass 1 (code) → judge proposes a rule (new, only for an unmatched attempt) → rules check and engine test run (have) → judge confirms, revises once or withdraws (new). The six new ideas are drawn, dashed, on the domain map below.</p>
 
 <h2 id="ladder">6. Semantic spectrum ladder</h2>
 <p class="lede"><b style="color:var(--miss)">Missing.</b> The package does not yet cite each spectrum rung (<code>spectrum_rungs</code>); the validator shows it as pending until 2026-11-12. What exists now: a glossary and domain graph (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>), a type-level model (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/METAMODEL.md">METAMODEL.md</a>, which each slice extends with its new types), the system model (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/ODD.md">ODD.md</a>) and executable specifications (<code>openspec/specs/</code>).</p>
@@ -107,64 +112,76 @@
 <h2 id="plan">7. Built in five slices, each one pull request</h2>
 <div class="tablewrap"><table>
 <tr><th>Slice</th><th>State</th><th>What lands</th><th>How sure we are</th><th>Shown by</th></tr>
-<tr><td>J0</td><td><b style="color:var(--miss)">Planned</b></td><td>Remove the 32-reaction cap; keep once per process and thing per moment</td><td>Fully specifiable now</td><td>A1</td></tr>
-<tr><td>J1</td><td><b style="color:var(--miss)">Planned</b></td><td>Consequence report: every reaction and blocker of an attempt as one record</td><td>Fully specifiable now</td><td>A2 (data)</td></tr>
-<tr><td>J2</td><td><b style="color:var(--miss)">Planned</b></td><td>Judge: Concordia's game master for unmatched attempts, given the report; choices routed to the person</td><td>Depends on J1</td><td>A2, A3, A5</td></tr>
-<tr><td>J3</td><td><b style="color:var(--miss)">Planned</b></td><td>Ruling to rule: rules check, installed or held per the setting, applies to everyone</td><td>Depends on J2</td><td>A4</td></tr>
+<tr><td>J0</td><td><b style="color:var(--miss)">Planned</b></td><td>Remove the 32-reaction cap; keep once per process and thing per moment; saved runs replay under the limit they ran with</td><td>Fully specifiable now</td><td>A1, A7</td></tr>
+<tr><td>J1</td><td><b style="color:var(--miss)">Planned</b></td><td>Consequence report: pass 1 facts and nearby checks; pass 2 test run of a proposed rule on a copy of the world</td><td>Fully specifiable now</td><td>A2 (data)</td></tr>
+<tr><td>J2</td><td><b style="color:var(--miss)">Planned</b></td><td>Judge: Concordia's game master for unmatched attempts; proposes a rule, reads its test run, confirms, revises once or withdraws; choices routed to the person</td><td>Depends on J1</td><td>A2, A3, A5</td></tr>
+<tr><td>J3</td><td><b style="color:var(--miss)">Planned</b></td><td>Ruling to rule: installed, or held with the attempt pending, per the setting; "no rule could express this" recorded as a language gap</td><td>Depends on J2</td><td>A4</td></tr>
 <tr><td>J4</td><td><b style="color:var(--miss)">Planned</b></td><td>Credentials as facts and norms as breakable rules (Ostrom's grammar)</td><td>Needs a short design step first (Q76)</td><td>A6</td></tr>
 </table></div>
 <p class="lede">J0 first: small, independent, and it delivers "100 links deep" on its own. Each slice merges through <code>ship</code> after <code>scripts/check_project.py</code> exits 0, at most $3.00 of owner allowance per slice, and ends in a traced run whose full trace is read before it is reported. Nothing is irreversible: each slice is a pull request, and saved worlds still replay unchanged.</p>
 
 <h2 id="evidence">8. Cost basis and evidence</h2>
+<p class="lede">Prices: gpt-6-luna, $0.10 per million input tokens and $0.50 per million output tokens (llm_client's model registry, from openrouter, checked 2026-11-05).</p>
 <div class="tablewrap"><table>
 <tr><th>Step</th><th>Figure</th><th>Basis</th></tr>
-<tr><td>Interpreter call (existing)</td><td>about 1,800 tokens, $0.00025 per call</td><td>Measured: <code>llm-cost cost --group-by task --days 30</code> (2026-11-09): 115 calls, $0.0285, 205.3K tokens</td></tr>
-<tr><td>Judge call (new)</td><td>about $0.003 per call</td><td>Worked out from a <b>guess</b> of 20,000 input tokens for a large report × $0.14 per million tokens (same model and route as the interpreter)</td></tr>
-<tr><td>Rules review per ruling (existing)</td><td>about $0.029</td><td>Measured: 24 calls, $0.699</td></tr>
-<tr><td>Per run</td><td>about $0.32, falling as rulings become rules</td><td>Worked out: $0.032 per ruling × a <b>guess</b> of 10 uncovered attempts per run</td></tr>
+<tr><td>Interpreter (existing)</td><td>$0.00025 per call, about $0.009 per run</td><td>Measured: <code>llm-cost estimate</code>, 114 calls, $0.0281; 36 attempts read in the saved airfield run</td></tr>
+<tr><td>Judge (new)</td><td>about $0.0022 per call, $0.043 per run; worst case $0.006 per call</td><td>Worked out: 20 calls (propose and confirm for 10 unmatched attempts, as in the airfield run) × (15,000 input tokens × $0.10/M + 1,300 output × $0.50/M); token counts measured on the plain-baseline calls. Worst case: the largest saved world is about 42,200 tokens, plus net changes, about 53,000</td></tr>
+<tr><td>Rules review (existing)</td><td>about $0.029 per review, $0.29 per run</td><td>Measured: <code>llm-cost</code>, 24 calls, $0.699, on earlier review models</td></tr>
+<tr><td>Per run</td><td>about $0.34 with 10 rulings, falling as rulings become rules</td><td>Sum of the above</td></tr>
 </table></div>
-<p class="lede">No run evidence exists yet: nothing is built. Each slice saves its runs under <code>evidence/ai-judge/</code> with <code>run-log.jsonl</code> and a <code>TRACE_READ.md</code> that cites every judge call, every ruling and every refusal, plus at least five ordinary attempts per run.</p>
+<p class="lede"><b>Why the judge does not read the whole chain.</b> One chain step averages 340 characters (2,081 steps measured in saved runs), so your 5,000-step example is about 500,000 tokens. The judge reads the net changes, the blockers and the chain's length and stopping point; the full chain stays in the run record and on the run page.</p>
+<h3 class="sub">The plain version, run on 3 real attempts (2026-11-09)</h3>
+<p class="lede">The same model given the whole world and the attempt in one call, asked for a ruling written as a rule. 3 calls, $0.0061 (<code>llm-cost</code>, trace <code>world-substrate/ai-judge-plain-baseline/b75fd5f42b9742078c798df205243c73</code>); inputs and outputs in <code>evidence/ai-judge/plain-baseline/</code>.</p>
+<div class="tablewrap"><table>
+<tr><th>Saved attempt (no rule matched; nothing changed)</th><th>Plain ruling</th><th>Rules check</th></tr>
+<tr><td>The sawmill offers to pay for 3 cedar logs</td><td>Buy logs at a price; the logger's choice</td><td>Accepted, but charges one price for 3 logs: the rule language has no multiplication</td></tr>
+<tr><td>The shop offers the pencil factory $1,000</td><td>An offer only; the factory's choice; changes nothing</td><td>Rejected</td></tr>
+<tr><td>The waiter picks up the tray</td><td>Refused: the tray is not on the counter (the same blocker the engine names)</td><td>Rejected</td></tr>
+</table></div>
+<p class="lede"><b>What it showed.</b> The plain version read the world right and named whose choice each attempt needs. But 2 of 3 rules were rejected and the accepted one was wrong, so the test run before install (pass 2) is kept. Pass 1 added nothing at these sizes and is kept only because it costs no call. No run evidence of the built judge exists yet: each slice saves its runs under <code>evidence/ai-judge/</code> with <code>run-log.jsonl</code> and a <code>TRACE_READ.md</code>.</p>
 
 <!-- package:start -->
 <!-- package:end -->
 <!-- maps:start -->
 <!-- maps:end -->
 <h2>Your decisions</h2>
-<p class="lede"><b>Nothing is waiting on you.</b> Decided 1-5 and the constraints, decisions and norms split are recorded above with your words. The three open questions this plan adds (Q74 the report's size, Q75 telling a constraint from someone's choice, Q76 how to write norms and credential holders) are settled by working out, argument and prior art inside the plan. Q77 (the wiki cap check failing on main) is an agent's housekeeping question, not part of this plan.</p>
+<p class="lede"><b>Nothing is waiting on you.</b> Decided 1-5 and the constraints, decisions and norms split are recorded above with your words. Of the questions this plan adds, Q74 (the report's size) is settled by measurement; Q78 (what the judge gets before a rule exists), Q79 (whether the rule language can express a ruling), Q80 (what "wait" does with the attempt) and Q81 (how old runs replay) are agent calls, resolved with their evidence; Q75 and Q76 are settled by argument and prior art inside the plan. Q77 (the wiki cap check failing on main) is an agent's housekeeping question, not part of this plan.</p>
 
 <footer>Plan: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/plans/ai_judge.md">docs/plans/ai_judge.md</a> · Package: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/ai-judge/planning-package.json">planning-package.json</a> · Prior art: Concordia's game master (<code>EventResolution</code>), Crawford and Ostrom (1995) "A Grammar of Institutions", Institutional Grammar 2.0, Cybernetic Influence v3.</footer>
 </main>
 <script>
 const EX={
-bribe:{title:"Vik offers Rosa 40 coins to sign without inspecting",setup:"No installed move covers a bribe.",stages:["try","rulebook","propagate","route","judge","rule","after"],ev:[
+bribe:{title:"Vik offers Rosa 40 coins to sign without inspecting",setup:"No installed move covers handing coins to an officer.",stages:["try","rulebook","pass1","judge","test","rule","route","after"],ev:[
 ["grey","today","The attempt goes in as unmatched and changes nothing.","scripts/run_authored_world.py:576-580"],
-["miss","engine","Works out what it can first: Vik does hold 40 coins; nothing physical blocks the hand-over. Both go into the consequence report.","consequence report (J1)"],
-["miss","judge","Given the attempt and the report, rules on the constraint only: coins can pass from one person to another here.","Concordia EventResolution call, llm_client trace id"],
-["miss","rule","The ruling is written as a rule, passes the rules check, and is installed (default setting).","rule origin: ruling id, round; rules-check record"],
+["miss","pass 1","Nothing has happened yet, so nothing propagates. The engine gathers facts and blockers: Vik holds 40 coins; Rosa and Vik are at the customs desk; \"sign release: blocked, inspected is false\".","engine.discover rows (J1)"],
+["miss","judge","Given the whole world, the attempt and pass 1, proposes a rule: a person may hand coins they hold to a person at the same place.","Concordia game master call"],
+["miss","pass 2","The rules check passes; a test run on a copy of the world shows coins move to Rosa, Vik's purse empties, nothing else follows. The judge confirms.","test-run report (J1)"],
+["miss","rule","The rule is installed (default setting) and Vik's offer settles through it.","rule origin: ruling id, round; rules-check record"],
 ["miss","Rosa","Whether the bribe works is Rosa's choice. Her own resident accepts or refuses.","Rosa's resident call"],
 ["have","gate","If she signs, Vik holds a signed release. The barcode gate opens for the valid code however he got it.","mechanism: checks the code, not the holder"],
 ["miss","norm","\"Bribery is forbidden\" was broken. It has consequences only if an inspector notices and acts.","norm breach recorded (J4)"]],
-out:"The judge decided one thing: that coins can change hands. Rosa decided whether the bribe worked, and the gate did what gates do."},
-chain:{title:"The gate opening sets off a 100-step chain",setup:"The crate reaches the warehouse, the warehouse fills, the dispatcher sends a truck... 100 knock-ons. Your example also had 50 such chains at once: 5,000 reactions.",stages:["propagate","after"],ev:[
+out:"The judge decided one thing, as a rule for everyone: that coins can change hands. Rosa decided whether the bribe worked, and the gate did what gates do."},
+chain:{title:"The gate opening sets off a 100-step chain",setup:"The crate reaches the warehouse, the warehouse fills, the dispatcher sends a truck... 100 knock-ons. Your example also had 50 such chains at once: 5,000 reactions.",stages:["after"],ev:[
 ["grey","today","More than 32 reactions in one moment: the whole moment is refused.","src/world_substrate/engine.py:1153 REACTION_LIMIT = 32"],
 ["miss","engine","The chain runs to the end inside the same moment, each step citing the step that caused it. Each process and thing still fires once per moment, so a loop stops.","J0; every reaction cites its parent"],
-["miss","report","Every effect is in the consequence report, so the judge and the run page see results, not 100 links to reason through.","consequence report (J1)"]],
+["miss","run page","The moment shows one summary line (steps run, steps with a cause, any refusal); any step opens to its cause.","A1"]],
 out:"No AI tracks the chain; the engine does, however long it is."},
-broke:{title:"Vik offers 40 coins he does not have",setup:"The same offer, but Vik holds 0 coins.",stages:["try","rulebook","propagate"],ev:[
-["have","engine","The hand-over is blocked: Vik holds 0 coins. Refused, with the blocker named; nothing changes.","refusal names the failed check"],
-["miss","judge","Not called. The judge never overrides a blocker the engine found.","no judge call in the trace (A3)"]],
+broke:{title:"A trader offers coins he does not have",setup:"After the coin rule is installed, a trader holding 0 coins offers coins. The rule covers it.",stages:["try","rulebook"],ev:[
+["have","engine","Covered by the coin rule, whose check fails: he holds 0 coins. Refused, with the blocker named; nothing changes.","refusal names the failed check"],
+["miss","judge","Not asked. A covered attempt never reaches the judge.","\"decided by rule, judge not asked\" (A3)"]],
 out:"A constraint is never up to the judge."},
 again:{title:"Later, another trader offers a bribe",setup:"Same run, default setting \"Approved by Create\".",stages:["try","rulebook","after"],ev:[
 ["miss","rulebook","The rule made from the first ruling covers it: coins can change hands here.","rule origin: ruling id, round"],
 ["miss","judge","Not called again.","no second judge call (A4)"],
 ["have","officer","The officer's own resident still decides whether to accept.","resident call"]],
 out:"One ruling, one rule, used by everyone from then on."},
-wait:{title:"The same run with \"Wait for my approval\"",setup:"The world's Options set \"Judge rulings during a run\" to Wait for my approval.",stages:["try","rulebook","propagate","route","judge","rule"],ev:[
-["miss","judge","Rules as before; the ruling settles only Vik's offer (a run cannot pause for a person).","ruling held, not installed"],
-["miss","later","The second trader's offer asks the judge again.","second judge call"],
-["miss","run page","Lists the held ruling with an Approve button. Approve installs it for later runs.","A4, wait setting"]],
-out:"You choose per world whether rulings install mid-run or wait for you."},
-password:{title:"The password computer",setup:"Only Alice is supposed to log in. Mallory phishes her password.",stages:["try","rulebook","propagate","route"],ev:[
+wait:{title:"The same run with \"Wait for my approval\"",setup:"The world's Options set \"Judge rulings during a run\" to Wait for my approval.",stages:["try","rulebook","pass1","judge","test","rule"],ev:[
+["miss","judge","Proposes the rule and confirms it after the test run, as before.","proposed rule and test-run report"],
+["miss","rule","The rule is held, not installed. Vik's offer waits as pending and changes nothing.","\"pending: waiting for your approval\""],
+["miss","later","The second trader's offer joins the same pending ruling; the judge is not asked again.","one ruling, two pending offers"],
+["miss","run page","Approve installs the rule and both offers settle through it; Reject refuses both, naming the rejected ruling.","A4, wait setting"]],
+out:"Nothing settles without an installed rule; you choose per world whether rules install mid-run or wait for you."},
+password:{title:"The password computer",setup:"Only Alice is supposed to log in. Mallory phishes her password.",stages:["try","rulebook","pass1","route"],ev:[
 ["have","computer","Logs in whoever types Alice's password: a mechanism, a constraint.","checks the password, not the person"],
 ["miss","holder","Alice knows the password; after the phishing, so does Mallory. Who holds it is a fact that changed.","credential holder (J4)"],
 ["miss","Alice","Whether she answers the phishing message is her choice.","Alice's resident call"],

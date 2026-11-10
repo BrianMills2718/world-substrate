@@ -1,0 +1,91 @@
+{
+ "case": "cafe-waiter-picks-up-tray",
+ "source": "evidence/declared-laws/s4-cafe/run-log.jsonl line 12 (0-based 11), actor waiter",
+ "source_run_trace_id": "world-builder-live/run/339f96cbd3ca420cb32c20819fa6fcde",
+ "attempt": "I try to pick up the empty tray from the counter.",
+ "revision": 33,
+ "trace_id": "world-substrate/ai-judge-plain-baseline/b75fd5f42b9742078c798df205243c73",
+ "model": "openrouter/openai/gpt-6-luna",
+ "cost_usd": 0.0015858,
+ "usage": {
+  "prompt_tokens": 9938,
+  "completion_tokens": 1184,
+  "total_tokens": 11122,
+  "prompt_tokens_details": {
+   "audio_tokens": 0,
+   "cache_write_tokens": 0,
+   "cached_tokens": 0,
+   "cache_creation_tokens": 0,
+   "video_tokens": 0
+  },
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "completion_tokens_details": {
+   "reasoning_tokens": 302,
+   "audio_tokens": 0,
+   "image_tokens": 0
+  },
+  "reasoning_tokens": 302
+ },
+ "engine_blocked_by_rules_in_saved_run": [
+  {
+   "action": {
+    "actor": "waiter",
+    "kind": "carry-tray",
+    "base_revision": 33,
+    "controller": "unselected",
+    "to": "counter",
+    "tray": "tray"
+   },
+   "reason": "The tray is held by the waiter",
+   "failed": [
+    {
+     "check": "The tray is held by the waiter",
+     "actual": "counter",
+     "required": "waiter"
+    }
+   ]
+  },
+  {
+   "action": {
+    "actor": "waiter",
+    "kind": "knock-over",
+    "base_revision": 33,
+    "controller": "unselected",
+    "object": "tray"
+   },
+   "reason": "The tray is upright",
+   "failed": [
+    {
+     "check": "The tray is upright",
+     "actual": false,
+     "required": true
+    }
+   ]
+  }
+ ],
+ "saved_run_outcome": {
+  "status": "unsupported_action",
+  "changed": false,
+  "event_id": "r11-e00004"
+ },
+ "messages_chars": 33976,
+ "output": {
+  "what_the_world_state_says": [
+   "The waiter is in the cafe and has worker.role = \"waiter\".",
+   "The tray is in the cafe, owned by actor:waiter, and its components.tray values are cups = 0, on = \"counter\", upright = false.",
+   "The counter is in the cafe and has category \"surface\"."
+  ],
+  "blockers": [
+   "No installed action or mechanic models picking up a tray from a surface.",
+   "The installed carry-tray mechanic requires the tray's components.tray.on to equal the acting waiter; its current value is \"counter\", so that move cannot be used to pick it up."
+  ],
+  "knock_on_effects": [
+   "Under the proposed pickup rule, the tray's components.tray.on would become \"waiter\"; its cups would remain 0 and upright would remain false.",
+   "After pickup, the waiter could use carry-tray to set it on a cafe surface and make it upright. That move would not restore any spilled cups."
+  ],
+  "whose_choice": "none",
+  "ruling": "The attempt is not executable under the installed rules, which have no pickup move. The represented state supports adding a general pickup move for a waiter to take their empty tray from a surface; this changes only the tray's represented support.",
+  "proposed_rule": "{\"action\":{\"kind\":\"pick-up-tray\",\"description\":\"The waiter picks up their empty tray from a cafe surface.\",\"fields\":[{\"name\":\"tray\",\"type\":\"entity_ref\"},{\"name\":\"from\",\"type\":\"entity_ref\"}]},\"mechanic\":{\"schema_version\":\"world-substrate-action-mechanic/v0\",\"mechanic_id\":\"pick-up-tray\",\"version\":\"1\",\"action_kind\":\"pick-up-tray\",\"rationale\":\"Picking up an empty tray changes its represented support to the waiter; its upright state is unchanged.\",\"actor_selector\":{\"categories\":[\"actor\",\"waiter\"],\"components\":[\"worker\"]},\"participants\":{\"tray\":{\"categories\":[\"tray\"],\"components\":[\"tray\"]},\"from\":{\"categories\":[\"surface\"],\"components\":[\"surface\"]}},\"parameters\":{},\"checks\":[{\"label\":\"The waiter has the waiter role\",\"left\":{\"participant\":{\"name\":\"actor\",\"path\":\"components.worker.role\"}},\"op\":\"eq\",\"right\":{\"literal\":\"waiter\"}},{\"label\":\"The tray belongs to the waiter\",\"left\":{\"participant\":{\"name\":\"tray\",\"path\":\"ownership.owner_ref\"}},\"op\":\"eq\",\"right\":{\"owner_ref\":\"actor\"}},{\"label\":\"The tray is on the specified surface\",\"left\":{\"participant\":{\"name\":\"tray\",\"path\":\"components.tray.on\"}},\"op\":\"eq\",\"right\":{\"participant\":{\"name\":\"from\",\"path\":\"entity_id\"}}},{\"label\":\"The tray is empty\",\"left\":{\"participant\":{\"name\":\"tray\",\"path\":\"components.tray.cups\"}},\"op\":\"eq\",\"right\":{\"literal\":0}},{\"label\":\"The waiter and tray are in the same place\",\"left\":{\"participant\":{\"name\":\"actor\",\"path\":\"location.location_id\"}},\"op\":\"eq\",\"right\":{\"participant\":{\"name\":\"tray\",\"path\":\"location.location_id\"}}},{\"label\":\"The waiter and surface are in the same place\",\"left\":{\"participant\":{\"name\":\"actor\",\"path\":\"location.location_id\"}},\"op\":\"eq\",\"right\":{\"participant\":{\"name\":\"from\",\"path\":\"location.location_id\"}}}],\"effects\":[{\"participant\":\"tray\",\"path\":\"components.tray.on\",\"op\":\"set\",\"value\":{\"entity_id\":\"actor\"}}],\"limits\":[\"This move represents picking up an empty tray from a represented cafe surface; it does not restore spilled cups or change the tray's upright state.\"],\"tests\":[\"A waiter can pick up their empty tray from a surface in the same place.\",\"A tray with cups, a tray not on the specified surface, or a tray not owned by the waiter is refused.\"],\"semantic_bindings\":[\"tray is the tray action field\",\"from is the source surface action field\"]}}"
+ }
+}
