@@ -36,7 +36,8 @@ from scripts.native_coordination_authoring import (
 )
 from scripts.native_coordination_comparison import with_approval_threshold
 from scripts.people_world import about_people, declare_people_laws, keep_until_settled, prepare_people_world, unfinished_hedges, write_people_rules
-from scripts.run_authored_world import MEMORY_ITEM_CHARS, MEMORY_ITEMS, actor_ids, build_engine, recorded_trace, render_run, run_world
+from scripts.run_authored_world import (MEMORY_ITEM_CHARS, MEMORY_ITEMS, actor_ids, build_engine, recorded_trace,
+                                        refused_check, render_run, run_world)
 from scripts.run_stop import DEFAULT_RUN_STOP, MAX_QUIET_ROUNDS, parse_run_stop
 from scripts.run_native_coordination import run_native_coordination
 from scripts.review_rules import MISSING as MISSING_RULE, review_rules
@@ -45,7 +46,9 @@ from world_substrate.action_authoring import ActionDeclarationError, CausalModel
 from world_substrate.engine import recorded_reaction_limit
 
 API_PREFIX = "/world-builder/api"
-MAX_BODY_BYTES = 512_000
+# Raised from 512,000 for the ai-judge plan's J0 (2026-11-10): Brian's example world, 50 chains of 100 links, is
+# 5,000 things and about 550 KB as JSON; a run of it must be sendable whole.
+MAX_BODY_BYTES = 1_000_000
 DRAFT_BUDGET = 0.08
 MECHANICS_BUDGET = 0.12
 RUN_BUDGET = 0.12
@@ -610,6 +613,28 @@ def _logged_entries(trace_ids: set[str]) -> dict[str, dict[str, Any]]:
     return found
 
 
+def _mark_refused_world_changes(transcript: list[dict[str, Any]], engine_events: list[dict[str, Any]]) -> None:
+    """A change the world tried by itself that the engine refused whole names its failed check, read from the run's
+    own logged engine events. Rounds logged before the ai-judge plan's J0 listed such a change among the world's
+    changes with no word of the refusal (A7: a round over the old limit of 32 replays saying so)."""
+    refused = {e.get("event_id"): check for e in engine_events if (check := refused_check(e))}
+    for turn in transcript:
+        for event in turn.get("world_events") or []:
+            if event.get("event_id") in refused and "refused" not in event:
+                event["refused"] = refused[event["event_id"]]
+
+
+def _mark_old_share_refusals(record: dict[str, Any]) -> None:
+    """A share link made before J0 kept its rounds without the refusal mark; while its runs are still in the run log
+    (the same recent days a share is assembled from), opening it reads the refusals from their engine events. Shares
+    made since are marked when made (`refusals_marked`)."""
+    if record.get("refusals_marked"):
+        return
+    trace_ids = tuple(sorted(r["trace_id"] for r in record.get("runs") or [] if r.get("trace_id")))
+    events = [e for row in _logged_entries(set(trace_ids)).values() for e in (row.get("result") or {}).get("engine_events") or []]
+    _mark_refused_world_changes(record.get("rounds") or [], events)
+
+
 def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dict[str, Any]:
     """A finished run rebuilt from the server's own run log, never from what the page sends: every round is the
     recorded result of a /run this service answered, in order, on one world and one rule set."""
@@ -630,6 +655,7 @@ def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dic
         if row["path"] != "/run" or row["request"].get("world_fingerprint") != fingerprint:
             raise ValueError("those rounds come from different worlds or rules")
         transcript = row["result"].get("transcript") or []
+        _mark_refused_world_changes(transcript, row["result"].get("engine_events") or [])
         if transcript and transcript[0].get("turn") != last + 1:
             raise ValueError("those rounds are not one unbroken run")
         rounds += transcript
@@ -650,6 +676,7 @@ def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dic
     return {
         "schema": SHARE_SCHEMA,
         "created": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "refusals_marked": True,
         "world": {
             "description": (build or {}).get("request", {}).get("description"),
             "world_def": built.get("world_def"),
@@ -1413,6 +1440,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 self._error(HTTPStatus.NOT_FOUND, "That shared run does not exist (check the link).")
                 return
             _plain_old_checks(record["rounds"])
+            _mark_old_share_refusals(record)
             self._json(HTTPStatus.OK, {"ok": True, **record, **_share_picture(record)})
             return
         if path.startswith("/jobs/"):

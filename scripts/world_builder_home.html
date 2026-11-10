@@ -47,6 +47,14 @@ button.linkish{background:none;border:0;padding:0;color:var(--accent);text-decor
 .feed{margin:6px 0 14px;padding-left:0;list-style:none;font-size:14px;line-height:1.45}
 .feed li{padding:6px 0;border-bottom:1px solid var(--line)}
 .feed li:first-child{font-weight:600}
+/* Knock-on effects of one moment (ai-judge plan J0): a summary line opening to every step; each step opens to the
+   step that caused it; a step a failed check stopped is orange and dashed, with the word "blocked". */
+.knock{font-weight:400;margin-top:4px;color:var(--text)}
+.knock summary{cursor:pointer}
+.knock ol{max-height:320px;overflow:auto;padding-left:3.6em;margin:6px 0}
+.knock li{border:0;padding:2px 0;font-weight:400}
+.knock li.blocked{color:var(--warn);border:2px dashed var(--warn);border-radius:6px;padding:4px 8px;margin-top:4px}
+.knock li:target{outline:2px solid var(--ok)}
 /* Tasks that take several rounds (#128): blue while under way, orange when stopped part-way, grey when finished. */
 .underway{display:grid;gap:6px;margin:0 0 14px;padding:0;list-style:none;font-size:14px;line-height:1.45}
 .underway li{border:2px solid var(--ok);border-radius:8px;padding:6px 10px}
@@ -675,6 +683,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       if (kind === "accepted") text = `Round ${a.turn}: ${who} — ${act}. Allowed: every check held.`;
       else if (kind === "waited") text = `Round ${a.turn}: ${who} waited — none of the rules allowed anything for them right then.`;
       else if (a.row.wanted.kind === "unmatched-attempt") text = `Round ${a.turn}: ${who} tried: “${a.row.wanted.attempt || ""}” The system could not match these words to a move, so the rules never judged it.`;
+      else if (a.row.status === "reaction_limit") text = `Round ${a.turn}: ${who} tried to ${act}. refused: ` + a.row.refused_because.map(plainCheck).join("; ") + ". Nothing changed.";
       else if ((a.row.refused_because || []).length) text = `Round ${a.turn}: ${who} tried to ${act}. Refused, because this check was false: ` + a.row.refused_because.map((r) => typeof r === "string" ? r : r.label || JSON.stringify(r)).join("; ");
       else text = `Round ${a.turn}: ${who} wanted to ${act}, but someone else acted first in the same round and it was no longer possible.`;
       if (kind === "waited" && a.row.belief) text = `Round ${a.turn}: ${who} chose to wait.`;
@@ -734,12 +743,75 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     if (tipEl === el) tipBubble.textContent = text;
   }
 
+  // A check label the engine writes for its own refusal, in the run page's words (ai-judge plan A7): a run saved
+  // under the old limit of 32 still shows its refusal, and says that limit was the one this run ran under.
+  function plainCheck(label) {
+    const m = /^Knock-on effects settle within (\d+) reactions$/.exec(String(label));
+    return m ? `knock-on effects did not settle within ${m[1]} steps (the limit this run ran under)` : label;
+  }
+  const count = (n) => Number(n).toLocaleString("en-US");
+  // One summary per moment with knock-on effects (ai-judge plan J0, A1): "5,000 steps run, 5,000 with a cause, no
+  // refusal". It opens to every step; each step opens to the step that caused it; a blocked step is orange.
+  function knockOnBlocks(turn) {
+    return (turn.knock_on || []).map((m, mi) => {
+      const box = document.createElement("details"); box.className = "knock";
+      const sum = document.createElement("summary");
+      let text = `Knock-on effects of ${m.trigger} (${words(m.trigger_rule || "a move")}): ${count(m.steps)} step${m.steps === 1 ? "" : "s"} run, ${count(m.with_cause)} with a cause, `
+        + (m.refused ? "refused: " + plainCheck(m.refused) : "no refusal");
+      if (m.blocked) text += `, ${count(m.blocked)} blocked`;
+      sum.textContent = text; box.append(sum);
+      // Built when opened: a moment can have thousands of steps.
+      box.addEventListener("toggle", () => {
+        if (!box.open || box.dataset.built) return;
+        box.dataset.built = "1";
+        const list = document.createElement("ol");
+        const key = (ev, it) => `step-${turn.turn}-${mi}-${ev}-${it}`;
+        const stepsOf = {};
+        (turn.reactions || []).forEach((r) => { stepsOf[r.event_id] = (r.steps || []).map((st) => st.it); });
+        const inMoment = new Set(), seen = new Set([m.trigger]);
+        (turn.reactions || []).forEach((r) => {
+          if (!r.caused_by.some((p) => seen.has(p))) return;
+          seen.add(r.event_id); inMoment.add(r.event_id);
+        });
+        (turn.reactions || []).filter((r) => inMoment.has(r.event_id)).forEach((r) => {
+          (r.steps || [{ it: null, caused_by: r.caused_by, via: [] }]).forEach((st) => {
+            const li = document.createElement("li"); li.id = key(r.event_id, st.it);
+            li.append(`${st.it ? labelFor(st.it) + ": " : ""}${words(r.rule_id)} (${r.event_id}, wave ${r.wave}). `);
+            (st.caused_by || []).forEach((p) => {
+              const via = (st.via || []).find((v) => (stepsOf[p] || []).includes(v));
+              const a = document.createElement("a");
+              a.href = "#" + (via ? key(p, via) : key(p, null));
+              a.textContent = p === m.trigger ? `Caused by ${p}, what started it` + (via ? ` (${labelFor(via)})` : "")
+                : `Caused by ${via ? labelFor(via) + "'s step" : "step"} in ${p}`;
+              if (p === m.trigger) a.removeAttribute("href");
+              li.append(a);
+            });
+            list.append(li);
+          });
+        });
+        (turn.blocked_reactions || []).filter((b) => inMoment.has(b.after) || b.after === m.trigger).forEach((b) => {
+          const li = document.createElement("li"); li.className = "blocked";
+          const why = b.failed.map((f) => `${f.check} was not true` + (f.actual !== undefined && f.actual !== null ? ` (it was ${JSON.stringify(f.actual)})` : "")).join("; ");
+          li.append(`blocked: ${labelFor(b.it)}: ${words(b.rule_id)} did not happen, because ${why}. Nothing followed from it. `);
+          const a = document.createElement("a"); a.href = "#" + key(b.after, null); a.textContent = `After ${b.after}`;
+          const last = (stepsOf[b.after] || []); if (last.length) a.href = "#" + key(b.after, last[last.length - 1]);
+          li.append(a); list.append(li);
+        });
+        box.append(list);
+      });
+      return box;
+    });
+  }
+
   function roundSentence(turn) {
     const parts = [];
     Object.entries(turn.actors || {}).forEach(([actor, row]) => {
       if (row.status === "accepted" && row.did) parts.push(`${labelFor(actor)}: ${words(row.did.kind)}`);
     });
-    const by = (turn.world_changes || []).map(words);
+    // A change the world tried by itself that was refused whole says so (ai-judge plan A7).
+    const refused = {};
+    (turn.world_events || []).forEach((e) => { if (e.refused) refused[e.rule_id] = e.refused; });
+    const by = (turn.world_changes || []).map((rule) => refused[rule] ? `${words(rule)} (refused: ${plainCheck(refused[rule])}; nothing changed)` : words(rule));
     let text = parts.length ? parts.join(" · ") : "Nobody could do anything.";
     if (by.length) text += ` · By itself: ${by.join(", ")}`;
     return text;
@@ -968,7 +1040,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     live.rounds.slice(-FEED_ROUNDS).reverse().forEach((turn) => {
       const li = document.createElement("li");
       const b = document.createElement("strong"); b.textContent = `Round ${turn.turn}: `;
-      li.append(b, roundSentence(turn)); feed.append(li);
+      li.append(b, roundSentence(turn), ...knockOnBlocks(turn)); feed.append(li);
     });
     renderStrip(live.rounds.slice(-STRIP_ROUNDS));
     renderUnderway(live.rounds.slice(-FEED_ROUNDS));

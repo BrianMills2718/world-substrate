@@ -20,6 +20,7 @@ def _pull(engine):
 
 
 @pytest.mark.req("transition-engine/fifty-chains-of-a-hundred-links-finish-in-one-moment")
+@pytest.mark.req("information-delivery/a-knock-on-step-names-the-step-that-caused-it")
 def test_fifty_chains_of_a_hundred_links_finish_in_one_moment():
     engine, _, _ = build_engine(*fifty_chains(50, 100))
     started = time.monotonic()
@@ -41,6 +42,8 @@ def test_fifty_chains_of_a_hundred_links_finish_in_one_moment():
     for e in result["reactions"]:
         for step in e["reaction_steps"]:
             c, n = step["it"][1:].split("-")
+            # The step names the thing it read that its cause changed: the run page opens it to that step.
+            assert step["via"] == (["lever"] if n == "1" else [f"c{c}-{int(n) - 1}"])
             if n != "1":
                 parent = by_event[step["caused_by"][0]]
                 assert f"c{c}-{int(n) - 1}" in {s["it"] for s in parent["reaction_steps"]}
@@ -109,3 +112,49 @@ def test_a_record_without_a_limit_ran_under_32_and_replays_refused():
     # A new run of the same world has no such limit.
     new, _, _ = build_engine(bundle, rules)
     assert _pull(new)["status"] == "accepted"
+
+
+@pytest.mark.req("transition-engine/a-run-saved-under-the-old-limit-replays-under-it")
+def test_a_round_refused_at_the_old_limit_says_so_in_its_record_and_share():
+    from scripts.world_builder_service import _mark_refused_world_changes
+    from tests.knock_on_worlds import wind_chain
+
+    label = "Knock-on effects settle within 32 reactions"
+    old, _, _ = run_world(*wind_chain(40), policy="scripted", max_turns=1, reaction_limit=32)
+    [refused] = [e for e in old["transcript"][0]["world_events"] if e.get("refused")]
+    assert refused["rule_id"] == "wind-topples-the-first" and refused["refused"] == label
+    assert old["reaction_limit"] == 32
+    # A round logged before J0 has no "refused" in its world events; the share link reads it from the engine events.
+    turn = {"world_events": [{k: v for k, v in refused.items() if k != "refused"}]}
+    _mark_refused_world_changes([turn], [{"event_id": refused["event_id"], "status": "reaction_limit",
+                                          "checks": [{"label": label, "ok": False}]}])
+    assert turn["world_events"][0]["refused"] == label
+    # The same world run now: the wind's push runs all 39 dominoes after it, in one moment.
+    new, _, _ = run_world(*wind_chain(40), policy="scripted", max_turns=1)
+    assert not any(e.get("refused") for e in new["transcript"][0]["world_events"])
+    assert sum(m["steps"] for m in new["transcript"][0]["knock_on"]) == 39
+
+
+@pytest.mark.req("transition-engine/a-run-saved-under-the-old-limit-replays-under-it")
+def test_a_share_link_made_before_j0_shows_the_refusal_when_opened(tmp_path, monkeypatch):
+    import json
+
+    from scripts import world_builder_service as service
+
+    label = "Knock-on effects settle within 32 reactions"
+    trace_id = "world-builder-live/run/old"
+    row = {"trace_id": trace_id, "status": 200, "path": "/run", "result": {"engine_events": [
+        {"event_id": "r1-e00001", "status": "accepted"},
+        {"event_id": "r1-e00002", "status": "reaction_limit", "checks": [{"label": label, "ok": False}]}]}}
+    (tmp_path / "runs_2026-11-10.jsonl").write_text(json.dumps(row) + "\n")
+    monkeypatch.setenv("WORLD_BUILDER_RUN_LOG_DIR", str(tmp_path))
+    # As a share made before J0 stored it: the refused world change listed with no word of the refusal.
+    record = {"runs": [{"trace_id": trace_id}], "rounds": [
+        {"turn": 1, "world_events": [{"event_id": "r1-e00002", "rule_id": "wind-topples-the-first", "changes": []}]}]}
+    service._mark_old_share_refusals(record)
+    assert record["rounds"][0]["world_events"][0]["refused"] == label
+    # A share made since J0 was marked when made, so opening it reads no run log.
+    marked = {"refusals_marked": True, "runs": [{"trace_id": trace_id}],
+              "rounds": [{"turn": 1, "world_events": [{"event_id": "r1-e00002", "changes": []}]}]}
+    service._mark_old_share_refusals(marked)
+    assert "refused" not in marked["rounds"][0]["world_events"][0]

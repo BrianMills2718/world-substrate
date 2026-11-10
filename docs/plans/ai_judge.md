@@ -3,7 +3,7 @@ plan_id: "ai-judge"
 dependencies: ["open-attempt"]
 dependencies_reviewed: "2026-11-09"
 planning_path: durable_solo
-status: draft
+status: adopted
 goal:
   outcome: "Worlds stay faithful as they grow too big for an AI to track: the engine works out every knock-on
     effect and blocker of an attempt, however long the chain, and an AI judge that sees those results decides
@@ -54,8 +54,9 @@ conflict_surfaces:
 
 Planning package: docs/planning/ai-judge/planning-package.json
 
-**Status:** complete draft; Brian approved its direction on 2026-11-09 ("i approve", after Decided 5). Not
-adopted; nothing is built.
+**Status:** adopted. Brian approved its direction on 2026-11-09 ("i approve", after Decided 5) and building it on
+2026-11-10 ("yes if ti si planned out and you have no quesitons for me"). J0 built 2026-11-10 (no knock-on cap;
+saved runs in `evidence/ai-judge/j0/`); J1, J2, J3 and J5 are next; J4 stays exploration.
 
 ## Why
 

@@ -277,6 +277,15 @@ def _state_changes(event: dict[str, Any]) -> list[dict[str, Any]]:
     ]
 
 
+def refused_check(event: dict[str, Any]) -> str | None:
+    """The failed check of a change the world tried by itself and the engine refused whole (ai-judge plan A7: a round
+    whose knock-on effects did not settle within the limit), else None. Runs logged before J0 kept this only in
+    their engine events; the share link reads it from there (world_builder_service._assemble_share)."""
+    if event.get("status") in (None, "accepted"):
+        return None
+    return next((c["label"] for c in event.get("checks") or [] if not c.get("ok")), str(event["status"]))
+
+
 def _round_reactions(events: list[dict[str, Any]], turn: int,
                      blocked: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     """This round's knock-on effects (open_attempt S2), each naming the event and rule that set it off.
@@ -289,7 +298,8 @@ def _round_reactions(events: list[dict[str, Any]], turn: int,
         {"event_id": _run_event_id(turn, e["event_id"]), "rule_id": e["rule_id"], "wave": e["reaction_wave"],
          "caused_by": [_run_event_id(turn, p) for p in e.get("causal_parent_event_ids") or []],
          "caused_by_rule": [rules.get(p, p) for p in e.get("causal_parent_event_ids") or []],
-         **({"steps": [{"it": st["it"], "caused_by": [_run_event_id(turn, p) for p in st["caused_by"]]}
+         **({"steps": [{"it": st["it"], "caused_by": [_run_event_id(turn, p) for p in st["caused_by"]],
+                                  "via": st.get("via", [])}
                        for st in e["reaction_steps"]]} if e.get("reaction_steps") else {}),
          "changes": _state_changes(e)}
         for e in events if "reaction_wave" in e
@@ -1013,7 +1023,8 @@ def run_world(
                 **_round_reactions(engine.world.events[events_seen:], turn + turn_offset, round_blocked),
                 "world_events": [
                     {"event_id": _run_event_id(turn + turn_offset, event.get("event_id")), "rule_id": event["rule_id"],
-                     "changes": _state_changes(event)}
+                     "changes": _state_changes(event),
+                     **({"refused": refused} if (refused := refused_check(event)) else {})}
                     for event in advanced.get("events", [])
                 ],
                 "revision_when_decided": revision,
