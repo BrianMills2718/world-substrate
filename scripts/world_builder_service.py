@@ -42,6 +42,7 @@ from scripts.run_native_coordination import run_native_coordination
 from scripts.review_rules import MISSING as MISSING_RULE, review_rules
 from scripts.scaffold_world import BundleError, validate_bundle
 from world_substrate.action_authoring import ActionDeclarationError, CausalModel
+from world_substrate.engine import recorded_reaction_limit
 
 API_PREFIX = "/world-builder/api"
 MAX_BODY_BYTES = 512_000
@@ -488,6 +489,8 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
         return {
             "summary": value.get("summary"),
             "mover": trace.get("model"),
+            # The knock-on reaction limit the round ran under (null: none); a line without it ran under 32.
+            **({"reaction_limit": trace["reaction_limit"]} if "reaction_limit" in trace else {}),
             # Concordia residents' memories after the round (policy resident), the state each person decided from.
             "resident_memory": trace.get("resident_memory"),
             # The frozen rules identity (MechanicProfile.freeze()): same id, same
@@ -664,6 +667,8 @@ def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dic
         "runs": [{"trace_id": r["trace_id"], "mover": r["result"].get("mover"), "policy": r["request"].get("policy"),
                   "first_turn": (r["result"].get("summary") or {}).get("first_turn"),
                   "last_turn": (r["result"].get("summary") or {}).get("last_turn"), "cost_usd": r.get("cost_usd"),
+                  # The knock-on limit each recorded round ran under (32 for lines logged before it was recorded).
+                  "reaction_limit": recorded_reaction_limit(r["result"]),
                   # Why the run stopped by itself, when its world has a stop setting (scripts/run_stop.py).
                   **({"stopped": r["result"]["summary"]["stopped"]}
                      if "stopped" in (r["result"].get("summary") or {}) else {})}

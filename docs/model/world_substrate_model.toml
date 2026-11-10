@@ -1109,12 +1109,16 @@ links = ["owner_of_it", "owned_by_it", "co_located"]
 [knock_on_effects]
 source = "src/world_substrate/action_authoring.py:271 (DeclaredProcess.timing), :372 (due_bindings), :376 (apply_to); src/world_substrate/engine.py:884 (Engine._settle), :859 (_refuse_round)"
 timings = ["each_round", "immediately"]
-reaction_limit = 32
+# Amended 2026-11-10 (ai-judge plan J0, Decision 009): new runs have no reaction limit; a run record that names
+# none ran under legacy_reaction_limit and replays under it (recorded_reaction_limit).
+reaction_limit = "none"
+legacy_reaction_limit = 32
 rules = [
-  "each (process, entity it) pair fires at most once per moment",
+  "each (process, entity it) pair fires at most once per moment; the number of such pairs bounds a moment",
   "a wave asks every immediate process for its due bindings on the state the last wave left, then applies them in registry order",
-  "more than reaction_limit reactions refuses the whole moment: an attempt is recorded as reaction_limit, a round is undone",
-  "reaction events carry reaction_wave; the run transcript lists them under reactions with caused_by and caused_by_rule",
+  "Engine(reaction_limit=N) refuses a moment with more than N reactions: an attempt is recorded as reaction_limit, a round is undone; new runs pass none",
+  "each run record carries reaction_limit (null: none); a record without it ran under 32, and Engine.replay_commands defaults to 32",
+  "reaction events carry reaction_wave and reaction_steps (one per entity, each with caused_by); the run transcript lists them under reactions, sums each moment under knock_on, and lists knock-on steps a failed check stopped under blocked_reactions",
 ]
 
 # Which path can produce each kind of thing a world can represent. Values: yes | no

@@ -45,12 +45,22 @@ MAX_BLOCKED_RECORDED = 3
 MAX_ACTORS = 12
 
 
+def _copy_component(self: Any, memo: dict[int, Any]) -> Any:
+    """Deep copy of a world's component that shares immutable values instead of copying each one generically: a
+    knock-on wave copies every component of the world once (ai-judge plan J0)."""
+    new = object.__new__(type(self))
+    memo[id(self)] = new
+    for key, value in self.__dict__.items():
+        new.__dict__[key] = value if value is None or type(value) in (str, int, float, bool) else deepcopy(value, memo)
+    return new
+
+
 def _component_types(bundle: dict[str, Any]) -> dict[str, type]:
     result: dict[str, type] = {}
     for comp in bundle.get("components") or []:
         fields = [(row["name"], object) for row in comp.get("fields") or []]
         cls_name = "".join(x.capitalize() for x in comp["name"].split("_")) + "LiveState"
-        result[comp["name"]] = make_dataclass(cls_name, fields)
+        result[comp["name"]] = make_dataclass(cls_name, fields, namespace={"__deepcopy__": _copy_component})
     return result
 
 
@@ -69,7 +79,8 @@ def _law_breach_rows(events: list[dict[str, Any]]) -> list[dict[str, str]]:
     return list(rows.values())
 
 
-def build_engine(bundle: dict[str, Any], causal_value: dict[str, Any]) -> tuple[Engine, CausalModel, str]:
+def build_engine(bundle: dict[str, Any], causal_value: dict[str, Any], *,
+                 reaction_limit: int | None = None) -> tuple[Engine, CausalModel, str]:
     bundle = validate_bundle(bundle)
     model = CausalModel.from_dict(causal_value, bundle=bundle)
     registry = RuleRegistry()
@@ -123,7 +134,7 @@ def build_engine(bundle: dict[str, Any], causal_value: dict[str, Any]) -> tuple[
         rule_versions=registry.versions(),
     )
     world.validate()
-    return Engine(world, registry), model, profile_id
+    return Engine(world, registry, reaction_limit=reaction_limit), model, profile_id
 
 
 def _selector_matches(entity: Entity, selector: dict[str, Any]) -> bool:
@@ -266,19 +277,70 @@ def _state_changes(event: dict[str, Any]) -> list[dict[str, Any]]:
     ]
 
 
-def _round_reactions(events: list[dict[str, Any]], turn: int) -> dict[str, Any]:
+def _round_reactions(events: list[dict[str, Any]], turn: int,
+                     blocked: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     """This round's knock-on effects (open_attempt S2), each naming the event and rule that set it off.
 
-    Returns {} when there were none, so transcripts of worlds without immediate processes are unchanged."""
+    Also, per moment that had any (ai-judge plan J0): how many steps ran, how many name the step that caused them,
+    any refusal, and the knock-on steps a failed check stopped. Returns {} when there were none, so transcripts of
+    worlds without immediate processes are unchanged."""
     rules = {e["event_id"]: e["rule_id"] for e in events}
     reactions = [
         {"event_id": _run_event_id(turn, e["event_id"]), "rule_id": e["rule_id"], "wave": e["reaction_wave"],
          "caused_by": [_run_event_id(turn, p) for p in e.get("causal_parent_event_ids") or []],
          "caused_by_rule": [rules.get(p, p) for p in e.get("causal_parent_event_ids") or []],
+         **({"steps": [{"it": st["it"], "caused_by": [_run_event_id(turn, p) for p in st["caused_by"]]}
+                       for st in e["reaction_steps"]]} if e.get("reaction_steps") else {}),
          "changes": _state_changes(e)}
         for e in events if "reaction_wave" in e
     ]
-    return {"reactions": reactions} if reactions else {}
+    out: dict[str, Any] = {"reactions": reactions} if reactions else {}
+    stopped = [
+        {"rule_id": b["rule_id"], "it": b["it"], "after": _run_event_id(turn, b["after"]),
+         "after_rule": rules.get(b["after"], b["after"]),
+         "failed": [{"check": f["label"], "actual": f.get("actual"), "required": f.get("required")}
+                    for f in b["failed"]]}
+        for b in blocked or []
+    ]
+    if stopped:
+        out["blocked_reactions"] = stopped
+    moments = _moments(events, turn, stopped)
+    if moments:
+        out["knock_on"] = moments
+    return out
+
+
+def _moments(events: list[dict[str, Any]], turn: int, stopped: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """One summary per moment with knock-on effects: what set it off, steps run, steps with a cause, refusals."""
+    by_id = {e["event_id"]: e for e in events}
+
+    def root(event_id: str) -> str:
+        seen = set()
+        while event_id in by_id and "reaction_wave" in by_id[event_id] and event_id not in seen:
+            seen.add(event_id)
+            parents = by_id[event_id].get("causal_parent_event_ids") or []
+            if not parents:
+                break
+            event_id = parents[0]
+        return event_id
+
+    moments: dict[str, dict[str, Any]] = {}
+    for e in events:
+        if "reaction_wave" in e:
+            trigger = root(e["event_id"])
+            m = moments.setdefault(trigger, {"steps": 0, "with_cause": 0, "blocked": 0})
+            steps = e.get("reaction_steps") or [{"it": None, "caused_by": e.get("causal_parent_event_ids") or []}]
+            m["steps"] += len(steps)
+            # A step has a cause when it names an event of this round that changed something it reads.
+            m["with_cause"] += sum(1 for st in steps if any(p in by_id for p in st["caused_by"]))
+        elif e.get("status") == "reaction_limit":
+            moments.setdefault(e["event_id"], {"steps": 0, "with_cause": 0, "blocked": 0})["refused"] = next(
+                (c["label"] for c in e.get("checks") or [] if not c.get("ok")), "reaction_limit")
+    for b in stopped:
+        trigger = root(str(b["after"]).split("-", 1)[-1])
+        moments.setdefault(trigger, {"steps": 0, "with_cause": 0, "blocked": 0})["blocked"] += 1
+    return [{"trigger": _run_event_id(turn, t), "trigger_rule": (by_id.get(t) or {}).get("rule_id"), **m}
+            for t, m in moments.items()]
 
 
 def _read_attempt(engine: Engine, actor: str, text: str | None, signatures: list[dict[str, Any]], *, model: str,
@@ -537,6 +599,7 @@ def run_world(
     stop_history: list[str] | None = None,
     run_spent_usd: float = 0.0,
     spent: Callable[[], float] | None = None,
+    reaction_limit: int | None = None,
 ) -> tuple[dict[str, Any], Engine, CausalModel]:
     if policy not in {"scripted", "llm", "resident"}:
         raise ValueError("policy must be scripted, llm or resident")
@@ -544,7 +607,9 @@ def run_world(
         raise ValueError("open_attempts needs the resident policy")
     if type(max_turns) is not int or not 1 <= max_turns <= MAX_TURNS:
         raise ValueError(f"max_turns must be between 1 and {MAX_TURNS}")
-    engine, causal_model, profile_id = build_engine(bundle, causal_value)
+    # New runs have no cap on knock-on effects (Decision 009 as amended, ai-judge plan J0); the limit is recorded
+    # in the run record either way, so a replay uses the one the run ran under.
+    engine, causal_model, profile_id = build_engine(bundle, causal_value, reaction_limit=reaction_limit)
     bookkeeping = bookkeeping_fields(causal_model)
     live = live_fields(causal_model)
     if start_snapshot is not None:
@@ -556,7 +621,7 @@ def run_world(
         for name in ("world_id", "content_id", "rule_versions", "engine_id"):
             if getattr(resumed, name) != getattr(fresh, name):
                 raise ValueError(f"continue_from does not belong to this world and rule set ({name} differs)")
-        engine = Engine(resumed, engine.registry)
+        engine = Engine(resumed, engine.registry, reaction_limit=reaction_limit)
     if type(turn_offset) is not int or turn_offset < 0:
         raise ValueError("turn_offset must be a nonnegative integer")
     actors = actor_ids(engine, causal_model)
@@ -750,6 +815,8 @@ def run_world(
         shift = (turn - 1) % len(actors)
         order = actors[shift:] + actors[:shift]
         rows: dict[str, Any] = {}
+        # Knock-on steps a failed check stopped this round (ai-judge plan J0), from each move and the world's own turn.
+        round_blocked: list[dict[str, Any]] = []
         for actor in order:
             wanted = intents[actor]
             if wanted is None:
@@ -824,6 +891,7 @@ def run_world(
                     # both fires were put out on retries, yet extinguish-fire was reported never possible).
                     offered_kinds.add(str(again.get("kind") or ""))
                     outcome = engine.submit({**again, "controller": f"live:{policy}"})
+            round_blocked.extend(outcome.get("blocked_reactions") or [])
             row = {
                 "wanted": wanted,
                 "did": did,
@@ -905,6 +973,7 @@ def run_world(
             for asked, text in requests:
                 residents.observe(asked, text)
         advanced = engine.advance(1)
+        round_blocked.extend(advanced.get("blocked_reactions") or [])
         # This round's events in order: each ends the open tasks whose field it moves on (a person's move or the
         # world's process), then opens the tasks it started. An earlier event cannot end a later start.
         this_round: list[dict[str, Any]] = []
@@ -941,7 +1010,7 @@ def run_world(
                 # apart, under "reactions", each with the event that set it off.
                 "world_changes": [event["rule_id"] for event in advanced.get("events", [])
                                   if "reaction_wave" not in event],
-                **_round_reactions(engine.world.events[events_seen:], turn + turn_offset),
+                **_round_reactions(engine.world.events[events_seen:], turn + turn_offset, round_blocked),
                 "world_events": [
                     {"event_id": _run_event_id(turn + turn_offset, event.get("event_id")), "rule_id": event["rule_id"],
                      "changes": _state_changes(event)}
@@ -992,6 +1061,8 @@ def run_world(
                   else "scripted-least-recent"),
         "cost_usd": round(cost + (residents.cost() if residents is not None else 0.0), 6),
         "mechanic_profile_id": profile_id,
+        # The knock-on reaction limit this run ran under (null: none). A record without this key ran under 32.
+        "reaction_limit": engine.reaction_limit,
         "engine_events": engine_events,
         "summary": {
             "turns": len(transcript),
