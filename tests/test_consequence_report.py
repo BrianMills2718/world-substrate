@@ -146,7 +146,7 @@ class PassTwoTests(unittest.TestCase):
         self.assertIn("from", two["rules_check"]["error"])
         self.assertIsNone(two["test_run"])
 
-    @pytest.mark.req("ai-judge/a-rule-the-check-rejects-is-reported-and-not-run")
+    @pytest.mark.req("ai-judge/a-move-the-proposed-rule-refuses-is-reported-with-its-failed-checks")
     def test_a_move_the_proposed_rule_refuses_is_reported_with_its_failed_checks(self):
         bundle, rules = port()
         engine, _, _ = build_engine(bundle, rules)
