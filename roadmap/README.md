@@ -145,7 +145,7 @@ Hard constraints:
 
 ### Hardening queue
 
-Small reversible changes, none reopening the architecture: fingerprint the exact executable law plus compiler version; bind write-scope placeholders to one action role; make discovery-cap overflow visible; record mechanic exceptions as refusals; enforce or honestly report read scopes; add a lockfile when a dependency enters a reproducible production path. Details and sources: Q34, Q66, Q67, Q69.
+Small reversible changes, none reopening the architecture: fingerprint the exact executable law plus compiler version; bind write-scope placeholders to one action role; make discovery-cap overflow visible; record mechanic exceptions as refusals; enforce or honestly report read scopes; add a lockfile when a dependency enters a reproducible production path. Details and sources: Q34, Q66, Q67, Q68, Q69.
 
 ### Deliberately deferred
 
@@ -226,7 +226,7 @@ Open pull requests: none on 2026-11-09 (`gh pr list --state open`).
 | P1 | law fingerprint lacks compiler version; silent discovery truncation; unrecorded mechanic exceptions (Q69) | hardening queue |
 | P1 | write-scope placeholders are not role-bound (Q67) | hardening queue |
 | P2 | read scopes are recorded, not enforced, and the check reports a constant (Q34, Q66) | report honestly first; enforce when a run needs it |
-| P2 | live path imports spike code (`spikes/any-scenario-2026-10/`) | move what the live path needs into `scripts/` or `src/` when next changed |
+| P2 | live path imports spike code (`spikes/any-scenario-2026-10/`, Q71) | move what the live path needs into `scripts/` or `src/` when next changed |
 | P2 | hosted CI conflicts with the no-hosted-CI rule (Q70) | Brian decides |
 | P2 | `schemas/world-authoring-bundle-v0.schema.json` rejects law-bearing bundles (Q65) | fix the schema to match the validator |
 | P3 | `unheat` lacks a pinned Linguistic Core sense | upstream semantic gap |
