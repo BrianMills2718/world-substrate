@@ -1552,7 +1552,8 @@ window.PAGE_DATA = {
    "status": "resolved",
    "recommendation": "Remove the workflow: scripts/check_project.py already runs before every merge through ship, and a hosted job nobody reads only adds noise. Fold any test it runs that the project check does not into the project check first.",
    "sources": [
-    ".github/workflows/native-coordination-linux.yml",
+    "scripts/check_project.py",
+    "tests/test_native_coordination_matrix.py",
     "roadmap/README.md:85"
    ],
    "touches": [
