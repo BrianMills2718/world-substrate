@@ -30,7 +30,7 @@ State on 2026-11-09 (`main` at `0e66a98`). The prototype substrate phase is comp
 | Independent rules review | built and deployed: a model of another family reads the rules against the description and laws |
 | Open attempts | built: residents say what they try in their own words; requests reach the person asked (#326); skill rolls not built |
 | Same-moment knock-on effects | built: waves inside one commit, no cap since 2026-11-10 (each rule fires once per thing per moment), every step names its cause, blocked steps shown ([Decision 009](docs/decisions/009-same-moment-knock-on-effects.md)) |
-| Residents | Concordia since 2026-10-16; no AI judge (the game master is off) |
+| Residents | Concordia since 2026-10-16; since 2026-11-10 (AI judge J2) Concordia's game master (`EventResolution`) is on only as the judge for attempts no rule covers: it proposes a rule, test-runs it on a copy, then confirms, revises once or withdraws; rulings are recorded, not installed (J3) |
 | Live play, share links, run page | deployed on the personal VPS since 2026-10-05; a share link stores and replays a run |
 | Linguistic Core binding | six of seven M1 action kinds; generated action kinds are not semantically bound |
 | Waltzman reference world | blocked baseline, exact-history intervention, living projection, information kept apart from causal parents, detachable analysis |
