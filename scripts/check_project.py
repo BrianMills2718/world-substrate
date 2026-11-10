@@ -27,11 +27,9 @@ REQUIRED = (
     "docs/AGENTS.md",
     "docs/wiki/README.md",
     "docs/architecture.md",
-    "docs/contracts/core-v0.md",
-    "docs/contracts/semantic-mechanical-binding-v0.md",
-    "docs/contracts/mechanic-profile-v0.md",
-    "docs/contracts/transition-envelope-v0.md",
-    "docs/contracts/read-scope-enforcement-v0.md",
+    "openspec/specs/transition-engine/spec.md",
+    "openspec/specs/semantic-binding/spec.md",
+    "openspec/specs/mechanic-installation/spec.md",
     "docs/decisions/001-project-scope.md",
     "docs/decisions/002-observability-and-replay.md",
     "docs/decisions/003-semantic-mechanical-boundary.md",
@@ -169,7 +167,7 @@ def markdown_files() -> list[Path]:
 
 # --- Contract status against the code it describes ---------------------------
 #
-# `REQUIRED` above asserts that a contract file exists and is linked. Nothing
+# `REQUIRED` above asserts that a contract file (an OpenSpec spec since 2026-11-09) exists. Nothing
 # asserted that what it *says about itself* is still true, which is why
 # semantic-mechanical-binding-v0.md spent several commits claiming one binding
 # of seven while six were implemented, and claiming no binding reached an event
@@ -355,7 +353,7 @@ def check_contract_status(root: Path) -> list[str]:
     live = _live_facts(root)
     declared_anywhere = 0
     for name in REQUIRED:
-        if not name.startswith("docs/contracts/"):
+        if not name.startswith("openspec/specs/"):
             continue
         path = root / name
         if not path.exists():

@@ -13,7 +13,7 @@ Governs: RULE-FROZEN-PROFILE, spikes/any-scenario-2026-10
 
 ## Context
 
-The goal is a demo for Rand Waltzman in which he describes any situation in plain words and watches it play out. The current path cannot reach "any" soon. Every outcome needs an approved rule written in advance, and a rule the authoring AI forgets (patients can die) silently never happens. Five weeks of native work produced one situation shape (Decision 005, `docs/contracts/native-coordination-authoring-v0.md`).
+The goal is a demo for Rand Waltzman in which he describes any situation in plain words and watches it play out. The current path cannot reach "any" soon. Every outcome needs an approved rule written in advance, and a rule the authoring AI forgets (patients can die) silently never happens. Five weeks of native work produced one situation shape (Decision 005, `openspec/specs/native-coordination/spec.md`).
 
 Brian raised two objections on 2026-10-07:
 

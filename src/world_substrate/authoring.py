@@ -1,6 +1,6 @@
 """Compile a declared mechanic into a registrable process rule.
 
-docs/contracts/mechanic-profile-v0.md permits an offline mechanics agent to
+openspec/specs/mechanic-installation/spec.md permits an offline mechanics agent to
 produce "declarative mechanics or executable source". This module implements
 the declarative half, deliberately: a declaration is inspectable before it runs,
 and nothing here executes author-supplied code. The compiled rule is an

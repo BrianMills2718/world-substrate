@@ -1,7 +1,7 @@
 """Derived, read-only exchange classification over committed give events.
 
 Per docs/decisions/003-semantic-mechanical-boundary.md and
-docs/contracts/transition-envelope-v0.md: "Two voluntary gives are independent
+openspec/specs/transition-engine/spec.md: "Two voluntary gives are independent
 transitions... A derived exchange view can recognize the reciprocal history but
 cannot transfer either asset again." find_exchanges is a pure analytic pass
 over already-committed world.events/world.commands. It never touches World

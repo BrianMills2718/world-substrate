@@ -40,19 +40,6 @@ Every document still in the repository that the [documentation index](index.md) 
 - [Code-first world authoring starter](audits/world-authoring-starter.md)
 - [World Replay Studio product surface](audits/world-replay-studio.md)
 
-## docs/contracts
-
-- [Scene profile v0](contracts/scene-profile-v0.md)
-- [World authoring bundle v0](contracts/world-authoring-bundle-v0.md)
-- [Composed Living Scene presentation](contracts/composed-living-scene-v1.md)
-- [CVS Situation IR structural import v0](contracts/cvs-situation-import-v0.md)
-- [Living Scene v1](contracts/living-scene-v1.md)
-- [Mechanic profile contract v0](contracts/mechanic-profile-v0.md)
-- [Native coordination one-shot authoring v0](contracts/native-coordination-authoring-v0.md)
-- [Native coordination comparison v0](contracts/native-coordination-comparison-v0.md)
-- [Native coordination diagnostic bundle v0](contracts/native-coordination-diagnostics-v0.md)
-- [Read-scope enforcement contract v0](contracts/read-scope-enforcement-v0.md)
-- [Transition envelope contract v0](contracts/transition-envelope-v0.md)
 
 ## docs/decisions
 

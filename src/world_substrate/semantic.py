@@ -1,4 +1,4 @@
-"""Semantic-mechanical bindings per docs/contracts/semantic-mechanical-binding-v0.md.
+"""Semantic-mechanical bindings per openspec/specs/semantic-binding/spec.md.
 
 A binding explains what an attempt means; it never mutates state itself. Every
 binding here cites the pinned Linguistic Core extraction recorded in

@@ -1,6 +1,6 @@
 """Interaction assays: search for consequential state an author never declared.
 
-Installer step 5 of docs/contracts/mechanic-profile-v0.md. Per
+Installer step 5 of openspec/specs/mechanic-installation/spec.md. Per
 docs/decisions/003-semantic-mechanical-boundary.md, a causal-closure assay
 produces evidence and residual risk, never a completeness boolean: an author
 who omits a dependency entirely leaves nothing in their own declaration to

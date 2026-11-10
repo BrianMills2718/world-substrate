@@ -1,6 +1,6 @@
 """A contract's stated status is checked against the code it describes.
 
-`check_project.REQUIRED` asserted that contract files exist and are linked.
+`check_project.REQUIRED` asserted that contract files (now the OpenSpec specs) exist and are linked.
 Nothing asserted that what they *say about themselves* is still true, which is
 how semantic-mechanical-binding-v0.md spent several commits claiming one
 binding of seven while six were implemented, and claiming no binding reached a
@@ -37,7 +37,7 @@ class TheStatusCheckIsWiredUp(unittest.TestCase):
         # check itself fails when nothing opts in.
         declared = {}
         for name in check_project.REQUIRED:
-            if name.startswith("docs/contracts/"):
+            if name.startswith("openspec/specs/"):
                 declared.update(
                     check_project._parse_status_facts((REPO / name).read_text())
                 )
@@ -46,7 +46,7 @@ class TheStatusCheckIsWiredUp(unittest.TestCase):
     def test_every_declared_fact_is_one_the_checker_computes(self):
         live = check_project._live_facts(REPO)
         for name in check_project.REQUIRED:
-            if not name.startswith("docs/contracts/"):
+            if not name.startswith("openspec/specs/"):
                 continue
             for key in check_project._parse_status_facts((REPO / name).read_text()):
                 with self.subTest(contract=name, fact=key):
