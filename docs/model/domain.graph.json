@@ -430,6 +430,42 @@
    "label": "Independent rules review",
    "kind": "Substrate",
    "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds. Code: scripts/review_rules.py:92."
+  },
+  {
+   "id": "consequence-report",
+   "label": "Consequence report",
+   "kind": "Theory",
+   "explain": "Plan ai-judge J1 (planned, not implemented): what the engine works out for an attempt no rule covers, in two passes. Pass 1, with no new rule: engine.discover for the person acting and for each person the attempt names (their moves, with which checks pass or fail), plus the current values of the entities the attempt names. Pass 2: the judge's proposed rule test-run on a copy of the world, giving its net changes, blockers, chain length and stopping point; the full chain stays in the run record. Code: none yet."
+  },
+  {
+   "id": "judge-ruling",
+   "label": "Judge ruling",
+   "kind": "Theory",
+   "explain": "Plan ai-judge J2 (planned, not implemented): Concordia's game master (EventResolution), given the whole world and pass 1 of the consequence report, proposes a rule for the constraint an unmatched attempt raises (can coins change hands here?); after reading the pass 2 test run of that rule it confirms, revises once or withdraws. Never an outcome or another person's choice. Code: none yet."
+  },
+  {
+   "id": "ruling-rule",
+   "label": "Ruling-origin rule",
+   "kind": "Theory",
+   "explain": "Plan ai-judge J3 (planned, not implemented): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, recording the ruling id and round it came from; it applies to everyone in the same situation and the attempt settles through it. A ruling the language cannot express is refused and recorded as a language gap. Code: none yet."
+  },
+  {
+   "id": "credential-holder",
+   "label": "Credential holder",
+   "kind": "Theory",
+   "explain": "Plan ai-judge J4 (planned, not implemented): who holds a credential (a password, a signed release) as a fact in the world that can change: told, overheard, copied, forged or phished. The mechanism checks the credential, not the holder. Code: none yet."
+  },
+  {
+   "id": "norm",
+   "label": "Norm",
+   "kind": "Theory",
+   "explain": "Plan ai-judge J4 (planned, not implemented): what people expect or forbid (bribery is illegal; only Alice should log in). It can be broken; a breach is recorded and has consequences only when someone notices and acts. Never written as a declared law. Code: none yet."
+  },
+  {
+   "id": "midrun-setting",
+   "label": "Mid-run rulings setting",
+   "kind": "Theory",
+   "explain": "Plan ai-judge Decided 5 (planned, not implemented): a per-world option, 'Judge rulings during a run': Approved by Create (default; a checked ruling is installed at once and the attempt settles through it) or Wait for my approval (the proposed rule is held, the attempt waits as pending, Approve installs the rule and settles it, Reject refuses it; nothing settles without an installed rule). Code: none yet."
   }
  ],
  "edges": [
@@ -1056,6 +1092,102 @@
    "source": "rules-review",
    "target": "build",
    "label": "replaces meaning-guessing checks in"
+  },
+  {
+   "id": "e104",
+   "source": "knock-on-now",
+   "target": "consequence-report",
+   "label": "collected into"
+  },
+  {
+   "id": "e105",
+   "source": "consequence-report",
+   "target": "unmatched-attempt",
+   "label": "describes"
+  },
+  {
+   "id": "e106",
+   "source": "consequence-report",
+   "target": "check",
+   "label": "pass 1 lists"
+  },
+  {
+   "id": "e107",
+   "source": "consequence-report",
+   "target": "test-run",
+   "label": "pass 2 is a"
+  },
+  {
+   "id": "e108",
+   "source": "judge-ruling",
+   "target": "consequence-report",
+   "label": "reads"
+  },
+  {
+   "id": "e109",
+   "source": "judge-ruling",
+   "target": "unmatched-attempt",
+   "label": "decides only"
+  },
+  {
+   "id": "e110",
+   "source": "judge-ruling",
+   "target": "resident",
+   "label": "routes choices to"
+  },
+  {
+   "id": "e111",
+   "source": "ruling-rule",
+   "target": "judge-ruling",
+   "label": "made from"
+  },
+  {
+   "id": "e112",
+   "source": "rules-review",
+   "target": "ruling-rule",
+   "label": "checks"
+  },
+  {
+   "id": "e113",
+   "source": "ruling-rule",
+   "target": "mechanic",
+   "label": "is a"
+  },
+  {
+   "id": "e114",
+   "source": "midrun-setting",
+   "target": "ruling-rule",
+   "label": "decides when installed"
+  },
+  {
+   "id": "e115",
+   "source": "midrun-setting",
+   "target": "approval",
+   "label": "amends"
+  },
+  {
+   "id": "e116",
+   "source": "credential-holder",
+   "target": "entity-component",
+   "label": "is kept in"
+  },
+  {
+   "id": "e117",
+   "source": "credential-holder",
+   "target": "information",
+   "label": "can change by"
+  },
+  {
+   "id": "e118",
+   "source": "norm",
+   "target": "world-law",
+   "label": "is not a"
+  },
+  {
+   "id": "e119",
+   "source": "norm",
+   "target": "observation",
+   "label": "has consequences through"
   }
  ],
  "layout": {

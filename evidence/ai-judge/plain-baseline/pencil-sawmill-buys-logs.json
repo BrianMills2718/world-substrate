@@ -1,0 +1,56 @@
+{
+ "case": "pencil-sawmill-buys-logs",
+ "source": "evidence/declared-laws/s2-pencil-2/run-log.jsonl line 5 (0-based 4), actor sawmill",
+ "source_run_trace_id": "world-builder-live/run/5b697f2063f8421fb9198219dd292f3e",
+ "attempt": "I go to the Oregon logger and offer to pay for their three cedar logs, asking them to transfer the logs to my sawmill.",
+ "revision": 11,
+ "trace_id": "world-substrate/ai-judge-plain-baseline/b75fd5f42b9742078c798df205243c73",
+ "model": "openrouter/openai/gpt-6-luna",
+ "cost_usd": 0.0020064,
+ "usage": {
+  "prompt_tokens": 13539,
+  "completion_tokens": 1305,
+  "total_tokens": 14844,
+  "prompt_tokens_details": {
+   "audio_tokens": 0,
+   "cache_write_tokens": 0,
+   "cached_tokens": 0,
+   "cache_creation_tokens": 0,
+   "video_tokens": 0
+  },
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "completion_tokens_details": {
+   "reasoning_tokens": 377,
+   "audio_tokens": 0,
+   "image_tokens": 0
+  },
+  "reasoning_tokens": 377
+ },
+ "engine_blocked_by_rules_in_saved_run": [],
+ "saved_run_outcome": {
+  "status": "unsupported_action",
+  "changed": false,
+  "event_id": "r4-e00006"
+ },
+ "messages_chars": 46037,
+ "output": {
+  "what_the_world_state_says": [
+   "The sawmill is an actor with the sawmill category, is in Oregon, and has business.cash = 10000 and business.logs = 0.",
+   "The logger is an actor with the logger category, is in Oregon, and has business.logs = 3 and business.cash = 10000.",
+   "The forest has standing_cedar = 99997."
+  ],
+  "blockers": [
+   "No installed move transfers logs from the logger to the sawmill or lets the sawmill purchase them.",
+   "The saw-slats move takes logs from a named logger, not from the sawmill's own logs. Thus, even if these logs were transferred, that move as currently installed could not saw them from the sawmill's inventory.",
+   "The logger's agreement to sell is not represented by any current value or installed rule; the world cannot decide that choice."
+  ],
+  "knock_on_effects": [
+   "If the logger agrees and a transfer rule is added, three logs could move to the sawmill and payment could move from the sawmill to the logger, subject to the rule's checks.",
+   "The existing saw-slats rule would not process logs held by the sawmill. A further rule change would be needed to saw those transferred logs."
+  ],
+  "whose_choice": "logger",
+  "ruling": "The attempt to offer payment is possible, but the world has no installed move for this sale and transfer. Whether the logs are sold is the logger's choice; the world cannot make that choice for them.",
+  "proposed_rule": "{\"action\":{\"kind\":\"buy-cedar-logs\",\"description\":\"Offer the named logger payment for cedar logs and, if the logger agrees, transfer the logs to the sawmill.\",\"fields\":[{\"name\":\"logger\",\"type\":\"entity_ref\"},{\"name\":\"quantity\",\"type\":\"integer\"}]},\"mechanic\":{\"schema_version\":\"world-substrate-action-mechanic/v0\",\"mechanic_id\":\"buy-cedar-logs\",\"version\":\"1\",\"action_kind\":\"buy-cedar-logs\",\"rationale\":\"Transfer cedar logs from a logger to a sawmill and pay the logger the logger's listed business price per log. The logger must agree to the sale; that agreement is not represented by the current schema and must be supplied externally.\",\"actor_selector\":{\"categories\":[\"actor\",\"sawmill\"],\"components\":[\"business\"]},\"participants\":{\"logger\":{\"categories\":[\"actor\",\"logger\"],\"components\":[\"business\"]}},\"parameters\":{\"quantity\":[1]},\"checks\":[{\"label\":\"The quantity is positive\",\"left\":{\"action_field\":\"quantity\"},\"op\":\"gt\",\"right\":{\"literal\":0}},{\"label\":\"The logger has enough logs\",\"left\":{\"participant\":{\"name\":\"logger\",\"path\":\"components.business.logs\"}},\"op\":\"gte\",\"right\":{\"action_field\":\"quantity\"}},{\"label\":\"The sawmill can afford the total at the logger's listed price\",\"left\":{\"participant\":{\"name\":\"actor\",\"path\":\"components.business.cash\"}},\"op\":\"gte\",\"right\":{\"participant\":{\"name\":\"logger\",\"path\":\"components.business.price\"}}}],\"effects\":[{\"participant\":\"logger\",\"path\":\"components.business.logs\",\"op\":\"subtract\",\"value\":{\"action_field\":\"quantity\"}},{\"participant\":\"actor\",\"path\":\"components.business.logs\",\"op\":\"add\",\"value\":{\"action_field\":\"quantity\"}},{\"participant\":\"actor\",\"path\":\"components.business.cash\",\"op\":\"subtract\",\"value\":{\"participant\":{\"name\":\"logger\",\"path\":\"components.business.price\"}}},{\"participant\":\"logger\",\"path\":\"components.business.cash\",\"op\":\"add\",\"value\":{\"participant\":{\"name\":\"logger\",\"path\":\"components.business.price\"}}}],\"limits\":[\"This mechanic's available expression language cannot calculate price multiplied by quantity, so these effects charge the listed price once. Logger agreement is not represented by a component path and cannot be enforced by the checks.\",\"The existing saw-slats move does not saw logs held by the sawmill.\"],\"tests\":[\"Refuse a nonpositive quantity, insufficient logger logs, or an unaffordable listed price.\",\"Only perform the exchange if the logger agrees; transfer the requested logs and the listed price once.\"],\"semantic_bindings\":[\"actor is the sawmill\",\"logger is the named logger\"]}}"
+ }
+}

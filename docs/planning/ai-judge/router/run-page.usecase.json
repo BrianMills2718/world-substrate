@@ -1,0 +1,30 @@
+{
+  "id": "world-builder-run-page-ai-judge",
+  "title": "Run page: knock-on chains, judge rulings and whose choice decided",
+  "concern": "For one run, did every knock-on chain run to the end with each step naming its cause, which attempts no rule covered, what the judge proposed and what the test run of that rule showed, which ruling became a rule (or is held), and whose choice decided the rest?",
+  "stakeholder": "Brian, and a drop-in visitor to the World Builder",
+  "intent": ["inspect", "troubleshoot", "trace"],
+  "informationStructure": ["table", "hierarchy", "document"],
+  "tasks": ["inspect", "compare", "trace"],
+  "entities": ["moment", "step", "attempt", "blocker", "proposed rule", "test-run report", "ruling", "person's choice", "norm breach"],
+  "relationships": ["caused-by", "blocked-by", "proposed-for", "tested-by", "became-rule", "decided-by"],
+  "relationshipEnds": [
+    {"relationship": "caused-by", "from": "step", "to": "step"},
+    {"relationship": "blocked-by", "from": "step", "to": "blocker"},
+    {"relationship": "proposed-for", "from": "proposed rule", "to": "attempt"},
+    {"relationship": "tested-by", "from": "proposed rule", "to": "test-run report"},
+    {"relationship": "became-rule", "from": "ruling", "to": "proposed rule"},
+    {"relationship": "decided-by", "from": "attempt", "to": "person's choice"}
+  ],
+  "scale": {"items": 5000, "density": "high"},
+  "interaction": {"mode": "exploratory", "dynamics": "interactive"},
+  "audience": {"expertise": "novice", "frequency": "occasional", "domainFamiliarity": "novice", "notationFamiliarity": "novice", "visualizationLiteracy": "mixed"},
+  "constraints": {"realtime": false, "provenance": true, "allowAggregation": true},
+  "representationRole": "analytic",
+  "abstractionLevel": "detailed",
+  "successCriteria": [
+    "Each moment shows one summary line first: steps run, steps with a cause, and any refusal, so 5,000 steps can be judged without reading 5,000 rows.",
+    "Any step opens to the step that caused it, and a blocked step shows its blocker in orange with the word 'blocked'.",
+    "An attempt no rule covered opens to the judge's proposed rule, the test-run report of that rule, and whether it was installed, held or refused, in plain words."
+  ]
+}

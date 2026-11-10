@@ -271,6 +271,24 @@
    "explain": "Blocks: Whether that wrong-when condition can ever be checked.."
   },
   {
+   "id": "Q75",
+   "label": "Q75: Constraint question or someone's choice",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: J2's routing step and A5 (Rosa's own resident decides accept or refuse).."
+  },
+  {
+   "id": "Q76",
+   "label": "Q76: How to write norms and credential holders",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: J4's design and A6 (the password fixture: Mallory phishes Alice's password, is logged in, and the breach has consequences only after an observer acts).."
+  },
+  {
+   "id": "Q77",
+   "label": "Q77: Wiki cap and durable-document checks fail on main",
+   "kind": "AgentQuestion",
+   "explain": "Blocks: Whether the wiki-compliance and durable-document checks pass again for every package in this repository.."
+  },
+  {
    "id": "affordance",
    "label": "Affordance (offered move)",
    "kind": "Concept",
@@ -337,6 +355,13 @@
    "explain": "An objection a group holds on a delivered item: open, under remedy or resolved, with answered and remedy_by."
   },
   {
+   "id": "credential-holder",
+   "label": "Credential holder",
+   "kind": "Concept",
+   "dashed": true,
+   "explain": "Plan ai-judge J4 (planned, not implemented): who holds a credential (a password, a signed release) as a fact in the world that can change: told, overheard, copied, forged or phished. The mechanism checks the credential, not the holder."
+  },
+  {
    "id": "engine",
    "label": "Engine",
    "kind": "Concept",
@@ -374,6 +399,13 @@
    "explain": "Decision 008: worlds built by an agent that drafts, checks and edits; scripts/world_harness.py exists but the live service does not call it."
   },
   {
+   "id": "judge-ruling",
+   "label": "Judge ruling",
+   "kind": "Concept",
+   "dashed": true,
+   "explain": "Plan ai-judge J2 (planned, not implemented): Concordia's game master (EventResolution), given the whole world and pass 1 of the consequence report, proposes a rule for the constraint an unmatched attempt raises (can coins change hands here?); after reading the pass 2 test run of that rule it confirms, revises once or withdraws. Never an outcome or another person's choice."
+  },
+  {
    "id": "law-check",
    "label": "Law check",
    "kind": "Concept",
@@ -397,6 +429,13 @@
    "label": "Mechanisms library",
    "kind": "Concept",
    "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:71, Q28)."
+  },
+  {
+   "id": "norm",
+   "label": "Norm",
+   "kind": "Concept",
+   "dashed": true,
+   "explain": "Plan ai-judge J4 (planned, not implemented): what people expect or forbid (bribery is illegal; only Alice should log in). It can be broken; a breach is recorded and has consequences only when someone notices and acts. Never written as a declared law."
   },
   {
    "id": "observation",
@@ -457,6 +496,12 @@
    "label": "Independent rules review",
    "kind": "Concept",
    "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds."
+  },
+  {
+   "id": "run-log",
+   "label": "Run log",
+   "kind": "Concept",
+   "explain": "One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads."
   },
   {
    "id": "run-loop",
@@ -1113,6 +1158,42 @@
    "id": "Q73-resident",
    "source": "Q73",
    "target": "resident",
+   "label": "bears on"
+  },
+  {
+   "id": "Q75-judge-ruling",
+   "source": "Q75",
+   "target": "judge-ruling",
+   "label": "bears on"
+  },
+  {
+   "id": "Q75-resident",
+   "source": "Q75",
+   "target": "resident",
+   "label": "bears on"
+  },
+  {
+   "id": "Q76-norm",
+   "source": "Q76",
+   "target": "norm",
+   "label": "bears on"
+  },
+  {
+   "id": "Q76-credential-holder",
+   "source": "Q76",
+   "target": "credential-holder",
+   "label": "bears on"
+  },
+  {
+   "id": "Q76-world-law",
+   "source": "Q76",
+   "target": "world-law",
+   "label": "bears on"
+  },
+  {
+   "id": "Q77-run-log",
+   "source": "Q77",
+   "target": "run-log",
    "label": "bears on"
   }
  ],
