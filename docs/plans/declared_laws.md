@@ -319,7 +319,7 @@ Never rerun until a behavior appears and report only that run. Review completene
 | S2 | `law_breaches` in `src/world_substrate/laws.py`, called in `Engine.apply` after the scope check and in `_apply_process` (ticks and knock-on waves); `_settle` returns a refusal record; `_reject` and `_refuse_round` record `law_breach`; status `law_breach`; test-run breaches become build findings | built (#284) | L2, L3, L7; free replays of saved worlds first |
 | S3 | `scripts/review_rules.py` and its findings into the rules writer's revision step | built (#291-#304; Q44 resolved); on the people-world path a build past its 80 s rewrite limit keeps a world its review flagged (Q55, open) | L4, L5, L8 |
 | S4 | retire the heuristics Q45 names, one by one, each with its incident proof | conditional (Q45; none retired yet) | L6, L7 |
-| S5 | live builds of four varied descriptions in parallel (pencil, airfield, a kitchen, the Waltzman scenario) | waiting on Q50 (S1-S3 built; new paid builds wait for Brian's answer; one Waltzman rebuild ran 2026-11-04 on his yes for that build, `evidence/declared-laws/s4-waltzman-3/`) | L1, L5, L8 per run; read for Q43 counterexamples |
+| S5 | live builds of four varied descriptions in parallel (pencil, airfield, a kitchen, the Waltzman scenario) | follows the plain-version comparison (Q60) (S1-S3 built; Q50 settled 2026-11-09; one Waltzman rebuild ran 2026-11-04 on his yes for that build, `evidence/declared-laws/s4-waltzman-3/`) | L1, L5, L8 per run; read for Q43 counterexamples |
 
 Each slice is its own pull request and leaves a working World Builder.
 
@@ -438,8 +438,8 @@ are about $0.60. The visitor allowance stays $3/day.
 
 ## Uncertainties
 
-- Q50 (Brian, open): what counts as finished. This plan's done_when and do_not_gate_on stay as adopted, so Brian's
-  review gates no merge; his 2026-11-03 objection to repeated rebuilds holds S5's paid builds until he answers.
+- Q50 (Brian, settled 2026-11-09): believability is the off-the-shelf people agents' job, with no metric, tuned
+  only once everything else runs well. S5's paid builds now wait only on the plain-version comparison (Q60).
 - Q43 (agent, resolved by reading): two law shapes cover every logged incident; S5 is read for a counterexample.
 - Q44 (agent, resolved): which model reviews; settled by the review run on the saved incident worlds
   (`evidence/declared-laws/s3-review-choice/README.md`).
@@ -447,7 +447,7 @@ are about $0.60. The visitor allowance stays $3/day.
 - Q46 (agent, resolved by argument): run-time refusal first; a static proof is optional.
 - Q48 (agent, open in part) and Q49 (agent, open): a law too permissive, and a law the designer leaves out.
 - Q55 (agent, open): the 2026-11-04 Waltzman rebuild kept rules its review flagged (no postponement possible); the
-  shared run is judged under Q50 only with that stated.
+  shared run is read only with that stated.
 - Wrong or missing laws: a designer that declares too few laws catches less, never more wrongly; a designer that
   declares a wrong law makes the test run refuse a legitimate move, which shows as a law refusal in the build record
   and goes to the rules writer and the review. L1 and S5's reads check both.

@@ -173,7 +173,7 @@ a{color:var(--have)}
 <!-- types:end -->
 <!-- package:start -->
 <h2>The planning package behind this page</h2>
-<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-10-30 on branch ws-s4-people-laws at f83c6d8, based on main c7c786c); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
+<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-11-06 on branch planning-refresh-20261106 (main 935d17e plus this branch&#x27;s planning and evidence edits; subject c99cbc7)); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
 <div class="tablewrap"><table class="pkg"><thead><tr><th>Check</th><th>Counts</th><th>Result</th></tr></thead><tbody>
 <tr><td>durable documents (arc42)</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>project navigation</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
@@ -182,7 +182,7 @@ a{color:var(--have)}
 <tr><td>project check (tests, system model, docs)</td><td>tests run 801, failed 0, skipped 2</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>wiki and Markdown cap</td><td>md files 157, cap exception, orphans 0</td><td><span class="tag have">exit 0</span></td></tr>
 </tbody></table></div>
-<h3 class="sub">Open questions: 19 open, 30 resolved</h3>
+<h3 class="sub">Open questions: 40 open, 41 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
 <div class="tablewrap"><table class="qs"><thead><tr><th>Question</th><th>Whose call</th><th>Blocks</th></tr></thead><tbody>
 <tr><td><b>Q1</b> Rules retry never runs here</td><td>agent</td><td>whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower</td></tr>
@@ -190,8 +190,6 @@ a{color:var(--have)}
 <tr><td><b>Q12</b> When a people-world run ends</td><td>Brian</td><td>how long visitors watch a run, and its cost</td></tr>
 <tr><td><b>Q14</b> Harness build time not measured</td><td>agent</td><td>when the harness replaces the fixed build calls and the rules retry (Q1) on the live path</td></tr>
 <tr><td><b>Q15</b> Repository format files not yet added</td><td>agent</td><td>whether the repo-format check passes</td></tr>
-<tr><td><b>Q16</b> Goals skip the package gate</td><td>Brian</td><td>whether the next goal can again run without a current system model and question list</td></tr>
-<tr><td><b>Q17</b> Offline pipeline views</td><td>Brian</td><td>whether work goes into the offline pipeline at all</td></tr>
 <tr><td><b>Q26</b> Run page hides own-words attempts</td><td>agent</td><td>the plan&#x27;s inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done</td></tr>
 <tr><td><b>Q30</b> Build accepted with a task never possible</td><td>agent</td><td>A2 and A3 on any newly built world (they need the helicopter and the wall reachable), and whether a visitor&#x27;s world can do what they described; A2 and A3 on the saved fixture tests/fixtures/airfield-s1-live.json do not wait for it</td></tr>
 <tr><td><b>Q31</b> Refusal reason reads as a fact</td><td>agent</td><td>whether a person, and a reader of the run, can tell why a move was refused</td></tr>
@@ -204,17 +202,40 @@ a{color:var(--have)}
 <tr><td><b>Q45</b> Which heuristic checks retire</td><td>agent</td><td>S4: which checks are removed, and so whether validation stops growing one check per bug</td></tr>
 <tr><td><b>Q48</b> A law that allows too much</td><td>agent</td><td>S4: whether a heuristic check whose incident is a conjured good may retire on the strength of a declared total law, when that law might itself list the conjuring move</td></tr>
 <tr><td><b>Q49</b> A law the designer leaves out</td><td>agent</td><td>S4: Q45 retires a check when its incident&#x27;s saved world is refused by a declared law; with laws left out that test can pass on worlds that still have the bug. Also A1 and A4, whose expected results include a payment law.</td></tr>
+<tr><td><b>Q51</b> Live network with no lines</td><td>agent</td><td>Whether the Network view can be trusted in a live run; issue #316.</td></tr>
+<tr><td><b>Q52</b> Does the person asked respond</td><td>agent</td><td>Whether requests are worth more work.</td></tr>
+<tr><td><b>Q54</b> People keep trying a closed door</td><td>agent</td><td>Whether residents see enough of the world to choose moves that can succeed; how much of a run is wasted turns.</td></tr>
+<tr><td><b>Q55</b> A flagged world kept without a rewrite</td><td>agent</td><td>Whether the shared Waltzman run (share jyVbywXT8N8F) is fit for Brian to judge under Q50, and whether the plan&#x27;s S3 (review findings go to the rules writer&#x27;s revision step) holds on the people-world path.</td></tr>
+<tr><td><b>Q56</b> A rule that writes less than it declared</td><td>agent</td><td>Whether a world&#x27;s declared write scopes can be read as what its rules actually maintain; a generated rule that silently stops updating a field it owns goes unnoticed.</td></tr>
+<tr><td><b>Q57</b> String fields have no declared values</td><td>agent</td><td>Whether the interpreter and compiler can refuse a value outside a world&#x27;s vocabulary (a dock, a route, a status) instead of accepting any string.</td></tr>
+<tr><td><b>Q58</b> Promises beyond support (a Commitment kind)</td><td>agent</td><td>Whether a people world can hold a promise one person makes another that is not support for the decision.</td></tr>
+<tr><td><b>Q59</b> Does the people path transfer to a different situation</td><td>agent</td><td>Whether &#x27;describe any scenario&#x27; (Decision 007) holds beyond decision-with-concerns situations; feeds Q60.</td></tr>
+<tr><td><b>Q61</b> Outside vocabularies never evaluated</td><td>agent</td><td>Whether the run log&#x27;s causal fields, the derived scopes and the project&#x27;s causal claims use an outside vocabulary or stay project-specific.</td></tr>
+<tr><td><b>Q62</b> Meaning coverage beyond the six bound moves</td><td>agent</td><td>Adding any overlay term beyond the six bound M1 move kinds, and binding generated move kinds to a meaning.</td></tr>
+<tr><td><b>Q63</b> A non-authoritative estimate as a rule input</td><td>agent</td><td>Any world whose rules need a bounded estimate (time to repair, a likelihood) that no installed mechanic computes.</td></tr>
+<tr><td><b>Q64</b> Meaning is looked up by bare move name</td><td>agent</td><td>Whether an event&#x27;s semantic_binding and mechanic id can be trusted to describe the rule that actually ran.</td></tr>
+<tr><td><b>Q65</b> The bundle schema refuses declared laws</td><td>agent</td><td>Any outside tool or test that validates a declared-laws bundle against the published schema.</td></tr>
+<tr><td><b>Q66</b> The read-scope status fact is a constant</td><td>agent</td><td>Whether the status check is evidence about read scopes or only about the spec&#x27;s text; Q34.</td></tr>
+<tr><td><b>Q67</b> Write-path placeholders bind to any participant</td><td>agent</td><td>Whether a declared write scope limits a rule to the participants it names; listed in the roadmap hardening queue.</td></tr>
+<tr><td><b>Q68</b> No lockfile; donor check needs a missing checkout</td><td>agent</td><td>Reproducing a run&#x27;s exact dependencies, and running the donor check at all.</td></tr>
+<tr><td><b>Q69</b> Hardening: law identity, discovery cap, mechanic errors</td><td>agent</td><td>Whether an approval names one exact executable law, whether a decider ever silently misses moves, and whether a broken rule leaves a trace in the run.</td></tr>
+<tr><td><b>Q71</b> The live build imports spike code</td><td>agent</td><td>Whether spike code is held to the live path&#x27;s tests and review; whether the spike folder can be archived.</td></tr>
+<tr><td><b>Q72</b> Living-scene profiles refuse a render key the layout reads (plausible)</td><td>agent</td><td>Whether a scene author can set the gather radius the layout documents.</td></tr>
+<tr><td><b>Q73</b> Decision 006&#x27;s wrong-when names a missing adapter</td><td>agent</td><td>Whether that wrong-when condition can ever be checked.</td></tr>
+<tr><td><b>Q75</b> Constraint question or someone&#x27;s choice</td><td>agent</td><td>J2&#x27;s routing step and A5 (Rosa&#x27;s own resident decides accept or refuse).</td></tr>
+<tr><td><b>Q76</b> How to write norms and credential holders</td><td>agent</td><td>J4&#x27;s design and A6 (the password fixture: Mallory phishes Alice&#x27;s password, is logged in, and the breach has consequences only after an observer acts).</td></tr>
+<tr><td><b>Q77</b> Wiki cap and durable-document checks fail on main</td><td>agent</td><td>Whether the wiki-compliance and durable-document checks pass again for every package in this repository.</td></tr>
 </tbody></table></div>
 <h3 class="sub">Diagrams</h3>
 <ul class="plain"><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/ODD.md">ODD.md</a>: What is inside World Substrate and what talks to it? (context and container views, section 3)</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>: Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>: Which concepts carry the unsettled questions, and whose call is each?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/metamodel.graph.json">metamodel.graph.json</a>: What kinds of things can any world&#x27;s rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?</li></ul>
-<p>Cold review of this package: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/cold-review.md">cold-review.md</a>.</p>
+<p>Cold review of this package: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/cold-review.md">cold-review.md</a> (verdict: pass).</p>
 <!-- package:end -->
 <!-- maps:start -->
 <h2>The maps behind the plan</h2>
-<p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 67 ideas, 104 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
+<p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 73 ideas, 120 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
 <div class="graph" id="map-domain"></div>
 <p class="mapinfo" id="map-domain-info">Click an idea to see what it is and where it lives in the code.</p>
-<p class="lede">The open-questions map: each open question beside the ideas it touches (19 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
+<p class="lede">The open-questions map: each open question beside the ideas it touches (40 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
 <div class="graph" id="map-questions"></div>
 <p class="mapinfo" id="map-questions-info">Click a question to read it.</p>
 <!-- maps:end -->

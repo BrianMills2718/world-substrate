@@ -29,7 +29,7 @@ Why rules rather than an AI judge: scale. Brian, 2026-11-09, quoted in full in [
 - **Actor:** a World Builder visitor (or Brian as owner) at <https://brianmills.dev/world-builder/>.
 - **Recurring job and baseline:** the visitor describes a situation in plain words, presses Create simulation (which is the approval), and watches the generated people act under the installed rules. Today each person picks a move the rules offer or writes an open attempt in their own words (S1); same-moment knock-on chains run inside one commit (S2); skill-shaped failures never appear because skill rolls are not built (S3).
 - **Inspectable result:** the run page and its build record: what each person tried, what the rules did and why, every event with its cause; a share link replays the run for free.
-- **Stage and investment boundary:** prototype stage; this repository and its own deploy only; visitors share $3.00 a day and the owner has $5.00 a day (`scripts/world_builder_service.py`); new paid builds under the declared-laws plan wait on Q50; no new service, engine or repository without Brian's yes.
+- **Stage and investment boundary:** prototype stage; this repository and its own deploy only; visitors share $3.00 a day and the owner has $5.00 a day (`scripts/world_builder_service.py`); new paid builds under the declared-laws plan follow the plain-version comparison (Q60); no new service, engine or repository without Brian's yes.
 
 ### Causal product contract
 
@@ -133,14 +133,14 @@ Hard constraints:
 | Natural-language World Builder | live since 2026-10-05 | one box, Create simulation, live play, share links |
 | Concordia residents | live since 2026-10-16 | AI residents through an established framework |
 | Open attempts | S1 and S2 built; S3 not built | own-words attempts; same-moment knock-on effects; skill rolls next |
-| Declared laws | S1 to S3 built; S4 under way; S5 waits on Q50 | worlds declare laws, the engine keeps them, a second model reviews the rules |
+| Declared laws | S1 to S3 built; S4 under way; S5 follows the plain-version comparison (Q60) | worlds declare laws, the engine keeps them, a second model reviews the rules |
 | Hardening | queued | law fingerprint with compiler version, role-bound scopes, visible discovery overflow, recorded mechanic exceptions, locking |
 | Persistence and second-domain proof | later | saved user worlds beyond share links; proof beyond Waltzman |
 
 ### Active slice — declared laws S4, then skill rolls
 
 1. **Declared laws S4** ([plan](../docs/plans/declared_laws.md)): let declared laws and the rules review retire the hand-written build checks. Done so far: free replay of every saved world (`scripts/check_saved_worlds.py`), fixes from the S4 live builds (one-way moves kept #309, places and owners shown to the reviewer #310, fields only one thing can fill #312, people worlds get laws and review #314, every kept people try reviewed #317, trades named from one side #319, the round told to each person #320 and #323). Not yet done: retiring any hand-written check (Q45).
-2. **Declared laws S5**: live builds of four varied descriptions in parallel. Waits on Brian's answer to Q50; one Waltzman rebuild ran on 2026-11-04 on his yes for that build (`evidence/declared-laws/s4-waltzman-3/`).
+2. **Declared laws S5**: live builds of four varied descriptions in parallel. Follows the plain-version comparison (Q60, settled 2026-11-09 by Brian's plain-version rule); one Waltzman rebuild ran on 2026-11-04 on his yes for that build (`evidence/declared-laws/s4-waltzman-3/`).
 3. **Open attempts S3** ([plan](../docs/plans/open_attempt.md)): seeded, recorded skill rolls on action mechanics, with the roll's skill path in derived reads (Q33, Q40).
 
 ### Hardening queue
@@ -218,8 +218,7 @@ Open pull requests: none on 2026-11-09 (`gh pr list --state open`).
 
 | Priority | Risk or open need | Current stance |
 | --- | --- | --- |
-| P0 | paid builds keep finding new defects with no stated end (Q50) | Brian decides what result ends the declared-laws work; new paid builds wait |
-| P0 | the generated Waltzman world stipulates outcomes its mechanisms should produce (Q60) | lineage review recorded; no change adopted |
+| P0 | the generated Waltzman world stipulates outcomes its mechanisms should produce (Q60) | settled 2026-11-09 by Brian's plain-version rule: compare against one model given the whole scenario before more repair or S5 |
 | P1 | hand-written build checks keep growing (Q45) | retire them only when declared laws and the review demonstrably cover the incident |
 | P1 | declared laws can be wrong for the world, or missing (Q48, Q49) | read S4 and S5 builds for counterexamples |
 | P1 | the agent harness is not on the live path (Q14) | measure a harness build against the 150 s first-round target (a people build must play its first round within 150 s of Create simulation) |
@@ -227,31 +226,28 @@ Open pull requests: none on 2026-11-09 (`gh pr list --state open`).
 | P1 | write-scope placeholders are not role-bound (Q67) | hardening queue |
 | P2 | read scopes are recorded, not enforced, and the check reports a constant (Q34, Q66) | report honestly first; enforce when a run needs it |
 | P2 | live path imports spike code (`spikes/any-scenario-2026-10/`, Q71) | move what the live path needs into `scripts/` or `src/` when next changed |
-| P2 | hosted CI conflicts with the no-hosted-CI rule (Q70) | Brian decides |
+| P2 | hosted CI conflicts with the no-hosted-CI rule (Q70) | decided by agent 2026-11-09: fold its tests into the project check, then remove it |
 | P2 | `schemas/world-authoring-bundle-v0.schema.json` rejects law-bearing bundles (Q65) | fix the schema to match the validator |
 | P3 | `unheat` lacks a pinned Linguistic Core sense | upstream semantic gap |
 | P3 | no counterfactual adequacy proof; no scale demonstration | deferred |
 
 ## Human decisions
 
-Answered (kept as the record): World Substrate is the one canonical project (001); observability required, exact replay not (002); meaning does not imply effects, and richer Linguistic Core roles do not move mechanics upstream (003, 2026-09-12 review); own causal reality and borrow commodity machinery (004); converge the next Waltzman release on native World Substrate (005, 2026-09-18); hold at the governed-rules layer (006, 2026-10-05); describe any scenario (007); build worlds in an agent harness (008); same-moment effects are rule semantics (009, 2026-10-26); Create simulation is the approval (2026-10-15); Concordia hosts residents; gpt-6-luna is the default model, sol only when sharing with Waltzman (2026-10-16); adopt the open-attempt plan (2026-10-25) and the declared-laws plan (2026-10-28).
+Answered (kept as the record): World Substrate is the one canonical project (001); observability required, exact replay not (002); meaning does not imply effects, and richer Linguistic Core roles do not move mechanics upstream (003, 2026-09-12 review); own causal reality and borrow commodity machinery (004); converge the next Waltzman release on native World Substrate (005, 2026-09-18); hold at the governed-rules layer (006, 2026-10-05); describe any scenario (007); build worlds in an agent harness (008); same-moment effects are rule semantics (009, 2026-10-26); Create simulation is the approval (2026-10-15); Concordia hosts residents; gpt-6-luna is the default model, sol only when sharing with Waltzman (2026-10-16); adopt the open-attempt plan (2026-10-25) and the declared-laws plan (2026-10-28); believability is the off-the-shelf people agents' job, no metric, tuned once everything else runs well (Q50, 2026-11-09).
 
 Open, each in the [open questions ledger](../docs/planning/open-questions.json) with what it blocks:
 
 | Question | What it decides |
 | --- | --- |
-| Q50 | what result ends the declared-laws work, and whether S5's paid builds run |
-| Q12 | whether a people-world run stops once nothing changes |
-| Q16 | whether writing a `/goal` requires a planning package |
-| Q17 | whether the offline any-scenario pipeline gets a view and approval step or stays a spike |
-| Q60 | whether to act on the Waltzman lineage review |
-| Q70 | whether the hosted CI workflow stays |
+| Q12 | whether a people-world run stops once the decision is settled and nothing changes |
+
+Q16, Q17, Q60 and Q70 were settled by the agent on 2026-11-09 (technical calls, or settled by Brian's plain-version rule); the ledger records each.
 
 ## Refresh and reset triggers
 
 Refresh this roadmap when:
 
-- Brian answers Q50, Q60 or Q70;
+- Brian answers Q12;
 - a declared-laws or open-attempt slice lands, or a hand-written build check is retired;
 - the agent harness reaches the live path;
 - a hardening item lands;
@@ -270,7 +266,7 @@ Replan rather than extend blindly if:
 ## Exact next action
 
 1. **Declared laws S4:** retire the first hand-written build check whose incident a declared law or the rules review now covers, proven on the saved worlds with `scripts/check_saved_worlds.py` and `scripts/replay_build.py` before any paid run (Q45).
-2. While Q50 is open, run no new paid builds under the declared-laws plan; free replays and merges continue.
+2. Before S5's paid builds or more people-world repair, run the plain-version comparison (Q60), with its cost worked out first.
 3. In parallel, the hardening queue items that need no paid run (Q66, Q67, Q69).
 
 Do not add engine, scheduler, renderer or cognition capability of World Substrate's own ([Decision 006](../docs/decisions/006-governed-rules-layer-scope.md); [Decision 009](../docs/decisions/009-same-moment-knock-on-effects.md) sets out what does not count).

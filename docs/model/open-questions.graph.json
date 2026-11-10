@@ -49,18 +49,6 @@
    "explain": "Blocks: whether the repo-format check passes."
   },
   {
-   "id": "Q16",
-   "label": "Q16: Goals skip the package gate",
-   "kind": "BrianQuestion",
-   "explain": "Blocks: whether the next goal can again run without a current system model and question list."
-  },
-  {
-   "id": "Q17",
-   "label": "Q17: Offline pipeline views",
-   "kind": "BrianQuestion",
-   "explain": "Blocks: whether work goes into the offline pipeline at all."
-  },
-  {
    "id": "Q26",
    "label": "Q26: Run page hides own-words attempts",
    "kind": "AgentQuestion",
@@ -133,12 +121,6 @@
    "explain": "Blocks: S4: Q45 retires a check when its incident's saved world is refused by a declared law; with laws left out that test can pass on worlds that still have the bug. Also A1 and A4, whose expected results include a payment law.."
   },
   {
-   "id": "Q50",
-   "label": "Q50: What counts as finished",
-   "kind": "BrianQuestion",
-   "explain": "Blocks: Whether the paid builds in S5, L5, A4 and A6 run now, and which defect is fixed next. Merges under the plan stay ungated by Brian's review; only new paid builds wait.."
-  },
-  {
    "id": "Q51",
    "label": "Q51: Live network with no lines",
    "kind": "AgentQuestion",
@@ -185,12 +167,6 @@
    "label": "Q59: Does the people path transfer to a different situation",
    "kind": "AgentQuestion",
    "explain": "Blocks: Whether 'describe any scenario' (Decision 007) holds beyond decision-with-concerns situations; feeds Q60.."
-  },
-  {
-   "id": "Q60",
-   "label": "Q60: Act on the Waltzman lineage review",
-   "kind": "BrianQuestion",
-   "explain": "Blocks: What the next goal is after the declared-laws slices, and whether a Waltzman run can be shown as evidence of a social mechanism.."
   },
   {
    "id": "Q61",
@@ -245,12 +221,6 @@
    "label": "Q69: Hardening: law identity, discovery cap, mechanic errors",
    "kind": "AgentQuestion",
    "explain": "Blocks: Whether an approval names one exact executable law, whether a decider ever silently misses moves, and whether a broken rule leaves a trace in the run.."
-  },
-  {
-   "id": "Q70",
-   "label": "Q70: A hosted CI workflow against the local-checks rule",
-   "kind": "BrianQuestion",
-   "explain": "Blocks: Whether the repository keeps a hosted check beside its local one; nothing merges on it today.."
   },
   {
    "id": "Q71",
@@ -347,12 +317,6 @@
    "label": "Compiler",
    "kind": "Concept",
    "explain": "Turns proposed rules into installed rules and derives what each may read and write."
-  },
-  {
-   "id": "concern",
-   "label": "Concern",
-   "kind": "Concept",
-   "explain": "An objection a group holds on a delivered item: open, under remedy or resolved, with answered and remedy_by."
   },
   {
    "id": "credential-holder",
@@ -474,12 +438,6 @@
    "explain": "One AI summary of a run whose every cited event id is checked against the run."
   },
   {
-   "id": "remedy",
-   "label": "Remedy",
-   "kind": "Concept",
-   "explain": "A fix of a concern that takes 2 rounds; it can be stopped part-way by the concern's holder objecting."
-  },
-  {
    "id": "resident",
    "label": "Resident",
    "kind": "Concept",
@@ -559,12 +517,6 @@
    "explain": "An attempt no move kind covers: it changes nothing, the person learns nothing came of it, and the run lists it for the rules writer."
   },
   {
-   "id": "waltzman-ref",
-   "label": "Waltzman reference components",
-   "kind": "Concept",
-   "explain": "Trust, risk, readiness and commitment components and analyses of the hand-written Waltzman world."
-  },
-  {
    "id": "world-design",
    "label": "World design (bundle)",
    "kind": "Concept",
@@ -642,12 +594,6 @@
    "id": "Q14-rules-retry",
    "source": "Q14",
    "target": "rules-retry",
-   "label": "bears on"
-  },
-  {
-   "id": "Q17-build",
-   "source": "Q17",
-   "target": "build",
    "label": "bears on"
   },
   {
@@ -849,18 +795,6 @@
    "label": "bears on"
   },
   {
-   "id": "Q50-build",
-   "source": "Q50",
-   "target": "build",
-   "label": "bears on"
-  },
-  {
-   "id": "Q50-share",
-   "source": "Q50",
-   "target": "share",
-   "label": "bears on"
-  },
-  {
    "id": "Q51-share",
    "source": "Q51",
    "target": "share",
@@ -978,30 +912,6 @@
    "id": "Q59-gen-rules",
    "source": "Q59",
    "target": "gen-rules",
-   "label": "bears on"
-  },
-  {
-   "id": "Q60-support",
-   "source": "Q60",
-   "target": "support",
-   "label": "bears on"
-  },
-  {
-   "id": "Q60-concern",
-   "source": "Q60",
-   "target": "concern",
-   "label": "bears on"
-  },
-  {
-   "id": "Q60-remedy",
-   "source": "Q60",
-   "target": "remedy",
-   "label": "bears on"
-  },
-  {
-   "id": "Q60-waltzman-ref",
-   "source": "Q60",
-   "target": "waltzman-ref",
    "label": "bears on"
   },
   {
@@ -1128,12 +1038,6 @@
    "id": "Q69-engine",
    "source": "Q69",
    "target": "engine",
-   "label": "bears on"
-  },
-  {
-   "id": "Q70-check",
-   "source": "Q70",
-   "target": "check",
    "label": "bears on"
   },
   {

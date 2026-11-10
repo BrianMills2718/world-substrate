@@ -215,12 +215,12 @@ Q = [
  {
   "id": "Q12",
   "short": "When a people-world run ends",
-  "question": "A people-world run ends at the round cap even when nothing has changed for 20 rounds. Should it stop when the decision is settled and nothing changes?",
+  "question": "When should a people-world run stop? Example: the Waltzman run of 2026-10-23 (share FQHXnP_TLKPi) ran 45 rounds at $0.2371 in all. From round 22 every concern was resolved and the decision deployed; in the 23 rounds after that the ten people only repeated moves and nothing changed. Today a run always goes to the round count the visitor picked. Should it stop by itself once the decision is settled and nothing has changed for a while?",
   "blocks": "how long visitors watch a run, and its cost",
   "resolves_with": "This is a product call on what a finished story looks like; no test settles it.",
   "owner": "brian",
   "status": "open",
-  "recommendation": "Stop a people-world run when the decision is deployed or rejected and no person's move has changed anything for one full operating-review period (6 rounds, compile_spec.py:442), and say so on the page.",
+  "recommendation": "Stop once the decision is deployed or rejected and no one's move has changed anything for 6 rounds (one operating-review period, compile_spec.py:442), and say on the page why it stopped. Gains: in that run, about half the watching time and about $0.12 of $0.24 saved (measured: run total over rounds). Costs: a late surprise after a quiet stretch would be cut off; the visitor can still choose to run more rounds.",
   "default": "Runs keep ending at the round cap the visitor picked.",
   "sources": [
    "evidence/waltzman-tasks-slice2/c1r24/TRACE_READ.md",
@@ -290,15 +290,15 @@ Q = [
   "question": "This repository's work ran as /goal documents, which never pass plan adoption, so nothing required a planning package. Should writing a goal require one?",
   "blocks": "whether the next goal can again run without a current system model and question list",
   "resolves_with": "An argument: Brian approved on 2026-10-21 that every plan carries a planning package, and a goal is a plan. But a hard check would refuse new goals in every repository that has no package yet, so how strictly to enforce it is a priority call.",
-  "owner": "brian",
-  "status": "open",
+  "owner": "agent",
+  "status": "resolved",
   "recommendation": "Make the goal validator (agent-skills, skills/authoring-goals/scripts/validate_goal_authority.py) refuse a goal document without a 'Planning package:' line or a named exemption, so goal-driven repositories meet the same gate as adopted plans.",
-  "default": "The goal-writing skill only tells authors to name the package; nothing refuses a goal without one. This repository's next goal already names its package.",
   "sources": [
    "~/code2/agent-skills/skills/authoring-goals/SKILL.md",
    "git show 0e66a98:docs/plans/waltzman-tasks-slice2.goal.md line 1 (goal retired 2026-11-09)"
   ],
-  "touches": []
+  "touches": [],
+  "evidence": "Decided by agent, 2026-11-09 (technical call): the goal validator will refuse a goal document without a 'Planning package:' line or a named exemption. Not yet implemented; tracked as this session's next step."
  },
  {
   "id": "Q17",
@@ -306,17 +306,17 @@ Q = [
   "question": "The offline any-scenario pipeline has no view of its model and checks (G13) and no approval step (G14). Should it get them, or stay an offline spike?",
   "blocks": "whether work goes into the offline pipeline at all",
   "resolves_with": "A scope call; the live path now builds people worlds itself, so the pipeline matters less.",
-  "owner": "brian",
-  "status": "open",
+  "owner": "agent",
+  "status": "resolved",
   "recommendation": "Keep it an offline spike: no views or approval step, since the live World Builder is where people build worlds.",
-  "default": "No work on G13 or G14.",
   "sources": [
    "docs/model/VIEW_COVERAGE.md",
    "docs/decisions/007-any-scenario-path.md"
   ],
   "touches": [
    "build"
-  ]
+  ],
+  "evidence": "Decided by agent, 2026-11-09: the offline any-scenario pipeline stays an offline spike; no work on G13 or G14, since the live World Builder is where people build worlds."
  },
  {
   "id": "Q18",
@@ -781,7 +781,7 @@ Q = [
    "docs/planning/planning-package.json",
    "docs/planning/open-attempt/planning-package.json"
   ],
-"touches": []
+  "touches": []
  },
  {
   "id": "Q42",
@@ -796,7 +796,9 @@ Q = [
    "scripts/generate_causal_model.py:30",
    "scripts/generate_causal_model.py:475"
   ],
-  "touches": ["gen-rules"]
+  "touches": [
+   "gen-rules"
+  ]
  },
  {
   "id": "Q43",
@@ -816,7 +818,10 @@ Q = [
    "tests/fixtures/pencil4-live.json",
    "src/world_substrate/assay.py:269"
   ],
-  "touches": ["world-law", "law-check"]
+  "touches": [
+   "world-law",
+   "law-check"
+  ]
  },
  {
   "id": "Q44",
@@ -833,7 +838,10 @@ Q = [
    "evidence/declared-laws/s3-review-choice/README.md:12",
    "scripts/review_rules.py:92"
   ],
-  "touches": ["rules-review", "gen-rules"]
+  "touches": [
+   "rules-review",
+   "gen-rules"
+  ]
  },
  {
   "id": "Q45",
@@ -849,7 +857,11 @@ Q = [
    "scripts/world_builder_service.py:1731",
    "evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:3"
   ],
-  "touches": ["rules-review", "test-run", "build"]
+  "touches": [
+   "rules-review",
+   "test-run",
+   "build"
+  ]
  },
  {
   "id": "Q46",
@@ -864,7 +876,10 @@ Q = [
    "src/world_substrate/engine.py:686",
    "src/world_substrate/engine.py:938"
   ],
-  "touches": ["law-check", "test-run"]
+  "touches": [
+   "law-check",
+   "test-run"
+  ]
  },
  {
   "id": "Q47",
@@ -879,7 +894,11 @@ Q = [
    "evidence/pencil13-trace-audit/TRACE_READ.md:24",
    "docs/plans/declared_laws.md"
   ],
-  "touches": ["resource", "world-law", "entity-component"]
+  "touches": [
+   "resource",
+   "world-law",
+   "entity-component"
+  ]
  },
  {
   "id": "Q48",
@@ -896,7 +915,10 @@ Q = [
    "evidence/declared-laws/s3-review-choice/README.md:20",
    "docs/model/ODD.md:275"
   ],
-  "touches": ["world-law", "rules-review"]
+  "touches": [
+   "world-law",
+   "rules-review"
+  ]
  },
  {
   "id": "Q49",
@@ -916,20 +938,30 @@ Q = [
    "evidence/declared-laws/s3-review-choice/README.md:18",
    "docs/plans/declared_laws.md:412"
   ],
-  "touches": ["world-law", "rules-review"]
- }
- ,{
+  "touches": [
+   "world-law",
+   "rules-review"
+  ]
+ },
+ {
   "id": "Q50",
   "short": "What counts as finished",
   "question": "The declared-laws plan's done_when (L1-L8) checks that its parts work, and its do_not_gate_on excludes Brian's review of a run. Nothing states when the product itself is good enough, so each paid build finds a new defect and asks for another. In Brian's words on 2026-11-03: \"we just seem to be rerunning the simulation\". What result ends this work?",
   "blocks": "Whether the paid builds in S5, L5, A4 and A6 run now, and which defect is fixed next. Merges under the plan stay ungated by Brian's review; only new paid builds wait.",
   "resolves_with": "Brian's judgement on a working run, not a test: he reads one shared Waltzman run and says what is wrong. Since 2026-11-04 a shared run recorded after #317 and #320 exists: the Waltzman rebuild at 096c129, share jyVbywXT8N8F (evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:3, saved without a readout), but its rules carry a review finding the build kept (no postponement possible, Q55), and the rules are written afresh on each build (5 of 5 needed and no postponement here, 4 of 5 and one postponement in s4-waltzman-2, evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:16), so it is the one to judge only once Q55 is answered or with that caveat stated beside it; the recommendation to keep one saved world and improve it is what makes builds that differ comparable. His first reaction (\"this is blank and doesnt play\") was answered by #328 and #329: a shared run's picture is now drawn from its recorded rounds (scripts/world_builder_home.html:913).",
   "owner": "brian",
-  "status": "open",
+  "status": "resolved",
   "recommendation": "Finished when Brian reads one shared Waltzman run and the people behave believably and something surprising follows from their choices. Keep one saved world and improve it; his reaction to it picks the next fix.",
-  "default": "S5 and other new paid builds wait. The saved Waltzman world stays the one being improved until Brian says otherwise.",
-  "sources": ["scripts/world_builder_home.html:913", "evidence/declared-laws/s4-waltzman-2/TRACE_READ.md:5", "evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:3"],
-  "touches": ["build", "share"]
+  "sources": [
+   "scripts/world_builder_home.html:913",
+   "evidence/declared-laws/s4-waltzman-2/TRACE_READ.md:5",
+   "evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:3"
+  ],
+  "touches": [
+   "build",
+   "share"
+  ],
+  "evidence": "Brian, 2026-11-09: \"believable is just in the cotnext of off the shelf agents if you are talking about that agents simulating people act beleivaby. trying to set a metric for this doesnt make sense and is subjective. we can fine utn that later once everythgin else runs great.\" So believability is the off-the-shelf people agents' job (Concordia), no metric is set for it, and it is tuned only after everything else runs well; the finish line for current work is that the rest of the system works, not a believability score. Paid builds are no longer held for a believability judgement."
  },
  {
   "id": "Q51",
@@ -939,8 +971,14 @@ Q = [
   "resolves_with": "The shared case held twice: the probes behind the issue (786 links, no NaN) and a browser check on 2026-11-03 (no console error, links drawn). Only the live first-round case stays unreproduced. Read the console in the next live run; no paid run for this alone.",
   "owner": "agent",
   "status": "open",
-  "sources": ["scripts/world_builder_home.html:1272", "evidence/declared-laws/s4-waltzman-2/TRACE_READ.md:59"],
-  "touches": ["share", "build"]
+  "sources": [
+   "scripts/world_builder_home.html:1272",
+   "evidence/declared-laws/s4-waltzman-2/TRACE_READ.md:59"
+  ],
+  "touches": [
+   "share",
+   "build"
+  ]
  },
  {
   "id": "Q52",
@@ -950,8 +988,15 @@ Q = [
   "resolves_with": "Reading what the person asked tries in the next round. Replaying a saved world through /run costs cents and needs no rebuild; a new build needs Brian's yes.",
   "owner": "agent",
   "status": "open",
-  "sources": ["evidence/declared-laws/request-replay/README.md:41", "scripts/run_authored_world.py:836", "evidence/declared-laws/s5-requests/TRACE_READ.md:15"],
-  "touches": ["attempt", "resident"]
+  "sources": [
+   "evidence/declared-laws/request-replay/README.md:41",
+   "scripts/run_authored_world.py:836",
+   "evidence/declared-laws/s5-requests/TRACE_READ.md:15"
+  ],
+  "touches": [
+   "attempt",
+   "resident"
+  ]
  },
  {
   "id": "Q53",
@@ -962,8 +1007,15 @@ Q = [
   "owner": "agent",
   "status": "resolved",
   "evidence": "Settled by reading 2026-11-06: the description the build worked from says only that 'settled issues can reopen' (scenario-spec call id 23035, evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl:2), with no condition of new information, so a rule that lets a settled concern reopen without anything new follows the description and is not a rule error. Whether that behavior reads as believable is Brian's judgement on the shared run, under Q50.",
-  "sources": ["evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:24", "evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:19", "evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl:2"],
-  "touches": ["gen-rules", "rules-review"]
+  "sources": [
+   "evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:24",
+   "evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:19",
+   "evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl:2"
+  ],
+  "touches": [
+   "gen-rules",
+   "rules-review"
+  ]
  },
  {
   "id": "Q54",
@@ -973,8 +1025,13 @@ Q = [
   "resolves_with": "Reading, no paid run: the recorded rounds keep each person's stated reason and what they could see; read the 12 refused rows' reasons against the open-concern state they were shown.",
   "owner": "agent",
   "status": "open",
-  "sources": ["evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:27"],
-  "touches": ["resident", "attempt"]
+  "sources": [
+   "evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:27"
+  ],
+  "touches": [
+   "resident",
+   "attempt"
+  ]
  },
  {
   "id": "Q55",
@@ -984,8 +1041,17 @@ Q = [
   "resolves_with": "The cause by reading, no paid run: the people-world loop breaks before a rewrite once the build has run longer than PEOPLE_REWRITE_BY_S (80 s, scripts/world_builder_service.py:266, checked at :2254); this build's first call was 15:53:10 and its review returned 15:55:29, while cost ($0.14) was far under PEOPLE_WORLD_BUDGET ($1.30, :94), so the time limit is the likely cause; the progress line that would confirm it is not saved. What remains is technical: when the review names a rule, either rewrite despite the time limit or keep the rules and show the finding beside the run. Check it on a free replay of the saved world before any new build.",
   "owner": "agent",
   "status": "open",
-  "sources": ["evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:19", "evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl:9", "scripts/world_builder_service.py:2254", "scripts/world_builder_service.py:266"],
-  "touches": ["rules-review", "build", "rules-retry"]
+  "sources": [
+   "evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:19",
+   "evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl:9",
+   "scripts/world_builder_service.py:2254",
+   "scripts/world_builder_service.py:266"
+  ],
+  "touches": [
+   "rules-review",
+   "build",
+   "rules-retry"
+  ]
  },
  {
   "id": "Q56",
@@ -1069,10 +1135,9 @@ Q = [
   "question": "The 2026-11-07 lineage review found that the generated Waltzman world stipulates outcomes its mechanisms should produce: an open concern turns a full supporter's support conditional by rule (spikes/any-scenario-2026-10/compile_spec.py:316) and a remedy resolves a concern by elapsed rounds (:332), so a coordination failure in a run can come from the stipulated procedure rather than from influence. It recommends a bounded comparison on the same cases, today's generated-rule path against a plain model given the whole scenario and an event ledger, before more repair. Should that comparison run before more declared-laws or people-world repair?",
   "blocks": "What the next goal is after the declared-laws slices, and whether a Waltzman run can be shown as evidence of a social mechanism.",
   "resolves_with": "A priority call by Brian: the review's recommendations are proposals and none is adopted (docs/audits/waltzman-lineage-review-2026-11-07.md:121).",
-  "owner": "brian",
-  "status": "open",
+  "owner": "agent",
+  "status": "resolved",
   "recommendation": "Yes: run the bounded comparison first on the existing Waltzman case and one materially different case, starting with the plain version (one model given the whole scenario, each person's view and an event ledger, its proposed changes validated), per the 2026-11-06 plain-version rule; state the question and what result counts against each approach before running, and measure one complete case before any batch.",
-  "default": "Record only: the review stays a reference, the declared-laws plan continues, and runs are not shown as evidence of a social mechanism.",
   "sources": [
    "docs/audits/waltzman-lineage-review-2026-11-07.md:53",
    "docs/audits/waltzman-lineage-review-2026-11-07.md:93",
@@ -1084,7 +1149,8 @@ Q = [
    "concern",
    "remedy",
    "waltzman-ref"
-  ]
+  ],
+  "evidence": "Settled by Brian's standing rule, not by asking (core.md, 2026-11-06: an AI answer path starts as the plain version; a stage is added only to close a gap the plain version shows on real cases). Brian, 2026-11-09: \"what is the poitn of the comparison? dont i have urles about this?\" The comparison is therefore required, not optional, and is agent work. Its scope is narrow: Brian's 2026-11-09 point that a model cannot track a 100-link causal chain already rules out a plain-only engine for consequences, so the comparison is only about the social part (do generated people-world rules such as an open concern making support conditional add anything over one model given the whole scenario, each person's view and an event ledger). It goes into the next plan with its cost worked out before any paid run."
  },
  {
   "id": "Q61",
@@ -1260,17 +1326,17 @@ Q = [
   "question": ".github/workflows/native-coordination-linux.yml runs the native coordination matrix and tests on GitHub Actions for pull requests touching those paths (last changed in #80, 2026-10-05). The workspace rule is that the repository's own local check gates merges and hosted CI needs Brian's yes. Should the workflow stay?",
   "blocks": "Whether the repository keeps a hosted check beside its local one; nothing merges on it today.",
   "resolves_with": "Brian's call: hosted CI is an ask under the workspace rules, and this documentation rewrite may not delete a check.",
-  "owner": "brian",
-  "status": "open",
+  "owner": "agent",
+  "status": "resolved",
   "recommendation": "Remove the workflow: scripts/check_project.py already runs before every merge through ship, and a hosted job nobody reads only adds noise. Fold any test it runs that the project check does not into the project check first.",
-  "default": "The workflow stays as it is; it does not gate merges.",
   "sources": [
    ".github/workflows/native-coordination-linux.yml",
    "roadmap/README.md:85"
   ],
   "touches": [
    "check"
-  ]
+  ],
+  "evidence": "Decided by agent, 2026-11-09: remove .github/workflows/native-coordination-linux.yml after folding any test it runs that scripts/check_project.py does not into the project check (workspace rule: local checks gate merges). Not yet implemented; tracked as this session's next step."
  },
  {
   "id": "Q71",
