@@ -276,16 +276,19 @@
   {
    "id": "Q15",
    "short": "Repository format files not yet added",
-   "question": "The ~/code2 repository format check fails: no docs/index.md, docs/architecture/arc42.md, C4 files, openspec specs, lefthook.yml or Makefile. The shape is settled by prior art (phenomenal-meaning adopted it); what stays open is only that the files are not yet added, so the check still fails.",
+   "question": "The ~/code2 repository format check failed: no docs/index.md, docs/architecture/arc42.md, C4 files, openspec specs, lefthook.yml or Makefile. The shape was settled by prior art (phenomenal-meaning adopted it); what stayed open was only that the files were not yet added, so the check still failed.",
    "blocks": "whether the repo-format check passes",
    "resolves_with": "Prior art settles the shape (phenomenal-meaning adopted it); the work is mechanical: add the files, mostly as indexes over the existing architecture, ODD and trace documents.",
    "owner": "agent",
-   "status": "open",
+   "status": "resolved",
    "sources": [
-    "docs/planning/checks.txt"
+    "docs/planning/checks.txt",
+    "docs/index.md",
+    "Makefile",
+    "lefthook.yml"
    ],
    "touches": [],
-   "evidence": "Settled by prior art: phenomenal-meaning adopted the ~/code2 repository format, so the shape is known and the work is mechanical (indexes over the existing architecture, ODD and trace documents). Build work: docs/plans/open_attempt.md, 'Fixes settled by argument' (F5). Kept open, not resolved, because the planning contract requires a check that still fails to be tracked by an open question; it closes when the repo-format check reports compliant."
+   "evidence": "Resolved 2026-11-10 (inferred by agent, after the repository package's cold review of 2026-11-10, finding 2): ~/code2/workspace/scripts/repo_format.py . now reports compliant 1 of 1 and exits 0 (docs/planning/checks.txt, 'repository format'); docs/index.md, docs/architecture/arc42.md, Makefile, lefthook.yml and openspec/specs/ all exist. The files were added by the open-attempt plan's fix F5 (docs/plans/open_attempt.md, 'Fixes settled by argument') and the OpenSpec folding of 2026-11-09."
   },
   {
    "id": "Q16",
@@ -1555,7 +1558,7 @@
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/plans/estimate_rules.md:454",
+    "docs/plans/estimate_rules.md:483",
     "evidence/jev/maintenance-estimator-probe-v0.json"
    ],
    "touches": [
@@ -1572,8 +1575,8 @@
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/plans/estimate_rules.md:435",
-    "docs/plans/open_attempt.md:194"
+    "docs/plans/estimate_rules.md:465",
+    "docs/plans/estimate_rules.md:158"
    ],
    "touches": [
     "estimate-rule",
@@ -1589,7 +1592,7 @@
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/plans/estimate_rules.md:109",
+    "docs/plans/estimate_rules.md:110",
     "src/world_substrate/information.py:57"
    ],
    "touches": [
@@ -1607,7 +1610,7 @@
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/plans/estimate_rules.md:311"
+    "docs/plans/estimate_rules.md:312"
    ],
    "touches": [
     "estimator",
@@ -1623,12 +1626,51 @@
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/plans/estimate_rules.md:421",
+    "docs/plans/estimate_rules.md:448",
     "docs/plans/ai_judge.md:264"
    ],
    "touches": [
     "stopping-point",
     "estimator"
+   ]
+  },
+  {
+   "id": "Q87",
+   "short": "What the free test run does with a chance",
+   "question": "The World Builder's free scripted test run scores each draft's rules over a fixed number of rounds and is a gate because it is free and repeatable. When a draft has an estimate rule, does that run call Jev (paid, and different on each try), use the rule's fallback, or use a stand-in? And is a run's Jev spend counted against the daily allowance?",
+   "blocks": "E2 (the rules writer's estimate rules pass through the test run) and A4.",
+   "resolves_with": "Argument from the test run's purpose and the budget code.",
+   "owner": "agent",
+   "status": "resolved",
+   "evidence": "Settled by argument (inferred by agent, 2026-11-10, after the estimate-rules cold review's finding 3). In the scripted test run (run_world(..., policy='scripted'), scripts/world_builder_service.py:1845 and :2215) the estimator is a stand-in that never calls Jev: for each rule it answers 1 and 0 in turn (for a pick or an amount, each option in turn), so every outcome branch runs, the score stays free and repeatable, and each answer is recorded as 'stand-in estimate (test run)'. Jev would make the gate paid and nondeterministic; the fallback would test one branch only, or refuse every moment when it is 'refuse'. Spend: a live run's Jev calls carry the run's own trace id, so the cost the service already settles into its daily ledger from that trace (_trace_cost, scripts/world_builder_service.py:297; _reserve_daily_budget and _settle_daily_budget, :225-238) includes them, about $0.0009 per 30-day sawmill run; the ledger code is unchanged.",
+   "sources": [
+    "docs/plans/estimate_rules.md:334",
+    "docs/plans/estimate_rules.md:343",
+    "scripts/world_builder_service.py:1845",
+    "scripts/world_builder_service.py:225"
+   ],
+   "touches": [
+    "estimator",
+    "test-run",
+    "budget"
+   ]
+  },
+  {
+   "id": "Q88",
+   "short": "Do declared chances match Jev's",
+   "question": "A rule can carry declared bands instead of an estimate: its checks choose among literal chances the rules writer writes (for the sawmill, under 5 days since service 0.05, 5 to 9 days 0.2, 10 or more 0.4), with no Jev call and no new code. On the 10 sawmill cases, do the bands the rules writer writes from the description give the same chances as Jev (within 0.1 on at least 8 of the 10)?",
+   "blocks": "Whether E2's rules-writer instructions prefer declared bands for a chance that depends on one or two facts, keeping Jev for the rest; not E1.",
+   "resolves_with": "E1's side-by-side comparison, variant (d): one rules-writer call writes the bands (measured median $0.0021, llm-cost estimate --task world-substrate-mechanic-authoring), read beside Jev's chances (a) on the same 10 cases.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/plans/estimate_rules.md:430",
+    "docs/plans/estimate_rules.md:495"
+   ],
+   "touches": [
+    "estimate-rule",
+    "estimator",
+    "gen-rules"
    ]
   }
  ]
