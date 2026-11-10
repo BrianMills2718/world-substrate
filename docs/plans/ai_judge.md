@@ -78,7 +78,7 @@ rigorous causal engine underneath; the World Builder is the visitor-facing surfa
 directly. **Recurring job and baseline:** a visitor describes a world and watches its people act. Today an attempt
 no rule covers changes nothing (except a request, which reaches the person asked, #326), knock-on chains stop at 32
 reactions per moment, and a blocker is told only to the person who tried. **Inspectable result:** the port world's
-run page and record (canonical example). **Stage and investment boundary:** prototype stage; five slices, each one
+run page and record (canonical example). **Stage and investment boundary:** prototype stage; six slices, each one
 pull request; at most $3.00 of owner allowance per slice; no new service, engine or repository.
 
 ## Canonical example
@@ -253,7 +253,7 @@ and norms as breakable rules with consequences only when someone acts on them.
 | R5 | Another person's choice goes to that person, not to the judge or a rule | Decided 4 | A5 |
 | R6 | Mechanism, credential holder and norm are separate; a credential can change hands; a norm can be broken | Decided (norms) | A6 |
 | R7 | The judge is Concordia's game master, conditioned on our data; no judge prompt of our own | Decision 006 | A2 (trace) |
-| R8 | Every run keeps its full trace, read before any slice is reported | workspace rule (Trace visibility) | A1-A7 |
+| R8 | Every run keeps its full trace, read before any slice is reported | workspace rule (Trace visibility) | A1-A8 |
 | R9 | A world's setting chooses whether checked rulings install during the run (default) or are held with the attempt pending until approved; the run page lists every ruling | Decided 5 | A4 |
 | R10 | Each saved run records the reaction limit it ran under, and replay uses the recorded value, so runs saved before J0 replay unchanged | goal boundary "saved worlds still replay unchanged" (inferred by agent, Agent technical calls) | A7 |
 | R11 | The person can write a stopping point in plain words ("stop once the team has agreed a budget"); after each round the judge assesses whether it has been reached, and the run stops when it has, as one more condition of the world's "When to stop a run" setting beside quiet rounds, a round limit and a spending limit (whichever fires first) | Brian 2026-11-10 (Stopping point) | A8 |
@@ -270,6 +270,15 @@ each round the judge (Concordia's game master, R7) is given that text and the ro
 or not, with its reason; when reached, the run stops with `reason: stopping_point` and the judge's reason in the run
 page's one line, through the same `limit_check` path, so whichever condition fires first still wins. Its cost counts
 toward the run's spending limit like every other call of the run.
+
+The question asked is "has this stopping point been reached?", handed to the game master as one more event to
+resolve in its normal way, with the stopping text as the event and the world state as its context; it is a thin
+framing of Concordia's resolution step, not a judge prompt of our own (R7). Cost (computed, guessed run length): one
+call per round, 46 rounds (the Waltzman run of 2026-10-23, `evidence/waltzman-tasks-slice2/c1r24`) × (15,000 input
+tokens × $0.10/M + 150 output tokens × $0.50/M, gpt-6-luna, no cached share) = about $0.07 per run. Cheaper trigger,
+chosen (inferred by agent): ask only after a round in which a field people's moves can change actually changed
+(`scripts/run_stop.py` already fingerprints those fields each round), since an unchanged world cannot newly reach a
+stopping point; in the Waltzman run that skips the quiet rounds and costs less.
 
 ## Acceptance checks
 
@@ -386,7 +395,7 @@ representation needs a short design step of its own (Uncertainties, U3).
 Keep the run and its trace id; read its full inputs, prompts, tool calls and output before choosing a fix; cite
 where it diverged; classify the cause as evidence absent, evidence unused or contradicted, invalid expectation, or
 unresolved. An unresolved cause permits investigation, not a fix. Verify a fix with a new traced run and keep the
-original. Trace-review criteria: A1-A7, each `expected_outcome: pass`.
+original. Trace-review criteria: A1-A8, each `expected_outcome: pass`.
 
 ## Capability reuse
 

@@ -212,7 +212,7 @@
     "Brian 2026-11-10: \"i should be able to stop a world based on budget or number of rounds or a natural langue stopping potin that the judge assesses once we build him\" (docs/plans/ai_judge.md, Stopping point); requirements R11, R7, R8"
    ],
    "demonstration": [
-    "On the World Builder Create page, open Options and under When to stop a run tick \"Stop when this run has spent $\" and enter 0.05; build any world and press Play until it stops.",
+    "On the World Builder Create page, open Options and under When to stop a run tick \"Stop when this run has spent $\" and enter 0.05; build a world (its people are played by AI, so its rounds have a recorded cost; a free scripted run records $0 and never reaches a spending limit) and press Play until it stops.",
     "Build a world again with \"Stop after 3 rounds\" ticked; press Play until it stops.",
     "Build a team world that must agree a budget, with \"Stop when\" set to \"stop once the team has agreed a budget\"; run it until it stops, then open the stop line, the judge's reason and one earlier round's panel.",
     "Build that team world again with \"Stop after 3 rounds\" as well, where the team cannot agree by round 3; run it."
