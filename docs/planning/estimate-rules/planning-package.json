@@ -2,7 +2,7 @@
  "schema_version": "1.0",
  "record_type": "planning_package",
  "repository": "BrianMills2718/world-substrate",
- "subject_revision": "eefcb164db6f77732b3d64b0f813de3cb8a06901",
+ "subject_revision": "590530c76df58133e497f6bb26e6985300f2e8bd",
  "request": "Brian 2026-11-10 \"im not saying jsut the judge uses jev. i can see there being a way where we have certain types of rules/contstatins that progagte base don jev\", then \"i approve\" to planning it now in parallel with the AI judge build; the plan docs/plans/estimate_rules.md names this file on its 'Planning package:' line",
  "parts": {
   "checks": {
@@ -14,10 +14,10 @@
      "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
      "exit_status": 1,
      "counts": {
-      "findings": 16
+      "findings": 12
      },
      "tracked_by": "Q77",
-     "note": "16 findings in documents this plan does not touch: 8 arc42 and goal-field findings in docs/architecture/arc42.md and 8 system-model rules marked stale (4 by the judge's J0 engine change); the same 16 on origin/main d89a446 itself."
+     "note": "12 findings in documents this plan does not touch: 8 arc42 and goal-field findings in docs/architecture/arc42.md and 4 system-model rules marked stale because their owning scripts changed (judge slices); the same on origin/main eefcb16, since this change edits no arc42, goal or system-model rule."
     },
     {
      "name": "project navigation",
@@ -41,7 +41,7 @@
      "command": "python3 scripts/check_trace_reads.py --root evidence",
      "exit_status": 0,
      "counts": {
-      "runs": 38,
+      "runs": 39,
       "problems": 0
      }
     },
@@ -50,33 +50,34 @@
      "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
      "exit_status": 1,
      "counts": {
-      "md_files": 162,
+      "md_files": 167,
       "exception_limit": 180,
-      "unreachable": 28,
-      "not_linked_from_entry": 10,
-      "more_than_two_links_deep": 18,
-      "durable_findings": 16
+      "unreachable": 27,
+      "not_linked_from_entry": 14,
+      "more_than_two_links_deep": 13,
+      "durable_findings": 12
      },
      "tracked_by": "Q77",
-     "note": "Also exits 1 on origin/main d89a446 (160 files, 29 unreachable, 16 durable findings). All 28 unreachable here are unreachable on main too (13 older documents, the 5 J0 trace reads, 10 archived OpenSpec files); this change adds 2 Markdown files (the plan and its cold review), both linked from docs/index.md, and none of its files is unreachable."
+     "note": "Also exits 1 on origin/main eefcb16: this change adds no Markdown file (it edits the plan only), so the 167 files, the 27 unreachable (older documents, judge trace reads such as evidence/ai-judge/j1/port/TRACE_READ.md, archived OpenSpec files) and the 12 durable findings are the same there."
     },
     {
      "name": "doc reachability",
      "command": "python3 $HOME/code2/workspace/scripts/doc_reachability.py .",
-     "exit_status": 0,
+     "exit_status": 1,
      "counts": {
-      "reachable": 129,
-      "unreachable": 0
+      "reachable": 130,
+      "unreachable": 1
      },
-     "note": "On origin/main d89a446 the 5 J0 trace reads were unreachable; this change links them from docs/catalog.md."
+     "note": "The one unreachable file is the judge's evidence/ai-judge/j1/port/TRACE_READ.md, merged on origin/main eefcb16 by the judge's J1 slice; this change adds no Markdown file and does not touch it.",
+     "tracked_by": "Q77"
     },
     {
      "name": "project check (tests, system model, docs)",
      "command": "/home/brian/.local/bin/uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with pytest-xdist --with gdm-concordia==2.4.0 python scripts/check_project.py",
-     "note": "counts from its line 'Neutral runtime tests: 891 passed, 2 skipped, 222 subtests passed' (pytest-xdist), run on commit 4b5bda9 of this change; ship reruns it on the merged commit",
+     "note": "counts from its line 'Neutral runtime tests: 902 passed, 2 skipped, 222 subtests passed' (pytest-xdist), run on commit 590530c of this change; ship reruns it on the merged commit",
      "exit_status": 0,
      "counts": {
-      "tests_run": 891,
+      "tests_run": 902,
       "failed": 0,
       "skipped": 2,
       "subtests_passed": 222
