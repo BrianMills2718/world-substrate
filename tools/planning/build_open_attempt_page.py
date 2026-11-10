@@ -96,6 +96,10 @@ def package_section() -> str:
               f'<td>{e(q["blocks"])}</td></tr>' for q in open_q]
     diag = "".join(f'<li><a href="{BLOB}{e(d["path"])}">{e(pathlib.Path(d["path"]).name)}</a>: {e(d["question"])}</li>'
                    for d in pkg["diagrams"]["items"])
+    cr = pkg.get("cold_review", {})
+    cold = (f'<p>Cold review of this package: <a href="{BLOB}{e(cr["path"])}">{e(pathlib.Path(cr["path"]).name)}</a>'
+            f' (verdict: {e(cr.get("verdict", "?"))}).</p>' if cr.get("status") == "present"
+            else '<p>Cold review of this package: <b style="color:var(--miss)">missing</b> (not yet run).</p>')
     return f'''<!-- package:start -->
 <h2>The planning package behind this page</h2>
 <p class="lede">The repository's checks, its open questions and its diagrams, from <a href="{BLOB}{PACKAGE}">planning-package.json</a>. Check results are from <a href="{BLOB}{e(pkg["checks"]["path"])}">checks.txt</a> ({e(run_line)}); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
@@ -109,7 +113,7 @@ def package_section() -> str:
 </tbody></table></div>
 <h3 class="sub">Diagrams</h3>
 <ul class="plain">{diag}</ul>
-<p>Cold review of this package: <a href="{BLOB}{e(pkg["cold_review"]["path"])}">cold-review.md</a>.</p>
+{cold}
 <!-- package:end -->
 ''', len(check_rows), len(open_q), resolved
 
