@@ -39,6 +39,16 @@ Unknown relations, measures, entity kinds, action kinds, rule kinds, scenarios, 
 
 Source: inferred by agent (CVS Situation IR structural import v0; the source-dispositions row classed CVS as a bounded structural input)
 
+#### Scenario: A supported slice is imported
+
+- **WHEN** `scripts/import_cvs_situation.py` is given the pinned sustainment Situation IR, one selected scenario, and the capability IDs the caller wants enabled
+- **THEN** it produces a `world-substrate-authoring-bundle/v0` that validates as an authoring bundle, with entities of kind `role`, `pool`, `capability` and `action`, and the single action kind `transfer`
+
+#### Scenario: Something unsupported is imported
+
+- **WHEN** the input has relations or measures, an unknown scenario, or an enabled capability ID the situation does not declare
+- **THEN** the import fails with a `SituationImportError` naming what is not represented, instead of silently dropping it
+
 ### Requirement: Identity
 
 CVS source IDs such as `regional_hq` and `stock_a` are **not rewritten as if they were World Substrate canonical IDs**. World Substrate retains its local slug invariant (`regional-hq`, `stock-a`) and every imported entity carries:
@@ -56,6 +66,12 @@ That explicit mapping is the seam. A downstream view may display either identifi
 
 Source: inferred by agent (CVS Situation IR structural import v0; the source-dispositions row classed CVS as a bounded structural input)
 
+#### Scenario: A source ID is kept as an external identity
+
+- **WHEN** the CVS source IDs `regional_hq` and `stock_a` are imported
+- **THEN** the bundle's entities are `regional-hq` and `stock-a`, the local slug form, and no entity has `regional_hq` as its ID
+- **AND** each imported entity carries `external_identity` with system `compositional-viable-systems` and the original identifier
+
 ### Requirement: Structural meaning retained
 
 The projection preserves enough represented structure for a scenario model to be authored and reviewed:
@@ -71,6 +87,23 @@ The two directional CVS transfer templates are represented as entities while the
 
 Source: inferred by agent (CVS Situation IR structural import v0; the source-dispositions row classed CVS as a bounded structural input)
 
+#### Scenario: The selected scenario becomes starting state
+
+- **WHEN** scenario `sc_1` is imported
+- **THEN** `stock_a` starts with inventory available 4, demand 1, unit `units` and protected reserve 1, and `stock_b` with available 1, demand 3, unit `units` and protected reserve 1
+- **AND** `regional_hq` carries the scenario id `sc_1`, the regime `local_priority` and the decider flag
+
+#### Scenario: Directional templates share one signature
+
+- **WHEN** the two directional transfer templates are imported
+- **THEN** each stays a template entity with its own source, target, maximum amount and required capability IDs (the `act_move_a_to_b` template runs from `stock-a` to `stock-b` and requires `cap_observe_distribution` and `cap_transfer_authority`)
+- **AND** the World Substrate action signature is deduplicated to one `transfer` kind
+
+#### Scenario: Capability activation is the caller's choice
+
+- **WHEN** the caller passes no enabled capabilities
+- **THEN** every capability is imported with `enabled` false, and a capability named by the caller is imported with `enabled` true
+
 ### Requirement: Causal boundary
 
 The adapter does **not** determine what transfer actually does, whether an actor may invoke it, how reserve waiver changes applicability, how demand is served, or what outcome is successful. Those are causal/modeling decisions.
@@ -80,6 +113,16 @@ A generated package therefore follows the normal World Substrate safety behavior
 CVS analysis can propose a structural intervention such as enabling observation, transfer authority, and reserve override. The adapter may represent those flags in a candidate world variant. That representation is a hypothesis/input to simulation, not proof that the intervention is correct or that its simulated result will occur in reality.
 
 Source: inferred by agent (CVS Situation IR structural import v0; the source-dispositions row classed CVS as a bounded structural input)
+
+#### Scenario: Imported actions refuse until mechanics are installed
+
+- **WHEN** a package is scaffolded from an imported bundle
+- **THEN** its mechanics always refuse, so no transfer succeeds until mechanics are separately implemented or proposed through the constrained causal model, locally compiled, reviewed, approved and installed
+
+#### Scenario: An enabled capability is a hypothesis
+
+- **WHEN** an analysis proposes enabling observation, transfer authority or reserve override
+- **THEN** the adapter represents those flags in a candidate world variant as input to simulation, not as proof that the intervention is correct or will have that result in reality
 
 ### Requirement: Pinned integration evidence
 
@@ -93,3 +136,13 @@ The test fixture is copied verbatim from:
 That donor fixture explicitly labels itself synthetic. Tests here therefore prove contract behavior and identity/structure preservation only; they do not establish real DoD facts or policy validity.
 
 Source: inferred by agent (CVS Situation IR structural import v0; the source-dispositions row classed CVS as a bounded structural input)
+
+#### Scenario: The fixture matches its pinned source
+
+- **WHEN** the tests read the fixture `sustainment_situation_ir.json`
+- **THEN** the provenance file records revision `5cb9933f2551ca3e0e75590814f7e686f50d8edb` of `BrianMills2718/compositional-viable-systems`, and the SHA-256 of the fixture matches the one recorded there
+
+#### Scenario: The fixture is synthetic
+
+- **WHEN** a test passes on the fixture
+- **THEN** it shows contract behavior and identity and structure preservation only, because the bundle summary begins "SYNTHETIC INTEGRATION FIXTURE." and it establishes no real DoD facts or policy validity

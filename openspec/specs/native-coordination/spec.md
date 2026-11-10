@@ -42,6 +42,12 @@ The original description is retained exactly in the draft artifact.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18 (native World Substrate convergence for the next Waltzman release), exact words not recorded
 
+#### Scenario: One description becomes a native run
+
+- **WHEN** a visitor gives one description to the one-shot path
+- **THEN** it becomes a versioned native-coordination draft, then a deterministic authoring bundle, then a requirement, assumption and unsupported-intent review, then the shared reviewed coordination mechanics, then explicit mechanics approval, then native Engine execution and an automatic Living Scene
+- **AND** the original description is retained exactly in the draft artifact
+
 ### Requirement: Authoring: Model authority
 
 The model proposes configuration only:
@@ -73,6 +79,18 @@ Engine.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18 (native World Substrate convergence for the next Waltzman release), exact words not recorded
 
+#### Scenario: The model proposes configuration only
+
+- **WHEN** the model proposes a world
+- **THEN** it supplies the world label, summary and location, 3-6 members and roles, one uniquely authorized member, exactly four prerequisites, exactly one restorable prerequisite that begins below its requirement, direct reports with distinct recipients, an approval threshold, extracted requirement coverage, assumptions and unsupported requests
+- **AND** the draft is refused for more than one authorized member, a second unhealthy resource, duplicate report recipients, fewer than two reports, a generated delivery id collision, or unknown model fields
+
+#### Scenario: No model-written law
+
+- **WHEN** the deterministic draft compiler builds the world
+- **THEN** it produces an ordinary `world-substrate-authoring-bundle/v0`, and the model authors no executable law, Python, write scopes or causal effects
+- **AND** the executable family is the shared reviewed model with exactly `coordination.action.communicate`, `.approve`, `.intervene` and `.finalize`
+
 ### Requirement: Authoring: Intent completeness boundary
 
 The review distinguishes:
@@ -90,6 +108,18 @@ Unsupported requests must remain visible. The v0 path may visibly narrow them;
 it must not silently convert them into narration or pretend they execute.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18 (native World Substrate convergence for the next Waltzman release), exact words not recorded
+
+#### Scenario: The review separates what is known
+
+- **WHEN** the review is shown
+- **THEN** it distinguishes extracted requirements and the represented surface assigned to each, inferred assumptions, explicitly unsupported requests, and compiler-derived mechanics, and keeps the original description visible so a user can compare it with the inferred structure
+- **AND** requirement coverage is review evidence, not proof that every material clause was extracted correctly
+
+#### Scenario: An unsupported request
+
+- **WHEN** the description asks for something unsupported (for example "Use probabilistic delivery delays.")
+- **THEN** it stays visible with status `unsupported` and no implementing mechanic
+- **AND** the path narrows it visibly and does not turn it into narration or pretend it executes
 
 ### Requirement: Authoring: Supported family
 
@@ -112,6 +142,16 @@ reviewed by a later contract.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18 (native World Substrate convergence for the next Waltzman release), exact words not recorded
 
+#### Scenario: Inside the supported family
+
+- **WHEN** a description fits 3-6 members in one shared space, exactly four prerequisites, one unique intervention authority, one restorable prerequisite initially below requirement, at least two direct information deliveries with unique report recipients enough to cover the approval threshold and one alternate threshold, member approval, restoration and gate finalization
+- **THEN** the one-shot path can represent it
+
+#### Scenario: Outside the supported family
+
+- **WHEN** a description needs arbitrary scheduling, probabilistic behavior, deception, hidden cognition, custom institution semantics, generalized activities or arbitrary generated mechanics
+- **THEN** this one-shot path does not provide it unless a later contract represents and reviews it
+
 ### Requirement: Authoring: Approval and staleness
 
 Generating a draft does not approve mechanics.
@@ -130,6 +170,17 @@ generator, execution returns to the generic authored-world path. It may not
 continue to claim native-coordination execution.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18 (native World Substrate convergence for the next Waltzman release), exact words not recorded
+
+#### Scenario: A draft is not an approval
+
+- **WHEN** a draft is generated
+- **THEN** the Builder receives the exact shared causal model and compiler-derived review, sets `mechanicsApproved=false`, and requires the ordinary explicit approval before a run
+
+#### Scenario: Editing the generated world
+
+- **WHEN** the generated bundle is changed after draft or mechanics review
+- **THEN** the review is marked stale and mechanics approval is invalidated, while the original description, requirement review and assumptions remain provenance for the generated version
+- **AND** if a user replaces the shared mechanics through the generic mechanics generator, execution returns to the generic authored-world path and no longer claims native-coordination execution
 
 ### Requirement: Authoring: Execution authority
 
@@ -153,6 +204,17 @@ existing scripted/LLM policy seam.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18 (native World Substrate convergence for the next Waltzman release), exact words not recorded
 
+#### Scenario: The service accepts native execution
+
+- **WHEN** a request uses `execution_mode="native_coordination"` with a bundle that validates, a causal model that compiles against it and exactly equals the reviewed shared coordination model, explicit mechanics approval, and the deterministic scripted policy
+- **THEN** the service runs the native runner, the same Engine and Living Scene path, at zero provider spend
+
+#### Scenario: The service refuses native execution
+
+- **WHEN** the causal model differs from the reviewed shared model, or the policy is not scripted
+- **THEN** the request is refused (for example "native_coordination execution requires the reviewed shared coordination mechanics")
+- **AND** generic authored worlds keep `execution_mode="authored_world"` and the existing scripted and LLM policy seam
+
 ### Requirement: Authoring: Provider spend
 
 One-shot extraction shares the World Builder's existing server-side rate limit
@@ -162,6 +224,12 @@ A provider failure after reservation fails closed and charges the reserved
 amount under the existing budget-ledger semantics.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18 (native World Substrate convergence for the next Waltzman release), exact words not recorded
+
+#### Scenario: Extraction spend is limited and fails closed
+
+- **WHEN** one-shot extraction runs
+- **THEN** it shares the World Builder's server-side rate limit and daily spend ledger and has its own bounded per-request cap
+- **AND** a provider failure after reservation fails closed and charges the reserved amount under the existing budget-ledger semantics
 
 ### Requirement: Authoring: Debugging evidence
 
@@ -181,6 +249,12 @@ through the existing log surface.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18 (native World Substrate convergence for the next Waltzman release), exact words not recorded
 
+#### Scenario: The log keeps the whole draft exchange
+
+- **WHEN** `/generate-draft` completes
+- **THEN** the Builder log records the complete request and response, including the retained draft, compiled authoring bundle, shared causal model, requirement and assumption review, model and cost, daily committed cost and trace id
+- **AND** the later `/run` response retains the Engine trace and Living Scene HTML through the existing log surface
+
 ### Requirement: Authoring: First verification
 
 The focused static/runtime suite for this contract is:
@@ -197,6 +271,12 @@ This does not replace the native coordination Linux gate from
 executed, this stacked slice remains unverified end to end.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18 (native World Substrate convergence for the next Waltzman release), exact words not recorded
+
+#### Scenario: The focused suite
+
+- **WHEN** `tests/test_native_coordination_authoring.py`, `tests/test_world_builder_service.py` and `tests/test_world_authoring_builder.py` are run with pytest
+- **THEN** they are the focused static and runtime checks for this contract
+- **AND** they do not replace the native coordination Linux gate, so until that gate is executed this stacked slice is unverified end to end
 
 ### Requirement: Comparison: Purpose
 
@@ -215,6 +295,12 @@ event, command, or prior trace is edited in place.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
 
+#### Scenario: A comparison after one approved run
+
+- **WHEN** a user has approved the shared native mechanics and completed one native run, and asks for a comparison
+- **THEN** the Builder creates one comparison run that changes exactly one supported initial condition, `gate.required_approvals`, without discarding or rewriting the original
+- **AND** no executable rule, information record, actor authorization, resource state, event, command or prior trace is edited in place
+
 ### Requirement: Comparison: Baseline retention
 
 When a fresh run succeeds, the Builder retains:
@@ -231,6 +317,12 @@ Starting a comparison does not clear those objects.
 A comparison failure also leaves the baseline visible.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
+
+#### Scenario: The baseline survives
+
+- **WHEN** a fresh run succeeds
+- **THEN** the Builder retains the exact initial authoring bundle, the exact approved causal model, the execution mode, the returned trace, the returned Living Scene HTML and the service trace id
+- **AND** starting a comparison does not clear them, and a comparison failure also leaves the baseline visible
 
 ### Requirement: Comparison: Supported intervention
 
@@ -257,6 +349,17 @@ threshold.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
 
+#### Scenario: A valid new threshold
+
+- **WHEN** a comparison request sends the retained baseline bundle and a threshold that is an integer, at least 1, no greater than the number of informed report recipients, and different from the baseline's
+- **THEN** the service clones and validates the baseline, replaces only `entities.<gate>.components.gate.required_approvals`, recompiles the shared causal model against the new bundle, and only then executes it (a baseline of 2 changed to 1 gives a second fresh run)
+
+#### Scenario: An invalid threshold or baseline
+
+- **WHEN** the threshold equals the baseline, exceeds the informed recipient count or is not an integer, or the baseline threshold is itself above that count
+- **THEN** the comparison is refused before the run
+- **AND** a recipient counts as informed only through a delivery whose `recipient_id` names a represented member and whose `info_id` names represented information, so a delivery to a non-member or of a non-information entity does not count
+
 ### Requirement: Comparison: Mechanics authority
 
 The comparison reuses the exact causal model retained with the approved
@@ -274,6 +377,12 @@ The service still applies the ordinary native-coordination run boundary:
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
 
+#### Scenario: The comparison reuses the approved law
+
+- **WHEN** a comparison runs
+- **THEN** it reuses the exact causal model retained with the approved baseline, does not call mechanics generation and creates no new executable law
+- **AND** the ordinary native run boundary still applies: the modified bundle validates, the causal model compiles against it and equals the reviewed shared model, the mode is `native_coordination`, and the policy is deterministic scripted execution
+
 ### Requirement: Comparison: Fresh execution
 
 A comparison is a second fresh Engine run. It is not:
@@ -287,6 +396,17 @@ The request log contains the complete comparison bundle, making the changed
 initial condition inspectable.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
+
+#### Scenario: A second run, not an edit
+
+- **WHEN** a comparison runs
+- **THEN** it is a second fresh Engine run, with the same mechanic profile id and zero provider spend, that differs in turns, accepted actions and final projection from the baseline
+- **AND** it is not an edit of baseline commands or events, a fork that rewrites retained history, a post-hoc change to a Living Scene frame, or an analytic prediction
+
+#### Scenario: The changed condition is inspectable
+
+- **WHEN** the comparison request is logged
+- **THEN** the request log contains the complete comparison bundle
 
 ### Requirement: Comparison: Presentation
 
@@ -304,6 +424,12 @@ these two represented runs.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
 
+#### Scenario: Two runs side by side
+
+- **WHEN** a comparison finishes
+- **THEN** the Builder keeps the baseline Living Scene visible and adds the baseline threshold and result summary, the comparison threshold and result summary, and the comparison Living Scene, with the two traces separately inspectable in Full logs
+- **AND** the UI may state the represented difference in outcomes, but may not claim the threshold is a real-world cause beyond the installed mechanics of these two represented runs
+
 ### Requirement: Comparison: Limits
 
 The v0 comparison surface does not yet support arbitrary state editing,
@@ -314,6 +440,11 @@ Those additions require separate contracts rather than extending this control
 implicitly.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
+
+#### Scenario: A comparison beyond one threshold
+
+- **WHEN** someone wants arbitrary state editing, multi-variable experiments, probabilistic sweeps, sensitivity analysis, automatic causal identification or provider-generated intervention advice
+- **THEN** the v0 comparison does not support it, and each needs its own contract rather than extending this control implicitly
 
 ### Requirement: Comparison: Verification
 
@@ -332,6 +463,12 @@ inherits the Linux verification gate from
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
 
+#### Scenario: The focused comparison suite
+
+- **WHEN** `tests/test_native_coordination_comparison.py`, `tests/test_world_builder_service.py` and `tests/test_world_authoring_builder.py` are run with pytest
+- **THEN** they are the focused verification for this contract
+- **AND** the comparison depends on the native coordination runner and so inherits the Linux verification gate from the diagnostics contract
+
 ### Requirement: Diagnostics: Acceptance authority
 
 `examples/native_coordination/acceptance-v0.json` is the executable acceptance matrix for this slice.
@@ -343,6 +480,12 @@ The acceptance evaluator may compare those declared expectations to retained exe
 A run is accepted only when all evaluated checks pass. A summary may say that acceptance passed; the individual retained checks remain the evidence.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
+
+#### Scenario: A run is accepted on its checks
+
+- **WHEN** the acceptance evaluator compares the declared expectations in `examples/native_coordination/acceptance-v0.json` (participant count, approval threshold, information channels, the prerequisite that must block the first approval, the intervention resource, the actor authorized to restore it) to retained execution and presentation evidence
+- **THEN** the run is accepted only when all evaluated checks pass, and the individual retained checks remain the evidence
+- **AND** the evaluator does not mutate the world or substitute expected values for observed state
 
 ### Requirement: Diagnostics: Diagnostic run identity
 
@@ -365,6 +508,12 @@ The run id joins:
 A deterministic local run has provider spend `0`. Future provider-backed authoring may add provider trace ids, but provider identity never replaces the World Substrate diagnostic run id.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
+
+#### Scenario: One run id joins the evidence
+
+- **WHEN** a diagnostic run is made
+- **THEN** its one explicit `run_id` joins the exact structured world input, causal-model input, compiler-derived mechanics review, initial snapshot, commands and events, contested-run trace, live projection, Living Scene profile and frames, rendered HTML, acceptance results and artifact hash manifest
+- **AND** a deterministic local run has provider spend 0, and a provider trace id never replaces the diagnostic run id
 
 ### Requirement: Diagnostics: Required artifacts
 
@@ -408,6 +557,18 @@ For action feedback, Living Scene may project each retained check's public rule 
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
 
+#### Scenario: A successful diagnostic directory
+
+- **WHEN** a diagnostic run succeeds
+- **THEN** its directory contains `summary.json`, `input-bundle.json`, `causal-model.json`, `acceptance-matrix.json`, `mechanics-review.json`, `initial-snapshot.json`, `commands.json`, `events.json`, `trace.json`, `projection.json`, `living-profile.json`, `living-frames.json`, `render.html`, `acceptance.json` and `manifest.json`
+- **AND** `manifest.json` records the SHA-256 of every other artifact, is generated last, and does not hash itself
+
+#### Scenario: Replay and presentation evidence
+
+- **WHEN** acceptance is evaluated
+- **THEN** `Engine.replay()` from Engine-owned history must reproduce the same final material hash and the same event sequence, and presentation artifacts never take part in that proof
+- **AND** rejected or failed attempts remain in `commands.json` and `events.json`, and Living Scene may show each check's public label and pass or fail verdict but does not copy retained `actual` or `expected` operands into the public payload
+
 ### Requirement: Diagnostics: Failure categories
 
 The v0 diagnostic taxonomy is intentionally small:
@@ -426,6 +587,12 @@ The v0 diagnostic taxonomy is intentionally small:
 Do not use a broad category to hide a more specific observed failure.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
+
+#### Scenario: A failure gets the most specific category
+
+- **WHEN** a diagnostic run fails
+- **THEN** its category is one of `input`, `compiler`, `mechanic_check`, `authority`, `engine`, `information_visibility`, `projection`, `renderer`, `acceptance` or `environment`
+- **AND** a broad category is not used to hide a more specific observed failure
 
 ### Requirement: Diagnostics: Stage discipline
 
@@ -446,6 +613,12 @@ If an exception escapes, `summary.json` must still be written with the last ente
 This is observability, not recovery authority. A diagnostic writer cannot edit canonical history to make a failed run pass.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
+
+#### Scenario: An exception escapes mid-run
+
+- **WHEN** an exception escapes while the run is in a stage (input, compiler, engine, projection, renderer, acceptance)
+- **THEN** `summary.json` is still written with the last entered stage, the mapped failure category, the exception type and message, and artifacts already written are retained (a broken compiler effect gives stage and category `compiler`, error type `ActionDeclarationError`)
+- **AND** the diagnostic writer cannot edit canonical history to make a failed run pass
 
 ### Requirement: Diagnostics: Matrix command
 
@@ -469,6 +642,12 @@ The first command is expected to leave complete diagnostic evidence whether the 
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
 
+#### Scenario: The acceptance matrix runs
+
+- **WHEN** `scripts/check_native_coordination.py` runs
+- **THEN** it runs every world in the acceptance matrix into its own diagnostic directory, writes `matrix-summary.json`, and requires every world to pass while reporting one identical frozen mechanic-profile id
+- **AND** that identical id is the check that materially different configurations use one reusable mechanics family, not an inference from similar source files
+
 ### Requirement: Diagnostics: Privacy and causal boundary
 
 Direct/private represented information may appear in canonical evidence where actor-authorized observations legitimately contain it. The public Living Scene render receives no observer identity by default, so private message content must remain hidden there even when the represented transmission line itself is visible.
@@ -476,6 +655,12 @@ Direct/private represented information may appear in canonical evidence where ac
 Information context and message delivery are not promoted into mechanic-declared causal ancestry.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
+
+#### Scenario: Private content stays out of the public render
+
+- **WHEN** the public Living Scene is rendered, with no observer identity by default
+- **THEN** private message content stays hidden even when the represented transmission line itself is visible
+- **AND** information context and message delivery are not promoted into mechanic-declared causal ancestry
 
 ### Requirement: Diagnostics: Hashing and reproducibility
 
@@ -497,3 +682,14 @@ The deterministic coordination runner should therefore allow a later investigato
 The contract does not require a provider call, database, server, or bespoke per-world scene file.
 
 Source: Decision 005, accepted 2026-09-18; the wiki records it as a human product decision of 2026-09-18, exact words not recorded
+
+#### Scenario: A directory is one immutable run
+
+- **WHEN** a diagnostic runner is pointed at a nonempty output directory
+- **THEN** it refuses (a `FileExistsError`) rather than deleting, resetting or mixing prior evidence, leaving existing files untouched, and reruns use a fresh directory
+
+#### Scenario: Artifacts are deterministic
+
+- **WHEN** JSON artifacts are written
+- **THEN** they have sorted keys and a terminal newline, and the manifest hashes the exact bytes on disk
+- **AND** an investigator can answer from one directory what world was supplied, what law was installed, what each attempt checked, what the actor could observe, what committed or refused, what state resulted, what the projection and UI received, and which acceptance promise failed

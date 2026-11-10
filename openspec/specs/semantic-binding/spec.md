@@ -40,6 +40,18 @@ Free text may accompany a binding but cannot substitute for the sense, roles, be
 
 Source: inferred by agent (semantic-mechanical binding contract v0, applying Decision 003, accepted 2026-09-02). A human semantic review on 2026-09-12 kept the boundary while allowing richer Linguistic Core roles; its exact words were not recorded
 
+#### Scenario: A binding describes, a mechanic acts
+
+- **WHEN** an action kind carries a semantic binding
+- **THEN** the binding explains what the attempt or occurrence means (`binding_id`, `sense_id`, `roles`, an optional `specialization`, `causal_class`, `causal_bearer`, `mechanic_id`, `interpretation_limits`), and only the mechanic decides whether and how persistent state changes
+- **AND** free text may accompany a binding but cannot replace the sense, roles, bearer and mechanic identity the selected profile requires
+
+#### Scenario: Role-definition IDs stay out of the event binding
+
+- **WHEN** a binding carries optional `role_definition_ids`
+- **THEN** their keys must exactly match `roles` and each must be an `lc.roledef.*` identity, or construction fails
+- **AND** `SemanticBinding.as_dict()` leaves them out in v0, so retained event and evidence identity stays stable
+
 ### Requirement: Predicate-local role compatibility
 
 Linguistic Core now has a candidate M4 contract that distinguishes a reusable role concept such as `lc.role.theme` from a predicate-local role definition such as `lc.roledef.give_transfer.transferred_object`. World Substrate may cite those local role-definition IDs when reviewed, while retaining the existing `lc.role.*` grounding for compatibility.
@@ -49,6 +61,17 @@ The current first proof is `binding.give.v0`: `giver`, `transferred_object`, and
 This does not move the semantic/mechanical boundary. `causal_class`, `causal_bearer`, `mechanic_id`, effects, read/write authority, scheduling, invariants, and commit/refusal semantics remain World Substrate concerns.
 
 Source: inferred by agent (semantic-mechanical binding contract v0, applying Decision 003, accepted 2026-09-02). A human semantic review on 2026-09-12 kept the boundary while allowing richer Linguistic Core roles; its exact words were not recorded
+
+#### Scenario: The give binding cites predicate-local roles
+
+- **WHEN** `binding.give.v0` is read
+- **THEN** `giver`, `transferred_object` and `recipient` cite the local role definitions of `lc:give_transfer` (such as `lc.roledef.give_transfer.transferred_object`) alongside their `lc.role.*` roles
+- **AND** the other bound actions remain valid without local role-definition metadata
+
+#### Scenario: Local roles do not move the boundary
+
+- **WHEN** a binding cites a predicate-local role definition
+- **THEN** that is compatibility metadata only; `causal_class`, `causal_bearer`, `mechanic_id`, effects, authority, scheduling, invariants and commit and refusal semantics stay with World Substrate, and `unheat` stays unbound because local roles cannot create a missing sense
 
 ### Requirement: Binding rules
 
@@ -61,6 +84,18 @@ Source: inferred by agent (semantic-mechanical binding contract v0, applying Dec
 7. Preserve failed or ambiguous bindings as observable refusals; do not guess a state change.
 
 Source: inferred by agent (semantic-mechanical binding contract v0, applying Decision 003, accepted 2026-09-02). A human semantic review on 2026-09-12 kept the boundary while allowing richer Linguistic Core roles; its exact words were not recorded
+
+#### Scenario: A binding is resolved and checked
+
+- **WHEN** an attempt is bound
+- **THEN** the predicate sense is resolved rather than matched on a surface word, and the participant roles are validated against the sense signature and canonical references
+- **AND** the binding is classified (primitive, processual, relational, composite, analytic, declarative or institutionally enforced), every state-changing binding has a represented causal bearer, and its mechanic is one installed in the active frozen profile
+
+#### Scenario: A binding fails or is ambiguous
+
+- **WHEN** a binding fails or is ambiguous
+- **THEN** it is preserved as an observable refusal and no state change is guessed
+- **AND** a composite or analytic classification is not executed after its lower-level transitions have already committed
 
 ### Requirement: Initial worked binding
 
@@ -75,6 +110,17 @@ For an ordinary transfer:
 An observed reciprocal pair may later be classified as exchange. That derived classification performs no transfer. If an escrow institution couples the assets, the institution and its release transition receive their own binding and authority.
 
 Source: inferred by agent (semantic-mechanical binding contract v0, applying Decision 003, accepted 2026-09-02). A human semantic review on 2026-09-12 kept the boundary while allowing richer Linguistic Core roles; its exact words were not recorded
+
+#### Scenario: An ordinary transfer
+
+- **WHEN** a giver gives an object to a recipient
+- **THEN** the binding uses the reviewed `give` sense (`lc:give_transfer`) with roles giver, transferred object and recipient, causal class primitive intentional action, bearer the giver, and the installed possession-transfer mechanic (`mechanism.ownership.give`)
+
+#### Scenario: A reciprocal pair
+
+- **WHEN** an observed reciprocal pair of gives is later classified as exchange
+- **THEN** that derived classification performs no transfer
+- **AND** if an escrow institution couples the assets, the institution and its release transition get their own binding and authority
 
 ### Requirement: Vocabulary coverage audit
 
@@ -92,3 +138,9 @@ Before adding a new overlay term, inspect Linguistic Core and its donors for:
 SUMO, FrameNet, PropBank, Wikidata properties, and QUDT are candidate donors. They are not automatically runtime authorities.
 
 Source: inferred by agent (semantic-mechanical binding contract v0, applying Decision 003, accepted 2026-09-02). A human semantic review on 2026-09-12 kept the boundary while allowing richer Linguistic Core roles; its exact words were not recorded
+
+#### Scenario: A new overlay term is proposed
+
+- **WHEN** someone proposes a new overlay term
+- **THEN** Linguistic Core and its donors are first inspected for persistent state relations, identity and lifecycle, location and routing, possession and control, material qualities, quantities and units, temporal validity and process roles, and institutional roles
+- **AND** SUMO, FrameNet, PropBank, Wikidata properties and QUDT are candidate donors only, not runtime authorities

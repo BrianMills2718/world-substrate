@@ -43,6 +43,18 @@ Entities remain open to unrelated components. A mechanic has closed local author
 
 Source: inferred by agent (mechanic profile contract v0, applying Decision 003, accepted 2026-09-02; the decider is not recorded)
 
+#### Scenario: A mechanic is declared as a package
+
+- **WHEN** an offline mechanics agent authors a mechanic
+- **THEN** the package declares its `mechanic_id` and `version`, semantic bindings, causal bearer, requires, optional modifiers, forbids, reads, writes, emits, effects, invariants, dependencies, unsupported interactions, representation, limits, tests and trace contract
+- **AND** the installer's `validate_package` refuses a package with no `mechanic_id` or `version`, with an unknown `representation`, or with no declared tests
+
+#### Scenario: Local authority is closed
+
+- **WHEN** a mechanic runs
+- **THEN** it can inspect and change only the state paths in its declared reads and writes
+- **AND** state outside them may coexist on the same entities but is neither inspected nor changed by that mechanic
+
 ### Requirement: Installation
 
 An installer must:
@@ -65,8 +77,31 @@ Passing installation does not prove global causal closure. It proves only that t
 
 Source: inferred by agent (mechanic profile contract v0, applying Decision 003, accepted 2026-09-02; the decider is not recorded)
 
+#### Scenario: Installation checks run before the profile freezes
+
+- **WHEN** a package is installed into a profile
+- **THEN** the installer resolves its identities, validates its declared state paths, checks that its dependencies are installed, records limits and unsupported interactions, and refuses it with a `reject` finding if any check fails
+- **AND** the caller runs the mechanic's tests and the selected interaction assays (`world_substrate.assay`) before freezing a profile identity for the run
+
+#### Scenario: Two processes write one path
+
+- **WHEN** two mechanics that commit on the same occasion (processes sharing one `advance()`) at the same `order` write overlapping paths, and neither names ordering, arbitration or composition
+- **THEN** the second is rejected as `overlapping_write_without_arbitration`
+- **AND** two independent actions that write one path are not rejected, because the transition envelope already serialises them
+
+#### Scenario: Passing is not proof of closure
+
+- **WHEN** a package passes installation
+- **THEN** that proves only that its declared contract is internally valid and that the selected assays passed, not global causal closure
+
 ### Requirement: Agent-authored output
 
 A mechanics agent may produce source code or a declarative package offline. Its output is never installed merely because it parses or passes isolated unit tests. Installation requires reviewable authority, effects, interaction evidence, and limitations. Runtime law revision is outside v0.
 
 Source: inferred by agent (mechanic profile contract v0, applying Decision 003, accepted 2026-09-02; the decider is not recorded)
+
+#### Scenario: Output that parses is not installed
+
+- **WHEN** a mechanics agent produces source code or a declarative package offline, and it parses or passes isolated unit tests
+- **THEN** it is not installed on that evidence alone; installation requires reviewable authority, effects, interaction evidence and limitations
+- **AND** revising laws at runtime is outside v0

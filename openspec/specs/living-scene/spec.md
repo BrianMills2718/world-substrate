@@ -39,6 +39,17 @@ activity. Those facts must already exist in retained canonical input.
 
 Source: inferred by agent (living scene v1; Decision 006, approved by Brian on 2026-10-05 with "i approve", keeps the renderer as maintained, not extended)
 
+#### Scenario: Truth flows one way into the scene
+
+- **WHEN** a scene is built
+- **THEN** the retained snapshot and event deltas own canonical world truth, the retained event owns its identity, tick and revision, status, information context and mechanic-declared causal ancestry, and a profile only selects read paths and presentation geometry
+- **AND** browser interpolation, art, layout and timing are presentation only
+
+#### Scenario: A profile tries to supply a fact
+
+- **WHEN** a Living Scene profile would write canonical state, fabricate a delivery, create causal parentage, edit branch history or complete a duration-bearing activity
+- **THEN** it cannot; those facts must already exist in the retained canonical input
+
 ### Requirement: Living Scene: Input seam
 
 The logical frame builder consumes:
@@ -59,6 +70,12 @@ The implementation is in `world_substrate.living_scene` and deliberately has
 no DOM or browser dependency.
 
 Source: inferred by agent (living scene v1; Decision 006, approved by Brian on 2026-10-05 with "i approve", keeps the renderer as maintained, not extended)
+
+#### Scenario: Frames come from a projection and a profile
+
+- **WHEN** the logical frame builder runs
+- **THEN** it consumes one `world-substrate-live-projection/v0` bundle (an initial snapshot and ordered canonical events with leaf changes) plus one `world-substrate-living-scene/v1` read-only profile, and produces deterministic logical scene frames
+- **AND** `world_substrate.living_scene` has no DOM or browser dependency
 
 ### Requirement: Living Scene: Profile shape
 
@@ -108,6 +125,16 @@ Example:
 
 Source: inferred by agent (living scene v1; Decision 006, approved by Brian on 2026-10-05 with "i approve", keeps the renderer as maintained, not extended)
 
+#### Scenario: A valid profile
+
+- **WHEN** a profile gives `assets`, `zones`, `actors`, `entities`, `activities`, `institutions`, `event_visuals` and `state_styles`, with `scene` and `presentation` optional
+- **THEN** it loads, and each actor, entity, activity or institution names its canonical entity (or uses its visual id) and maps presentation field names to dotted read paths relative to that entity
+
+#### Scenario: A profile with a typo or an unsupported shape
+
+- **WHEN** a profile has an unknown top-level field, an unsupported schema version, or a point that is not `[x, y]`
+- **THEN** loading fails loudly (for example "unknown fields"), so a typo cannot silently become an assumed contract
+
 ### Requirement: Living Scene: Exact event bindings
 
 `event_visuals` is keyed by exact canonical `rule_id`. The logical projector
@@ -125,6 +152,16 @@ Later renderer work may add reusable operation semantics, but those operations
 remain downstream of the retained event and cannot become mechanics.
 
 Source: inferred by agent (living scene v1; Decision 006, approved by Brian on 2026-10-05 with "i approve", keeps the renderer as maintained, not extended)
+
+#### Scenario: An event with no declaration
+
+- **WHEN** a retained event's `rule_id` has no matching entry in `event_visuals`
+- **THEN** the frame shows a neutral `generic_event` with no operations, and no effect is guessed from the rule or action name
+
+#### Scenario: An operation tries to carry authority
+
+- **WHEN** a profile operation includes an authority-bearing field such as `after`, `before`, `changes`, `causal_parent_event_ids` or `information_context`
+- **THEN** loading fails with "cannot carry canonical authority fields"
 
 ### Requirement: Living Scene: Deterministic frame reconstruction
 
@@ -147,6 +184,18 @@ Logical frames include:
 and retained evidence comparisons.
 
 Source: inferred by agent (living scene v1; Decision 006, approved by Brian on 2026-10-05 with "i approve", keeps the renderer as maintained, not extended)
+
+#### Scenario: Frames cover every boundary
+
+- **WHEN** `build_living_scene_frames()` runs on a bundle with two retained events
+- **THEN** it returns the initial frame (boundary index -1) followed by one frame per retained event (0 and 1)
+- **AND** each frame carries the scene, world and branch identity, the boundary index, tick and revision, a presentation-safe event summary, its declared or neutral event visual, and the read-only actor, entity, activity and institution bindings
+
+#### Scenario: Scrubbing needs no browser state
+
+- **WHEN** `rebuild_living_scene_frame()` rebuilds any boundary from the initial snapshot plus the retained changes through that event
+- **THEN** it matches the same frame built in sequence, compared with `normalized_frame_json()`
+- **AND** neither the bundle nor the profile is changed by building or rebuilding
 
 ### Requirement: Living Scene: Information and outcome presentation
 
@@ -172,6 +221,24 @@ context never promotes that information into `causal_parent_event_ids`.
 
 Source: inferred by agent (living scene v1; Decision 006, approved by Brian on 2026-10-05 with "i approve", keeps the renderer as maintained, not extended)
 
+#### Scenario: The public scene hides private content
+
+- **WHEN** a frame is built with no observer
+- **THEN** the event summary leaves out actor-scoped `observation`, raw `changes` and `information_context` content, and keeps stable event, rule, tick, revision and status identity and mechanic-declared causal parent ids
+- **AND** a direct (private) message's content does not appear in the scene payload or its rendered page merely because a delivery exists
+
+#### Scenario: A transmission appears after delivery
+
+- **WHEN** a declared `information.transmit` operation resolves a canonical information item and its delivery
+- **THEN** the transmission shows source, recipient, channel and topic only from the boundary at which the delivery is canonical
+- **AND** its content is shown only for public information or to an observer the information-delivery rules authorize (the recipient sees it, an unrelated observer gets no content), and it is assigned to the DOM with `textContent`, never as markup
+
+#### Scenario: Action feedback is retained, not invented
+
+- **WHEN** a declared `action.feedback` operation is shown
+- **THEN** it displays the retained event status and failed check labels, generates no new explanation, and infers no causal ancestry from them
+- **AND** rendering a transmission or cognition context never puts that information into `causal_parent_event_ids`
+
 ### Requirement: Living Scene: Time boundary
 
 Simulation tick, event order, activity start/end ticks, and status are canonical
@@ -179,6 +246,11 @@ facts. Animation duration is presentation metadata only. Changing animation
 milliseconds cannot change the logical view at a canonical event boundary.
 
 Source: inferred by agent (living scene v1; Decision 006, approved by Brian on 2026-10-05 with "i approve", keeps the renderer as maintained, not extended)
+
+#### Scenario: Animation length changes nothing logical
+
+- **WHEN** two profiles differ only in an operation's `animation_ms` (1 versus 100000)
+- **THEN** the frame at a canonical event boundary has the same tick, revision and views, because tick, event order, activity start and end ticks and status are canonical facts
 
 ### Requirement: Living Scene: Time boundary: Responsive presentation overrides
 
@@ -197,6 +269,17 @@ retained histories rather than editing one branch into another.
 
 Source: inferred by agent (living scene v1; Decision 006, approved by Brian on 2026-10-05 with "i approve", keeps the renderer as maintained, not extended)
 
+#### Scenario: Mobile geometry is presentation only
+
+- **WHEN** a profile gives `mobile_home`, `mobile_anchor`, `mobile_rect` or `scene.mobile_min_height`
+- **THEN** each is validated with the same point or rectangle shape as its desktop counterpart and used only by the browser presentation layer, so canonical location, state, tick, event order and branch history do not change
+
+#### Scenario: The scrubber and branch wrapper
+
+- **WHEN** a viewer drags the HTML range scrubber, whose values are the retained canonical frame boundaries
+- **THEN** the same deterministic frame render used by next and previous runs, and world time does not advance
+- **AND** the multi-branch wrapper swaps self-contained branch documents, selecting retained histories rather than editing one branch into another
+
 ### Requirement: Living Scene: Compatibility
 
 `load_scene_contract()` accepts both:
@@ -211,6 +294,12 @@ profiles.
 
 Source: inferred by agent (living scene v1; Decision 006, approved by Brian on 2026-10-05 with "i approve", keeps the renderer as maintained, not extended)
 
+#### Scenario: Both scene contracts load
+
+- **WHEN** `load_scene_contract()` is given a `world-substrate-living-scene/v1` or a legacy `world-substrate-scene-profile/v0` profile
+- **THEN** it accepts both, and a legacy profile is returned unchanged after its minimal shape is validated
+- **AND** the existing `render_scene_replay.py` path keeps owning v0 rendering, so v1 does not reinterpret those profiles
+
 ### Requirement: Living Scene: Verification fixture
 
 `tests/fixtures/living_scene/` contains a domain-neutral retained profile,
@@ -223,6 +312,17 @@ entity ids, and scenario-specific branches. Waltzman-specific composition must
 live in reference-world profile/assets rather than this shared contract layer.
 
 Source: inferred by agent (living scene v1; Decision 006, approved by Brian on 2026-10-05 with "i approve", keeps the renderer as maintained, not extended)
+
+#### Scenario: The neutral fixture reproduces
+
+- **WHEN** the tests build frames from `tests/fixtures/living_scene/` (a domain-neutral profile and projection bundle)
+- **THEN** they equal the expected frame sequence in that folder
+- **AND** the Kitchen and Castaway legacy profiles load unchanged and still render through the legacy path
+
+#### Scenario: The generic runtime has no Waltzman names
+
+- **WHEN** the generic Living Scene runtime is scanned
+- **THEN** it contains no Waltzman names, entity ids or scenario-specific branches, since that composition lives in reference-world profile and assets
 
 ### Requirement: Living Scene: Current implementation boundary
 
@@ -248,6 +348,17 @@ free of Waltzman entity/action branches.
 
 Source: inferred by agent (living scene v1; Decision 006, approved by Brian on 2026-10-05 with "i approve", keeps the renderer as maintained, not extended)
 
+#### Scenario: What the renderer does
+
+- **WHEN** a world's profile is rendered with the generic 2D renderer
+- **THEN** it places declared actors and zones, shows canonical resource and constraint values, presents activities and institution status, gathers declared participants, shows visibility-bounded information transmission and retained action feedback, applies responsive overrides, and scrubs exact event boundaries
+
+#### Scenario: Actors are placed by one shared rule
+
+- **WHEN** an actor's last `actor.move_to` has been applied and an activity later starts with that actor as a declared participant
+- **THEN** the actor stands on a ring around the activity anchor while the activity is active (11 units above the anchor in the layout test), and returns to where its last move put it when the activity ends, not to its home
+- **AND** two actors moved to one point are spread on a ring around it in actor-id order (radius `render.gather_radius`, default 11), while a single actor keeps the exact point, and both renderers use the one rule in `living_scene_layout.py`
+
 ### Requirement: Composed scene: Authority boundary
 
 The composed renderer may choose or interpolate presentation-only properties:
@@ -261,6 +372,12 @@ Activity status and timing, institution state, resource values, commitments, and
 information deliveries remain upstream facts.
 
 Source: inferred by agent (composed living scene v1; Decision 006, approved by Brian on 2026-10-05 with "i approve", keeps the renderer as maintained, not extended)
+
+#### Scenario: The composed renderer chooses only presentation
+
+- **WHEN** the composed renderer draws a world
+- **THEN** it may choose illustrative art, screen position, state styling, animation, event emphasis, responsive layout, labels and inspector layout, and it may not mutate or infer canonical state
+- **AND** it consumes only deterministic Living Scene frames, so scrubbing still rebuilds from the retained initial snapshot plus event deltas
 
 ### Requirement: Composed scene: Generic presentation primitives
 
@@ -282,6 +399,16 @@ renderer which already-declared visual object should receive a transient pulse.
 
 Source: inferred by agent (composed living scene v1; Decision 006, approved by Brian on 2026-10-05 with "i approve", keeps the renderer as maintained, not extended)
 
+#### Scenario: A world uses the generic primitives
+
+- **WHEN** a profile uses actor and object assets with state styling, activity gathering around an anchor with deterministic return home, state-dependent object positions, event emphasis pulses, visibility-safe information paths and bubbles, play, pause, step and scrub controls, selectable anchors, a contextual inspector populated from already-bound canonical fields, and desktop and mobile geometry
+- **THEN** the composed renderer supports each without any world-specific code
+
+#### Scenario: Emphasis has no logical effect
+
+- **WHEN** an event carries a `presentation.emphasize` operation
+- **THEN** it only tells the renderer which already-declared visual object gets a transient pulse, and changes nothing logical
+
 ### Requirement: Composed scene: Product-quality rule
 
 The composed path exists to make the world itself the primary interface. It should
@@ -294,3 +421,14 @@ reference world's profile/assets. Generic renderer source must not branch on a
 world name, entity id, resident name, or scenario-specific rule id.
 
 Source: inferred by agent (composed living scene v1; Decision 006, approved by Brian on 2026-10-05 with "i approve", keeps the renderer as maintained, not extended)
+
+#### Scenario: The world is the interface
+
+- **WHEN** a polished world uses the composed renderer
+- **THEN** its spatial art and local state changes are the primary interface, with the inspector opening on selection rather than staying as a persistent dashboard (the rendered page has no causal graph and no trace table)
+- **AND** a profile may keep card display as a compatibility fallback
+
+#### Scenario: World-specific detail stays in the profile
+
+- **WHEN** a world needs its own art, labels, positions and exact rule bindings
+- **THEN** they live in that reference world's profile and assets, and the generic renderer source contains no world name, entity id, resident name or scenario-specific rule id
