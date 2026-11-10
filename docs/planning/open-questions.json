@@ -1387,6 +1387,58 @@
    "touches": [
     "resident"
    ]
+  },
+  {
+   "id": "Q74",
+   "short": "Does a consequence report fit the judge's context",
+   "question": "Can the consequence report for the largest saved world (786 links) fit the judge's context window, so the judge reads the engine's whole result for an attempt rather than a cut-down one?",
+   "blocks": "J1's record shape (whole report or a summary of it) and A2 on large worlds.",
+   "resolves_with": "Argument: work out the report's token count from the largest saved world (links times tokens per reaction and blocker) before J1, and compare it with the judge model's window. No run needed.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/plans/ai_judge.md:340",
+    "docs/plans/ai_judge.md:243"
+   ],
+   "touches": [
+    "consequence-report",
+    "judge-ruling"
+   ]
+  },
+  {
+   "id": "Q75",
+   "short": "Constraint question or someone's choice",
+   "question": "How does the judge tell a constraint question (can coins change hands here?) from another person's choice (does Rosa accept the bribe?), so that choices always go to the person and never to a ruling?",
+   "blocks": "J2's routing step and A5 (Rosa's own resident decides accept or refuse).",
+   "resolves_with": "Argument, in J2's design: an attempt whose effect needs another resident's act is routed to that resident (the #326 request path, generalised); the judge sees only what remains. One counterexample from the port world would reopen it.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/plans/ai_judge.md:342",
+    "docs/plans/ai_judge.md:114"
+   ],
+   "touches": [
+    "judge-ruling",
+    "resident"
+   ]
+  },
+  {
+   "id": "Q76",
+   "short": "How to write norms and credential holders",
+   "question": "How should a breakable norm and a credential holder be represented in the rules declaration language, without writing a norm as a declared law (which the engine would never let anyone break)?",
+   "blocks": "J4's design and A6 (the password fixture: Mallory phishes Alice's password, is logged in, and the breach has consequences only after an observer acts).",
+   "resolves_with": "Prior art first: Crawford and Ostrom's grammar of institutions, Institutional Grammar 2.0 (Frantz and Siddiki), and Cybernetic Influence v3's split of identity proof, permission, availability and outcome; a short design step opens J4.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/plans/ai_judge.md:345",
+    "docs/plans/ai_judge.md:158"
+   ],
+   "touches": [
+    "norm",
+    "credential-holder",
+    "world-law"
+   ]
   }
  ]
 }
