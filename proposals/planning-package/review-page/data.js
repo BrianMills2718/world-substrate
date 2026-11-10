@@ -98,36 +98,36 @@ window.PAGE_DATA = {
     "path": "docs/model/domain.graph.json",
     "glossary": "docs/model/DOMAIN.md",
     "implemented": {
-     "world": "src/world_substrate/model.py:382",
+     "world": "src/world_substrate/model.py:424",
      "engine": "src/world_substrate/engine.py:222",
      "event": "src/world_substrate/engine.py:572",
-     "move": "src/world_substrate/action_authoring.py:49",
+     "move": "src/world_substrate/action_authoring.py:50",
      "process": "src/world_substrate/engine.py:1095",
-     "compiler": "src/world_substrate/action_authoring.py:456",
+     "compiler": "src/world_substrate/action_authoring.py:440",
      "policy": "src/world_substrate/policy.py:50",
      "sense": "src/world_substrate/semantic.py:15",
-     "profile": "src/world_substrate/profile.py:266",
+     "profile": "src/world_substrate/profile.py:249",
      "write-scope": "src/world_substrate/engine.py:136",
      "causal-trace": "src/world_substrate/engine.py:572",
-     "world-kind": "scripts/world_builder_service.py:116",
+     "world-kind": "scripts/world_builder_service.py:121",
      "builder": "scripts/world_builder_service.py",
-     "approval": "scripts/world_builder_service.py:421",
-     "fingerprint": "scripts/world_builder_service.py:384",
+     "approval": "scripts/world_builder_service.py:426",
+     "fingerprint": "scripts/world_builder_service.py:389",
      "information": "src/world_substrate/information.py:57",
-     "run-loop": "scripts/run_authored_world.py:594",
-     "contention": "scripts/run_authored_world.py:740",
+     "run-loop": "scripts/run_authored_world.py:700",
+     "contention": "scripts/run_authored_world.py:850",
      "resident": "scripts/concordia_residents.py:44",
      "task": "scripts/attempts.py:17",
      "notice": "scripts/attempts.py:234",
-     "build": "scripts/world_builder_service.py:1591",
-     "rules-retry": "scripts/world_builder_service.py:266",
-     "test-run": "scripts/world_builder_service.py:1797",
-     "run-log": "scripts/world_builder_service.py:556",
-     "readout": "scripts/run_readout.py:125",
-     "scene-replay": "scripts/render_scene_replay.py:398",
-     "share": "scripts/world_builder_service.py:603",
-     "budget": "scripts/world_builder_service.py:51",
-     "people-world": "scripts/people_world.py:364",
+     "build": "scripts/world_builder_service.py:1635",
+     "rules-retry": "scripts/world_builder_service.py:110",
+     "test-run": "scripts/world_builder_service.py:1844",
+     "run-log": "scripts/world_builder_service.py:542",
+     "readout": "scripts/run_readout.py:113",
+     "scene-replay": "scripts/render_scene_replay.py:449",
+     "share": "scripts/world_builder_service.py:638",
+     "budget": "scripts/world_builder_service.py:57",
+     "people-world": "scripts/people_world.py:474",
      "communicate": "spikes/any-scenario-2026-10/compile_spec.py:56",
      "moment": "spikes/any-scenario-2026-10/compile_spec.py:48",
      "work-cycle": "spikes/any-scenario-2026-10/compile_spec.py:517",
@@ -143,9 +143,9 @@ window.PAGE_DATA = {
      "waltzman-ref": "reference_worlds/waltzman/components.py:11",
      "affordance": "src/world_substrate/engine.py:395",
      "check": "src/world_substrate/rules.py:48",
-     "attempt": "src/world_substrate/attempt.py:149",
-     "attempt-reading": "src/world_substrate/attempt.py:81",
-     "unmatched-attempt": "src/world_substrate/attempt.py:25",
+     "attempt": "src/world_substrate/attempt.py:221",
+     "attempt-reading": "src/world_substrate/attempt.py:92",
+     "unmatched-attempt": "src/world_substrate/attempt.py:34",
      "observation": "src/world_substrate/engine.py:278",
      "place-way": "scripts/generate_world_bundle.py:96",
      "projection": "src/world_substrate/projection.py:44",
@@ -153,14 +153,14 @@ window.PAGE_DATA = {
      "exchange": "src/world_substrate/exchange.py:68",
      "mechanisms": "src/world_substrate/mechanisms/__init__.py:3",
      "kitchen": "reference_worlds/kitchen/mechanics.py",
-     "mechanic": "src/world_substrate/action_authoring.py:456",
-     "entity-component": "src/world_substrate/model.py:223",
+     "mechanic": "src/world_substrate/action_authoring.py:515",
+     "entity-component": "src/world_substrate/model.py:247",
      "knock-on-now": "src/world_substrate/engine.py:964",
      "world-law": "scripts/scaffold_world.py:45",
      "law-check": "src/world_substrate/laws.py:36",
      "resource": "scripts/scaffold_world.py:45",
      "world-design": "scripts/generate_world_bundle.py:53",
-     "rules-review": "scripts/review_rules.py:92",
+     "rules-review": "scripts/review_rules.py:75",
      "run-stop": "scripts/run_stop.py:65"
     }
    },
@@ -218,8 +218,8 @@ window.PAGE_DATA = {
     "status": "present",
     "path": "docs/planning/cold-review.md",
     "verdict": "pass",
-    "reviewed_revision": "c99cbc704c5a8f2876c464b313373d343108cf1e",
-    "package_commit": "686445ea2efb4978bc7a6207b4811e29f0a1c737"
+    "reviewed_revision": "32860542557cf2698a05669b4b29b5041a7e1818",
+    "package_commit": "32860542557cf2698a05669b4b29b5041a7e1818"
    },
    "acceptance": {
     "status": "present",
@@ -1937,7 +1937,7 @@ window.PAGE_DATA = {
     "id": "world",
     "label": "World",
     "kind": "Substrate",
-    "explain": "The one canonical world during a run: entities with typed components, a tick and a revision. Code: src/world_substrate/model.py:382."
+    "explain": "The one canonical world during a run: entities with typed components, a tick and a revision. Code: src/world_substrate/model.py:424."
    },
    {
     "id": "engine",
@@ -1955,7 +1955,7 @@ window.PAGE_DATA = {
     "id": "move",
     "label": "Move (action)",
     "kind": "Substrate",
-    "explain": "Something a person may try; its rule has checks and effects, compiled before use. Code: src/world_substrate/action_authoring.py:49."
+    "explain": "Something a person may try; its rule has checks and effects, compiled before use. Code: src/world_substrate/action_authoring.py:50."
    },
    {
     "id": "process",
@@ -1967,7 +1967,7 @@ window.PAGE_DATA = {
     "id": "compiler",
     "label": "Compiler",
     "kind": "Substrate",
-    "explain": "Turns proposed rules into installed rules and derives what each may read and write. Code: src/world_substrate/action_authoring.py:456."
+    "explain": "Turns proposed rules into installed rules and derives what each may read and write. Code: src/world_substrate/action_authoring.py:440."
    },
    {
     "id": "policy",
@@ -1985,7 +1985,7 @@ window.PAGE_DATA = {
     "id": "profile",
     "label": "Frozen mechanic profile",
     "kind": "Substrate",
-    "explain": "The validated, installed rules of a world, frozen under one id before any run; changing a rule means a new profile. Code: src/world_substrate/profile.py:266."
+    "explain": "The validated, installed rules of a world, frozen under one id before any run; changing a rule means a new profile. Code: src/world_substrate/profile.py:249."
    },
    {
     "id": "write-scope",
@@ -2003,7 +2003,7 @@ window.PAGE_DATA = {
     "id": "world-kind",
     "label": "World kind",
     "kind": "Substrate",
-    "explain": "Two choices a build makes first: whether the description is about people (people path) or things (causal path), and whether the world is a task, ongoing or open. Code: scripts/world_builder_service.py:116."
+    "explain": "Two choices a build makes first: whether the description is about people (people path) or things (causal path), and whether the world is a task, ongoing or open. Code: scripts/world_builder_service.py:121."
    },
    {
     "id": "builder",
@@ -2015,13 +2015,13 @@ window.PAGE_DATA = {
     "id": "approval",
     "label": "Approval record",
     "kind": "Substrate",
-    "explain": "A person's yes to the rules, stored with the rules' profile id and world fingerprint; every round names it. Code: scripts/world_builder_service.py:421."
+    "explain": "A person's yes to the rules, stored with the rules' profile id and world fingerprint; every round names it. Code: scripts/world_builder_service.py:426."
    },
    {
     "id": "fingerprint",
     "label": "World fingerprint",
     "kind": "Substrate",
-    "explain": "A short hash of the bundle and rules that ties builds, rounds and shares to one world. Code: scripts/world_builder_service.py:384."
+    "explain": "A short hash of the bundle and rules that ties builds, rounds and shares to one world. Code: scripts/world_builder_service.py:389."
    },
    {
     "id": "information",
@@ -2033,13 +2033,13 @@ window.PAGE_DATA = {
     "id": "run-loop",
     "label": "Run loop",
     "kind": "Substrate",
-    "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run. Code: scripts/run_authored_world.py:714."
+    "explain": "Each round: everyone decides, picks are submitted in a rotating order, then processes run. Code: scripts/run_authored_world.py:700."
    },
    {
     "id": "contention",
     "label": "Lost race",
     "kind": "Substrate",
-    "explain": "When an earlier move this round changed the state, an open attempt is resubmitted as is at the new revision and only its rule's checks decide it; menu paths resubmit the move if still offered, else ask once more. The refused row names the failed checks, not the event that blocked it. Code: scripts/run_authored_world.py:740."
+    "explain": "When an earlier move this round changed the state, an open attempt is resubmitted as is at the new revision and only its rule's checks decide it; menu paths resubmit the move if still offered, else ask once more. The refused row names the failed checks, not the event that blocked it. Code: scripts/run_authored_world.py:850."
    },
    {
     "id": "resident",
@@ -2063,55 +2063,55 @@ window.PAGE_DATA = {
     "id": "build",
     "label": "Build",
     "kind": "Substrate",
-    "explain": "Description to spec, actions, rules, assembly, scripted test run and score. Code: scripts/world_builder_service.py:1591."
+    "explain": "Description to spec, actions, rules, assembly, scripted test run and score. Code: scripts/world_builder_service.py:1635."
    },
    {
     "id": "rules-retry",
     "label": "Rules retry",
     "kind": "Substrate",
-    "explain": "A second rules attempt after a rejection or weak score; skipped after 80 s. Code: scripts/world_builder_service.py:266."
+    "explain": "A second rules attempt after a rejection or weak score; skipped after 80 s. Code: scripts/world_builder_service.py:110."
    },
    {
     "id": "test-run",
     "label": "Scripted test run",
     "kind": "Substrate",
-    "explain": "The build's free run with simple moves that scores the rules and lists long tasks and whether each can fail part-way. Code: scripts/world_builder_service.py:1797."
+    "explain": "The build's free run with simple moves that scores the rules and lists long tasks and whether each can fail part-way. Code: scripts/world_builder_service.py:1844."
    },
    {
     "id": "run-log",
     "label": "Run log",
     "kind": "Substrate",
-    "explain": "One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads. Code: scripts/world_builder_service.py:556."
+    "explain": "One line per request with its trace ids, cost and full artifacts; the source for shares and trace reads. Code: scripts/world_builder_service.py:542."
    },
    {
     "id": "readout",
     "label": "Readout",
     "kind": "Substrate",
-    "explain": "One AI summary of a run whose every cited event id is checked against the run. Code: scripts/run_readout.py:125."
+    "explain": "One AI summary of a run whose every cited event id is checked against the run. Code: scripts/run_readout.py:113."
    },
    {
     "id": "scene-replay",
     "label": "Scene replay",
     "kind": "Substrate",
-    "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. Code: scripts/render_scene_replay.py:398."
+    "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. Code: scripts/render_scene_replay.py:449."
    },
    {
     "id": "share",
     "label": "Share link and replay",
     "kind": "Substrate",
-    "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls. Code: scripts/world_builder_service.py:603."
+    "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls. Code: scripts/world_builder_service.py:638."
    },
    {
     "id": "budget",
     "label": "Daily allowance",
     "kind": "Substrate",
-    "explain": "Visitor $3/day, owner $5/day; spend fails closed. Code: scripts/world_builder_service.py:51."
+    "explain": "Visitor $3/day, owner $5/day; spend fails closed. Code: scripts/world_builder_service.py:57."
    },
    {
     "id": "people-world",
     "label": "People world",
     "kind": "Family",
-    "explain": "A world built from a description about people: people, information, moments and the fixed people rules. Code: scripts/people_world.py:364."
+    "explain": "A world built from a description about people: people, information, moments and the fixed people rules. Code: scripts/people_world.py:474."
    },
    {
     "id": "communicate",
@@ -2219,19 +2219,19 @@ window.PAGE_DATA = {
     "id": "attempt",
     "label": "Attempt (in own words)",
     "kind": "Substrate",
-    "explain": "What a resident says it physically tries, in its own words, with no outcome field: the world, not the speaker, decides what happens. Code: src/world_substrate/attempt.py:149."
+    "explain": "What a resident says it physically tries, in its own words, with no outcome field: the world, not the speaker, decides what happens. Code: src/world_substrate/attempt.py:221."
    },
    {
     "id": "attempt-reading",
     "label": "Attempt reading",
     "kind": "Substrate",
-    "explain": "The interpreter's typed reading of an attempt: one move kind and its field rows (field, value, quoted_span: the words in the attempt behind that value), or the kind 'wait'; read as unmatched if it names an unknown kind or entity, misses a field, or quotes words not said. Code: src/world_substrate/attempt.py:81."
+    "explain": "The interpreter's typed reading of an attempt: one move kind and its field rows (field, value, quoted_span: the words in the attempt behind that value), or the kind 'wait'; read as unmatched if it names an unknown kind or entity, misses a field, or quotes words not said. Code: src/world_substrate/attempt.py:92."
    },
    {
     "id": "unmatched-attempt",
     "label": "Unmatched attempt",
     "kind": "Substrate",
-    "explain": "An attempt no move kind covers: it changes nothing, the person learns nothing came of it, and the run lists it for the rules writer. Code: src/world_substrate/attempt.py:25."
+    "explain": "An attempt no move kind covers: it changes nothing, the person learns nothing came of it, and the run lists it for the rules writer. Code: src/world_substrate/attempt.py:34."
    },
    {
     "id": "observation",
@@ -2291,13 +2291,13 @@ window.PAGE_DATA = {
     "id": "mechanic",
     "label": "Installed mechanic",
     "kind": "Substrate",
-    "explain": "One installed action rule: an action kind's selector, checks, effects and derived reads and writes, compiled and frozen in the profile; the root rule says installed mechanics alone decide what happens. Code: src/world_substrate/action_authoring.py:456."
+    "explain": "One installed action rule: an action kind's selector, checks, effects and derived reads and writes, compiled and frozen in the profile; the root rule says installed mechanics alone decide what happens. Code: src/world_substrate/action_authoring.py:515."
    },
    {
     "id": "entity-component",
     "label": "Entity and component",
     "kind": "Substrate",
-    "explain": "An entity is one thing in the world (person, wall, glass, decision) with an id, a label, categories and typed components; a component is a named record of typed fields (boundary.passable, group_decision.status) that checks read and effects write. Code: src/world_substrate/model.py:223."
+    "explain": "An entity is one thing in the world (person, wall, glass, decision) with an id, a label, categories and typed components; a component is a named record of typed fields (boundary.passable, group_decision.status) that checks read and effects write. Code: src/world_substrate/model.py:247."
    },
    {
     "id": "run-seed",
@@ -2333,7 +2333,7 @@ window.PAGE_DATA = {
     "id": "rules-review",
     "label": "Independent rules review",
     "kind": "Substrate",
-    "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds. Code: scripts/review_rules.py:92."
+    "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds. Code: scripts/review_rules.py:75."
    },
    {
     "id": "consequence-report",
