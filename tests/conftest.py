@@ -16,3 +16,8 @@ def _no_paid_rules_review(monkeypatch):
     from scripts import world_builder_service as service
 
     monkeypatch.setattr(service, "review_rules", lambda *args, **kwargs: ([], 0.0))
+
+
+def pytest_configure(config):
+    # code2 format: a test names the OpenSpec scenario it checks, @pytest.mark.req("<capability>/<scenario>").
+    config.addinivalue_line("markers", "req(scenario): the OpenSpec capability/scenario this test checks")

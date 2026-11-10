@@ -19,6 +19,7 @@ sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
 from scripts import attempts
+from scripts import run_stop as run_stop_rule
 from scripts.bootstrap_scene_profile import _merge, bootstrap_profile
 from scripts.render_scene_replay import render_html
 from scripts.scaffold_world import _render_model, load_bundle, validate_bundle
@@ -532,6 +533,8 @@ def run_world(
     resident_memory: dict[str, list[str]] | None = None,
     underway: list[dict[str, Any]] | None = None,
     open_attempts: bool = False,
+    run_stop: dict[str, Any] | None = None,
+    stop_history: list[str] | None = None,
 ) -> tuple[dict[str, Any], Engine, CausalModel]:
     if policy not in {"scripted", "llm", "resident"}:
         raise ValueError("policy must be scripted, llm or resident")
@@ -591,6 +594,13 @@ def run_world(
 
     # Moves a declared law refused when tried on a scratch copy before anyone chose (see _without_no_ops).
     preview_law_refusals: list[dict[str, Any]] = []
+    # When the run stops by itself (scripts/run_stop.py, Q12): only when the world carries the setting, so a world
+    # or run saved without it runs every round and records exactly what it did before.
+    stopped: dict[str, Any] | None = None
+    stop_fields = run_stop_rule.movable_fields(causal_model) if run_stop else frozenset()
+    history: list[str] = [str(k) for k in (stop_history or [])][-(run_stop_rule.MAX_QUIET_ROUNDS + 1):]
+    if run_stop and not history:
+        history.append(run_stop_rule.state_key(engine.world.material_dict(), stop_fields))
     for turn in range(1, max_turns + 1):
         if causal_model.terminal is not None and causal_model.terminal.reached(engine.world):
             break
@@ -930,6 +940,15 @@ def run_world(
             if "causal_parent_event_ids" in kept:
                 kept["causal_parent_event_ids"] = [run_ids.get(e, e) for e in kept["causal_parent_event_ids"]]
             engine_events.append(kept)
+        if run_stop:
+            world_now = engine.world.material_dict()
+            history.append(run_stop_rule.history_entry(world_now, stop_fields,
+                                                       any(row.get("changed") for row in rows.values())))
+            del history[:-(run_stop_rule.MAX_QUIET_ROUNDS + 1)]
+            stopped = run_stop_rule.check(run_stop, history, run_stop_rule.decision_status(world_now),
+                                          turn + turn_offset)
+            if stopped is not None:
+                break
 
     terminal_reached = bool(
         causal_model.terminal is not None and causal_model.terminal.reached(engine.world)
@@ -1015,6 +1034,13 @@ def run_world(
         # law); only when there are some, so a world without laws records exactly what it did before (declared-laws
         # plan S2).
         trace["summary"]["law_breaches"] = breaches
+    if run_stop:
+        last = turn_offset + len(transcript)
+        trace["summary"]["stopped"] = stopped or (run_stop_rule.finish_line(last) if terminal_reached
+                                                  else run_stop_rule.round_cap(last))
+        if run_stop.get("mode") == "quiet":
+            # Sent back with the next one-round request, so the quiet count carries across live play.
+            trace["stop_history"] = history[-(run_stop["quiet_rounds"] + 1):]
     # Open tasks, sent back with the next round so live play keeps following them.
     trace["underway"] = [{k: t[k] for k in sorted(attempts.TASK_KEYS)} for t in open_tasks]
     return trace, engine, causal_model

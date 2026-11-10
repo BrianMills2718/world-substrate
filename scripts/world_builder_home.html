@@ -101,6 +101,9 @@ main{max-width:760px}
 details.more{margin-top:18px;font-size:14px;color:var(--muted)}
 details.more>summary{cursor:pointer;padding:4px 0}
 details.more .inner{padding:10px 0 0;display:flex;flex-direction:column;gap:12px}
+.stop-opt{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+.stop-opt legend{padding:0;margin-bottom:2px}
+.stop-opt input[type=number]{width:4.5em;font:inherit;background:#0b1013;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:2px 6px}
 footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 .wait{font-size:15px}
 .wait .time{font-variant-numeric:tabular-nums}
@@ -164,6 +167,12 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
             <option value="people">People with their own goals</option>
             <option value="things">Things and the steps of a job</option>
           </select></label>
+        <fieldset class="stop-opt" id="run-stop" title="When a run of this world stops by itself. Saved with the world, so a shared run keeps it.">
+          <legend class="small">When to stop a run</legend>
+          <label class="small" title="The run stops by itself once nothing has changed for this many rounds in a row (a group decision must also be deployed or rejected). The page says why it stopped, and Play runs more rounds anyway."><input type="radio" name="run-stop" value="quiet" checked> Stop once nothing is changing, after
+            <input type="number" id="quiet-rounds" min="1" max="100" step="1" value="6" title="How many rounds in a row with nothing changing before the run stops (1 to 100)" aria-label="Quiet rounds before stopping"> quiet rounds</label>
+          <label class="small" title="The run never stops by itself for being quiet; it keeps playing round after round until you pause it."><input type="radio" name="run-stop" value="every_round"> Always run every round</label>
+        </fieldset>
         <span><button type="button" class="linkish" id="surprise-btn" title="The AI invents a world of the kind picked above, creates it and starts it straight away">I’m feeling lucky: the AI makes one up</button></span>
         <span><button type="button" class="linkish" id="talk-btn" title="The AI asks you a few questions and writes the description with you">Not sure what to write? Let the AI ask you a few questions</button></span>
       </div>
@@ -343,6 +352,12 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     }
   }
   const kind = () => (document.querySelector('input[name="kind"]:checked') || {}).value || "ongoing";
+  // When a run stops by itself (Q12; Brian, 2026-11-10: "stop condition should be configurable"); saved with the world.
+  const runStop = () => {
+    if ((document.querySelector('input[name="run-stop"]:checked') || {}).value === "every_round") return { mode: "every_round" };
+    const n = Math.round(Number($("quiet-rounds").value));
+    return { mode: "quiet", quiet_rounds: n >= 1 && n <= 100 ? n : 6 };
+  };
 
   function plainError(err) {
     const msg = String(err.message || err);
@@ -595,7 +610,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     timer = setInterval(() => { $("elapsed").textContent = Math.round((Date.now() - started) / 1000) + " s"; }, 500);
     renderSteps([{ state: "doing", step: "Sending your description", at_s: 0 }]);
     try {
-      const data = await apiJob("/generate-world", { description, world_kind: kind(), world_def: $("world-def").value }, 1000, (steps) => { if (gen === buildGen && steps.length) renderSteps(steps); });
+      const data = await apiJob("/generate-world", { description, world_kind: kind(), world_def: $("world-def").value, run_stop: runStop() }, 1000, (steps) => { if (gen === buildGen && steps.length) renderSteps(steps); });
       if (gen !== buildGen) return;
       renderReview(data);
       // Pressing Create simulation is the approval (2026-10-15); the rules stay one click away.
@@ -968,6 +983,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     // world a resident knows the world, its own state and what it sees.
     const request = { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: "resident", turns: 1 };
     if (world.briefs) request.briefs = world.briefs;
+    // A world saved without a stop setting runs every round, as before.
+    if (world.run_stop) request.run_stop = world.run_stop;
+    if (world.run_stop && live.snapshot && live.stopHistory) request.stop_history = live.stopHistory;
     if (live.memory) request.resident_memory = live.memory;
     if (live.snapshot) { request.continue_from = live.snapshot; request.continue_seal = live.seal; request.approval = live.approval; request.turn_offset = live.lastTurn; request.recent = recentMoves(); if (live.underway) request.underway = live.underway; }
     // AI rounds take a few seconds and go through a job.
@@ -980,7 +998,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     while (current() && live.playing) {
       if (!live.buffer.length && live.replay) {
         live.playing = false; live.finished = true;
-        live.why = `End of the shared run: ${live.rounds.length} rounds, replayed from the recording with no AI calls.`;
+        const runs = (world.shared && world.shared.runs) || [], last = runs.length ? runs[runs.length - 1].stopped : null;
+        live.why = `End of the shared run: ${live.rounds.length} rounds, replayed from the recording with no AI calls.`
+          + (last && last.reason === "quiet_rounds" ? " " + last.why : "");
         renderLive();
         if (world.shared && world.shared.readout) renderReadout(world.shared.readout);
         return;
@@ -997,6 +1017,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         live.snapshot = run.trace.final_snapshot; live.seal = run.snapshot_seal; live.approval = run.approval; live.lastTurn = run.summary.last_turn;
         if (run.trace.resident_memory) live.memory = run.trace.resident_memory;
         live.underway = run.trace.underway || [];
+        live.stopHistory = run.trace.stop_history || null;
+        const stopped = run.summary.stopped;
+        if (stopped && stopped.reason === "quiet_rounds") live.stopsAt = stopped;
         if (run.trace_id) live.runIds.push(run.trace_id);
         if (run.replay_html) $("replay").srcdoc = run.replay_html;
         if (!rounds.length) {
@@ -1022,6 +1045,10 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       });
       if (live.endsAt && turn.turn >= live.endsAt) {
         live.finished = true; live.playing = false; live.why = "Finished: the finish line was reached.";
+      } else if (live.stopsAt && turn.turn >= live.stopsAt.round && !live.replay) {
+        // The world's stop setting ended the run; Play carries on and counts quiet rounds afresh.
+        live.playing = false; live.why = live.stopsAt.why + " Press Play to run more rounds anyway.";
+        live.stopsAt = null; live.stopHistory = null;
       } else if (live.quiet >= QUIET_ROUNDS_TO_PAUSE && !live.replay) {
         live.playing = false; live.quiet = 0;
         live.why = `Paused by itself: nothing happened for ${QUIET_ROUNDS_TO_PAUSE} rounds. Open “Why things were refused” to see what is blocking everyone.`;

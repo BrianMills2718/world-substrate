@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import re
 import unittest
+
+import pytest
 from pathlib import Path
 
 HOME = Path(__file__).resolve().parents[1] / "scripts/world_builder_home.html"
@@ -72,7 +74,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
     def test_build_steps_show_while_the_job_runs(self):
         self.assertIn('id="build-steps"', self.page)
         self.assertIn("if (onProgress) onProgress(data.progress || []);", self.page)
-        self.assertIn('apiJob("/generate-world", { description, world_kind: kind(), world_def: $("world-def").value }, 1000, (steps) =>', self.page)
+        self.assertIn('apiJob("/generate-world", { description, world_kind: kind(), world_def: $("world-def").value, run_stop: runStop() }, 1000, (steps) =>', self.page)
         self.assertIn("function renderSteps(steps)", self.page)
 
     def test_dialogue_and_escape_hatches_sit_behind_disclosures(self):
@@ -99,6 +101,18 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('h["X-World-Builder-Owner"] = k', self.page)
         self.assertIn("headers: authHeaders(", self.page)
         self.assertIn('fetch(API + "/jobs/" + started.job_id, { headers: authHeaders() })', self.page)
+
+    @pytest.mark.req("world-builder-page/the-create-page-offers-when-to-stop-a-run")
+    def test_create_page_offers_when_to_stop_a_run_defaulting_to_six_quiet_rounds(self):
+        import re
+        self.assertIn('<legend class="small">When to stop a run</legend>', self.page)
+        self.assertIn('<input type="radio" name="run-stop" value="quiet" checked> Stop once nothing is changing', self.page)
+        self.assertRegex(self.page, r'<input type="number" id="quiet-rounds" min="1" max="100" step="1" value="6" title="')
+        self.assertIn('<input type="radio" name="run-stop" value="every_round"> Always run every round', self.page)
+        self.assertTrue(all("title=" in t for t in re.findall(r'<label class="small"[^>]*>', self.page)))
+        # Sent with each round of a world that has it; a world saved without it sends nothing and runs every round.
+        self.assertIn("if (world.run_stop) request.run_stop = world.run_stop;", self.page)
+        self.assertIn('live.why = live.stopsAt.why + " Press Play to run more rounds anyway.";', self.page)
 
     def test_every_control_has_a_tooltip(self):
         import re
