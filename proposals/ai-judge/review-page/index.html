@@ -228,7 +228,7 @@ a{color:var(--have)}
 <tr><td>doc reachability</td><td>reachable 127, unreachable 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>project check (tests, system model, docs)</td><td>tests run 891, failed 0, skipped 2, subtests passed 222</td><td><span class="tag have">exit 0</span></td></tr>
 </tbody></table></div>
-<h3 class="sub">Open questions: 48 open, 47 resolved</h3>
+<h3 class="sub">Open questions: 49 open, 47 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
 <div class="tablewrap"><table class="qs"><thead><tr><th>Question</th><th>Whose call</th><th>Blocks</th></tr></thead><tbody>
 <tr><td><b>Q1</b> Rules retry never runs here</td><td>agent</td><td>whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower</td></tr>
@@ -279,6 +279,7 @@ a{color:var(--have)}
 <tr><td><b>Q93</b> The language gap never happened on price times quantity</td><td>agent</td><td>A4&#x27;s third case (a ruling the language cannot express listed as a language gap) as a live saved run.</td></tr>
 <tr><td><b>Q94</b> A later offer joins an installed rule only when the judge wrote the giver&#x27;s move</td><td>agent</td><td>How reliably A4&#x27;s &#x27;decided by rule, judge not asked&#x27; shows on a second trader (the cold review&#x27;s item 8 saw the same split).</td></tr>
 <tr><td><b>Q95</b> The engine&#x27;s own replay of a run that installed a rule mid-round</td><td>agent</td><td>Nothing that exists; any future audit or export that replays a judged run through Engine.replay.</td></tr>
+<tr><td><b>Q96</b> An installed coin rule lets a person take another&#x27;s coins with no offer from them</td><td>agent</td><td>Trust in installed rulings that move another person&#x27;s goods or coins (A4, A5); not the install, hold, approve and reject mechanism itself.</td></tr>
 </tbody></table></div>
 <h3 class="sub">Diagrams</h3>
 <ul class="plain"><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/ODD.md">ODD.md</a>: What is inside World Substrate and what talks to it? (context and container views, section 3)</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>: Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>: Which concepts carry the unsettled questions, and whose call is each?</li><li><a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/metamodel.graph.json">metamodel.graph.json</a>: What kinds of things can any world&#x27;s rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?</li></ul>
@@ -289,7 +290,7 @@ a{color:var(--have)}
 <p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 79 ideas, 134 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
 <div class="graph" id="map-domain"></div>
 <p class="mapinfo" id="map-domain-info">Click an idea to see what it is and where it lives in the code.</p>
-<p class="lede">The open-questions map: each open question beside the ideas it touches (48 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
+<p class="lede">The open-questions map: each open question beside the ideas it touches (49 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
 <div class="graph" id="map-questions"></div>
 <p class="mapinfo" id="map-questions-info">Click a question to read it.</p>
 <!-- maps:end -->

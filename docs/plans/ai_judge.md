@@ -58,8 +58,10 @@ Planning package: docs/planning/ai-judge/planning-package.json
 2026-11-10 ("yes if ti si planned out and you have no quesitons for me"). J0 built 2026-11-10 (no knock-on cap;
 PR #362, live at `d89a446`; saved runs in `evidence/ai-judge/j0/`, live share links in
 `evidence/ai-judge/j0/live-shares.json`); J1 and J2 built 2026-11-10 (J2: PR #367, live at `b8d26b5`); J3 built
-2026-11-10 (a checked ruling becomes a rule, installed at once or held for the owner's approval; saved runs in
-`evidence/ai-judge/j3/`); J5 is next; J4 stays exploration.
+2026-11-10 and live at `cab821d` on 2026-11-11 (a checked ruling becomes a rule, installed at once or held for the
+owner's approval; saved live runs and share links in `evidence/ai-judge/j3/live-shares.json`; the live approve run
+showed an installed coin rule letting a person take another's coins with no offer, open question Q96, to fix before
+J5); J5 is next; J4 stays exploration.
 
 ## Why
 
@@ -354,7 +356,7 @@ traced run.
 | J0 | Remove the 32-reaction cap; keep once-per-pair-per-moment; each saved run records the limit it ran under and replay uses it | fully specifiable now | A1, A7 |
 | J1 | Consequence report: pass 1 (`engine.discover` for the person acting and each person the attempt names, plus the named entities' current values) and pass 2 (a proposed rule test-run on a copy of the world: its net changes, blockers, chain length and stopping point, with the full chain in the run record) | specified by design: pass 1's selection is defined, but which named people and entities an attempt yields depends on the interpreter's reading, and no run has produced a pass 1 page yet | A2 (data) |
 | J2 | Judge: turn on Concordia's `EventResolution` for unmatched attempts, given the whole world plus pass 1; it proposes a rule, reads the pass 2 report, then confirms, revises once or withdraws; choices go to the person | conditional on J1 | A2, A3, A5 |
-| J3 | Ruling to rule: install the confirmed rule (or hold it with the attempt pending, per the world's setting); refuse with "no rule could express this" and record a language gap when the rules check rejects it | built 2026-11-10 (`scripts/rulings.py`; `openspec/specs/ai-judge`) | A4 |
+| J3 | Ruling to rule: install the confirmed rule (or hold it with the attempt pending, per the world's setting); refuse with "no rule could express this" and record a language gap when the rules check rejects it | built 2026-11-10, live `cab821d` 2026-11-11 (`scripts/rulings.py`; `openspec/specs/ai-judge`; open defect Q96) | A4 |
 | J4 | Credentials as facts and norms as breakable rules (Ostrom's grammar) | exploration required | A6 |
 | J5 | Stopping point in plain words: `run_stop.stop_when`, assessed by the judge after each round, stopping with `reason: stopping_point` through the existing stop check | conditional on J2 | A8 |
 

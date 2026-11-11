@@ -1,0 +1,63 @@
+{
+ "what": "J3 live runs on the deployed World Builder after the deploy line \"live page matches cab821d2bbcd; backend: cab821d2bbcd\" (2026-11-11 UTC), played by evidence/ai-judge/j3/play.py with the owner allowance; costs are cost_usd from the server run log.",
+ "acceptance": {
+  "A4": [
+   "3hWjWii4Q3BQ",
+   "qlKA3Wp9v3kp",
+   "F_ND9bo29lvp",
+   "iKefhnd6zOkc",
+   "MrEqGi3Z40Kf"
+  ]
+ },
+ "runs": [
+  {
+   "name": "default, install at once",
+   "share_id": "3hWjWii4Q3BQ",
+   "folder": "install-default",
+   "cost_usd": 0.00401
+  },
+  {
+   "name": "default try 1 (ruling withdrawn)",
+   "share_id": "jfJq8cBuPpFz",
+   "folder": "install-default (earlier-tries.jsonl)",
+   "cost_usd": 0.008192
+  },
+  {
+   "name": "default try 3",
+   "share_id": "zNObKaIYNJ73",
+   "folder": "install-default (earlier-tries.jsonl)",
+   "cost_usd": 0.006216
+  },
+  {
+   "name": "wait, held (rounds 1-2)",
+   "share_id": "qlKA3Wp9v3kp",
+   "folder": "wait-approve, wait-reject (rounds 1-2)",
+   "cost_usd": 0.002701
+  },
+  {
+   "name": "wait try 1",
+   "share_id": "O_IP_E3-HP_i",
+   "folder": "wait-reject (earlier-tries.jsonl)",
+   "cost_usd": 0.004268
+  },
+  {
+   "name": "wait, approved",
+   "share_id": "F_ND9bo29lvp",
+   "folder": "wait-approve",
+   "cost_usd_rounds_3_4": 0.001927
+  },
+  {
+   "name": "wait, rejected",
+   "share_id": "iKefhnd6zOkc",
+   "folder": "wait-reject",
+   "cost_usd_rounds_3_4": 0.002825
+  },
+  {
+   "name": "price times quantity",
+   "share_id": "MrEqGi3Z40Kf",
+   "folder": "price-times-quantity",
+   "cost_usd": 0.002629
+  }
+ ],
+ "total_cost_usd": 0.032771
+}

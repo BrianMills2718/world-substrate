@@ -127,6 +127,21 @@ class AuthoredWorldRunTests(unittest.TestCase):
         rounds[0]["turn"] = 7
         self.assertEqual(_picture_story(bundle, {"actors": ["a", "b", "c"], "transcript": rounds})["rounds"][7]["same"], [])
 
+    def test_coins_moving_between_people_are_listed_as_changed(self):
+        # 2026-11-11, live J3 share F_ND9bo29lvp round 4: Ines took 10 coins from Vik under an installed ruling
+        # and the page said "Changed this round (0) Nothing changed."
+        rounds = [{"turn": 4, "world_events": [], "actors": {
+            "ines": {"status": "accepted", "did": {"kind": "accept-coin-handover"}, "changes": [
+                {"path": "entities.ines.components.purse.coins", "before": 20, "after": 30},
+                {"path": "entities.vik.components.purse.coins", "before": 40, "after": 30},
+            ]},
+            "vik": {"status": "no_action", "changes": []},
+        }}]
+        bundle = {"entities": [{"id": "ines", "label": "Ines"}, {"id": "vik", "label": "Vik"}]}
+        story = _picture_story(bundle, {"actors": ["ines", "vik"], "transcript": rounds})["rounds"][4]
+        changed = {c["label"]: (c["was"], c["now"], c["by"]) for c in story["changed"]}
+        self.assertEqual(changed, {"Ines": ("coins: 20", "coins: 30", "Ines"), "Vik": ("coins: 40", "coins: 30", "Ines")})
+
     def test_moves_that_change_nothing_are_never_chosen(self):
         # 2026-10-06: two cooks "recorded" an already-waiting order every round
         # and the world was reported busy. A move whose only effect leaves state
