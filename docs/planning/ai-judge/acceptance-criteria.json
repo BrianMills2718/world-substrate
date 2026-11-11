@@ -122,24 +122,26 @@
     "Decided 3 and Decided 5 (Brian 2026-11-09: \"can we make this configurable? or is that more troubel than it is worth. if so i say yes\"); language gap and wait mode inferred by agent (Q79, Q80); requirements R4, R9, R8"
    ],
    "demonstration": [
-    "Open the port world (the description \"A small port: Rosa, the customs officer, signs inspection releases. Vik, a trader, has 40 coins and a crate he has not declared.\" with the same fixture rules as the J2 port run) with Options, 'Judge rulings during a run' left at Approved by Create; run it.",
-    "On the run page, open the ruling list, then the second trader's later offer.",
-    "Build it again with 'Wait for my approval'; run it; open the ruling list and both traders' offers.",
-    "Press Approve on the held ruling and open both offers again; in a second copy of that run, press Reject and open both offers.",
-    "Open the saved run \"price times quantity\" and its ruling list."
+    "Default (Approved by Create): open https://brianmills.dev/world-builder/?run=3hWjWii4Q3BQ (the port world, two traders). Open \"Rulings in this run\".",
+    "Wait for my approval, held: open https://brianmills.dev/world-builder/?run=qlKA3Wp9v3kp (rounds 1 and 2 only). Open the ruling list.",
+    "Approve: open https://brianmills.dev/world-builder/?run=F_ND9bo29lvp (the same two rounds, then the owner's Approve sent with round 3). Open the ruling list and the round lines.",
+    "Reject: open https://brianmills.dev/world-builder/?run=iKefhnd6zOkc (the same two rounds, then Reject). Open the ruling list and round 4.",
+    "Price times quantity: open https://brianmills.dev/world-builder/?run=MrEqGi3Z40Kf (the lumberyard world) and its ruling list."
    ],
-   "expected": "Default: the ruling list shows the coin rule as \"installed, passed the rules check and test run\", and the second offer says \"decided by rule, judge not asked\". Wait: the ruling shows \"held\", both offers show \"pending: waiting for your approval\", and nothing has changed; after Approve both offers settle through the rule; after Reject both are refused, naming the rejected ruling. \"price times quantity\": the attempt is refused with \"no rule could express this\" and the ruling list shows it as a language gap.",
+   "expected": "Default: R1 hand-over-coins reads \"installed, passed the rules check and test run\"; Ines's round 2 attempt \"went to the person whose choice it is\"; in round 3 Ines's and Vik's handovers read \"decided by rule, judge not asked (allowed)\". Held: R1 accept-coin-handover is held and Ines's attempt is pending; nothing changed. Approve: R1 reads installed, \"The owner approved it\"; Ines's waiting try went to Rosa and Rosa's acceptance is decided by rule. Reject: R1 rejected; Ines's waiting try and her round 4 try are refused naming R1; no coins move. Price times quantity: planned as a language gap; live, the judge wrote a fixed-number rule instead (see status).",
    "failure_example": "Broken: the judge is asked again for the second offer under the default, a rule is installed or an offer settles during a 'Wait' run before Approve, a ruling is installed without passing the rules check and test run, a ruling is missing from the list, or an inexpressible ruling changes anything. Working: as expected for each setting.",
    "representation": {
     "view": "composite-linked-view: the run page's ruling list linked to each attempt it decided, held or refused",
     "router_record": "docs/planning/ai-judge/router/run-page.recommendation.json"
    },
-   "entrypoint": "planned",
-   "status": "not built",
+   "entrypoint": "https://brianmills.dev/world-builder/?run=3hWjWii4Q3BQ (default), https://brianmills.dev/world-builder/?run=F_ND9bo29lvp (approve), https://brianmills.dev/world-builder/?run=iKefhnd6zOkc (reject)",
+   "status": "built",
    "evidence": [
-    "Run records evidence/ai-judge/j3/ (planned): rules-check record (scripts/review_rules.py and the scripted test run) per ruling; the setting saved with the world as 'Simulate as' is (scripts/world_builder_service.py:1603).",
-    "Language gap: open question Q79, evidence/ai-judge/plain-baseline/rules-check.json. Wait mode: Q80."
-   ]
+    "Saved runs with trace reads: evidence/ai-judge/j3/install-default, wait-approve, wait-reject, price-times-quantity; share list evidence/ai-judge/j3/live-shares.json.",
+    "Scripted language-gap and setting tests: tests/test_judge_rulings.py; the setting saved with the world: scripts/world_builder_service.py.",
+    "Open questions Q93 (no live language gap), Q94 (rule shape), Q96 (taking coins with no offer)."
+   ],
+   "status_note": "Built in J3 (PR #370, merged cab821d, deployed 2026-11-11: \"live page matches cab821d2bbcd; backend: cab821d2bbcd\"). Install at once, hold, approve and reject work live. Two parts do not match the plan: (1) only one trader's offer was held in the wait runs (Vik's round 1 ruling was withdrawn by the judge, so 'both offers' could not be shown); (2) the language-gap case never happened live: the judge wrote literal-number rules in all 19 paid tries (Q93), so it is shown by tests only. The approve run also shows a defect: the approved receiver-side rule let Ines take Vik's coins without any offer (Q96). Measured live cost of all 8 runs: $0.0328 (sum of cost_usd over 19 run-log lines)."
   },
   {
    "id": "A5",

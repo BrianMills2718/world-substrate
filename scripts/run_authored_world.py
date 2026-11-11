@@ -1642,7 +1642,7 @@ def _picture_story(bundle: dict[str, Any], trace: dict[str, Any]) -> dict[str, A
             # Only what moved: a row repeating every unchanged value hides the one that changed.
             moved = [f for f in now[eid] if say(eid, f, now[eid][f]) != say(eid, f, before.get(eid, {}).get(f))]
             shown = [say(eid, f, now[eid][f]) for f in moved]
-            if eid in actors or not any(shown):
+            if not any(shown):
                 continue
             changed.append({"label": label(eid), "now": " \u00b7 ".join(v for v in shown if v),
                             "was": " \u00b7 ".join(v for v in (say(eid, f, before.get(eid, {}).get(f)) for f in moved) if v),

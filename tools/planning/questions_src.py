@@ -1753,7 +1753,7 @@ Q = [
  {
   "id": "Q93",
   "short": "The language gap never happened on price times quantity",
-  "question": "The plan expected a price-times-quantity ruling to be refused as 'no rule could express this' because the rule language has no multiplication. In 18 live tries on the lumberyard world the judge never wrote a rule the rules check rejected: it wrote literal numbers or a free payment parameter, or withdrew, or said no rule was needed. The language-gap path works (tests/test_judge_rulings.py with a scripted judge) but has no live example. Is a gap rarer than the plan assumed, does A4's third case need a world where no literal can stand in for the arithmetic, or should a withdrawal that names the missing arithmetic count as a gap?",
+  "question": "The plan expected a price-times-quantity ruling to be refused as 'no rule could express this' because the rule language has no multiplication. In 19 paid tries on the lumberyard world (18 on a local service, 1 on the live service on 2026-11-11, evidence/ai-judge/j3/price-times-quantity) the judge never wrote a rule the rules check rejected: it wrote literal numbers or a free payment parameter, or withdrew, or said no rule was needed. The language-gap path works (tests/test_judge_rulings.py with a scripted judge) but has no live example. Is a gap rarer than the plan assumed, does A4's third case need a world where no literal can stand in for the arithmetic, or should a withdrawal that names the missing arithmetic count as a gap?",
   "blocks": "A4's third case (a ruling the language cannot express listed as a language gap) as a live saved run.",
   "resolves_with": "Brian's reading of whether a scripted-judge saved run is an acceptable demonstration of the gap path, or a world and attempt found by reading the 18 tries' judge records for one where a literal cannot stand in.",
   "owner": "agent",
@@ -1796,6 +1796,24 @@ Q = [
    "scripts/rulings.py"
   ],
   "touches": [
+   "ruling-rule"
+  ]
+ },
+ {
+  "id": "Q96",
+  "short": "An installed coin rule lets a person take another's coins with no offer from them",
+  "question": "In the live wait-approve run (evidence/ai-judge/j3/wait-approve, share F_ND9bo29lvp) the judge wrote the receiver's move, accept-coin-handover (the actor takes coins from a named trader at the same place), the review confirmed it and the owner approved it. Nothing in the world records an offer, so once installed the move was listed to everyone against every trader, and in round 4 Ines took 10 coins from Vik, who had offered nothing (r4-e00001). The other shape fails the other way: the giver's move hand-over-coins (evidence/ai-judge/j3/install-default) moves coins into the receiver's purse without the receiver choosing, though its ruling says it 'settles only if Rosa accepts'. The review withdrew the receiver shape 3 times in 6 live tries for this reason and confirmed it once. How should a ruling that needs two people's choices become a rule: should a move that takes from someone other than the actor be offered only in answer to that person's routed attempt, should the rule language gain an offer, or should the judge be steered to the giver's move and the receiver's choice dropped?",
+  "blocks": "Trust in installed rulings that move another person's goods or coins (A4, A5); not the install, hold, approve and reject mechanism itself.",
+  "resolves_with": "A free scripted replay of the wait-approve run with each candidate (offer the taking move only to the person an attempt was routed to, with that attempt's giver and amount) showing Ines can no longer take Vik's coins while Rosa can still take Ines's; then one live run.",
+  "owner": "agent",
+  "status": "open",
+  "sources": [
+   "evidence/ai-judge/j3/wait-approve/TRACE_READ.md",
+   "evidence/ai-judge/j3/install-default/TRACE_READ.md",
+   "scripts/rulings.py"
+  ],
+  "touches": [
+   "judge-ruling",
    "ruling-rule"
   ]
  }

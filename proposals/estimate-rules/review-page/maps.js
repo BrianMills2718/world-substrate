@@ -1626,6 +1626,12 @@ window.MAPS = {
     "explain": "Blocks: Nothing that exists; any future audit or export that replays a judged run through Engine.replay.."
    },
    {
+    "id": "Q96",
+    "label": "Q96: An installed coin rule lets a person take another's coins with no offer from them",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: Trust in installed rulings that move another person's goods or coins (A4, A5); not the install, hold, approve and reject mechanism itself.."
+   },
+   {
     "id": "affordance",
     "label": "Affordance (offered move)",
     "kind": "Concept",
@@ -2623,6 +2629,18 @@ window.MAPS = {
    {
     "id": "Q95-ruling-rule",
     "source": "Q95",
+    "target": "ruling-rule",
+    "label": "bears on"
+   },
+   {
+    "id": "Q96-judge-ruling",
+    "source": "Q96",
+    "target": "judge-ruling",
+    "label": "bears on"
+   },
+   {
+    "id": "Q96-ruling-rule",
+    "source": "Q96",
     "target": "ruling-rule",
     "label": "bears on"
    }
