@@ -450,7 +450,7 @@ window.MAPS = {
     "id": "ruling-rule",
     "label": "Ruling-origin rule",
     "kind": "Substrate",
-    "explain": "Plan ai-judge J3 (built 2026-11-10): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, recording the ruling id and round it came from; it applies to everyone in the same situation and the attempt settles through it. It is run state, sealed with the snapshot, beside the world's own rules (Rulebook). A ruling the language cannot express is refused and recorded as a language gap. Code: scripts/rulings.py:91."
+    "explain": "Plan ai-judge J3 (built 2026-11-10): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, listed under its ruling, whose entry records where it came from (round, person, attempt, event id) and its state (installed, held, rejected, withdrawn when installing failed, or language gap); it applies to everyone in the same situation and the attempt settles through it. It is run state, sealed with the snapshot, beside the world's own rules (Rulebook). A ruling the language cannot express is refused and recorded as a language gap. Known defect (Q96): a coin rule written for one person's offer can move coins without the other person's choice. Code: scripts/rulings.py:91."
    },
    {
     "id": "credential-holder",
@@ -1615,7 +1615,7 @@ window.MAPS = {
    },
    {
     "id": "Q94",
-    "label": "Q94: A later offer joins an installed rule only when the judge wrote the giver's move",
+    "label": "Q94: A later offer joins an installed rule only when the judge wrote the giver's move (waits on Q96)",
     "kind": "AgentQuestion",
     "explain": "Blocks: How reliably A4's 'decided by rule, judge not asked' shows on a second trader (the cold review's item 8 saw the same split).."
    },
@@ -1858,7 +1858,7 @@ window.MAPS = {
     "id": "ruling-rule",
     "label": "Ruling-origin rule",
     "kind": "Concept",
-    "explain": "Plan ai-judge J3 (built 2026-11-10): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, recording the ruling id and round it came from; it applies to everyone in the same situation and the attempt settles through it. It is run state, sealed with the snapshot, beside the world's own rules (Rulebook). A ruling the language cannot express is refused and recorded as a language gap."
+    "explain": "Plan ai-judge J3 (built 2026-11-10): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, listed under its ruling, whose entry records where it came from (round, person, attempt, event id) and its state (installed, held, rejected, withdrawn when installing failed, or language gap); it applies to everyone in the same situation and the attempt settles through it. It is run state, sealed with the snapshot, beside the world's own rules (Rulebook). A ruling the language cannot express is refused and recorded as a language gap. Known defect (Q96): a coin rule written for one person's offer can move coins without the other person's choice."
    },
    {
     "id": "run-log",

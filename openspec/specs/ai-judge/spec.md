@@ -172,7 +172,8 @@ like should be a deicsion made by the person being bribed"; build approved 2026-
 In a run with open attempts, the judge SHALL rule on each attempt no installed rule covers, after everyone's move in
 the round, each reading the world as it was when that attempt was tried. An attempt an installed rule covers SHALL be
 decided by that rule, refused with the failed check named when one fails, and SHALL NOT reach the judge. A failed
-judge call SHALL be recorded and the run SHALL go on. A ruling SHALL be recorded in the run, not installed.
+judge call SHALL be recorded and the run SHALL go on. A ruling SHALL be recorded in the run; whether it becomes a rule
+is set by the requirements below (since J3; at J2 no ruling was installed).
 
 Source: the AI judge plan, `docs/plans/ai_judge.md` (Decided 2, R3, slice J2); Brian, 2026-11-09: "yes i aprpove all
 those"; build approved 2026-11-10
@@ -180,8 +181,7 @@ those"; build approved 2026-11-10
 #### Scenario: The judge rules on each unmatched attempt in a run
 
 - **WHEN** a resident's attempt matches no installed rule
-- **THEN** the attempt's round row carries the judge's ruling and the run's cost counts the judge's calls, and no rule
-  is installed
+- **THEN** the attempt's round row carries the judge's ruling and the run's cost counts the judge's calls
 
 #### Scenario: An attempt an installed rule covers never reaches the judge
 
@@ -284,7 +284,7 @@ Source: the AI judge plan, `docs/plans/ai_judge.md` (Decided 3, ledger Q79); bui
 
 ### Requirement: Installed rulings travel with the run
 
-The rulings of a run (installed, held, rejected and language gaps) SHALL be sealed run state: each round's response
+The rulings of a run (installed, held, rejected, withdrawn when installing failed, and language gaps) SHALL be sealed run state: each round's response
 carries them, the next round sends them back under the same seal as the world's state, and a list the server did not
 seal SHALL be refused. A round SHALL list every ruling with its state, and the owner's Approve or Reject SHALL reach
 the server with the next round's request.
