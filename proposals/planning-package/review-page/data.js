@@ -2000,8 +2000,8 @@ window.PAGE_DATA = {
   },
   {
    "id": "Q94",
-   "short": "A later offer joins an installed rule only when the judge wrote the giver's move",
-   "question": "The plan's example rule is the giver's move ('a person may hand coins they hold to a person at the same place'). In live runs the judge wrote either that (hand-over-coins: a second trader's later offer was decided by the rule with the judge not asked) or the receiver's acceptance (accept-coin-offer: a second trader's later offer was read as unmatched and the judge was asked again, producing a second near-duplicate rule). Should a rule the judge writes for an offer be steered to the giver's move, or should an offer to the same person be read against the receiver's rule?",
+   "short": "A later offer joins an installed rule only when the judge wrote the giver's move (waits on Q96)",
+   "question": "The plan's example rule is the giver's move ('a person may hand coins they hold to a person at the same place'). In live runs the judge wrote either that (hand-over-coins: a second trader's later offer was decided by the rule with the judge not asked) or the receiver's acceptance (accept-coin-offer: a second trader's later offer was read as unmatched and the judge was asked again, producing a second near-duplicate rule). The live J3 runs (2026-11-11) showed both shapes are defective as rules (Q96): the giver's move settles without the receiver choosing, the receiver's move lets anyone take coins nobody offered. So this question now waits on Q96: once a two-person exchange has a sound rule shape, check that a second offer is read against it.",
    "blocks": "How reliably A4's 'decided by rule, judge not asked' shows on a second trader (the cold review's item 8 saw the same split).",
    "resolves_with": "Reading the interpreter's reading of the second offer in the default-case tries and the judge's two rule shapes; then either a line in the judge's steps (Brian's call whether that is our own judge prompt, Q91) or an interpreter change.",
    "owner": "agent",
@@ -2034,9 +2034,9 @@ window.PAGE_DATA = {
   {
    "id": "Q96",
    "short": "An installed coin rule lets a person take another's coins with no offer from them",
-   "question": "In the live wait-approve run (evidence/ai-judge/j3/wait-approve, share F_ND9bo29lvp) the judge wrote the receiver's move, accept-coin-handover (the actor takes coins from a named trader at the same place), the review confirmed it and the owner approved it. Nothing in the world records an offer, so once installed the move was listed to everyone against every trader, and in round 4 Ines took 10 coins from Vik, who had offered nothing (r4-e00001). The other shape fails the other way: the giver's move hand-over-coins (evidence/ai-judge/j3/install-default) moves coins into the receiver's purse without the receiver choosing, though its ruling says it 'settles only if Rosa accepts'. The review withdrew the receiver shape 3 times in 6 live tries for this reason and confirmed it once. How should a ruling that needs two people's choices become a rule: should a move that takes from someone other than the actor be offered only in answer to that person's routed attempt, should the rule language gain an offer, or should the judge be steered to the giver's move and the receiver's choice dropped?",
+   "question": "In the live wait-approve run (evidence/ai-judge/j3/wait-approve, share F_ND9bo29lvp) the judge wrote the receiver's move, accept-coin-handover (the actor takes coins from a named trader at the same place), the review confirmed it and the owner approved it. Nothing in the world records an offer, so once installed the move was listed to everyone against every trader, and in round 4 Ines took 10 coins from Vik, who had offered nothing (r4-e00001). The other shape fails the other way: the giver's move hand-over-coins (evidence/ai-judge/j3/install-default) moves coins into the receiver's purse without the receiver choosing, though its ruling says it 'settles only if Rosa accepts'. In the 5 live tries where the judge ruled on Vik's offer and Ines's handover (default tries 1 to 3, wait tries hold-1 and hold-2), it wrote the receiver shape 4 times: the review withdrew it 3 times for this reason and confirmed it once (hold-2). How should a ruling that needs two people's choices become a rule: should a move that takes from someone other than the actor be offered only in answer to that person's routed attempt, should the rule language gain an offer, or should the judge be steered to the giver's move and the receiver's choice dropped?",
    "blocks": "Trust in installed rulings that move another person's goods or coins (A4, A5); not the install, hold, approve and reject mechanism itself.",
-   "resolves_with": "A free scripted replay of the wait-approve run with each candidate (offer the taking move only to the person an attempt was routed to, with that attempt's giver and amount) showing Ines can no longer take Vik's coins while Rosa can still take Ines's; then one live run.",
+   "resolves_with": "A free scripted replay of the wait-approve run with each candidate (offer the taking move only to the person an attempt was routed to, with that attempt's giver and amount) showing Ines can no longer take Vik's coins while Rosa can still take Ines's; then one live run. The decision it settles: which of the three shapes the judge's rules take; the first is preferred on argument (it keeps both choices and needs no new rule language), so the replay only has to show it works.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -2499,7 +2499,7 @@ window.PAGE_DATA = {
     "id": "ruling-rule",
     "label": "Ruling-origin rule",
     "kind": "Substrate",
-    "explain": "Plan ai-judge J3 (built 2026-11-10): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, recording the ruling id and round it came from; it applies to everyone in the same situation and the attempt settles through it. It is run state, sealed with the snapshot, beside the world's own rules (Rulebook). A ruling the language cannot express is refused and recorded as a language gap. Code: scripts/rulings.py:91."
+    "explain": "Plan ai-judge J3 (built 2026-11-10): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, listed under its ruling, whose entry records where it came from (round, person, attempt, event id) and its state (installed, held, rejected, withdrawn when installing failed, or language gap); it applies to everyone in the same situation and the attempt settles through it. It is run state, sealed with the snapshot, beside the world's own rules (Rulebook). A ruling the language cannot express is refused and recorded as a language gap. Known defect (Q96): a coin rule written for one person's offer can move coins without the other person's choice. Code: scripts/rulings.py:91."
    },
    {
     "id": "credential-holder",
@@ -3664,7 +3664,7 @@ window.PAGE_DATA = {
    },
    {
     "id": "Q94",
-    "label": "Q94: A later offer joins an installed rule only when the judge wrote the giver's move",
+    "label": "Q94: A later offer joins an installed rule only when the judge wrote the giver's move (waits on Q96)",
     "kind": "AgentQuestion",
     "explain": "Blocks: How reliably A4's 'decided by rule, judge not asked' shows on a second trader (the cold review's item 8 saw the same split).."
    },
@@ -3907,7 +3907,7 @@ window.PAGE_DATA = {
     "id": "ruling-rule",
     "label": "Ruling-origin rule",
     "kind": "Concept",
-    "explain": "Plan ai-judge J3 (built 2026-11-10): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, recording the ruling id and round it came from; it applies to everyone in the same situation and the attempt settles through it. It is run state, sealed with the snapshot, beside the world's own rules (Rulebook). A ruling the language cannot express is refused and recorded as a language gap."
+    "explain": "Plan ai-judge J3 (built 2026-11-10): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, listed under its ruling, whose entry records where it came from (round, person, attempt, event id) and its state (installed, held, rejected, withdrawn when installing failed, or language gap); it applies to everyone in the same situation and the attempt settles through it. It is run state, sealed with the snapshot, beside the world's own rules (Rulebook). A ruling the language cannot express is refused and recorded as a language gap. Known defect (Q96): a coin rule written for one person's offer can move coins without the other person's choice."
    },
    {
     "id": "run-log",
