@@ -221,8 +221,8 @@
       "status": "present",
       "path": "docs/planning/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "32860542557cf2698a05669b4b29b5041a7e1818",
-      "package_commit": "32860542557cf2698a05669b4b29b5041a7e1818"
+      "reviewed_revision": "7160bda9d8ec8b74d5599b17de91ba105377daba",
+      "package_commit": "7160bda9d8ec8b74d5599b17de91ba105377daba"
     },
     "acceptance": {
       "status": "present",

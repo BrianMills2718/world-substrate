@@ -1,4 +1,20 @@
-# Cold review: repo planning package (round 3), 2026-11-10
+# Cold review: repo planning package (AI judge J3 live evidence), 2026-11-11
+
+Reviewer: planning-compliance reviewer (subagent), two passes. No file was edited and no paid call was made.
+
+- Pass 1 read 993f2178b34460f0c318b28522f021139c058014 (J3 merged and its live evidence): verdict revise, 2 blocking
+  findings and 4 notes. (1) A4's status note named only the approve run's defect, not the default run's giver rule
+  moving coins into Rosa's purse without her choosing, which the package's own trace read records; "built" overstated
+  it. (2) Q94 treated the giver shape as the good outcome while Q96 shows it is defective. Notes: Q96's try count
+  (5 tries, not 6), Q96's replay not tied to a decision, two stale J2 lines in `openspec/specs/ai-judge/spec.md`
+  ("not installed") and the missing `withdrawn` state, and the domain model putting a ruling's origin on the rule.
+  The cost ($0.0328 over 19 run-log lines), run counts and Q96's round 4 fact (r4-e00001) reproduced.
+- Pass 2 read 7160bda9d8ec8b74d5599b17de91ba105377daba (the fixes): all six resolved, nothing new wrong. Validator in
+  the worktree: exit 0, "Verdict: compliant". Verdict: pass.
+
+Reviewed revision: 7160bda9d8ec8b74d5599b17de91ba105377daba
+
+## Earlier review: repo planning package (round 3), 2026-11-10
 
 Reviewer: planning-compliance reviewer, given the round-2 report (verdict revise, at 0c09c1d).
 Reviewed revision: 32860542557cf2698a05669b4b29b5041a7e1818
