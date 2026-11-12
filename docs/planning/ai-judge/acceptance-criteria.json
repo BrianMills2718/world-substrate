@@ -117,7 +117,7 @@
   },
   {
    "id": "A4",
-   "criterion": "A judge ruling becomes a rule that passed the rules check and test run and then decides the same attempt for everyone; a ruling the rule language cannot express is refused and listed as a gap; and the one thing Brian asked to make configurable, whether a checked ruling made during a run is installed at once (default, 'Approved by Create') or held with the attempt pending until he approves ('Wait for my approval'), is a per-world setting, with every ruling listed on the run page either way.",
+   "criterion": "A judge ruling becomes a rule that passed the rules check and test run and then decides the same attempt for everyone; a ruling the rule language cannot express is refused and listed as a gap; and the one thing Brian asked to make configurable, whether a checked ruling made during a run is installed at once (default, 'Approved by Create') or held with the attempt pending until he approves ('Wait for my approval'), is a per-world setting, with every ruling listed on the run page either way. Rule approval is separate from actor consent: every voluntary exchange still requires its own live Q96 offer, matching acceptance and current feasibility.",
    "grounded_in": [
     "Decided 3 and Decided 5 (Brian 2026-11-09: \"can we make this configurable? or is that more troubel than it is worth. if so i say yes\"); language gap and wait mode inferred by agent (Q79, Q80); requirements R4, R9, R8"
    ],
@@ -126,10 +126,11 @@
     "Wait for my approval, held: open https://brianmills.dev/world-builder/?run=qlKA3Wp9v3kp (rounds 1 and 2 only). Open the ruling list.",
     "Approve: open https://brianmills.dev/world-builder/?run=F_ND9bo29lvp (the same two rounds, then the owner's Approve sent with round 3). Open the ruling list and the round lines.",
     "Reject: open https://brianmills.dev/world-builder/?run=iKefhnd6zOkc (the same two rounds, then Reject). Open the ruling list and round 4.",
-    "Price times quantity: open https://brianmills.dev/world-builder/?run=MrEqGi3Z40Kf (the lumberyard world) and its ruling list."
+    "Price times quantity: open https://brianmills.dev/world-builder/?run=MrEqGi3Z40Kf (the lumberyard world) and its ruling list.",
+    "For the planned Q96 repair, compare timely approval of an accepted live offer with approval of an unaccepted, expired or withdrawn offer. Follow the offer id and rule fingerprint from the approval row to the settlement or refusal."
    ],
-   "expected": "Default: R1 hand-over-coins reads \"installed, passed the rules check and test run\"; Ines's round 2 attempt \"went to the person whose choice it is\"; in round 3 Ines's and Vik's handovers read \"decided by rule, judge not asked (allowed)\". Held: R1 accept-coin-handover is held and Ines's attempt is pending; nothing changed. Approve: R1 reads installed, \"The owner approved it\"; Ines's waiting try went to Rosa and Rosa's acceptance is decided by rule. Reject: R1 rejected; Ines's waiting try and her round 4 try are refused naming R1; no coins move. Price times quantity: planned as a language gap; live, the judge wrote a fixed-number rule instead (see status).",
-   "failure_example": "Broken: the judge is asked again for the second offer under the default, a rule is installed or an offer settles during a 'Wait' run before Approve, a ruling is installed without passing the rules check and test run, a ruling is missing from the list, or an inexpressible ruling changes anything. Also broken (seen live, Q96): a coin moves to someone who never chose it, or a person takes coins nobody offered. Working: as expected for each setting.",
+   "expected": "Required behavior: default mode installs a checked rule and later covered attempts use it without a new judge call. Wait mode holds the rule and records pending attempts without effects. Approve installs the rule; each voluntary exchange then settles only against its own live exact offer, matching acceptance, rule fingerprint and fresh feasibility. Approval cannot supply consent or revive a terminal offer. Reject refuses pending work and later attempts under the rejected ruling. An inexpressible ruling is shown as a language gap. The linked J3 runs are partial evidence: their installation/hold/approval behavior works, but Q96 consent fails and the intended live language-gap case was not observed (see status_note).",
+   "failure_example": "Broken: the judge is asked again for the second offer under the default, a rule is installed or an offer settles during a 'Wait' run before Approve, a ruling is installed without passing the rules check and test run, a ruling is missing from the list, or an inexpressible ruling changes anything. Also broken (seen live, Q96): a coin moves to someone who never chose it, or a person takes coins nobody offered. Working: as expected for each setting. Approval alone triggering an unaccepted exchange, or reviving an expired/withdrawn offer, also fails.",
    "representation": {
     "view": "composite-linked-view: the run page's ruling list linked to each attempt it decided, held or refused",
     "router_record": "docs/planning/ai-judge/router/run-page.recommendation.json"
@@ -180,27 +181,31 @@
   },
   {
    "id": "A6",
-   "criterion": "What a mechanism checks, who holds a credential and who is supposed to use it are kept apart, following Ostrom's grammar of institutions: a barcode gate opens for any valid code while 'only signed cargo should pass' is a norm, a password can be phished and then works for whoever holds it, breaking a norm has consequences only when someone notices and acts, and each norm and rule is written in the grammar's parts (who it applies to; must, must not or may; what; when; and, for a rule, what happens otherwise and who enforces it), so a norm without an 'otherwise' reads differently from an enforced rule.",
+   "criterion": "Technical verification, actor access to credential content, physical token custody and normative permission remain separate under the Q76 contract. A password-only verifier accepts a valid presented password regardless of normative permission; copied content can remain available to both people, while revocation makes remembered content invalid. Norms are breakable data with separate detection and human or explicitly programmed enforcement. The local norm representation exposes who, modality, action, conditions and any enforcer, without claiming full Institutional Grammar support.",
    "grounded_in": [
-    "Brian 2026-11-09: \"a password managed comptuer where only 1 person was supped to use it ... if they could be social engineered for exampel to get a password then someone else woul eb abel to sue it. i liek the ostrom stuff\"; requirement R6, R8"
+    "Brian 2026-11-09: \"a password managed comptuer where only 1 person was supped to use it ... if they could be social engineered for exampel to get a password then someone else woul eb abel to sue it. i liek the ostrom stuff\"; requirement R6, R8",
+    "Agent-inferred representation contract: docs/plans/ai_judge.md, Q76 design contract (2026-11-12); design settled, J4 implementation remains unbuilt."
    ],
    "demonstration": [
-    "On the World Builder, open the saved run \"password\".",
-    "Follow Mallory's phishing message to Alice, Alice's reply, and Mallory's login; read what the run page says about the norm and what happened after it.",
-    "Open the port run J4 saves (the port description \"A small port: Rosa, the customs officer, signs inspection releases. Vik, a trader, has 40 coins and a crate he has not declared.\" with the same fixture rules as the J2 port run) where Rosa signs Vik's release for a bribe; read what opened the gate and what the page says about the cargo norm.",
-    "Open the world's norms list and read each norm."
+    "Open the planned J4 password run. Follow Mallory's message, Alice's own disclosure choice, the delivered symbolic credential content and Mallory's access attempt. Open the verifier result separately from the norm-breach row.",
+    "Compare the actors' authorized views before and after delivery. Alice retains the disclosed value; Mallory gains it; an unrelated actor and the public credential id reveal no secret content. Include direct access submission, candidate-action arguments and narration, not only the visible menu.",
+    "Open the planned rotation/revocation case. Read the verifier's current version and Alice's retained old information, then inspect the refusal when the old value is presented. Contrast this with transferring a physical token: custody moves only through its declared mechanic.",
+    "Open the planned port case with a technically valid signed release. Read the gate's actual check, the separate cargo/bribery norms and the signing action's feasibility. A bribe never bypasses an installed inspection blocker.",
+    "Open the norm list, the analyst's violation record and the human enforcer's authorized observation/response. Compare a breach nobody observed with a delivered observation the enforcer chooses not to act on. If the world declares an automatic monitor, inspect its separate programmed rule rather than treating a norm as automatic prevention."
    ],
-   "expected": "After the phishing, Mallory holds Alice's password; the computer logs Mallory in; the page shows \"norm broken: only Alice should log in\"; a consequence follows only after someone who saw it acts. In the port, the gate opens because it read a valid code, not because of who holds it, and the cargo norm's breach is shown separately. Each entry in the norms list reads as: who it applies to; must, must not or may; what; when; and, where there is one, what happens otherwise and who enforces it. \"Bribery is forbidden, or else the inspector fines you\" shows an otherwise and an enforcer; \"only Alice should log in\" shows none and is marked a norm.",
-   "failure_example": "Broken: Mallory is refused because 'only Alice can log in' was written as a law; the gate refuses Vik because the release was bought; a norm breach is punished with nobody noticing; a norm is a loose sentence without who, must, what and when; or a norm and an enforced rule look the same. Working: as expected.",
+   "expected": "Mallory can log in with valid content Alice chose to disclose under a password-only verifier, while the separate norm can mark the use forbidden. Disclosure copies content rather than transferring Alice's memory or physical custody. No actor-facing path fills in a hidden value from omniscient state; guessing requires an explicitly represented guess. Revoked content fails verification although still remembered. The gate accepts a technically valid code under its declared checks; acquiring or signing that code must independently be feasible. The norm list shows actor/role, modality, action, conditions and any enforcer. An analyst violation record does not reveal the event to residents or force a human sanction. Automatic enforcement exists only as a separately declared program/process. These are planned demonstrations, not retained passing runs.",
+   "failure_example": "Broken: a password-only verifier refuses Mallory merely because only Alice is permitted; the interpreter supplies a secret from hidden state; a copied password erases Alice's knowledge; rotation erases memory instead of changing validity; token custody moves merely because its label is mentioned; a norm bypasses a technical blocker; a hidden breach appears in an enforcer prompt; or a human is forced to sanction on observation. Working: the Q76 distinctions remain visible through access, transfer, revocation, observation and response.",
    "representation": {
-    "view": "composite-linked-view: the run page's attempt row opening the mechanism's check, the credential's holder before and after, and the norm breach",
+    "view": "composite-linked-view: attempt and verifier result linked to actor-scoped credential information, token custody, validity/version, separate norm record and each enforcer's observation and response",
     "router_record": "docs/planning/ai-judge/router/run-page.recommendation.json"
    },
    "entrypoint": "planned",
    "status": "not built",
    "evidence": [
-    "Saved run evidence/ai-judge/j4/ (planned) with its TRACE_READ.md; norm parts follow Crawford and Ostrom (1995) and Institutional Grammar 2.0 (open question Q76)."
-   ]
+    "Design: docs/plans/ai_judge.md, Q76 design contract; existing information visibility seam: src/world_substrate/information.py. J4 remains unbuilt.",
+    "Planned J4 evidence: password disclosure, copy/custody, revoked-but-remembered value, actor-view/direct-submission leakage, valid-code gate and observation/enforcement cases, each with full retained trace. No repaired run is claimed."
+   ],
+   "status_note": "Q76 representation design is resolved by argument; J4 declaration/compiler/visibility/enforcement integration and this complete demonstration are not built. The local norm fields reuse the existing five-part discussion and do not certify complete Institutional Grammar conformance."
   },
   {
    "id": "A7",

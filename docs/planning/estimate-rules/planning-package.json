@@ -21,14 +21,13 @@
         {
           "name": "durable documents (legacy arc42 checker)",
           "command": "python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
-          "exit_status": 1,
+          "exit_status": 0,
           "counts": {
-            "findings": 8,
-            "legacy_format_mismatches": 8,
+            "findings": 0,
+            "legacy_format_mismatches": 0,
             "stale_rule_reviews": 0
           },
-          "tracked_by": "Q77",
-          "note": "Source-grounded review of four owner rules at fd877da reconciles profile/approval behavior and narrows budget/durability claims. Eight legacy exact-heading/label findings remain, exit 1. docs/model/trace.yaml explicitly retains unverified downstream aggregate spending and storage-failure durability limits; review freshness is not behavioral completion."
+          "note": "2026-11-12 modeling-contracts refresh: exact arc42 headings, thesis/disproof, documentation-locality citation and lineage now satisfy the retained checker. No desired runtime guarantee was weakened; budget and storage-failure limits remain explicit."
         },
         {
           "name": "wiki and Markdown cap",
@@ -41,7 +40,7 @@
             "durable_findings": 8
           },
           "tracked_by": "Q77",
-          "note": "Navigation/cap receipt: 183/183 and 0 unreachable. Subsequent durable-check rerun has 8 legacy findings, 0 stale reviews; combined command has not been rerun after trace review. Exit remains 1; no full compliance claim."
+          "note": "Historical committed receipt at 0d2a875: 183/183, 0 unreachable, 8 durable findings, exit 1. Current working-tree durable check is 0; cap configuration now allows 186 for three OpenSpec archive documents. A fresh committed --ref HEAD cap receipt is pending; do not read this historical result as the current working-tree finding count."
         },
         {
           "name": "project navigation",
@@ -59,7 +58,7 @@
             "compliant": 1,
             "of": 1
           },
-          "note": "Rerun after Makefile documents the actual variable-expanded lockstep check command. Static format check only; not full Lockstep conformance."
+          "note": "2026-11-12 modeling-contracts refresh: 1 of 1, exit 0. Static format only; not full Lockstep conformance."
         },
         {
           "name": "semantic spectrum",
@@ -71,7 +70,7 @@
             "project_terms": 80,
             "planning_terms": 13
           },
-          "note": "Rerun after adding theory-only voluntary exchange offer: 156 names, 96 questions, all 9 rules pass."
+          "note": "2026-11-12 modeling-contracts refresh: 156 names, 96 questions, 80 project terms; all 9 rules pass. Conceptual contract decisions do not certify unbuilt runtime behavior."
         },
         {
           "name": "Lockstep source provenance",
@@ -104,7 +103,20 @@
             "subtests_passed": 225,
             "specs_passed": 13
           },
-          "note": "Coordinator executed on current normative-readiness working tree, 2026-11-12; pytest reported 61.71 seconds. Includes planning/source subset; does not claim the separate full Lockstep conformance target passes."
+          "note": "Historical normative-readiness result; current modeling-contracts make check is running and will be recorded when its actual exit and counts are available."
+        },
+        {
+          "name": "Lockstep requirement/scenario trace links",
+          "command": "uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep check trace",
+          "exit_status": 1,
+          "counts": {
+            "findings": 329,
+            "missing_requirement_annotations": 128,
+            "missing_scenario_markers": 201,
+            "unknown_ids": 0
+          },
+          "tracked_by": "Q77",
+          "note": "2026-11-12: configured real source roots and linked 13 existing test functions with 15 existing=True markers covering 6 distinct scenario IDs. This is annotation coverage, not 329 demonstrated behavior defects. Proposed/unbuilt requirements remain unmapped; full AES conformance is not claimed."
         }
       ]
     },
@@ -216,7 +228,7 @@
         },
         {
           "path": "docs/model/open-questions.graph.json",
-          "question": "Which concepts carry this plan's open questions (Q63, Q82-Q86, Q88 and the shared Q33), and whose call is each? (The map shows open questions only; resolved Q87 and Q89 are in the questions table.)"
+          "question": "Which concepts carry unresolved estimate adequacy, scale and stopping questions (Q82, Q85, Q86, Q88 and Q33)? The resolved Q63/Q83/Q84 designs retain unbuilt acceptance obligations."
         }
       ]
     },
@@ -352,12 +364,12 @@
             "evidence": "llm-cost estimate --task world-substrate-mechanic-authoring (2026-11-10): 68 calls, median $0.0021 per call, median 11,551 input and 1,574 output tokens, 0% cached. Estimate rules add a few lines to its output; no new call."
           }
         ],
-        "cheapest_design": "Cheapest design that still does the job. Two designs cost nothing per run. (1) A chance formula written into the rule by the rules writer (p = 0.03 x days since service): the rule language has no arithmetic between two values (docs/plans/ai_judge.md Decided 3), so it would need a language change of its own. (2) Declared bands: the rule's ordinary checks choose among literal chances the rules writer writes (sawmill: under 5 days since service 0.05, 5 to 9 days 0.2, 10 or more 0.4), drawn against the same run seed; no arithmetic, no estimator, no Jev call, and a literal chance is the path the rule's {use: value} fallback already takes, so E1 gets bands with no new code. Against bands: every number is the rules writer's guess fixed at build time, the facts count only at the band edges, the numbers multiply with the facts (3 facts in 3 bands each is 27 chances to write and check), and Brian asked for rules that propagate based on Jev. That is an argument about fit, not proof, so E1 measures it as variant (d) of the plain-version comparison (one rules-writer call, measured median $0.0021): agreement within 0.1 on at least 8 of 10 cases is diagnostic only. E2 may prefer bands only after applicability, dependency, threshold and intervention analysis supports that approximation (Q88); agreement does not establish interchangeability or correctness. The illustrative blade-only estimate component costs about $0.00084 for 30 calls using the historical per-call average, excluding crossings and retries; this is not a whole-run bound. The per-run cache keys resolved model, estimator/prompt version, question, type/options and read values, reads only the declared fields, and needs no language arithmetic. Chosen: Jev with the per-run cache, with declared bands as the cheaper rival measured in E1 (inferred by agent, 2026-11-10). Historical provider latency is a candidate constraint, not a demonstrated bottleneck for this workload (measured, ~/projects/data/llm_observability.db, 2026-11-10): successful Jev calls averaged 0.43 s (99th percentile 2.8 s), but 6.6% of calls failed, provider errors after 0.89 s and network errors after 20.2 s on average. With a 5 s timeout per try and one retry (plan Decided 7), an estimate takes about 0.933 x 0.43 + 0.037 x (0.89 + 0.43) + 0.029 x (5 + 0.43) = 0.61 s on average (computed) and at most 10 s before its fallback, about 18 s for 30 sequential blade-estimate calls, excluding crossing calls and other work; without the timeout about 1.05 s, about 32 s for those 30 calls (Q85). For the judge's stopping point, a Jev chance question would cost about 1/50 of the judge's $0.0016 per check; that option is recorded for the judge plan's J5 (Q86), not taken here."
+        "cheapest_design": "First compare adequate declared mechanisms: literal bands avoid inference calls but still incur execution and authoring cost; Jev is a candidate for bounded contextual estimates, not automatically more faithful. Q83 specifies varying inputs, fixed model context, interventions and applicability. Comparison is conditional on a named residual decision after argument; agreement cannot validate replacement (Q88). Worked historical blade-only component: 30 queries times $0.0000279 = $0.000837 before retries, excluding crossing-context calls and other work. Current-workload price, cache share and latency require their own basis. The 5-second-per-attempt design ceiling is conditional on actual enforcement; current service timeout policy does not establish it. Choosing Jev for a stopping classifier requires a separate Q86 adequacy decision, not sampling answer confidence."
       },
       "plain_baseline": {
         "kind": "planned",
         "answer_path": "Jev's estimate of a chance (later a pick or an amount) from the world's facts, used by an estimate rule",
-        "when": "E1, before the live sawmill run: the same model (Jev) given the whole world state instead of the declared fields, side by side with Jev given the declared fields, gpt-6-luna given the declared fields, and (d) declared bands the rules writer writes from the sawmill's description with no Jev call, on 10 cases; no Jev call is made for planning (Brian's brief, 2026-11-10)",
+        "when": "Conditional diagnostic only: first name the backend or omitted-dependency decision that survives mechanism/intervention analysis under Q83, and the observation that would change it. No comparative run is authorized merely to satisfy this record. If needed, use the retained candidate set in docs/plans/estimate_rules.md.",
         "cases": [
           "blade, 0 days since service, load 14",
           "blade, 3 days since service, load 14",
@@ -373,8 +385,8 @@
       },
       "stage_effects": [
         {
-          "stage": "declared reads: Jev shown only the fields the rule declares, not the whole world (E1)",
-          "gap": "the plain version (whole world) could let unrelated facts or a resident's words move the chance, and makes the cache key the whole world, so unrelated world changes invalidate reuse; whether declared reads change Jev's answer is untested until E1's comparison (Q83)",
+          "stage": "declared varying inputs plus fixed model context under the Q83 mechanism/intervention contract",
+          "gap": "An unauthorized or irrelevant context field can change an estimate and invalidate reuse. The design boundary is settled; backend adequacy under its declared applicability remains unproved. A comparison is a conditional diagnostic, not proof of sufficiency.",
           "status": "untested"
         },
         {

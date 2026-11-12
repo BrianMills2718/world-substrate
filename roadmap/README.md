@@ -15,12 +15,19 @@ reviewed_through: 2026-11-12
 
 ## Pre-implementation review and AES adoption (2026-11-12)
 
-The review covers current architecture, accepted decisions, four active plans, their packages and all 49
-previously open questions. Three conceptual questions are resolved (Q63, Q73, Q75); 46 remain because the
+**Follow-up design disposition:** Brian approved resolving the remaining contracts and challenging the architecture across influence, program and physical processes. Q76/Q83/Q84 now have selected conceptual contracts in the AI-judge and estimate plans; their J4/E1/E5 implementations and adequacy evidence remain unbuilt. Six conceptual closures across the two reviews leave 43 open questions and 53 resolved. No simulator implementation is authorized by this documentation change.
+
+**Recommendation and order:** first design the complete actor-input boundary (including summaries, briefs, memory and recent events), then carry one concern through distinct condition, claim, stance and institutional hold. This prevents information leakage and forced persuasion before expanding scenario breadth. Keep explicit scenario assumptions rather than promising general scientific fidelity. Program and physical adapters remain conditional on a concrete investigation: use existing hosts under the shared process contract, not a new native engine. The [three-process examination](../docs/model/modeling-choices.md#architecture-challenge-across-three-kinds-of-process) explains the alternatives, limitations and tradeoffs.
+
+**AES interpretation:** the earlier 344 findings comprised 137 missing requirement annotations and 207 missing scenario markers, not 344 demonstrated behavior defects. Scan roots now include the actual script, spike and reference-world owners. Only directly checked existing tests gain links; incomplete consent, read authority, uncertainty, aggregate spending and storage durability remain explicit gaps. Current receipts supersede old counts. The eight arc42 format findings are resolved with truthful headings, lineage and a distinct documentation-locality citation; no runtime guarantee is inferred from their closure.
+
+
+The first reconciliation covered current architecture, accepted decisions, four active plans, their packages and all 49
+previously open questions. At that checkpoint three conceptual questions were resolved (Q63, Q73, Q75); 46 remained because the
 ledger also tracks known defects, unbuilt contracts and empirical evidence. An open implementation item is
-not an undecided design principle. Some later-slice design questions also remain: credential representation
-(Q76, J4), estimator dependencies (Q83, E1), and observation-estimate placement (Q84, E5). These are
-explicit gates before those slices, not claims that every design choice is settled. Do not require fabricated closure before building the evidence it needs.
+not an undecided design principle. The follow-up above resolves credential representation
+(Q76, J4), estimator dependency selection (Q83, E1), and observation-estimate placement (Q84, E5). Their
+implementation/evidence gates remain; conceptual resolution is not a claim of delivered behavior. Do not require fabricated closure before building the evidence it needs.
 
 AES currently means Lockstep plus the feedback and policy layers. The approved one-tool design keeps
 OpenSpec, installs Lockstep from AES canonical, and retains Company Planning's substantive review workflow.
@@ -302,7 +309,7 @@ Replan rather than extend blindly if:
 
 ## Exact next action
 
-Finish the November 12 normative/readiness review: reconcile current authorities and plan dependencies, disposition every question with evidence or a precise remaining closure condition, and verify the applicable compliance standard. The list below records the prior implementation queue; it is not an instruction to start a paid run during this documentation review. Q96 must be addressed before J5, as the AI judge plan specifies.
+Complete the approved modeling-contract and architecture review, then prioritize a complete actor-input contract and the condition/claim/stance/hold slice before simulator implementation. The selected contracts are in the owning plans and modeling guide; implementation/evidence gaps remain explicit. The list below records the prior implementation queue; it is not an instruction to start a paid run during this documentation review. Q96 must be addressed before J5, as the AI judge plan specifies.
 
 1. **Declared laws S4:** retire the first hand-written build check whose incident a declared law or the rules review now covers, proven on the saved worlds with `scripts/check_saved_worlds.py` and `scripts/replay_build.py` before any paid run (Q45).
 2. Before S5's paid builds or more people-world repair, run the plain-version comparison (Q60), with its cost worked out first.

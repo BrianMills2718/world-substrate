@@ -6,6 +6,8 @@ import sys
 import unittest
 from pathlib import Path
 
+import pytest
+
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
@@ -37,6 +39,8 @@ def choose(engine, actor_id: str, kind: str, **participants: str):
 
 
 class InformationSemanticsTests(unittest.TestCase):
+    @pytest.mark.req('information-delivery/a-direct-recipient-waits-for-delivery', existing=True)
+    @pytest.mark.req('information-delivery/the-waltzman-fixture-delivers-asymmetrically', existing=True)
     def test_private_brief_is_not_visible_until_delivered_and_does_not_leak_to_ari(self):
         engine = build_engine()
         before_mara = engine.observe("mara")["entities"]
@@ -54,6 +58,8 @@ class InformationSemanticsTests(unittest.TestCase):
         self.assertNotIn("delivery-validation-mara", after_ari)
         self.assertNotIn("msg-mara-validation", after_ari)
 
+    @pytest.mark.req('information-delivery/unrelated-actors-see-nothing', existing=True)
+    @pytest.mark.req('information-delivery/the-waltzman-fixture-delivers-asymmetrically', existing=True)
     def test_resident_message_becomes_visible_only_to_the_recipient_after_delivery(self):
         engine = build_engine()
         engine.advance(1)

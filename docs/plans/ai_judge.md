@@ -104,7 +104,7 @@ PR #362, live at `d89a446`; saved runs in `evidence/ai-judge/j0/`, live share li
 2026-11-10 and live at `cab821d` on 2026-11-11 (a checked ruling becomes a rule, installed at once or held for the
 owner's approval; saved live runs and share links in `evidence/ai-judge/j3/live-shares.json`; the live approve run
 showed an installed coin rule letting a person take another's coins with no offer, open question Q96, to fix before
-J5); J5 is next; J4 stays exploration.
+J5); J5 is next; J4's representation design is settled below; implementation remains deferred.
 
 ## Why
 
@@ -237,7 +237,8 @@ Source: Brian, 2026-11-09, closing the discussion with "i liek the ostrom stuff"
   these. An attempt that needs another person's choice goes to that person; today only plain requests do this
   (#326).
 - **Norm (society's rule):** what people expect or forbid, which can be broken. Example: bribery is illegal.
-  It has consequences only when someone notices and decides to act. A norm must not be written as a declared
+  Detection and enforcement are separate mechanisms: a human may notice and decide to act, or an authored
+  automatic monitor may respond. A breakable norm must not be written as a declared
   law: the engine refuses every step that breaks a declared law, so nobody could ever take a bribe.
 - **The judge's job** is narrow: when the rulebook is silent, rule on constraints only (can coins change hands
   here? what actually opens the gate?), write the ruling as a rule, and route every choice to the person whose
@@ -250,10 +251,9 @@ could be social engineered for exampel to get a password then someone else woul 
 ostrom stuff". So authority splits three ways:
 
 - **What the mechanism checks** (constraint): the computer logs in whoever types the right password; a barcode
-  gate opens for whatever valid code it reads. A gate a guard opens is not a mechanism: it opens when the guard
-  decides to.
-- **Who holds the credential** (a fact in the world): Alice knows the password; the trader holds a signed
-  release. A credential can be told, overheard, copied, forged or phished.
+  gate opens for whatever valid code it reads. A gate a guard opens combines the guard's decision with the gate mechanism; its opening is not implied by institutional permission alone.
+- **Credential access and custody** (distinct facts in the world): Alice can recall a password; the trader holds a signed
+  release. Disclosure, copying, forgery and phishing are distinct mechanisms, not capabilities implied by a credential label.
 - **Who is supposed to use it** (norm): only Alice should log in; only signed cargo should pass. Breakable.
 
 Writing "only Alice can log in" as a constraint would make social engineering impossible, which is wrong.
@@ -274,7 +274,65 @@ repository):
   (`docs/research/general-purpose-simulator-ontology-and-machinery.md:1071-1085`).
 
 So this plan adds what v3 left out: who holds each credential, as a fact that can change (told, stolen, phished),
-and norms as breakable rules with consequences only when someone acts on them.
+and norms as breakable declarations whose detection and enforcement are separate from technical prevention.
+
+## Q76 design contract: possession, knowledge, verification and norms
+
+**Status and source:** agent-inferred design, 2026-11-12, under Brian's approval to resolve the remaining
+modeling contracts before implementation. This settles J4's representation choice; it does not claim J4 is
+built. It applies Brian's password example above, the [modeling guide](../model/modeling-choices.md),
+Decision 003's semantic/mechanical boundary and Decision 006's scope. No new cognition engine or scheduler.
+
+**Represent distinct things, not a universal `authorized` flag.** A credential declaration identifies the
+credential, its issuer/verifier, its validity/version and the mechanism accepting it. A person's modeled
+access to its content is a separate actor-scoped information record; custody of a physical token is a
+separate custody relation. Neither institutional permission nor an analyst's statement that someone is
+"authorized" supplies either. These are proposed declaration fields, not claims about today's schema.
+
+For the password fixture, use a symbolic credential value and an explicit equality verifier. Alice can have
+access to the value; telling it creates a new recipient's information access without removing Alice's.
+A physical key, by contrast, transfers custody only through its declared transfer mechanic. Copying a key,
+forging a signature, guessing a password, or remotely using a token requires a separately represented
+mechanism; the word "credential" does not grant those capabilities. A computer may check identity as an
+additional technical condition, but the password-only fixture must not silently add it. A human guard's
+choice belongs to the guard's policy; a reader device's predicate belongs to program mechanics.
+
+**Submission and visibility.** An access attempt binds actor, target verifier and the presented symbolic
+value/token. The verifier compares presented evidence with current valid state; it never infers agreement
+from a norm. An actor may present a value already in that actor's available information, or make an explicitly
+represented guess. Knowing the credential's public id is not possessing its secret value. The interpreter
+must not fill in a hidden value from omniscient state. Protected credential information uses the existing
+`InformationState`/`DeliveryState` visibility seam (`src/world_substrate/information.py`), not a freely visible
+ordinary entity field: that module's generic visibility helper currently passes other entity types through.
+All actor-facing prompt, candidate-action and rendering paths must respect the same boundary. A symbolic
+model stores no real service secrets and does not claim to model cryptographic strength.
+
+**Acquisition and change.** A disclosure decision is Alice's, using her own observations and policy. The
+communication mechanism records what was transmitted and delivered. Delivery establishes modeled access to
+content, not belief in the sender or willingness to use it. If memory loss, attention or mistaken recall
+matters, its actor-policy/observation model must represent that distinction; the minimum fixture explicitly
+assumes retained, accurately usable content after delivery. Revocation or rotation changes the verifier's
+valid state, not other actors' historical memories. Old content can remain known and cease to work. Every
+copy/delivery records its source lineage; it is not automatically a hard cause of a later login.
+
+**Norm declaration and enforcement.** J4 represents a norm as data: id, applicable actor/role, modality
+(must/must not/may), described action, applicability conditions, and any declared enforcement actor/process.
+A violation predicate can record an event in the analyst trace without refusing the attempted action. This
+is the local minimal representation of the existing five-part norm discussion, not a claim of complete
+Institutional Grammar support. An observation mechanism separately determines who learns of the event.
+A human enforcer then chooses its response; an explicitly modeled automatic monitor may trigger its own
+programmed response. Neither a violation nor an omniscient audit row supplies a human with knowledge.
+Mandatory prevention is a separate technical rule and must be described as such. An ambiguous norm can
+remain contested information rather than acquiring a fabricated machine-decidable violation test.
+
+**First-principles checks and tradeoff.** A correct-password login by Mallory succeeds under a password-only
+verifier even if Alice alone is permitted; a revoked password fails although Alice remembers it; delivery
+to Mallory does not reveal it to everyone; observing a breach does not compel a guard to sanction it. Each is
+a counterexample to collapsing two representations. Symbolic credentials preserve these distinctions
+without simulating cryptography. They cannot answer questions about password entropy, side channels or
+physical key duplication unless those mechanisms are deliberately added. These limits are scenario choices,
+not a reason to turn every person into a prescribed responder. J4/A6 still must demonstrate the contract,
+including direct submissions and actor-view leakage checks; the design decision alone closes no runtime defect.
 
 ## Pre-plan baseline (read from code at origin/main `0dcbcd6`, 2026-11-09)
 
@@ -390,7 +448,7 @@ results below are in the run page's own words; the record files behind each are 
 - **A4 (J3):** with the default setting, the run page's ruling list shows the coin rule as "installed, passed the
   rules check and test run", and a second trader's later offer says "decided by rule, judge not asked". With
   "Wait for my approval", the ruling shows "held" and both offers show "pending: waiting for your approval" with
-  nothing changed; after Approve both settle through the rule; after Reject both are refused, naming the
+  nothing changed; after Approve each settles only if its own live Q96 offer has matching acceptance and remains feasible; after Reject both are refused, naming the
   rejected ruling. In the saved run "price times quantity", a ruling the language cannot express is refused with
   "no rule could express this" and listed as a language gap.
 - **A5 (J2 routing; Q96 lifecycle not built):** Vik's exact offer leads to Rosa's own acceptance or refusal;
@@ -427,11 +485,12 @@ traced run.
 | J1 | Consequence report: pass 1 (`engine.discover` for the person acting and each person the attempt names, plus the named entities' current values) and pass 2 (a proposed rule test-run on a copy of the world: its net changes, blockers, chain length and stopping point, with the full chain in the run record) | J1 is built and J2 retains report-delivery evidence; which named people and entities an attempt yields still depends on the interpreter. The complete acceptance demonstration and semantic benefit are not established merely by delivery | A2 (data) |
 | J2 | Judge: turn on Concordia's `EventResolution` for unmatched attempts, given the whole world plus pass 1; it proposes a rule, reads the pass 2 report, then confirms, revises once or withdraws; choices go to the person | conditional on J1 | A2, A3, A5 |
 | J3 | Ruling to rule: install the confirmed rule (or hold it with the attempt pending, per the world's setting); refuse with "no rule could express this" and record a language gap when the rules check rejects it | built 2026-11-10, live `cab821d` 2026-11-11 (`scripts/rulings.py`; `openspec/specs/ai-judge`; open defect Q96) | A4 |
-| J4 | Credentials as facts and norms as breakable rules (Ostrom's grammar) | exploration required | A6 |
+| J4 | Credentials, actor-scoped access and breakable norms under the Q76 contract | representation design settled; declaration/compiler/visibility implementation unbuilt | A6 |
 | J5 | Stopping point in plain words: `run_stop.stop_when`, assessed by the judge after each round, stopping with `reason: stopping_point` through the existing stop check | conditional on J2 | A8 |
 
-J0 first because it is small, independent and delivers Brian's "100 links deep" alone. J4 last because its
-representation needs a short design step of its own (Uncertainties, U3).
+J0 first because it is small, independent and delivers Brian's "100 links deep" alone. J4 remains a later
+implementation slice: Q76 now settles its representation, while credential visibility and enforcement
+integration still require their own implementation and acceptance work.
 
 ## Agent technical calls
 
@@ -641,8 +700,9 @@ run's `max_budget`.
   Read free from `rules_written_mid_run` in the two `summary.json` files and `midrun.py`: 6 installed, 21 dropped; J3 reuses
   the install step only. Not done: running the 27 rules through today's rules check as a free replay (they are written
   for the spike's worlds, not these).
-- **U3 (agent):** how to represent a breakable norm and a credential holder in the declaration language.
-  Settled by prior art first (Ostrom's grammar, Institutional Grammar 2.0, v3); a design step opens J4.
+- **U3 (agent, Q76 design resolved 2026-11-12):** the Q76 contract above separates verifier state, actor access,
+  physical custody, normative permission, observation and enforcement. J4/A6 retain implementation and adequacy
+  obligations; symbolic credentials do not certify cryptographic or human-behavior fidelity.
 
 ## Needs Brian
 

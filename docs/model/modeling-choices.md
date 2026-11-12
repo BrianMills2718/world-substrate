@@ -92,6 +92,48 @@ This is a recommendation for the owning people-world plan, not authorization to 
 
 The remaining substantive uncertainties are the adequacy of the chosen actor policies, which scenario-specific conditions determine readiness, and which institution's decision procedure is intended. Those need explicit scenario assumptions and, where behavior remains unknown, targeted evidence. They do not prevent identifying the required causal separation now.
 
+## Architecture challenge across three kinds of process
+
+**Design examination, 2026-11-12:** Brian approved this first-principles review before implementation. The examples below are counterexamples and contracts, not simulation results or claims of predictive accuracy. The recommendation is **one authority for committed consequences, with different models for different processes**. Decision 006 still rules out building our own cognition framework, scheduler, VM or physics engine. Existing hosts may supply those behaviors through a declared boundary; such adapters are not delivered merely because the boundary can be described.
+
+| Investigation | Distinctions that must survive | Starting method and boundary | Current limitation / decisive counterexample |
+| --- | --- | --- | --- |
+| Influence operation in the partnership | Actual defect, originating claim, exposure, interpretation, personal stance, formal hold, remediation result | LLM actors with individual profiles, memory and authorized context; code for channels, resources and the actual decision procedure | A received concern can leave support unchanged. The generated family currently forces conditional support and resolves concerns on a timer; that stipulates a social result rather than examining it. |
+| Program controlling a door | Program state and version, submitted input, credential validity, possession/knowledge, institutional permission, human disclosure | Execute the relevant program or a faithful finite abstraction; keep disclosure in the actor policy and gate operation in the verifier | Mallory can present a copied valid password despite lacking institutional permission; a revoked password can fail despite Alice remembering it. Native Python rules can express such mechanics, but no general program-execution adapter is established by the generated DSL. |
+| Heating a sealed vessel | Quantities and units, elapsed simulated time, pressure/temperature/material state, rupture, conservation boundary, sensor readings | An appropriate existing solver or a justified simpler model supplies a candidate state change over a declared interval; the governing transition validates and commits it | A reaction needing the same process/entity twice in one instant is not a general fixpoint under the current once-per-pair rule. Ending a reaction sweep proves termination, not numerical convergence or physical adequacy. |
+
+### Shared process boundary, not a universal transition language
+
+For each composed process, record these items in the owning world or plan. This is a documentation contract; it introduces no new runtime schema or infrastructure.
+
+- **Purpose and domain:** investigation, interventions, valid operating range and deliberate omissions. State separately whether a model is expressible in native code, expressible in the generated rule language, integrated in the live path, and adequate for this investigation.
+- **State and reads:** typed values, units where applicable, causal owner, dependencies and persistent hidden state. Model state may be hidden from actors without being absent from the simulation. Do not encode the same causal effect in both a host and an engine rule.
+- **Information access:** the complete projection an actor or estimator may receive, including summaries, recent events, briefs and memory. Location alone is not permission to read internal fields. An estimator of world mechanics and an actor's own inference can have different information boundaries.
+- **Output authority:** a typed attempt, observation, estimate or proposed material delta, with its distinct authorized destination. External model output cannot silently become canonical fact. Check declared writes, preconditions and relevant invariants before committing a delta.
+- **Time and coupling:** simulated start/end time, cadence, ordering and which earlier outputs each input depends on. A solver owns its internal integration and convergence; dependent models exchange results at declared boundaries. If a solver needs callbacks within an interval, specify that coupling before claiming a one-step adapter suffices. A stale input revision causes explicit recomputation or refusal, never an unnoticed overwrite.
+- **Uncertainty and identity:** event versus persistent-condition uncertainty, shared causes, random realization identity, model/configuration/version identity and the retained evidence needed to understand the result. Repeatability is optional where not required; provenance is not.
+- **Failure and resources:** incomplete/invalid/unsupported output, non-convergence, unavailable backend and exhausted budget have explicit dispositions. A failed atomic proposal commits no partial material delta. Retain inputs, outputs and failure evidence; account for model calls, solver work, context, memory and trace storage. Do not replace a failed model with a different causal story silently.
+
+### Source findings and their consequences
+
+At the reviewed baseline `65ffed8`, these are observed implementation boundaries:
+
+1. [The generated decision-family compiler](../../spikes/any-scenario-2026-10/compile_spec.py) installs `concern-makes-support-conditional` because residents did not reliably reduce support, and `remedy-completes` resolves a concern at timer completion. Those rules may model a deliberately stipulated institution or fixture. They cannot be presented as general persuasion or successful repair. The condition/claim/stance/hold separation above remains the first substantive people-world correction.
+2. [Engine observation](../../src/world_substrate/engine.py) projects colocated entities and requires a location; [information filtering](../../src/world_substrate/information.py) restricts message/delivery components while other fields remain available. [The resident caller](../../scripts/run_authored_world.py) also supplies events, summary and brief. Thus hiding a message does not prove that passwords, private beliefs or latent defects are hidden throughout the context. Audit the complete projection before asserting asymmetric information.
+3. [Reaction settling](../../src/world_substrate/engine.py) fires each process/entity pair once per moment. Keep that bounded semantics; do not call it a general fixpoint solver. [Generated action authoring](../../src/world_substrate/action_authoring.py) supports only its declared effect operations and timing modes. Numeric components alone do not establish arbitrary physical or program expressibility.
+4. [The Builder's things/people selector](../../scripts/world_builder_service.py) is an authoring convenience. It must not force every process in a mixed world to use the same implementation method or determine whether an entity can act.
+
+These findings do not justify a new universal engine. First specify and enforce the complete observation boundary; separate scenario stipulations from shared mechanics; define a concrete host adapter only when a chosen investigation needs behavior the existing method cannot express. Mapping a requirement to code establishes its owner and evidence path, not scientific validity.
+
+### Recommended sequence and tradeoffs
+
+1. **Settle the small conceptual contracts now:** credentials and norms (Q76), estimator dependencies (Q83), and uncertain observation (Q84). Their owning plans define the selected contracts; backend adequacy and implementation evidence remain separately open where needed.
+2. **Design the complete actor-input boundary, then the single-concern path.** This addresses the influence investigation and credential secrecy together. It costs broader inspection than message filtering alone, but avoids validating runs whose actors are omniscient. Preserve forced support/remedy rules as labeled fixture behavior until their owner is repaired.
+3. **Link stable promises into AES, using direct evidence.** Correct scan roots and existing test links first. A requirement with only part of its behavior implemented remains incomplete; a missing annotation is not automatically a missing capability. Universal read enforcement, durable consent and storage-failure guarantees must not acquire false implementation labels.
+4. **Select a program or physical adapter only for a concrete investigation.** The benefit is broader applicability with commodity tools; the cost is a real coupling, validation and resource obligation. Do not build speculative adapters merely to make a generality claim.
+
+No human scope decision is needed for these documentation contracts. A proposal to abandon governed consequence authority, build a new engine, or promise a specified scientific accuracy would require a separate product decision. No such proposal is adopted here.
+
 ## Glossary
 
 ### What is represented

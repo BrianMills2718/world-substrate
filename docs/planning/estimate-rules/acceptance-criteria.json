@@ -13,7 +13,7 @@
  "entries": [
   {
    "id": "A1",
-   "criterion": "A rule's outcome propagates based on Jev: each day the sawmill's blade rule asks Jev for today's chance of failure from the two facts it names, the engine rolls against it, the run page shows the chance, its source, the roll and the outcome, and on a failure the usual knock-on effects follow, each citing the failure; the same facts asked again in the run reuse the answer; the sawyer's servicing is her own choice with no estimate attached.",
+   "criterion": "A rule's outcome propagates based on Jev: each day the sawmill's blade rule asks Jev for today's chance of failure from the two varying facts and fixed model context it declares, the engine rolls against it, the run page shows the chance, its source, the roll and the outcome, and on a failure the usual knock-on effects follow, each citing the failure; identical complete declared inputs and model identity reuse the estimated distribution; the sawyer's servicing is her own choice with no estimate attached.",
    "grounded_in": [
     "Brian 2026-11-10 (Why): \"im not saying jsut the judge uses jev. i can see there being a way where we have certain types of rules/contstatins that progagte base don jev\"; requirements R1, R2, R5, R6, R9"
    ],
@@ -24,8 +24,8 @@
     "Find a later day whose facts match an earlier day and open it.",
     "Open a day on which Mara serviced the blade."
    ],
-   "expected": "A failure day reads \"chance the blade fails today: 0.31 (Jev, from days since service 9, load 14); roll 0.22; failed\" (the numbers are whatever the run recorded; Jev is the estimating model, the roll the run's own random number) and opens to the question, the two facts with their values, the model version (which dated release of Jev answered) and the trace id (a link to the full recorded call); the saw-stopped and late-order steps follow, each citing the failure; the matching later day says \"same question as day N, answer reused\"; Mara's servicing is her own move with her reason and no chance attached.",
-   "failure_example": "Broken: a failure with no roll shown, a failure whenever the chance is above some value, facts in what Jev read that the rule did not name, Jev asked twice for the same facts, or a chance attached to Mara's decision. Working: every chance event shows chance, source, roll and outcome, and knock-on steps cite it.",
+   "expected": "A failure day reads \"chance the blade fails today: 0.31 (Jev, from days since service 9, load 14); roll 0.22; failed\" (the numbers are whatever the run recorded; Jev is the estimating model, the roll the run's own random number) and opens to the question, the two varying facts with their values and the fixed Q83 assumptions, units and time interval, the model version (which dated release of Jev answered) and the trace id (a link to the full recorded call); the saw-stopped and late-order steps follow, each citing the failure; the later day with identical complete input/model identity says \"same question as day N, answer reused\"; Mara's servicing is her own move with her reason and no chance attached.",
+   "failure_example": "Broken: a failure with no roll shown, a failure whenever the chance is above some value, facts in what Jev read that the rule did not name, Jev asked twice for identical complete declared input/model identity, or a chance attached to Mara's decision. Working: every chance event shows chance, source, roll and outcome, and knock-on steps cite it.",
    "representation": {
     "view": "composite-linked-view: the run page's day rows, one line per chance event (chance, source, roll, outcome), opening to the question, the facts read, the model version and trace id, and the knock-on steps it caused",
     "router_record": "docs/planning/estimate-rules/router/run-page.recommendation.json"
@@ -97,7 +97,7 @@
     "Open the run's day rows.",
     "Open the saved draft \"bakery oven, fallback removed\" (that build's oven rule with its fallback deleted, kept with the run) and its rules-check result."
    ],
-   "expected": "\"See how it works\" shows the oven rule in plain words: its question, the facts it reads, its fallback and its outcomes; the run shows oven-failure rows as in A1; the saved draft with its fallback removed is shown rejected by the rules check with \"estimate rule needs a fallback\".",
+   "expected": "\"See how it works\" shows the oven rule in plain words: its question, fixed context/applicability, declared varying facts with units, time interval, fallback and outcomes; the run shows oven-failure rows as in A1; the saved draft with its fallback removed is shown rejected by the rules check with \"estimate rule needs a fallback\".",
    "failure_example": "Broken: no chance rule at all, an oven that fails on a fixed day, an installed estimate rule with no fallback, or the fallback-removed draft passing the rules check. Working: a chance rule in plain words with its fallback, A1-style rows in the run, and the fallback-removed draft rejected by name.",
    "representation": {
     "view": "composite-linked-view: the World Builder's \"See how it works\" rule view beside the run page's day rows",
@@ -111,26 +111,32 @@
   },
   {
    "id": "A5",
-   "criterion": "An estimate reads only the facts its rule names and never decides what a person chooses: Jev never sees the attempt's wording (what a person said they try) or a resident's reasoning (the AI person's own thinking), and in the port the chance only decides whether the harbourmaster notices; what he does after is his own choice.",
+   "criterion": "A mechanics estimate receives only its declared varying inputs and fixed model context and never takes over an actor's interpretation or choice. The Q83 fixture states its applicability limits. In Q84/E5, a committed recipient-specific delivery result controls sensory availability across every actor-facing path; duplicate exposure cannot redraw, hidden non-delivery does not leak, and the resident interprets and responds through its own policy.",
    "grounded_in": [
-    "The judge plan's Decided 4 (another person's choice is a decision, not a rule); the skill roll's rule \"only the skill path is read\" (docs/plans/open_attempt.md:194); requirements R5, R9"
+    "The judge plan's Decided 4 (another person's choice is a decision, not a rule); the skill roll's rule \"only the skill path is read\" (docs/plans/open_attempt.md:194); requirements R5, R9",
+    "Agent-inferred Q83/Q84 contracts in docs/plans/estimate_rules.md (2026-11-12), applying the modeling guide and information-delivery specification. Backend adequacy and E1/E5 implementation remain unproved."
    ],
    "demonstration": [
-    "In the saved run \"sawmill blade\", open what Jev read for any day.",
-    "In the saved port run (E5), open the harbourmaster's row after Vik's hand-over.",
-    "Open what he did next."
+    "In the planned sawmill run, open the complete recorded estimator input and the rule's model description. Compare the two varying fields with the fixed blade/material/environment, operating interval, servicing assumption, units and excluded interventions.",
+    "Open a missing/incompatible-input case and inspect the declared fallback/refusal. Open an identical-input reuse and a changed-model-context case; verify that the latter does not reuse the former's answer.",
+    "In the planned E5 port run, open the source hand-over event, its projected visible content, exposure id, recipient/channel/context and committed delivery result. Read the harbourmaster's authorized view and then his own interpretation and next attempt separately.",
+    "Compare delivered, suppressed and unavailable exposure cases across the actor's prompt/narration, candidate actions and UI. A suppressed event must not be disclosed by a negative row or a message saying what the actor missed.",
+    "Replay or retry the same exposure id and compare the retained result; then open a distinct authored exposure opportunity. Compare two recipients and a shared-occlusion case to see that recipient visibility can differ while declared common causes remain shared.",
+    "Delay or resume a pending exposure estimate after moving the observer or changing the light. Inspect the recorded opportunity-time input snapshot and source revision: the old exposure retains its original context; only a separately authored new opportunity may use the changed conditions. A late result after terminal fallback cannot rewrite visibility."
    ],
-   "expected": "The sawmill's Jev input holds only days since service and load. The port row reads \"noticed (chance 0.4, roll 0.17)\" (the run's own numbers), and his next act is his own move with his reason, with no chance attached.",
-   "failure_example": "Broken: Jev's input holds anything else (a resident's words, the whole world), or a chance decides what he does. Working: only the named facts, and his act is his own.",
+   "expected": "The sawmill estimate has two varying inputs plus explicit fixed Q83 context, not undeclared world state, attempt wording or private reasoning. Its two-field sufficiency claim is confined to the stated simplified fixture; omitted interventions require another model. Missing inputs do not silently become zero, and changed fixed context invalidates reuse. The port trace says view delivered (with its recorded estimate/draw), not belief acquired or bribe recognized. Only committed delivery supplies projected evidence to the actor. Suppression/unavailability reveals neither content nor the concealed event through any actor-facing route. Duplicate exposure reuses its result; a new opportunity needs an authored identity. Per-recipient results preserve declared shared causes. The actor may distrust, misinterpret or ignore available evidence; a mechanics estimate supplies neither belief nor response. No new call or draw occurs during recorded replay.",
+   "failure_example": "Broken: undeclared runtime facts enter the estimate; the two-field fixture is used to claim fatigue-history or temperature effects; missing input becomes zero; a new model context reuses an old answer; full event truth or you-missed-X narration leaks after non-delivery; refresh/retry redraws until delivery; every recipient gets an independent draw despite a declared shared occlusion; or delivery compels a belief or reporting action. Working: the declared dependency boundary, retained exposure identity, recipient visibility and actor-owned interpretation can each be inspected.",
    "representation": {
-    "view": "composite-linked-view: the chance event opened to the exact input Jev received, and the person's next move with its reason",
+    "view": "composite-linked-view: exact estimator input and model assumptions linked to source event, recipient exposure/disposition, authorized actor view, and the actor's separate interpretation and attempted response",
     "router_record": "docs/planning/estimate-rules/router/run-page.recommendation.json"
    },
    "entrypoint": "planned",
    "status": "not built",
    "evidence": [
-    "Sawmill part: slice E1; port part: slice E5 after the design step Q84 (planned)."
-   ]
+    "Design: docs/plans/estimate_rules.md, Q83 dependency and Q84 delivery contracts (2026-11-12). Existing v0 information seam: src/world_substrate/information.py; it does not yet supply probabilistic delivery.",
+    "E1 and E5 implementation demonstrations are planned. Current request narration must be integrated with the common visibility gate; no retained passing delivery or estimator evidence is claimed."
+   ],
+   "status_note": "Q83/Q84 design choices are settled; E1/E5 enforcement, replay, all-path visibility and scenario/backend adequacy remain unbuilt or unproved. A separately declared actor policy may use Jev; this criterion prevents a mechanics estimator from taking over that actor's choice."
   },
   {
    "id": "A6",

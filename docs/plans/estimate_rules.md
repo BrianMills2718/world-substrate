@@ -15,7 +15,7 @@ goal:
     its answer, the draw and the outcome, the failure stops the saw and its knock-on effects follow, and a replay
     of the run shows the same days with no Jev call."
   forbidden_substitutes: "a probability treated as a fact (fails because Jev said 0.8); a threshold on Jev's
-    answer instead of a draw; Jev or another model deciding what a person does; an estimate rule that reads the
+    answer instead of a draw for a declared stochastic event; a mechanics estimate taking over an actor's choice; an estimate rule that reads the
     attempt's wording or a resident's reasoning; a silent default when Jev fails; a replay that calls Jev again;
     a second seed or recording scheme beside the skill roll's; a fixture run reported as live."
   boundaries: "world-substrate and its own deploy only; llm_client, Concordia and Mesa read-only; each slice
@@ -151,13 +151,13 @@ across a ford, which is too deep to cross after heavy rain."
    than asking Jev.
 
 **A people-side example: the harbourmaster.** In the port world, Vik slips coins to Rosa at the customs desk.
-Whether the harbourmaster, standing at the far end of the quay, *notices* is a chance that depends on facts
-(distance, how busy the quay is, whether it is dark): an estimate rule can decide whether an observation of the
-hand-over reaches him, which is information delivery, not anyone's choice. What he does once he knows (report
-it, ask for a share, ignore it) is his own decision, made by his resident. Whether Rosa takes the coins is hers
-(the judge plan's Decided 4). So an estimate never stands in for what a person chooses; it can stand in only for
-what the world does to them (a blade breaks, a sound carries, a sighting happens). This example is a later slice
-(E5), because information delivery is a different effect from a field write.
+Whether a view of the hand-over reaches the harbourmaster at the far end of the quay depends on declared
+facts such as geometry, occlusion and light. E5 models this sensory availability, not whether he recognizes
+bribery or believes anyone's intention. His interpretation and response (report it, ask for a share, ignore it)
+belong to his policy; Rosa's acceptance belongs to hers. The Q84 contract below makes delivery, interpretation
+and response separate. This mechanics-estimate path never takes over an actor's choice. A separately declared
+actor policy may use Jev for attention or interpretation when adequate for the investigation. E5 is later
+because a visibility gate must cover information delivery and every actor-facing narration path.
 
 ## Decided
 
@@ -212,7 +212,9 @@ on 2026-11-10 from the reading and prior art named with each; they stand as work
 3. **What an estimate rule declares.** Inside an ordinary process or move (`action-mechanic/v0`,
    `src/world_substrate/action_authoring.py:62` and `:246`), one `estimate` block:
    - `question`: fixed text, written when the world is built; it never contains run-time wording.
-   - `reads`: the world fields Jev is shown, as declared paths (the blade's `days_since_service` and `load`).
+   - Fixed model context: the Q83 meaning, units, time interval, applicability and fixed assumptions, included
+     in the versioned question/model identity. This is proposed authoring metadata, not an implemented schema field.
+   - `reads`: every varying input Jev is shown, as declared paths (the E1 blade's `days_since_service` and `load`).
      Nothing else reaches Jev: not the attempt's wording, not a resident's reasoning, not the rest of the world.
      This copies the skill roll's rule, "only the skill path is read; the attempt's wording never reaches the
      roll" (`docs/plans/open_attempt.md:194`).
@@ -241,25 +243,124 @@ on 2026-11-10 from the reading and prior art named with each; they stand as work
    (`recorded_llm_client`, `Unrecorded`, lines 23-49). Replay resubmits recorded commands as today
    (`Engine.replay_commands`, `src/world_substrate/engine.py:1182`), so the recorded estimate and draw give the
    same status for each command. The recorded reader matches an estimate by event and by the cache key below
-   (resolved model version, estimator/prompt version, question, answer type and options, input values): if the world's rule was edited after the run, so its
+   (resolved model version, estimator/prompt version, question, fixed model context, answer type and options, input values): if the world's rule was edited after the run, so its
    question or reads no longer match the record, the replay stops with "no recorded estimate for this event"
    instead of reusing an answer to a different question.
 6. **Caching: one call per distinct complete input per run.** The cache key is (resolved model version, estimator/prompt version, question, answer type and its
-   options, the canonical values of the declared reads). Because a rule declares everything Jev may read, the
+   options, the fixed model context, the canonical values of the declared reads). Because a rule declares everything Jev may read, the
    same key means the same question, so the answer is reused for the rest of the run and recorded as "cached,
-   first asked at event N". The draw is not cached: each event draws its own number, so day 9 and a later day
-   with the same values share a chance but not an outcome.
+   first asked at event N". A fresh stochastic event draws its own number; a duplicate exposure or a query about the same persistent
+   condition reuses its recorded realization. Distinct daily events with the same declared conditions can
+   share an estimated distribution without asserting independence when a modeled shared cause applies.
 7. **When Jev fails: retry once, then the rule's declared fallback.** Measured: 1,330 of 20,001 recorded Jev
    calls failed (6.6%: 745 provider errors raised as RuntimeError, 585 network errors; failed calls averaged
    9.4 s), read from `~/projects/data/llm_observability.db` on 2026-11-10, split by the error type each call
    records. `call_decisions` does not retry. One
    retry is the smallest step that keeps a 30-day run from being refused or falling back about twice a run.
-   Each try has a 5 s timeout (`call_decisions` defaults to 30 s). Measured in the same database: successful
+   The proposed per-try ceiling is 5 s; enforcing it remains an E1 integration obligation because the deployed timeout policy does not honor ordinary per-call timeout arguments. Measured in the same database: successful
    calls averaged 0.43 s (median 0.26 s, 99th percentile 2.8 s; 61 of 18,671 took over 5 s), provider errors
-   came back in 0.89 s on average, and the 585 network errors waited 20.2 s on average before failing. A 5 s
-   timeout cuts that wait to 5 s and turns about 0.3% of successful calls into a retry.
+   came back in 0.89 s on average, and the 585 network errors waited 20.2 s on average before failing. If enforced, a 5 s
+   ceiling would cut that wait and turn about 0.3% of those historical successful calls into a retry.
    Both the failed call and the fallback are recorded on the event, and the run page shows "estimate
    unavailable: used the rule's fallback 0.1" in orange.
+
+## Q83 design contract: declare the modeled dependency boundary
+
+**Status and source:** agent-inferred design, 2026-11-12, under Brian's approval to resolve the remaining
+modeling contracts. This settles the dependency-selection procedure and the E1 fixture's approximation,
+not whether Jev estimates real failure rates adequately. It applies the [modeling guide](../model/modeling-choices.md)
+and the existing declared-read/write boundary in `src/world_substrate/action_authoring.py` and `engine.py`.
+
+Before choosing fields, the author states: the quantity or event being estimated; its entity/population and
+simulated time interval; the causal mechanism; allowed interventions; fixed assumptions; varying state;
+shared causes and persistent latent state; and excluded conclusions. These declarations are part of the
+reviewed rule/model identity. `reads` contains every varying input actually supplied to the estimator,
+including any declared time, history summary or latent-state reference it needs. Fixed assumptions belong in
+its versioned fixed context. Units, category meanings and time intervals accompany the values; a bare number
+such as `load: 2` is not enough to define the question. The estimator receives only this context and these
+values. Missing or incompatible inputs take the declared unavailable/fallback path; missing is never zero.
+
+**E1 choice.** Keep two varying inputs, elapsed service age and load, for the illustrative blade fixture.
+Explicitly stipulate a homogeneous blade/material class, a fixed operating interval per question, an
+unchanging environment, and servicing that resets the modeled service age. Under that simplified model,
+those two inputs define the intended conditional question; no claim is made that they are sufficient for a
+real blade. The fixture can investigate consequences of its assumed failure mechanism and interventions on
+load/servicing. It cannot investigate fatigue history, manufacturing defects, material changes or temperature
+without adding the corresponding state or changing the model. An actual authoring brief that requires those
+distinctions must expand the dependency declaration or reject the approximation, not silently use two fields.
+The shape of the age effect is a declared wear assumption, not a universal law of equipment failure.
+
+**Closure by argument, not model agreement.** For each proposed intervention, trace what variable changes,
+which mechanism consumes it, and what outcome can change. If two situations that the question requires us
+to distinguish have identical estimator inputs and model identity, this representation cannot distinguish
+them. That counterexample requires adding a dependency, retaining latent state, or narrowing the question.
+More-context answers do not prove missing causality; agreement does not prove sufficiency. A structural
+checker can enforce complete declared inputs, units/schema and scopes; it cannot prove all relevant causes
+were declared. Authoring must record that residual risk explicitly.
+
+**Reuse and resource tradeoff.** Reuse the estimated distribution only for identical complete declared input
+and model identity. A persistent condition keeps its own realization and lifetime; a new query is not a new
+physical event. Shared causes remain shared when multiple recipients/events depend on them. Cached estimates
+save calls but do not imply independent samples, unchanged real-world conditions or correctness. Narrow
+inputs make costs predictable and prevent unrelated private text from entering mechanics; the price is an
+explicit applicability boundary. Add information because its mechanism/intervention requires it, not merely
+because the context window can fit it. E1 still must show correct enforcement and record/replay, and any
+claimed backend sensitivity or calibration needs its own evidence (Q82).
+
+## Q84 design contract: deliver evidence without deciding belief
+
+**Status and source:** agent-inferred design, 2026-11-12; E5 remains unbuilt. Reuse the canonical information
+and delivery types (`src/world_substrate/information.py`) and the existing resident observation seam
+(`scripts/concordia_residents.py::Residents.observe` and `scripts/run_authored_world.py`'s end-of-round
+request delivery). The [information-delivery specification](../../openspec/specs/information-delivery/spec.md)
+explicitly says probabilistic delivery is not generic v0 behavior. This is its planned extension, not a claim
+that today's request messages already pass through this gate.
+
+**Choose the layer.** Distinguish a world event, a signal/representation emitted about it, its availability
+at a recipient, the actor's noticing/interpretation, and the actor's response. E5's minimum port fixture
+estimates sensory availability: whether a view of the hand-over reaches the harbourmaster under declared
+geometry, light and occlusion. Delivery means "this evidence was made available", not "the harbourmaster
+believes a bribe occurred". A separate attention policy may filter or interpret available input if the
+investigation needs that distinction; it belongs to the actor model. The E5 fixture explicitly abstracts
+that extra stage and must label its trace `view delivered`, not claim measured human noticing.
+
+**Proposed declaration and identity.** A delivery rule names source event/item, content projection, eligible
+recipient rule, channel, opportunity time/window, and a typed estimator with Q83 dependencies and fallback.
+The content projection states what the channel can convey; seeing a hand-over is not knowing the parties'
+private intention. Each actual exposure opportunity has a durable id bound to source event, recipient,
+channel, occurrence and rule version. Retrying a request, refreshing the UI or re-querying the same exposure
+uses its existing result. At the authored opportunity time, capture the content projection and all declared varying inputs (including observer position, geometry, light and occlusion), their source revision and simulated timestamp, and the fixed context/rule/model identities in that opportunity record. A delayed estimator or resumed request consumes this captured context; it must not read later light or a moved observer to decide visibility of the earlier event. If the scenario samples across a time window, its channel rule must define the sampling times or aggregation of that window explicitly. Changed conditions create a new opportunity only when that authored rule emits one. Retries preserve the same captured input and identity; a terminal fallback/disposition rejects a late duplicate backend result rather than rewriting prior visibility. E5 keys the recorded random realization by that exposure id, not only the common source event id; two recipients must not accidentally share a random draw. Correlated noise, where modeled, names a shared latent/group realization explicitly. A later observation opportunity is distinct only when the authored channel process
+makes one; repeated attempts cannot manufacture visibility by repeated rolls. Common fog, blackout or
+observer position is represented state shared by affected opportunities, not independent noise by default.
+
+**Execution and persistence.** The source transition first commits. At the existing observation boundary,
+authoritative delivery mechanics consume its retained event/item and declared context, obtain/record the
+estimate and any permitted draw, and atomically commit the delivery disposition. They do not roll back the
+source action merely because nobody saw it. No resident receives the candidate text before the delivery
+commit. On continuation, retained pending opportunity ids are resumed idempotently; an already committed
+disposition cannot be sampled or delivered again. An unavailable estimator follows the declared failure
+behavior for this delivery transition (not a rollback of the earlier source event) and records that result; it does not
+silently deliver. A failed source transition creates no success-event signal, although the scenario may
+separately emit a signal about the attempted/refused action. No new scheduler or cognition engine is needed.
+
+Use direct recipient-specific information/delivery rows, retaining v0 `pending`/`delivered` semantics;
+record a suppressed or unavailable opportunity's disposition in the retained delivery evidence rather than
+making the information public. Public active information bypasses recipient checks in v0 and therefore
+cannot represent a probabilistically private sighting. Every actor-facing route, including the live
+run-loop narration, candidate actions and UI projection, must consume the same committed visibility result;
+one unrestricted narration would defeat the gate. The analyst trace may show non-delivery and hidden event
+truth, but the actor must not learn a concealed event from a `you missed X` message or a visible negative row.
+
+**Interpretation, response and checks.** After committed delivery, the actor's own policy receives the
+projected evidence through `observe`; its memory, personality and current beliefs determine what it makes of
+it and what it attempts. It may misinterpret, distrust or ignore it. Content can be inaccurate or deceptive
+only through an explicitly modeled source/channel mechanism; delivery does not certify truth. Replay uses
+the recorded opportunities, estimates, dispositions and delivered content, without new calls or fresh draws.
+Required counterexamples for E5/A5: failed delivery leaves no actor-view leak; duplicate exposure cannot
+redraw; two recipients can receive different evidence; a shared occlusion affects both as declared; delivered
+hand-over evidence neither proves bribery nor forces reporting. These are implementation obligations. The
+layering decision is settled by the information/cognition distinction; adequacy of a particular perception
+model remains a scenario-specific question.
 
 ## Current truth (read from code at origin/main `d89a446`, 2026-11-10)
 
@@ -293,7 +394,7 @@ on 2026-11-10 from the reading and prior art named with each; they stand as work
 | R2 | Each estimate event records the question, the inputs and their values, the answer, the model version returned, the trace id, the cost, whether it was cached, and the draw; the run page shows them | Q63 contract; workspace rule (Trace visibility) | A1 |
 | R3 | A replay reproduces every estimate outcome from the record and never calls Jev; a missing record stops the replay visibly | Q63 contract; goal boundary "saved worlds still replay unchanged" | A2 |
 | R4 | Every estimate rule declares a fallback; when Jev fails twice the rule's fallback applies (or the moment is refused) and the run page says so | arc42 section 8 (`docs/architecture/arc42.md:292`) | A3 |
-| R5 | An estimate reads only its declared fields; it never reads the attempt's wording or a resident's reasoning, and never decides a person's choice | judge plan Decided 4; skill roll rule (`docs/plans/open_attempt.md:194`) | A1, A5 |
+| R5 | A mechanics estimate reads only its declared varying inputs and fixed model context; it never reads the attempt's wording or a resident's private reasoning, and never takes over that resident's choice | judge plan Decided 4; skill roll rule (`docs/plans/open_attempt.md:194`) | A1, A5 |
 | R6 | The same question with the same inputs is asked once per run | agent (Decided 6); cost | A1 |
 | R7 | The World Builder's rules writer can declare estimate rules from a world description, and the rules check rejects one with no fallback or no stakes | Brian 2026-11-10 (Why: "types of rules/contstatins") | A4 |
 | R8 | Picks among declared options and amounts from declared buckets work the same way as chance rolls | Decided 2 | A6 |
@@ -324,9 +425,10 @@ in `docs/planning/estimate-rules/acceptance-criteria.json` (field `evidence`).
   saved draft "bakery oven, fallback removed" (that build's oven rule with its fallback deleted, kept with the
   run as A2 keeps its damaged copy) is run through the rules check and shown rejected with "estimate rule needs
   a fallback", so a broken check cannot hide behind a writer that happened to include one.
-- **A5 (E1, E5):** in the sawmill run, Jev's recorded input for every estimate contains only the two declared
-  fields. In the port run (E5), whether the harbourmaster noticed the hand-over appears as "noticed (chance 0.4,
-  roll 0.17)", and what he did after appears as his own move with his reason, with no estimate attached.
+- **A5 (E1, E5):** in the sawmill run, Jev's recorded input contains the two declared varying fields plus the
+  Q83 fixed model context, with no undeclared runtime state or private actor reasoning. In the port run (E5), whether a view of the hand-over reached the harbourmaster appears as "view delivered (chance 0.4,
+  roll 0.17)". Q84's no-leak, duplicate-exposure, recipient and shared-cause checks apply. His interpretation
+  and subsequent move appear separately; the mechanics estimate supplies neither belief nor decision.
 - **A7 (E1):** in the saved run "sawmill blade", the log cart's crossing on a wet day shows "blocked: the cart
   could not get across the ford (chance 0.7, roll 0.81)" in orange; the move changed nothing, no logs reach the
   sawmill from that attempt,
@@ -348,14 +450,17 @@ traced run.
 | E2 | The rules writer declares estimate rules from a description, through the World Builder; the rules check enforces fallback, stakes and declared reads; the free test run uses the stand-in estimator (Q87) | conditional on E1 | A4 |
 | E3 | Picks and amounts, when a described world needs one | conditional on E1 | A6 |
 | E4 | Judge-proposed estimate rules: the judge's ruling may contain an `estimate` block, checked and test-run like any ruling | conditional on E2 and the judge plan's J3 | (judge plan A4, with an estimate rule) |
-| E5 | Noticing: an estimate that decides whether an observation reaches a person (information delivery) | exploration required | A5 (port part) |
+| E5 | Recipient-specific sensory availability under the Q84 delivery contract; interpretation stays with actor policy | design contract settled; delivery integration and evidence unbuilt | A5 (port part) |
 
 E1 first because one rule kind on one world with a traced live run is the thinnest path through language,
 engine, record, replay and page. E2 before E3 because a visitor's own worlds matter more than more kinds. E4
 needs nothing new if E2's rules check is the one judge rulings pass (the judge plan's Decided 3). E5 last because
-it changes what a person learns, not a field, and needs its own short design step (U4).
+its Q84 design changes recipient-specific information availability and must cover both canonical delivery
+and the live narration path; a field-write example alone does not demonstrate that boundary.
 
 ## Agent technical calls
+
+**Resource-limit qualification (2026-11-12):** the five-second-per-attempt ceiling below is a proposed enforcement requirement, not an observed current limit. The deployed service sets `LLM_CLIENT_TIMEOUT_POLICY=ban` (arc42 section 7), so per-call timeout arguments do not establish that ceiling. All latency bounds relying on it are conditional calculations. E1 must establish the supported cancellation/budget mechanism or revise those bounds before claiming bounded wall time; no timeout-policy change is made in this design review.
 
 - **Draw, not argmax and not threshold** (Decided 2). Prior art agrees: models are poor at sampling from a
   probability they state ("Do LLMs Play Dice?", COLING 2025, aclanthology.org/2025.coling-main.360), so the model
@@ -528,10 +633,16 @@ more), about 1/50. It would answer a probability, which J5 would need to turn in
 been shown to read a world's state well. That choice belongs to J5 and its plan; this plan only records the
 option (Q86).
 
-## Plain baseline (planned for E1)
+## Plain baseline (conditional diagnostic for E1)
+
+**Decision rule (2026-11-12):** the Q83 contract settles the dependency boundary by argument. Do not run the
+comparison below merely to complete a checklist. It is a retained diagnostic option only if a named backend
+or omitted-dependency decision survives the declared-mechanism and intervention review. Record that decision
+and the result that would change it before running; model agreement cannot establish causal adequacy.
 
 The answer path is Jev's estimate. The plain version, by the workspace rule, is the same model given the whole
-source and the question: Jev given the whole world state rather than the two declared fields. E1 runs, for days
+source and the question: Jev given the whole world state rather than the declared inputs and fixed context.
+If the diagnostic is warranted, the retained candidate set uses days
 0, 3, 6, 9 and 12 with and without recent servicing (10 cases), side by side: (a) Jev with the declared reads,
 (b) Jev with the whole world, (c) gpt-6-luna with the declared reads asked for a probability, and (d) declared
 bands, literal chances the rules writer writes from the sawmill's description with no Jev call (Cheapest design).
@@ -564,13 +675,14 @@ example now samples crossing variability conditional on persistent passability, 
 
 - **U1 (agent, Q82):** does Jev's chance rise with the facts it reads (days since service), or is it flat or
   coarse? The probe's chance answers were coarse (0.6, 0.55). Settled by E1's first step (the 10-call probe).
-- **U2 (agent, Q83):** whether a rule's declared reads leave out facts Jev needs. Declared reads (not the whole
-  world) are settled by argument (Plain baseline). Identify relevant causal dependencies and interventions
-  first; the E1 comparison can reveal sensitivity on its cases, but cannot prove that two reads are enough.
+- **U2 (agent, Q83 design resolved 2026-11-12):** the dependency contract above selects two varying fields only
+  within the stated E1 homogeneous-blade approximation. Other investigations must declare their own dependencies
+  and interventions. Enforcement, backend adequacy and any real-world sufficiency claim remain unproved.
 - **U3 (agent, Q33, existing):** where the run seed lives, shared with the skill roll. Settled by argument in
   whichever of S3 and E1 lands first: drawn at run start and kept in the run record.
-- **U4 (agent, Q84):** how a chance decides whether an observation reaches a person (E5): an estimate on the
-  delivery of an information item rather than a field write. Settled by a short design step opening E5.
+- **U4 (agent, Q84 design resolved 2026-11-12):** the delivery contract above uses committed recipient-specific
+  exposure records before actor observation, with no belief update or choice imposed. E5 still must implement
+  the shared gate across narration and projection and demonstrate the listed negative cases.
 - **U5 (agent, Q85):** latency for worlds with many estimates (about 0.61 s expected per estimate, computed in
   Agent technical calls); settled by E1's measured run and, if needed, a parallel ask within a moment.
 - **U6 (agent, Q86):** whether J5's stopping point should use Jev; belongs to the judge plan.

@@ -22,14 +22,13 @@ window.PAGE_DATA = {
      {
       "name": "durable documents (legacy arc42 checker)",
       "command": "python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
-      "exit_status": 1,
+      "exit_status": 0,
       "counts": {
-       "findings": 8,
-       "legacy_format_mismatches": 8,
+       "findings": 0,
+       "legacy_format_mismatches": 0,
        "stale_rule_reviews": 0
       },
-      "tracked_by": "Q77",
-      "note": "Source-grounded review of four owner rules at fd877da reconciles profile/approval behavior and narrows budget/durability claims. Eight legacy exact-heading/label findings remain, exit 1. docs/model/trace.yaml explicitly retains unverified downstream aggregate spending and storage-failure durability limits; review freshness is not behavioral completion."
+      "note": "2026-11-12 modeling-contracts refresh: exact arc42 headings, thesis/disproof, documentation-locality citation and lineage now satisfy the retained checker. No desired runtime guarantee was weakened; budget and storage-failure limits remain explicit."
      },
      {
       "name": "wiki and Markdown cap",
@@ -42,7 +41,7 @@ window.PAGE_DATA = {
        "durable_findings": 8
       },
       "tracked_by": "Q77",
-      "note": "Navigation/cap receipt: 183/183 and 0 unreachable. Subsequent durable-check rerun has 8 legacy findings, 0 stale reviews; combined command has not been rerun after trace review. Exit remains 1; no full compliance claim."
+      "note": "Historical committed receipt at 0d2a875: 183/183, 0 unreachable, 8 durable findings, exit 1. Current working-tree durable check is 0; cap configuration now allows 186 for three OpenSpec archive documents. A fresh committed --ref HEAD cap receipt is pending; do not read this historical result as the current working-tree finding count."
      },
      {
       "name": "project navigation",
@@ -60,7 +59,7 @@ window.PAGE_DATA = {
        "compliant": 1,
        "of": 1
       },
-      "note": "Rerun after Makefile documents the actual variable-expanded lockstep check command. Static format check only; not full Lockstep conformance."
+      "note": "2026-11-12 modeling-contracts refresh: 1 of 1, exit 0. Static format only; not full Lockstep conformance."
      },
      {
       "name": "semantic spectrum",
@@ -72,7 +71,7 @@ window.PAGE_DATA = {
        "project_terms": 80,
        "planning_terms": 13
       },
-      "note": "Rerun after adding theory-only voluntary exchange offer: 156 names, 96 questions, all 9 rules pass."
+      "note": "2026-11-12 modeling-contracts refresh: 156 names, 96 questions, 80 project terms; all 9 rules pass. Conceptual contract decisions do not certify unbuilt runtime behavior."
      },
      {
       "name": "Lockstep source provenance",
@@ -105,7 +104,20 @@ window.PAGE_DATA = {
        "subtests_passed": 225,
        "specs_passed": 13
       },
-      "note": "Coordinator executed on current normative-readiness working tree, 2026-11-12; pytest reported 61.71 seconds. Includes planning/source subset; does not claim the separate full Lockstep conformance target passes."
+      "note": "Historical normative-readiness result; current modeling-contracts make check is running and will be recorded when its actual exit and counts are available."
+     },
+     {
+      "name": "Lockstep requirement/scenario trace links",
+      "command": "uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep check trace",
+      "exit_status": 1,
+      "counts": {
+       "findings": 329,
+       "missing_requirement_annotations": 128,
+       "missing_scenario_markers": 201,
+       "unknown_ids": 0
+      },
+      "tracked_by": "Q77",
+      "note": "2026-11-12: configured real source roots and linked 13 existing test functions with 15 existing=True markers covering 6 distinct scenario IDs. This is annotation coverage, not 329 demonstrated behavior defects. Proposed/unbuilt requirements remain unmapped; full AES conformance is not claimed."
      }
     ]
    },
@@ -1853,18 +1865,19 @@ window.PAGE_DATA = {
    "short": "How to write norms and credential holders",
    "question": "How should a breakable norm and a credential holder be represented in the rules declaration language, without writing a norm as a declared law (which the engine would never let anyone break)?",
    "blocks": "J4's design and A6 (the password fixture: Mallory phishes Alice's password, is logged in, and the breach has consequences only after an observer acts).",
-   "resolves_with": "Audit 2026-11-12: Separate verifier/credential possession, normative permission, observation and enforcement decision. A breakable norm is represented state/information, not an invariant forbidding violation. Reuse donor representations where sufficient; J4 implementation and its credential/breach example remain open.",
+   "resolves_with": "Design resolved: symbolic credential values, actor-scoped access, physical custody, current verifier validity and breakable norms are separate under the Q76 contract. J4/A6 remain unbuilt; neither technical access nor a norm supplies human consent.",
    "owner": "agent",
-   "status": "open",
+   "status": "resolved",
    "sources": [
-    "docs/plans/ai_judge.md:497",
-    "docs/plans/ai_judge.md:204"
+    "docs/plans/ai_judge.md",
+    "docs/model/modeling-choices.md"
    ],
    "touches": [
     "norm",
     "credential-holder",
     "world-law"
-   ]
+   ],
+   "evidence": "The Q76 contract in docs/plans/ai_judge.md selects the representation under Brian's 2026-11-12 approval to resolve modeling contracts. Copying differs from custody transfer; revocation does not erase memory; detection differs from sanction. Counterexamples settle the separation without simulation. Scope is symbolic credentials, not cryptographic strength or verified actor-view secrecy."
   },
   {
    "id": "Q77",
@@ -1986,35 +1999,37 @@ window.PAGE_DATA = {
    "short": "Do the declared reads leave out facts Jev needs",
    "question": "Jev sees only the fields an estimate rule declares (days since service, load), never the whole world: argument settles that (a whole-world read makes the cache key the whole world and can reach what A5 forbids). Do the sawmill rule's two declared reads leave out facts Jev needs, and which causal dependencies and interventions justify the read set? Comparisons with the plain version can reveal sensitivity, not prove sufficiency.",
    "blocks": "Which fields the E1 sawmill rule declares, and from E2 a rules-check warning when a rule reads too little; not the declared-reads design.",
-   "resolves_with": "Audit 2026-11-12: Define dependencies, interventions and latent-state lifetime before justifying reads. Small comparisons are sensitivity diagnostics, not sufficiency proofs or evidence that more-context answers are better. Backend adequacy remains empirical.",
+   "resolves_with": "Design resolved: declare varying reads plus fixed model context, applicability and interventions. The two E1 fields are selected only within the explicit homogeneous-blade approximation; no general sufficiency or calibration claim is made. E1/A5 retain enforcement and input-trace checks; Q82 retains backend adequacy.",
    "owner": "agent",
-   "status": "open",
+   "status": "resolved",
    "sources": [
-    "docs/plans/estimate_rules.md:465",
-    "docs/plans/estimate_rules.md:158"
+    "docs/plans/estimate_rules.md",
+    "docs/model/modeling-choices.md"
    ],
    "touches": [
     "estimate-rule",
     "estimator"
-   ]
+   ],
+   "evidence": "The Q83 contract in docs/plans/estimate_rules.md fixes dependency selection by mechanism and intervention counterexamples. Omitted causes must be fixed, explicitly marginalized, represented as persistent latent state, or added as inputs. A wider-context model comparison is optional diagnostic evidence only for a named residual decision. This closes the declared-model design choice, not real-world adequacy."
   },
   {
    "id": "Q84",
    "short": "A chance that someone notices",
    "question": "How should a chance decide whether an observation reaches a person (the harbourmaster noticing a hand-over), given that information delivery is not a field write?",
    "blocks": "Slice E5 and the port part of A5.",
-   "resolves_with": "Audit 2026-11-12: Separate delivery, sensory availability, noticing, interpretation and response. Put estimates only at declared uncertain events with dependencies/lifetimes; never equate delivery with belief or persuasion. E5 implementation and scenario adequacy remain open.",
+   "resolves_with": "Design resolved: recipient-specific sensory availability is a committed delivery transition with stable exposure identity, shared causes and no actor-facing leaks. It never assigns belief or response. E5/A5 retain implementation and scenario-adequacy evidence.",
    "owner": "agent",
-   "status": "open",
+   "status": "resolved",
    "sources": [
-    "docs/plans/estimate_rules.md:110",
-    "src/world_substrate/information.py:57"
+    "docs/plans/estimate_rules.md",
+    "docs/model/modeling-choices.md"
    ],
    "touches": [
     "estimate-rule",
     "information",
     "resident"
-   ]
+   ],
+   "evidence": "The Q84 contract in docs/plans/estimate_rules.md chooses delivery after the source event, before actor observation, using the existing information/delivery seam. Repeated exposure queries reuse one disposition; failed delivery leaks neither content nor a negative observation. The actor retains interpretation and response. No runtime implementation or perception calibration is claimed."
   },
   {
    "id": "Q85",
@@ -2695,7 +2710,7 @@ window.PAGE_DATA = {
     "id": "credential-holder",
     "label": "Credential holder",
     "kind": "Theory",
-    "explain": "Plan ai-judge J4 (planned, not implemented): who holds a credential (a password, a signed release) as a fact in the world that can change: told, overheard, copied, forged or phished. The mechanism checks the credential, not the holder. Code: none yet."
+    "explain": "Plan ai-judge J4/Q76 (design settled, not implemented): credential value and verifier validity are separate from actor-scoped access, physical token custody and institutional permission. Copying can add access without removing the sender; revocation changes validity without erasing memory. Acquiring, forging or presenting a credential requires its declared mechanism. Code: none yet."
    },
    {
     "id": "norm",
@@ -3799,12 +3814,6 @@ window.PAGE_DATA = {
     "explain": "Blocks: Whether a scene author can set the gather radius the layout documents.."
    },
    {
-    "id": "Q76",
-    "label": "Q76: How to write norms and credential holders",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: J4's design and A6 (the password fixture: Mallory phishes Alice's password, is logged in, and the breach has consequences only after an observer acts).."
-   },
-   {
     "id": "Q77",
     "label": "Q77: Documentation and AES conformance gaps",
     "kind": "AgentQuestion",
@@ -3815,18 +3824,6 @@ window.PAGE_DATA = {
     "label": "Q82: Does Jev's chance follow the facts",
     "kind": "AgentQuestion",
     "explain": "Blocks: Whether a chance roll on Jev gives a believable world in E1 (A1), and whether picks (E3) collapse to a certainty.."
-   },
-   {
-    "id": "Q83",
-    "label": "Q83: Do the declared reads leave out facts Jev needs",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: Which fields the E1 sawmill rule declares, and from E2 a rules-check warning when a rule reads too little; not the declared-reads design.."
-   },
-   {
-    "id": "Q84",
-    "label": "Q84: A chance that someone notices",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: Slice E5 and the port part of A5.."
    },
    {
     "id": "Q85",
@@ -3937,13 +3934,6 @@ window.PAGE_DATA = {
     "explain": "Turns proposed rules into installed rules and derives what each may read and write."
    },
    {
-    "id": "credential-holder",
-    "label": "Credential holder",
-    "kind": "Concept",
-    "dashed": true,
-    "explain": "Plan ai-judge J4 (planned, not implemented): who holds a credential (a password, a signed release) as a fact in the world that can change: told, overheard, copied, forged or phished. The mechanism checks the credential, not the holder."
-   },
-   {
     "id": "engine",
     "label": "Engine",
     "kind": "Concept",
@@ -3995,12 +3985,6 @@ window.PAGE_DATA = {
     "explain": "Decision 008: worlds built by an agent that drafts, checks and edits; scripts/world_harness.py exists but the live service does not call it."
    },
    {
-    "id": "information",
-    "label": "Information item",
-    "kind": "Concept",
-    "explain": "A piece of information with a source and per-recipient deliveries; hidden until delivered."
-   },
-   {
     "id": "judge-ruling",
     "label": "Judge ruling",
     "kind": "Concept",
@@ -4030,13 +4014,6 @@ window.PAGE_DATA = {
     "label": "Mechanisms library",
     "kind": "Concept",
     "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:71, Q28)."
-   },
-   {
-    "id": "norm",
-    "label": "Norm",
-    "kind": "Concept",
-    "dashed": true,
-    "explain": "Plan ai-judge J4 (planned, not implemented): what people expect or forbid (bribery is illegal; only Alice should log in). It can be broken; a breach is recorded and has consequences only when someone notices and acts. Never written as a declared law."
    },
    {
     "id": "observation",
@@ -4692,24 +4669,6 @@ window.PAGE_DATA = {
     "label": "bears on"
    },
    {
-    "id": "Q76-norm",
-    "source": "Q76",
-    "target": "norm",
-    "label": "bears on"
-   },
-   {
-    "id": "Q76-credential-holder",
-    "source": "Q76",
-    "target": "credential-holder",
-    "label": "bears on"
-   },
-   {
-    "id": "Q76-world-law",
-    "source": "Q76",
-    "target": "world-law",
-    "label": "bears on"
-   },
-   {
     "id": "Q77-run-log",
     "source": "Q77",
     "target": "run-log",
@@ -4725,36 +4684,6 @@ window.PAGE_DATA = {
     "id": "Q82-estimator",
     "source": "Q82",
     "target": "estimator",
-    "label": "bears on"
-   },
-   {
-    "id": "Q83-estimate-rule",
-    "source": "Q83",
-    "target": "estimate-rule",
-    "label": "bears on"
-   },
-   {
-    "id": "Q83-estimator",
-    "source": "Q83",
-    "target": "estimator",
-    "label": "bears on"
-   },
-   {
-    "id": "Q84-estimate-rule",
-    "source": "Q84",
-    "target": "estimate-rule",
-    "label": "bears on"
-   },
-   {
-    "id": "Q84-information",
-    "source": "Q84",
-    "target": "information",
-    "label": "bears on"
-   },
-   {
-    "id": "Q84-resident",
-    "source": "Q84",
-    "target": "resident",
     "label": "bears on"
    },
    {

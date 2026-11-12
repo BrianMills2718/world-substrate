@@ -14,6 +14,8 @@ import sys
 import unittest
 from pathlib import Path
 
+import pytest
+
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
@@ -107,6 +109,7 @@ class MutatingHistoryHydrationProcess(HydrationDecayProcess):
 
 
 class ReadOnlyHooksAreActuallyReadOnly(unittest.TestCase):
+    @pytest.mark.req('transition-engine/hooks-are-read-only-and-the-coordinator-owns-history', existing=True)
     def test_discover_cannot_mutate_canonical_state(self) -> None:
         engine = build_transfer_engine(REPO)
         _swap_action(engine, MutatingDiscoverFillRule())
@@ -121,6 +124,7 @@ class ReadOnlyHooksAreActuallyReadOnly(unittest.TestCase):
         self.assertEqual(engine.world.commands, [])
         self.assertEqual(engine.world.events, [])
 
+    @pytest.mark.req('transition-engine/hooks-are-read-only-and-the-coordinator-owns-history', existing=True)
     def test_checks_are_refused_if_they_write(self) -> None:
         engine = build_transfer_engine(REPO)
         envelope = _fill_envelope(engine)
@@ -136,6 +140,7 @@ class ReadOnlyHooksAreActuallyReadOnly(unittest.TestCase):
         self.assertEqual(failing[-1]["actual"], ["revision"])
         self.assertTrue(engine.replay()["ok"])
 
+    @pytest.mark.req('transition-engine/hooks-are-read-only-and-the-coordinator-owns-history', existing=True)
     def test_consequences_cannot_write(self) -> None:
         engine = build_transfer_engine(REPO)
         _swap_action(engine, MutatingConsequencesFillRule())
@@ -148,6 +153,7 @@ class ReadOnlyHooksAreActuallyReadOnly(unittest.TestCase):
         self.assertEqual(engine.world.material_hash(), before)
         self.assertEqual(engine.world.entities["robinson"].actor.health, 100)
 
+    @pytest.mark.req('transition-engine/hooks-are-read-only-and-the-coordinator-owns-history', existing=True)
     def test_progress_cannot_write(self) -> None:
         engine = build_transfer_engine(REPO)
         _swap_process(engine, MutatingProgressThermalProcess())
@@ -160,6 +166,7 @@ class ReadOnlyHooksAreActuallyReadOnly(unittest.TestCase):
         self.assertEqual(engine.world.material_hash(), before)
         self.assertEqual(engine.world.tick, 0)
 
+    @pytest.mark.req('transition-engine/hooks-are-read-only-and-the-coordinator-owns-history', existing=True)
     def test_due_cannot_write_and_the_tick_is_rolled_back(self) -> None:
         engine = build_transfer_engine(REPO)
         _swap_process(engine, MutatingDueHydrationProcess())
@@ -176,6 +183,7 @@ class ReadOnlyHooksAreActuallyReadOnly(unittest.TestCase):
 
 
 class EngineOwnedStateStaysEngineOwned(unittest.TestCase):
+    @pytest.mark.req('transition-engine/hooks-are-read-only-and-the-coordinator-owns-history', existing=True)
     def test_action_rule_cannot_touch_history_or_prior_events(self) -> None:
         engine = build_transfer_engine(REPO)
         first = engine.submit(_fill_envelope(engine))
@@ -196,6 +204,7 @@ class EngineOwnedStateStaysEngineOwned(unittest.TestCase):
         )
         self.assertEqual(failing[-1]["actual"], ["commands", "events"])
 
+    @pytest.mark.req('transition-engine/hooks-are-read-only-and-the-coordinator-owns-history', existing=True)
     def test_action_rule_cannot_advance_revision(self) -> None:
         engine = build_transfer_engine(REPO)
         envelope = _fill_envelope(engine)
@@ -211,6 +220,7 @@ class EngineOwnedStateStaysEngineOwned(unittest.TestCase):
         self.assertEqual(engine.world.revision, 0)
         self.assertTrue(engine.replay()["ok"])
 
+    @pytest.mark.req('transition-engine/hooks-are-read-only-and-the-coordinator-owns-history', existing=True)
     def test_process_rule_cannot_touch_history(self) -> None:
         engine = build_transfer_engine(REPO)
         _swap_process(engine, MutatingHistoryHydrationProcess())
