@@ -413,6 +413,13 @@
       "id": "recorded-draw",
       "kind": "Theory",
       "aliases": []
+    },
+    {
+      "id": "offer",
+      "kind": "Theory",
+      "aliases": [
+        "voluntary exchange offer"
+      ]
     }
   ],
   "classes": [

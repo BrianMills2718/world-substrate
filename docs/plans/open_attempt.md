@@ -8,7 +8,7 @@ method_conformance_receipt: docs/plans/open_attempt/conformance-receipt.json
 status: adopted
 goal:
   outcome: "World Builder residents say in their own words what they physically try, instead of picking from a list; the world's rules decide what happens, knock-on effects run to the end inside the same moment, and a person's recorded skill (never how expert their words sound) decides how a risky attempt turns out."
-  canonical_example: "A World Builder world generated from 'A small airfield office: a brick wall between the office and the hangar, a glass of water on the desk, a helicopter in the hangar, and Sam, a trainee who has never flown'. In one run Sam tries to walk through the wall and nothing happens, with the wall named as the cause; someone knocks the glass off the desk and in the same event chain it falls, breaks, the water spills and the person in the next room hears it; Sam tries to fly the helicopter and a recorded roll from Sam's piloting level 0 gives a crash or a rough landing, never a clean flight from good wording."
+  canonical_example: "A World Builder world generated from 'A small airfield office: a brick wall between the office and the hangar, a glass of water on the desk, a helicopter in the hangar, and Sam, a trainee who has never flown'. In one run Sam tries to walk through the wall and nothing happens, with the wall named as the cause; someone knocks the glass off the desk and in the same event chain it falls, breaks, the water spills and the person in the next room hears it; Sam tries to fly the helicopter and a recorded roll from Sam's piloting level 0 usually gives a crash under this scenario’s declared outcome mapping; a clean result remains possible from the recorded dice, never from good wording."
   forbidden_substitutes: "hand-edited specs, rules or runs; an interpreter that decides success; outcomes written by an LLM rather than by an installed rule; a roll whose dice come from the attempt's wording; a scripted move presented as an attempt; Waltzman-specific code paths; runs without run-log.jsonl and a TRACE_READ.md that scripts/check_trace_reads.py passes; rerunning until a behavior appears and reporting only that run."
   boundaries: "world-substrate and its own deploy only; Cybernetic Influence v3 and Concordia read-only; each slice merges after scripts/check_project.py exits 0 on the committed change; existing saved worlds still replay unchanged; owner allowance only, visitor allowance stays $3/day; free replays of saved worlds before any paid run; publish-checker before anything new goes public."
   done_when: "Acceptance checks A1-A9 below pass, each judged from the full trace of the run it names."
@@ -52,10 +52,50 @@ conflict_surfaces:
 
 Planning package: docs/planning/open-attempt/planning-package.json
 
-This is the plan's own package. The repository's package (`docs/planning/planning-package.json`, repo-wide page
-`proposals/planning-package/review-page/`) covers the whole repository and its plan part points at this same plan;
-both share the checks, open-questions ledger, models and diagrams, are rebuilt by `tools/planning/` and are validated
-at the same subject revision (open question Q41).
+<!-- planning-compliance-checklist:v1 -->
+## Compliance checklist
+
+Written by `plan_checklist.py --write`, not by hand. `--check` re-runs the validator and fails
+if any line below differs from what it says now. Unticked pending items are not passes.
+
+Manifest: `docs/planning/open-attempt/planning-package.json`
+Package revision: `4ff4c274a7a9`
+Verdict: not compliant, 1 pending
+
+- [x] part investigation: ok
+- [x] part checks: ok
+- [x] part open_questions: ok
+- [x] part system_model: ok
+- [x] part domain_model: ok
+- [x] part diagrams: ok
+- [x] part plan: ok
+- [x] part acceptance: ok
+- [x] part review_page: ok
+- [x] part cold_review: ok
+- [x] substance route follows from its path decision: ok
+- [x] substance citations resolve: ok
+- [x] substance domain model has a glossary: ok
+- [x] substance project layer checks against the planning layer: ok
+- [x] substance concepts point at their code: ok
+- [x] substance plan names the concepts it relies on: ok
+- [x] substance plan records the cost basis of each AI step: ok
+- [ ] substance plan compares its AI answer path with the plain version: failing
+- [ ] substance plan shows what each stage adds over the plain version: failing
+- [x] substance plan records Brian's stops on this work: ok
+- [x] substance type-level model of executable rules: ok
+- [x] substance cold review read this revision: ok
+- [x] initiative initiative names its home: ok
+- [x] tiers spectrum rungs 1-11 are cited: ok
+- [x] tiers production rungs 12-14 are cited when it runs in production: ok
+- [x] tiers thesaurus separates near-identical names (rung 4): ok
+- [ ] system_map system map names every code unit: pending
+- [x] coverage goal coverage: ok
+- [x] goal_provenance goal provenance: ok
+- [ ] freshness package is current: failing
+<!-- /planning-compliance-checklist -->
+
+
+This is the open-attempt plan’s own package. The repository package (`docs/planning/planning-package.json`, repo-wide page `proposals/planning-package/review-page/`) covers the repository and currently points its plan part at declared laws. The packages share some models, checks and the question ledger, but each plan has its own acceptance and review scope; a repository-package pass does not certify this plan.
 
 Review page: [proposals/open-attempt/review-page/](../../proposals/open-attempt/review-page/index.html), live at
 <https://hive.brianmills.dev/plans/world-substrate/main/proposals/open-attempt/review-page/>.
@@ -199,6 +239,13 @@ Helicopter: Sam (piloting 0) is in the cockpit (gate passes), rolls two dice, ke
 1-3 the `fail` effects crash the helicopter, damaging it and injuring Sam, and Piece 2 carries on
 (fuel leaks, alarm sounds, the ground crew hears it).
 
+For this declared model, independent fair d6 dice give a level-0 failure probability of
+1 - (3/6)^2 = 27/36 = 75%; level 3 fails with probability (3/6)^3 = 12.5%.
+These are worked-out consequences of the proposed dice and crash-on-fail mapping, not measured aviation
+probabilities. A level-0 full result remains possible (both dice are 6); Brian asked for a probable crash,
+not a guarantee. The scenario must declare the crash consequences rather than treating every risky failure
+as a crash. This resolves the earlier absolute clean-flight prohibition by arithmetic.
+
 ## Requirements
 
 What Brian asked, plus what the plan's own claims imply; each row names its check in the acceptance table below. Status per check: S1 is built (merged `fe8c492`, #239): A1 (`tests/test_open_attempt.py`) and A8 (`scripts/check_project.py`) were checked in its pull request, and the owner-allowance airfield run with residents (`evidence/open-attempt/s1-airfield/`, 2026-10-26, merged in #247)
@@ -228,7 +275,7 @@ a chain finishes, skill sets the dice), never a count of passing tests.
 | A4 | An unmatched attempt changes nothing and is listed | the canonical run's build record `unmatched_attempts` list, and the event's before/after equal |
 | A5 | The glass chain completes in one moment | canonical run: one moment with push, fall, break, spill and sound events; fall cites push, break cites fall, spill and sound cite break. Judged separately: the neighbour's observation for that moment includes the sound |
 | A6 | A knock-on effect cannot run forever: a reaction that stays due fires once per moment, and a chain of more than 32 reactions is refused whole (since J0 of [the AI judge plan](ai_judge.md), 2026-11-10: only for runs recorded under that limit; these tests run with the recorded limit of 32) | `tests/test_open_attempt.py`: `test_a_reaction_that_keeps_itself_due_fires_once_per_moment` (status accepted, the rule fires exactly once though its check still holds) and `test_a_chain_past_the_reaction_limit_is_refused_whole` (a ring of 40 glasses: status `reaction_limit`, world unchanged, failed check "Knock-on effects settle within 32 reactions") |
-| A7 | Skill, not wording, sets the dice | fixture: identical attempt text, piloting 0 and 3; events show 2-keep-lower versus 3 dice, seed recorded |
+| A7 | Skill, not wording, sets the dice | fixture: identical attempt text, piloting 0 and 3; events show 2-keep-lower versus 3 dice, seed recorded; declared crash-on-fail mapping gives 75% versus 12.5% failure by arithmetic, not a guaranteed single-run result |
 | A8 | Existing worlds replay unchanged | `scripts/check_project.py` on each slice's merge commit, exit 0, with these replay tests named passing in the quoted output: `test_action_envelopes` (unsupported and malformed envelopes replay), `test_first_fill.test_fill_tick_and_replay_match_exactly`, `test_greenhouse_zero_review.test_replay_regenerates_exactly_through_generic_renderer`, `test_castaway_zero_review.test_zero_review_replay_regenerates_exactly` |
 | A9 | The canonical run is fully traced | `evidence/open-attempt/<run>/run-log.jsonl` plus `TRACE_READ.md` passing `scripts/check_trace_reads.py`; read by the implementing agent before reporting |
 
@@ -242,7 +289,7 @@ with replay unchanged (R6, A8) and every run fully readable (R7, A9).
 **Success:** A1-A9 pass, each judged from the full trace of the run it names. **Disproof:** any one
 of these in the canonical run's trace: an interpreter output carrying a success or outcome; a wall
 attempt that changes the world or is refused without naming the wall; a pilot attempt by a level-0
-person that ends in a clean flight; dice whose seed is not `hash(run_seed, event_id)`; a replay that
+person whose outcome contradicts the recorded roll or declared crash-on-fail mapping; dice whose seed is not `hash(run_seed, event_id)`; a replay that
 calls a model. Trace review: the implementing agent reads every refused, unmatched and rolled attempt
 and a sample of ordinary ones in the named run's `run-log.jsonl` and writes `TRACE_READ.md`; each criterion
 A1-A9 is expected `pass`. Runs are named in order: `evidence/open-attempt/s1-replay/` (free replay of a

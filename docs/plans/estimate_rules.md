@@ -46,6 +46,50 @@ conflict_surfaces:
 
 Planning package: docs/planning/estimate-rules/planning-package.json
 
+<!-- planning-compliance-checklist:v1 -->
+## Compliance checklist
+
+Written by `plan_checklist.py --write`, not by hand. `--check` re-runs the validator and fails
+if any line below differs from what it says now. Unticked pending items are not passes.
+
+Manifest: `docs/planning/estimate-rules/planning-package.json`
+Package revision: `590530c76df5`
+Verdict: not compliant, 1 pending
+
+- [x] part investigation: ok
+- [x] part checks: ok
+- [x] part open_questions: ok
+- [x] part system_model: ok
+- [x] part domain_model: ok
+- [x] part diagrams: ok
+- [x] part plan: ok
+- [x] part acceptance: ok
+- [x] part review_page: ok
+- [x] part cold_review: ok
+- [x] substance route follows from its path decision: ok
+- [x] substance citations resolve: ok
+- [x] substance domain model has a glossary: ok
+- [x] substance project layer checks against the planning layer: ok
+- [x] substance concepts point at their code: ok
+- [x] substance plan names the concepts it relies on: ok
+- [ ] substance plan records the cost basis of each AI step: failing
+- [ ] substance plan compares its AI answer path with the plain version: failing
+- [ ] substance plan shows what each stage adds over the plain version: failing
+- [x] substance plan records Brian's stops on this work: ok
+- [x] substance type-level model of executable rules: ok
+- [ ] substance cold review report states its verdict: failing
+- [x] substance cold review read this revision: ok
+- [x] initiative initiative names its home: ok
+- [x] tiers spectrum rungs 1-11 are cited: ok
+- [x] tiers production rungs 12-14 are cited when it runs in production: ok
+- [x] tiers thesaurus separates near-identical names (rung 4): ok
+- [ ] system_map system map names every code unit: pending
+- [x] coverage goal coverage: ok
+- [x] goal_provenance goal provenance: ok
+- [ ] freshness package is current: failing
+<!-- /planning-compliance-checklist -->
+
+
 **Status:** complete draft; Brian approved planning it on 2026-11-10 ("i approve"), in parallel with the AI judge
 build. Not adopted; nothing is built.
 
@@ -130,7 +174,8 @@ Source for direction: Brian, 2026-11-10 (Why). The design points below are the a
 on 2026-11-10 from the reading and prior art named with each; they stand as working defaults.
 
 1. **An estimate is an input, never a fact.** Jev's answer is recorded evidence that a rule turns into an outcome
-   through a declared draw; it never becomes world state by itself and never decides an outcome alone. This is
+   through a declared mechanism: a draw for stochastic events, a persistent realization for a latent condition,
+   or an explicit classification/policy rule for those separate roles. It never writes world state by itself. This is
    the contract Q63 already stated ("a recorded, non-authoritative input, like the skill roll's recorded dice")
    and the retired Jev note's first rule, "borrow estimators; own reality" (`git show
    0dcbcd6^:docs/research/jev-world-modeling-exploration-2026-09.md`).
@@ -238,8 +283,7 @@ on 2026-11-10 from the reading and prior art named with each; they stand as work
   `NoulQuestion` answers were coarse (0.6, 0.55) and its choice probabilities were 0 or 1. Decision 005 keeps Jev
   "available infrastructure for bounded intermediate estimates but ... not on the critical path"
   (`docs/decisions/005-native-waltzman-delivery.md:86`).
-- **Q63** (open, deferred) states the contract this plan adopts and was waiting for "one described world [that]
-  needs an estimate no mechanic computes". Brian's 2026-11-10 words reopen it; this plan answers it.
+- **Q63** is conceptually resolved by this plan's estimate contract (2026-11-12); its implementation remains unbuilt.
 
 ## Requirements
 
@@ -363,7 +407,7 @@ it changes what a person learns, not a field, and needs its own short design ste
 - **Spend is counted in the existing ledger.** A live run's Jev calls carry the run's own trace id, so the cost
   the World Builder already settles into its daily ledger from that trace includes them (`_trace_cost`,
   `scripts/world_builder_service.py:297`; `_reserve_daily_budget` and `_settle_daily_budget`, :225-238): about
-  $0.0009 per 30-day sawmill run (LLM call boundary and cost). The ledger code is unchanged.
+  $0.00084 for the illustrative 30-query blade component before retries; crossing-context estimates and other calls are additional (LLM call boundary and cost). The ledger code is unchanged.
 
 ## System model
 
@@ -478,7 +522,7 @@ reads (new, only on a cache miss) -> draw (code) -> outcome effects and knock-on
   the cheaper rival measured in E1.
 
 **Where estimate rules could serve the judge's stopping point (not taken over).** The judge plan's J5 asks the
-judge, after a changed round, whether a plain-words stopping point has been reached, at about $0.0016 per call
+judge, after every completed round, whether a plain-words stopping point has been reached, at about $0.0016 per call
 (15,000 input and 150 output tokens of gpt-6-luna, the judge plan's figure). A Jev `NoulQuestion` over the same
 state would cost about $0.00003 (measured per-call figure above, for a smaller input; a whole-state input costs
 more), about 1/50. It would answer a probability, which J5 would need to turn into stop or not, and Jev has not

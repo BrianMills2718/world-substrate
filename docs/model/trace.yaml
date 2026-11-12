@@ -106,11 +106,12 @@ rules:
       - docs/decisions/006-governed-rules-layer-scope.md
   - id: RULE-FROZEN-PROFILE
     statement: >-
-      The original compiled profile is frozen before the run starts, and a mechanic that fails review never reaches runtime.
-      Checked J3 ruling-origin rules use separately sealed run state under the world’s approved mode; they do not
-      mutate that original profile. See openspec/specs/ai-judge/spec.md for the additional installation contract.
+      The compiled profile is frozen before each run_world invocation starts, and a mechanic rejected by the
+      compiler/installer never reaches runtime. J3 ruling-origin rules extend the effective rule set separately;
+      continuation reconstructs that effective set before freezing a new profile. The originally supplied bundle
+      remains the approval identity. See openspec/specs/ai-judge/spec.md for the additional installation contract.
     owner: scripts/run_authored_world.py
-    reviewed_at: 096c129d045079ff524288f98c700953851cdd27  # re-read 2026-11-03 (#335 squash: card title wording only)
+    reviewed_at: fd877da5b802ef67c9f3837525367caf8623c02f  # source review 2026-11-12: build_engine validates/installs then freezes; run_world constructs Rulebook effective rules before build_engine; structural rejection tests read, no new execution claim
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime
@@ -118,11 +119,13 @@ rules:
       - docs/decisions/007-any-scenario-path.md
   - id: RULE-APPROVAL-BEFORE-RUN
     statement: >-
-      The World Builder refuses to run mechanics the person has not explicitly approved, and refuses a modified
-      law on the native coordination path. On the landing page, pressing Create simulation is that approval
-      (Decision 005 amendment, 2026-10-15).
+      The World Builder run endpoint requires approved=true and compiles the submitted mechanics before a
+      policy call; native coordination also requires the exact reviewed shared causal model. Continuation
+      verifies a server seal over the snapshot, original bundle/rules, approval and retained rulings.
+      Create simulation supplies initial approval; J3 permits checked additional rules under the chosen mode.
+      This is rule approval, not the represented people's consent to an exchange (the latter remains Q96).
     owner: scripts/world_builder_service.py
-    reviewed_at: 17673071cedff0846b036ddae78800601dcd545e  # re-read 2026-11-03 (#333 squash: check names and refusal wording only; what is checked, approval, budget and records unchanged)
+    reviewed_at: fd877da5b802ef67c9f3837525367caf8623c02f  # source review 2026-11-12: _run checks approved and compilation before calls; exact native law and continuation seal checked; J3 mode is separate from actor consent
     checks:
       - tests/test_world_builder_service.py::test_run_requires_explicit_mechanic_approval
       - tests/test_world_builder_service.py::test_native_coordination_run_refuses_modified_law
@@ -131,9 +134,15 @@ rules:
       - docs/decisions/005-native-waltzman-delivery.md
   - id: RULE-BUDGET-FAILS-CLOSED
     statement: >-
-      No model call is made for an unapproved model, past the daily budget, or when the budget ledger is unreadable.
+      A public request cannot select an unapproved model. Before admitting an AI build/run request the service
+      reserves at most the remaining daily allowance, refuses admission when exhausted, and refuses spend
+      when the ledger is unreadable. It settles recorded cost, or retains the reserved charge when accounting
+      is unavailable. This verifies the outer admission gate, not a hard aggregate cap across every downstream call.
+    verification_limit: >-
+      The stronger no-call-past-budget invariant requires a separate audit of downstream model-call budgets,
+      concurrency and late hedges; the cited request-level tests do not establish it.
     owner: scripts/world_builder_service.py
-    reviewed_at: 17673071cedff0846b036ddae78800601dcd545e  # re-read 2026-11-03 (#333 squash: check names and refusal wording only; what is checked, approval, budget and records unchanged)
+    reviewed_at: fd877da5b802ef67c9f3837525367caf8623c02f  # source review 2026-11-12: _requested_model, _load_budget_state, _reserve_daily_budget, _llm_budget and settlement read; tests establish admission limits, not all downstream aggregate spend
     checks:
       - tests/test_world_builder_service.py::test_unapproved_model_is_refused_before_spend
       - tests/test_world_builder_service.py::test_corrupt_budget_ledger_fails_closed_before_model_call
@@ -142,9 +151,15 @@ rules:
       - docs/decisions/004-product-and-adoption-strategy.md
   - id: RULE-DURABLE-RUN-RECORD
     statement: >-
-      Every build and run leaves a durable record, and "keep going" continues from the final retained snapshot.
+      With writable run-log storage, build/run responses append a daily JSONL record containing request, result
+      and trace identity; asynchronous jobs log their final result. Keep going verifies a sealed final snapshot
+      before continuing under the corresponding rules and approval.
+    unmet_requirement: >-
+      Every run should remain durably auditable even on storage failure. Current _record_response catches log-write
+      errors and prints them without failing the request; successful response does not guarantee a retained record.
+      The cited tests cover normal storage and snapshot continuation, not failure of the log store.
     owner: scripts/world_builder_service.py
-    reviewed_at: 17673071cedff0846b036ddae78800601dcd545e  # re-read 2026-11-03 (#333 squash: check names and refusal wording only; what is checked, approval, budget and records unchanged)
+    reviewed_at: fd877da5b802ef67c9f3837525367caf8623c02f  # source review 2026-11-12: _record_response, _result_summary, _snapshot_seal and _run continuation read; normal-storage tests read; log-write exception is swallowed, so durability is conditional
     checks:
       - tests/test_world_builder_service.py::test_every_build_and_run_leaves_a_durable_record
       - tests/test_world_builder_service.py::test_keep_going_continues_from_the_final_snapshot

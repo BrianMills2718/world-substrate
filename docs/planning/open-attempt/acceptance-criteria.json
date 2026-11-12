@@ -1,0 +1,409 @@
+{
+ "schema_version": "1.0",
+ "record_type": "acceptance_criteria",
+ "outcome": "People can attempt actions in their own words, including walking through a wall or trying to fly without knowing how. The world records and refuses impossible attempts, completes inspectable same-moment consequences, and uses declared skill and recorded randomness for risky outcomes rather than the model's fluent wording. In the declared untrained-helicopter scenario, the roll makes a crash probable, without guaranteeing it or allowing fluent wording to supply skill. The user can inspect these distinctions and replay the full record.",
+ "asked_by": [
+  {
+   "who": "Brian",
+   "date": "2026-10-24",
+   "words": "attempt to walk through a wall but these should not be successful",
+   "source": "docs/plans/open_attempt.md:103, Why, in one example; exact quoted fragment."
+  },
+  {
+   "who": "Brian",
+   "date": "2026-10-24",
+   "words": "should probably crash it",
+   "source": "docs/plans/open_attempt.md:104, exact quoted fragment about someone who does not know how to fly a helicopter. The surrounding explanation is not presented as a verbatim quote."
+  },
+  {
+   "who": "Brian",
+   "date": "2026-10-25",
+   "words": "yes",
+   "source": "docs/plans/open_attempt.md:106 and docs/planning/open-attempt/planning-package.json request: approval of the short design for attempts, unmatched fallback, knock-on effects and skill rolls."
+  }
+ ],
+ "design_commitments": {
+  "provenance": "Inferred by agent from the adopted plan and its requirements; these are not additional verbatim Brian quotations.",
+  "source": "docs/plans/open_attempt.md:205",
+  "items": [
+   "A1/A2: interpretation identifies an attempt; installed mechanics alone determine consequences.",
+   "A4: preserve an unmatched no-state-change event; later checked rulings are separately attributable.",
+   "A5/A6: inspectable same-moment causal chains, once per process/entity pair and recorded legacy limits.",
+   "A7: the scenario declares its skill scale and roll rule; pool differences do not guarantee different outcomes.",
+   "A8/A9: retained semantics, no fresh inference on replay, and full trace visibility."
+  ]
+ },
+ "status_basis": "Statuses concern the complete user-inspectable demonstration specified here. Existing mechanism/fixture/retained-run evidence is stated per entry; no judged pass or fabricated coverage is recorded. Planned inspectors and the full S3 run are not claimed delivered.",
+ "entries": [
+  {
+   "id": "A1",
+   "criterion": "I can see that interpreting an attempt identifies a move but does not decide whether it succeeds.",
+   "grounded_in": [
+    "docs/plans/open_attempt.md:218 (A1-A9; agent-authored checks under the adopted plan)"
+   ],
+   "demonstration": [
+    "Open the planned airfield attempt inspector and select Sam's wall attempt.",
+    "Compare the original words, interpreted action/fields and separate world-rule result.",
+    "Open the interpreter contract summary linked from that row."
+   ],
+   "expected": "The reading contains the attempted move and grounded fields, with no success/outcome field; the wall refusal appears only as the world-rule result.",
+   "failure_example": "Broken: the interpretation labels the attempt successful or refuses it before the world checks. Working: reading and consequence remain separate.",
+   "representation": {
+    "view": "composite-linked-view: original attempt, interpreted action, world result and event evidence with shared event focus",
+    "router_record": "docs/planning/open-attempt/router/attempt-review.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "status_note": "Schema separation is implemented and recorded as passing at S1; this exact end-user contract/attempt demonstration is planned.",
+   "evidence": [
+    "tests/test_open_attempt.py:56",
+    "docs/plans/open_attempt.md:222"
+   ]
+  },
+  {
+   "id": "A2",
+   "criterion": "Trying to fly the helicopter is not silently interpreted as walking somewhere.",
+   "grounded_in": [
+    "docs/plans/open_attempt.md:218 (A1-A9; agent-authored checks under the adopted plan)"
+   ],
+   "demonstration": [
+    "Open the planned saved airfield attempt case with the words Fly the helicopter to the coast.",
+    "Read the original words beside the interpreted action and its quoted evidence.",
+    "Read the world outcome separately."
+   ],
+   "expected": "The reading identifies the intended piloting action and quotes fly the helicopter; it never substitutes a move/walk. If the world has no such action, the limitation is explicit rather than a fabricated successful flight.",
+   "failure_example": "Broken: a legal walk is substituted for flight. Working: the correct action is identified, or unsupported interpretation is visible without pretending A2's positive pilot-binding case passed.",
+   "representation": {
+    "view": "composite-linked-view: original attempt, interpreted action, world result and event evidence with shared event focus",
+    "router_record": "docs/planning/open-attempt/router/attempt-review.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "status_note": "Not exercised in S1 or S2 live evidence. The planned positive pilot-binding fixture and visible inspection remain outstanding.",
+   "evidence": [
+    "docs/plans/open_attempt.md:223",
+    "tests/fixtures/airfield-s1-live.json",
+    "evidence/open-attempt/s1-airfield/TRACE_READ.md:23"
+   ]
+  },
+  {
+   "id": "A3",
+   "criterion": "A person can try to walk through the wall, and the world refuses with the wall named.",
+   "grounded_in": [
+    "docs/plans/open_attempt.md:218 (A1-A9; agent-authored checks under the adopted plan)"
+   ],
+   "demonstration": [
+    "Open the planned saved airfield wall-attempt case.",
+    "Select Sam's own-words attempt to walk from the office through the wall.",
+    "Read the failed requirement and compare Sam's place before and after."
+   ],
+   "expected": "The attempt is recorded; the failed requirement names the wall and the blocked crossing; Sam stays on the original side and no partial effects occur.",
+   "failure_example": "Broken: the attempt is absent because it was not on a prechecked menu, the reason names no wall, or Sam crosses. Working: explicit attempt and wall-caused refusal with unchanged state.",
+   "representation": {
+    "view": "composite-linked-view: original attempt, interpreted action, world result and event evidence with shared event focus",
+    "router_record": "docs/planning/open-attempt/router/attempt-review.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "status_note": "Wall representation evidence exists (Q23), but the relevant live attempt was not exercised. Its complete user-facing demonstration remains planned.",
+   "evidence": [
+    "docs/plans/open_attempt.md:224",
+    "evidence/open-attempt/q23/README.md",
+    "evidence/open-attempt/s1-airfield/TRACE_READ.md:23"
+   ]
+  },
+  {
+   "id": "A4",
+   "criterion": "An attempt with no matching rule is visible and does not silently change the world.",
+   "grounded_in": [
+    "docs/plans/open_attempt.md:218 (A1-A9; agent-authored checks under the adopted plan)"
+   ],
+   "demonstration": [
+    "Open the retained S1 airfield record linked in evidence and read round 1's unmatched invitation (r1-e00002).",
+    "In the planned attempt inspector, open the same event and its unmatched-attempt list entry.",
+    "Compare the displayed before/after state and the reason no installed action matched."
+   ],
+   "expected": "The original attempt and unmatched reason are visible; the S1 fallback records no changes and identical world hashes. On later judged runs, any proposed ruling is shown separately and changes require an installed rule; a later judge outcome must not be mislabeled as the original no-rule event.",
+   "failure_example": "Broken: an unmatched attempt disappears, mutates state without a rule or is presented as a successful action. Working: a visible unmatched event with no changes and any subsequent ruling separately attributable.",
+   "representation": {
+    "view": "composite-linked-view: original attempt, interpreted action, world result and event evidence with shared event focus",
+    "router_record": "docs/planning/open-attempt/router/attempt-review.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "status_note": "Retained S1 trace reports A4 passing for the no-rule fallback. Q26 still tracks the full own-words/list display, so the complete demonstration is not marked built or judged pass.",
+   "evidence": [
+    "docs/plans/open_attempt.md:225",
+    "evidence/open-attempt/s1-airfield/TRACE_READ.md:18",
+    "evidence/open-attempt/s1-airfield/run-log.jsonl",
+    "docs/plans/ai_judge.md"
+   ]
+  },
+  {
+   "id": "A5",
+   "criterion": "Knocking the glass down makes it fall, break, spill and make a sound in one inspectable moment.",
+   "grounded_in": [
+    "docs/plans/open_attempt.md:218 (A1-A9; agent-authored checks under the adopted plan)"
+   ],
+   "demonstration": [
+    "Open the planned generated airfield glass-chain case.",
+    "Select the push and follow its same-moment causes through fall, break, spill and sound.",
+    "Open the neighbour's observation for that moment."
+   ],
+   "expected": "Fall cites push, break cites fall, and spill and sound cite break within one moment. The neighbour receives the sound through observation; the observer record is not fabricated as another physical consequence.",
+   "failure_example": "Broken: the chain requires extra rounds, lacks a physical link, or the neighbour never receives the sound. Working: complete declared causal chain plus separate observation.",
+   "representation": {
+    "view": "composite-linked-view: original attempt, interpreted action, world result and event evidence with shared event focus",
+    "router_record": "docs/planning/open-attempt/router/attempt-review.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "status_note": "Fixture engine chain exists. Generated-world S2 evidence explicitly did not exercise it because no immediate process was authored; full demonstration remains planned.",
+   "evidence": [
+    "docs/plans/open_attempt.md:226",
+    "tests/test_open_attempt.py:382",
+    "evidence/open-attempt/s2-airfield/TRACE_READ.md:14"
+   ]
+  },
+  {
+   "id": "A6",
+   "criterion": "A self-triggering effect stops, and a saved run keeps the reaction limit it was recorded under.",
+   "grounded_in": [
+    "docs/plans/open_attempt.md:218 (A1-A9; agent-authored checks under the adopted plan)"
+   ],
+   "demonstration": [
+    "Open the planned self-triggering reaction fixture in the event inspector and count occurrences for one process/entity pair in one moment.",
+    "Open the retained-limit fixture with 40 linked glasses under a recorded limit of 32.",
+    "Read its refusal and before/after state; compare with the stated policy for a new J0 run."
+   ],
+   "expected": "The self-triggering pair fires once per moment. The legacy-limit fixture refuses the entire over-limit moment with unchanged world and a named 32-reaction limit. New J0 runs are not falsely claimed to share that cap; their once-per-pair rule remains.",
+   "failure_example": "Broken: an endless repeated pair, partial changes after legacy overflow, or applying the retired cap to all new runs. Working: finite once-per-pair execution and recorded-limit compatibility.",
+   "representation": {
+    "view": "composite-linked-view: original attempt, interpreted action, world result and event evidence with shared event focus",
+    "router_record": "docs/planning/open-attempt/router/attempt-review.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "status_note": "Core and legacy-limit fixture tests exist; a user-facing inspection of both cases is planned. No new rendered demonstration was verified in this documentation task.",
+   "evidence": [
+    "docs/plans/open_attempt.md:227",
+    "tests/test_open_attempt.py:470",
+    "tests/test_open_attempt.py:485",
+    "docs/decisions/009-same-moment-knock-on-effects.md"
+   ]
+  },
+  {
+   "id": "A7",
+   "criterion": "Recorded skill and dice, rather than expert-sounding words, make the untrained helicopter attempt probably crash under the scenario’s declared crash-on-fail rule.",
+   "grounded_in": [
+    "docs/plans/open_attempt.md:218 (A1-A9; agent-authored checks under the adopted plan)"
+   ],
+   "demonstration": [
+    "Open the planned paired skill fixtures with identical helicopter-attempt text and explicitly declared piloting levels 0 and 3.",
+    "Read each skill value, dice pool, recorded seed/draws, selected outcome and its consequences.",
+    "Inspect the declared crash-on-fail mapping and its calculated failure chance: 27 of 36 equally likely two-die outcomes at level 0, versus 27 of 216 equally likely three-die outcomes at level 3. This is model arithmetic, not an empirical crash-rate estimate.",
+    "Open a replay and confirm it uses the recorded roll."
+   ],
+   "expected": "Under this plan's declared scale, level 0 rolls two dice and keeps the lower; level 3 rolls three and keeps the highest. The attempt wording is absent from roll inputs. Random outcomes need not differ on every pair; the demonstrated distinction is the pool and recorded mechanism, not a guaranteed novice crash. The helicopter fixture explicitly maps fail to crash consequences. With independent fair d6, level 0 fails with probability 1-(3/6)^2 = 75%, versus (3/6)^3 = 12.5% at level 3. Thus a novice crash is probable in this stated model, while any single recorded result must follow its actual dice. This proves the declared distribution by arithmetic; no repeated-run comparison is required.",
+   "failure_example": "Broken: fluent wording changes dice or skill, a novice automatically succeeds because the LLM knows how to fly, or replay rerolls. Working: recorded scenario skill determines the pool and installed outcome effects. A model in which the novice never crashes, or the fail result has no declared crash effects, fails this criterion even if it uses the specified dice pool.",
+   "representation": {
+    "view": "composite-linked-view: original attempt, interpreted action, world result and event evidence with shared event focus",
+    "router_record": "docs/planning/open-attempt/router/attempt-review.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "status_note": "S3 is not built. Numeric skill scale and dice mechanics are agent-inferred design commitments; they are not calibrated human-flight predictions.",
+   "evidence": [
+    "docs/plans/open_attempt.md:182",
+    "docs/plans/open_attempt.md:228",
+    "tools/planning/questions_src.py"
+   ]
+  },
+  {
+   "id": "A8",
+   "criterion": "I can replay a saved world without silently changing its outcomes or calling models again.",
+   "grounded_in": [
+    "docs/plans/open_attempt.md:218 (A1-A9; agent-authored checks under the adopted plan)"
+   ],
+   "demonstration": [
+    "Open the planned original-versus-replay view for retained fill, greenhouse, Castaway and malformed/unsupported-attempt cases.",
+    "Compare event outcomes and final visible state, then open the execution-source summary.",
+    "For S3, repeat with a recorded skill-roll case."
+   ],
+   "expected": "Each replay reproduces its retained outcomes and state; the summary identifies recorded interpretations/draws and no new model calls or rolls. S1/S2 compatibility does not stand in for the still-unbuilt S3 case.",
+   "failure_example": "Broken: replay reinterprets an attempt, rerolls, changes a final state or silently uses different installed rules. Working: preserved recorded semantics and outcomes with an inspectable provenance summary.",
+   "representation": {
+    "view": "composite-linked-view: original attempt, interpreted action, world result and event evidence with shared event focus",
+    "router_record": "docs/planning/open-attempt/router/attempt-review.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "status_note": "S1/S2 compatibility is recorded as passing; full S3 compatibility and the comparison/provenance demonstration are planned. This task did not rerun or visually judge those cases.",
+   "evidence": [
+    "docs/plans/open_attempt.md:229",
+    "evidence/open-attempt/s1-replay/replay.txt",
+    "tests/test_first_fill.py",
+    "tests/test_greenhouse_zero_review.py",
+    "tests/test_castaway_zero_review.py"
+   ]
+  },
+  {
+   "id": "A9",
+   "criterion": "I can follow the complete airfield run from each person's attempted action to the actual consequence and its evidence.",
+   "grounded_in": [
+    "docs/plans/open_attempt.md:218 (A1-A9; agent-authored checks under the adopted plan)"
+   ],
+   "demonstration": [
+    "Open the planned full canonical airfield run and select the wall, glass and helicopter events.",
+    "Follow each original attempt to interpretation, checks, same-moment effects and any skill roll.",
+    "Open the linked complete model/tool records and round-by-round trace read, including failures and unmatched attempts."
+   ],
+   "expected": "All stages and exposed reasoning, model/tool inputs and outputs, event ids, trace ids and dice where used are retained and linked. The reader can distinguish actor belief from world fact and see why each result occurred. Missing records are labeled missing rather than replaced by a narrative.",
+   "failure_example": "Broken: a consequence lacks its interpretation/check/roll record, a trace id cannot be opened, or only selected successful runs are shown. Working: complete inspectable record for the full canonical behavior.",
+   "representation": {
+    "view": "composite-linked-view: original attempt, interpreted action, world result and event evidence with shared event focus",
+    "router_record": "docs/planning/open-attempt/router/attempt-review.recommendation.json"
+   },
+   "entrypoint": "planned",
+   "status": "not built",
+   "status_note": "S1 trace retention is evidenced; the full wall/glass/skill canonical run and complete inspection surface are not demonstrated. A9 as a whole remains unbuilt/unjudged.",
+   "evidence": [
+    "docs/plans/open_attempt.md:230",
+    "evidence/open-attempt/s1-airfield/TRACE_READ.md",
+    "evidence/open-attempt/s1-airfield/run-log.jsonl",
+    "evidence/open-attempt/s1-airfield/llm-calls.jsonl",
+    "scripts/check_trace_reads.py"
+   ]
+  }
+ ],
+ "coverage": {
+  "model": "openrouter/anthropic/claude-sonnet-5.5",
+  "judged_at": "2026-11-12T15:58:40-0500",
+  "asked_by_sha256": "1915c83b27929781dab9d1ba1ad88e614646dcfdf512c36e9c6e7a20c62d465c",
+  "criteria_sha256": "8c0b480d814495fbfd087a2c51ad4ba61191e4a77c24eb9bd0204bc521462da5",
+  "cut_context_sha256": "e88f5b0ef92d3122658cab46dfc3b68545c5415d57156c4b37bbc397f349b410",
+  "outcome_sha256": "7ab185916242c4754031090844a17da6d7900aa6cd54bad54614e5effa931541",
+  "criteria_judged": {
+   "A1": "e3ac78b499b84be65c32321bfff2439e08195448a3736ec5a1445ed59f7fec40",
+   "A2": "5f5bc578fb134e7b4606cdc04ce631fb357beebe3dac86238c0018373264fd5b",
+   "A3": "1663166ca587a1d0d6b5140e9a9cf7a319c329e0dbeae3e7d761485c465e6d8a",
+   "A4": "ee84b94a2be00943238058bbafc75b358a14a63c814d0d176d79a8afbd31dc1c",
+   "A5": "e6cb2e62d2ecfcdbae2a385fd0470cc947c0f6e6f9a5125fecfc7f2442021925",
+   "A6": "59da100606042a98b8638b9e5e4e5f345d3c750d4c39541647ca56461631f42c",
+   "A7": "c7a2c6a2bdc7cc976e689b47d692cd703211d6c5ef8ccd27c35de1d902f0755b",
+   "A8": "1164cca404dece56350de751f27a3e7657e87dad89d0b4b9e960b07b5084e4d3",
+   "A9": "870207274ad049fe3030bccd498139d4420b21e2d2bb3788ffd2f41a2d2cb116"
+  },
+  "deferrals_judged": [],
+  "trace_id": "planning-compliance/goal-coverage/20261112T155835-df99ee83-run1",
+  "cost_usd": 0.050671999999999995,
+  "requirements": [
+   {
+    "id": "R1",
+    "requirement": "attempt to walk through wall",
+    "quote": "attempt to walk through a wall",
+    "asked_by_index": 1,
+    "kind": "outcome"
+   },
+   {
+    "id": "R2",
+    "requirement": "such attempts not successful",
+    "quote": "these should not be successful",
+    "asked_by_index": 1,
+    "kind": "outcome"
+   },
+   {
+    "id": "R3",
+    "requirement": "unskilled helicopter flying crashes",
+    "quote": "should probably crash it",
+    "asked_by_index": 2,
+    "kind": "outcome"
+   },
+   {
+    "id": "R4",
+    "requirement": "approval of attempts design",
+    "quote": "yes",
+    "asked_by_index": 3,
+    "kind": "process"
+   }
+  ],
+  "mappings": [
+   {
+    "requirement_id": "R1",
+    "covered_by": [
+     "A3",
+     "A1",
+     "A9"
+    ],
+    "coverage_reason": "A3 fails unless a person can attempt walking through the wall in their own words and the attempt is recorded; A1 and A9 also follow that attempt.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome line says people can attempt actions in their own words, including walking through a wall."
+   },
+   {
+    "requirement_id": "R2",
+    "covered_by": [
+     "A3"
+    ],
+    "coverage_reason": "A3 fails unless the wall attempt is refused, with Sam staying on the original side and no partial effects.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome line says the world records and refuses impossible attempts."
+   },
+   {
+    "requirement_id": "R3",
+    "covered_by": [
+     "A7"
+    ],
+    "coverage_reason": "A7 checks the declared crash-on-fail mapping and the 75% failure chance for an untrained pilot, so a novice crash is probable in the model.",
+    "extent": "full",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "The outcome line says that in the declared untrained-helicopter scenario the roll makes a crash probable."
+   },
+   {
+    "requirement_id": "R4",
+    "covered_by": [],
+    "coverage_reason": "No criterion could show an approval of the design; it concerns how the planning work was approved, so none covers it.",
+    "extent": "none",
+    "missing": "",
+    "deferral": 0,
+    "in_outcome": true,
+    "outcome_reason": "This is a process requirement, so the outcome line does not need to keep it."
+   }
+  ],
+  "agreement": {
+   "runs": 3,
+   "rule": "a gap counts only when every run finds it; a split is unsure",
+   "agreed": false,
+   "trace_ids": [
+    "planning-compliance/goal-coverage/20261112T155835-df99ee83-run1",
+    "planning-compliance/goal-coverage/20261112T155835-df99ee83-run2",
+    "planning-compliance/goal-coverage/20261112T155835-df99ee83-run3"
+   ],
+   "costs_usd": [
+    0.015974,
+    0.017534,
+    0.017164
+   ]
+  },
+  "unsure": [
+   {
+    "requirement_id": "R3",
+    "requirement": "unskilled helicopter flying crashes",
+    "runs_with_gap": 2,
+    "runs": 3,
+    "gaps": [
+     "run 2: R3 \"unskilled helicopter flying crashes\": only partly covered by A7; no criterion asks for The criteria accept a single recorded roll that does not crash, and the probable crash depends on a scenario-declared crash-on-fail rule and a skill scale the plan itself supplies; no criterion checks that an unskilled helicopter attempt in the actual run crashes.",
+     "run 3: R3 \"unskilled helicopter flying crashes\": only partly covered by A7; no criterion asks for Nothing asks that an unskilled helicopter attempt actually produces a crash in a demonstrated run. A7 says explicitly that a guaranteed novice crash is not required and that any single recorded result follows its dice, so a run with no crash still passes."
+    ]
+   }
+  ],
+  "trace": "coverage-trace.json"
+ }
+}
