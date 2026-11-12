@@ -50,3 +50,10 @@ Planning path: README.md -> roadmap/README.md -> active slice
 Pinned source records checked: 16
 Donor checkout verification skipped (use --with-donors to enable).
 exit 0
+
+
+Documentation final-candidate receipts, 2026-11-12; design revision fdca8f4.
+make check: exit0;13specspassed;938testspassed,2skipped,225subtests; measured38.29stesttime;16pinnedsources. No donor checkout verification.
+Five package validators --offline-coverage: each exit0 with current freshness fdca8f4. Pending baseline/stage evidence, future system-map deadline and nightly criterion coverage remain explicit; no full AES runtime conformance claim.
+md_file_cap --ref HEAD at5238aae:189/189,0unreachable,0durablefindings exit0. durable_docs_check afterfdca8f4:0findings exit0.
+Playwright render:4reviewpages at1440px/390px=8HTTP200loads,0pageerrors; mobile screenshot inspected. This is technical page evidence, not stakeholder comprehension or runtime behavior.

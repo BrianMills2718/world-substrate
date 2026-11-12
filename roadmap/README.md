@@ -64,7 +64,7 @@ Source: Brian's November 12 documentation-only goal, following PR #377. This sec
 | Planning packages and generated review pages | Regenerate from owning sources after contract changes; preserve historical evidence and pending judgments | Focused validators, substantive independent review and live final-candidate page verification |
 | Current AES documentation requirements | Reconcile current sources and justified links; retain runtime conformance gaps | Report documentation findings separately from missing traceability and behavioral defects |
 
-Current increment: complete actor-information and single-concern design, then reconcile question dispositions and affected normative owners. Next: independent review of the final documentation candidate, repair concrete findings, merge and verify hosted pages. No paid runs or feature work belong to this goal. After three substantive increments, compare progress with this outcome; broad review is bounded to two rounds, with later repair tied to concrete findings.
+Design and question-disposition increments complete at fdca8f4; independent second review passed with no remaining substantive blocker. Current increment: final evidence metadata, focused checks, merge and hosted-page verification. Implementation remains on hold. No paid runs or feature work belong to this goal. After three substantive increments, compare progress with this outcome; broad review is bounded to two rounds, with later repair tied to concrete findings.
 
 ## Outcome and success criteria
 
