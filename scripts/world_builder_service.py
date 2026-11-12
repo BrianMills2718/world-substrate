@@ -571,6 +571,8 @@ def _record_response(status: int, value: dict[str, Any]) -> None:
         "request": request["summary"],
         "result": _result_summary(request["path"], int(status), value),
     }
+    if request.get("actor_inputs"):
+        entry["result"]["actor_inputs"] = request["actor_inputs"]
     if request.get("engine_events") is not None and status < 400:
         entry["result"]["engine_events"] = request["engine_events"]
     if request.get("judge_test_runs") and status < 400:
@@ -2696,6 +2698,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             raise ValueError("run_spent_usd must be a dollar amount of at least 0")
         model = _requested_model(body)
         trace_id = _new_trace_id("run")
+        actor_input_sink: dict[str, list[dict[str, Any]]] = {}
+        request_record = _REQUEST.get()
+        if request_record is not None:
+            request_record["actor_inputs"] = actor_input_sink
         if execution_mode == "native_coordination":
             shared_causal = json.loads(NATIVE_COORDINATION_CAUSAL.read_text())
             if causal != shared_causal:
@@ -2716,7 +2722,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     return
                 try:
                     trace, _, compiled = run_world(
-                        bundle, causal, policy=policy, model_name=model,
+                        bundle, causal, policy=policy, model_name=model, actor_input_sink=actor_input_sink,
                         max_turns=turns, max_budget=budget, trace_id=trace_id,
                         start_snapshot=continue_from, turn_offset=turn_offset, prior_recent=recent,
                         briefs=briefs, resident_memory=resident_memory, underway=underway,
@@ -2734,7 +2740,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 trace["cost_usd"] = trace_cost
         else:
             trace, _, compiled = run_world(
-                bundle, causal, policy=policy, model_name=model,
+                bundle, causal, policy=policy, model_name=model, actor_input_sink=actor_input_sink,
                 max_turns=turns, max_budget=RUN_BUDGET, trace_id=trace_id,
                 start_snapshot=continue_from, turn_offset=turn_offset, prior_recent=recent, underway=underway,
                 run_stop=run_stop, stop_history=stop_history,
