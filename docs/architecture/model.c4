@@ -1,6 +1,6 @@
 // World Substrate building blocks (arc42 section 5). An arrow means "imports or calls",
 // checked against the import lines of each module on 2026-11-09 (branch docs/cleanup-2026-11-09).
-// No component carries python metadata yet, so `code2check arch gen` produces no import
+// No component carries python metadata yet, so `lockstep check arch gen` produces no import
 // contracts from this file; add metadata only after every real import is drawn.
 specification {
   element system
