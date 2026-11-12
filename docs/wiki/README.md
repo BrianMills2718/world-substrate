@@ -55,6 +55,7 @@ world needs them.
 
 | Need | Read |
 | --- | --- |
+| Modeling choices, glossary and resource tradeoffs | [Modeling guide](../model/modeling-choices.md) |
 | Every document, in reading order | [Documentation index](../index.md) |
 | Architecture: goal, requirements, building blocks, deployment, risks | [arc42](../architecture/arc42.md) |
 | What the code must do | [OpenSpec capability specs](../index.md#2-what-the-code-must-do-openspec-capability-specs) |

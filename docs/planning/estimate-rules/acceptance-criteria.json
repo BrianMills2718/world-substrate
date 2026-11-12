@@ -167,7 +167,7 @@
     "Check the sawmill's log count that day.",
     "Open a dry day's crossing."
    ],
-   "expected": "The wet day reads \"blocked: the cart could not get across the ford (chance 0.7, roll 0.81)\" in orange (the run's own numbers); the refusal opens to the question, the rain it read and the draw; nothing changed, and no logs reached the sawmill from that attempt (each attempt draws its own number, so another cart the same day may cross). The dry day shows the chance, the roll and \"crossed\".",
+   "expected": "The wet day reads \"blocked: the cart could not get across the ford (chance 0.7, roll 0.81)\" in orange (the run's own numbers); the refusal opens to the per-crossing question, its declared conditions and the draw; nothing changed, and no logs reached the sawmill from that attempt (per-crossing draws occur only when the persistent passability check permits crossing; no draw bypasses a deep-water blocker). The dry day shows the chance, the roll and \"crossed\".",
    "failure_example": "Broken: the cart crosses whatever the roll, a refusal with no estimate or roll shown, a partial change on a refused crossing, or logs arriving on a blocked day. Working: the blocker names the estimate and roll, and nothing downstream of the blocked crossing happens.",
    "representation": {
     "view": "composite-linked-view: the refused event's line with its blocker in orange, opening to the question, the facts read and the draw",

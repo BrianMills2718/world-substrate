@@ -1570,9 +1570,9 @@
   {
    "id": "Q83",
    "short": "Do the declared reads leave out facts Jev needs",
-   "question": "Jev sees only the fields an estimate rule declares (days since service, load), never the whole world: argument settles that (a whole-world read makes the cache key the whole world and can reach what A5 forbids). Do the sawmill rule's two declared reads leave out facts Jev needs, as the plain version (Jev given the whole world) would show?",
+   "question": "Jev sees only the fields an estimate rule declares (days since service, load), never the whole world: argument settles that (a whole-world read makes the cache key the whole world and can reach what A5 forbids). Do the sawmill rule's two declared reads leave out facts Jev needs, and which causal dependencies and interventions justify the read set? Comparisons with the plain version can reveal sensitivity, not prove sufficiency.",
    "blocks": "Which fields the E1 sawmill rule declares, and from E2 a rules-check warning when a rule reads too little; not the declared-reads design.",
-   "resolves_with": "E1's side-by-side comparison on 10 cases: Jev with the declared reads, Jev with the whole world, and gpt-6-luna with the declared reads (under $0.01, computed in docs/plans/estimate_rules.md 'LLM call boundary and cost'). If the whole-world answers track the facts better, the rule declares more reads; it never reads the whole world.",
+   "resolves_with": "First identify the scenario causal dependencies and interventions and justify the declared read set. E1 comparisons on 10 cases are sensitivity diagnostics, not proof that the read set is sufficient. A disagreement requires inspecting omitted mechanisms and facts, not assuming the whole-world answer is better. Add justified relevant reads; preserve the declared-read boundary.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1661,7 +1661,7 @@
    "short": "Do declared chances match Jev's",
    "question": "A rule can carry declared bands instead of an estimate: its checks choose among literal chances the rules writer writes (for the sawmill, under 5 days since service 0.05, 5 to 9 days 0.2, 10 or more 0.4), with no Jev call and no new code. On the 10 sawmill cases, do the bands the rules writer writes from the description give the same chances as Jev (within 0.1 on at least 8 of the 10)?",
    "blocks": "Whether E2's rules-writer instructions prefer declared bands for a chance that depends on one or two facts, keeping Jev for the rest; not E1.",
-   "resolves_with": "E1's side-by-side comparison, variant (d): one rules-writer call writes the bands (measured median $0.0021, llm-cost estimate --task world-substrate-mechanic-authoring), read beside Jev's chances (a) on the same 10 cases.",
+   "resolves_with": "First justify the bands applicability, dependencies, thresholds and responses to investigation-relevant interventions. E1 variant (d) compares their outputs with Jev on 10 cases as a diagnostic only: agreement establishes neither interchangeability nor correctness. Prefer bands only when that analysis supports the approximation; disagreement or flat Jev answers alone does not select a winner.",
    "owner": "agent",
    "status": "open",
    "sources": [
