@@ -166,7 +166,8 @@ window.PAGE_DATA = {
      "judge-ruling": "scripts/judge.py:288",
      "ruling-rule": "scripts/rulings.py:91",
      "midrun-setting": "scripts/rulings.py:47"
-    }
+    },
+    "spectrum": "docs/model/semantic-spectrum.json"
    },
    "diagrams": {
     "status": "present",
@@ -230,7 +231,47 @@ window.PAGE_DATA = {
     "path": "docs/planning/declared-laws/acceptance-criteria.json"
    }
   },
-  "note": "This is the repository's package: covers the whole repository; its plan part points at the newest adopted plan, docs/plans/declared_laws.md, whose own package is docs/planning/declared-laws/planning-package.json. The open-attempt plan keeps docs/planning/open-attempt/planning-package.json. All three share the checks, open-questions ledger, domain model, metamodel and diagrams, and are rebuilt by tools/planning/ (open question Q41). Only this package is validated at each push; the two plan packages keep the revision of their own last review."
+  "note": "Repository-wide package; the plan reference is a current implementation plan, while roadmap/README.md owns sequencing and the pre-implementation normative review. Open-attempt, declared-laws, AI-judge and estimate-rules each retain their own package and acceptance scope. They share domain/semantic models and the question ledger. Review verdicts refer only to their recorded revisions; this metadata reconciliation does not recertify them.",
+  "initiative": {
+   "id": "world-substrate",
+   "role": "home"
+  },
+  "runs_in_production": true,
+  "spectrum_rungs": {
+   "name": "README.md:1",
+   "controlled_vocabulary": "docs/model/semantic-spectrum.json",
+   "glossary": [
+    "docs/model/DOMAIN.md",
+    "docs/model/modeling-choices.md"
+   ],
+   "thesaurus": "docs/model/semantic-spectrum.json",
+   "informal_taxonomy": "docs/model/semantic-spectrum.json",
+   "formal_taxonomy": "docs/model/domain.graph.json",
+   "domain_model": "docs/model/domain.graph.json",
+   "schema": [
+    "schemas/world-authoring-bundle-v0.schema.json",
+    "src/world_substrate/model.py"
+   ],
+   "rules": [
+    "docs/model/trace.yaml",
+    "src/world_substrate/rules.py"
+   ],
+   "instances": "reference_worlds/waltzman/coordination-lab-v0.json",
+   "architecture_views": [
+    "docs/architecture/arc42.md",
+    "docs/architecture/model.c4"
+   ],
+   "behavior_models": "docs/model/ODD.md",
+   "interface_contracts": [
+    "openspec/specs/transition-engine/spec.md",
+    "openspec/specs/world-authoring-bundle/spec.md"
+   ],
+   "executable_specifications": [
+    "tests/test_action_envelopes.py",
+    "tests/test_first_fill.py"
+   ]
+  },
+  "spectrum_basis": "Repository-scoped evidence shared by plan packages: the World Builder is an existing deployed product, while individual plan slices remain built/not-built as their acceptance records state. The domain taxonomy is a flat, typed classification by implementation authority (Substrate, Family, PerWorld, Reference, Theory), not a claim of a deeper inheritance hierarchy. No digital-twin or validated predictive-simulation rung is asserted."
  },
  "questions": [
   {
@@ -238,7 +279,7 @@ window.PAGE_DATA = {
    "short": "Rules retry never runs here",
    "question": "The build's rules retry is skipped once 80 s have passed, and in the canonical Waltzman build the test run starts at 85-111 s. Should the cut-off, or the order of the build steps, change so the retry can repair a world?",
    "blocks": "whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower",
-   "resolves_with": "An argument already settles that the retry is skipped (85, 101 and 111 s against 80 s). In those runs the test run found no part-way problem, so nothing needed repair (c1r24 TRACE_READ.md:54): it is a latent risk for a world that does. What is left is a technical trade-off against the 150 s first-round target, settled by reading saved traces, not by a new run. Read first evidence/waltzman-tasks-slice2/c1r24/c1r-run24.log, whose step lines carry their times (rules writing from 41.9 s to 111.1 s, so that one call alone passes 80 s), then the /generate-world row in that folder's run-log.jsonl (2026-10-23T22:03:42Z, trace world-builder-live/people/3c7dab9eb26d4bbc99bbd5bbc9418522) for the call-by-call times; then either start the test run earlier or tie the cut-off to the time left before that target.",
+   "resolves_with": "Audit 2026-11-12: Known implementation gap. Use remaining-time budgeting on the accepted harness path (Q14); keep consequential findings visible when repair stops. Close on saved failing inputs with an explicit disposition, not historical timing alone.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -281,7 +322,7 @@ window.PAGE_DATA = {
    "short": "Agenda item has no content",
    "question": "People put the decision on the agenda and settle it again for 25 rounds (c1r24 r22-r46). Is that because group_decision.agenda_items is a bare count, so an item says nothing, or because put-matter-on-agenda and settle-agenda-matter are offered every work cycle at no cost?",
    "blocks": "whether the group-decision family's agenda needs content or should be dropped",
-   "resolves_with": "Argument settles the content cause for the record: group_decision.agenda_items is a bare integer (spikes/any-scenario-2026-10/compile_spec.py:101) that put-matter-on-agenda adds 1 to and settle-agenda-matter subtracts 1 from (:272-275), so an item cannot carry what it is about, and the partnership said at c1r24 round 40 it should not add one 'when I lack information'. What argument cannot settle is which of three fixes to make: give items content (a matter names its question), cost them (one per person per cycle), or drop the count. That choice turns on why residents repeat the pair, which a free replay cannot show (it replays recorded moves). So one paid owner-allowance run, and only once Q12 or a goal makes the agenda matter: if residents still repeat put-and-settle when items carry content, cost them; if they stop, content was the cause; if the count changes no outcome, drop it.",
+   "resolves_with": "Audit 2026-11-12: Design: represent agenda content/lifecycle when it matters, otherwise omit the counter. Do not add arbitrary costs to force activity. Repetition cause still needs the relevant complete actor contexts; a paid run is not needed to establish that the current integer has no content.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -491,7 +532,7 @@ window.PAGE_DATA = {
    "short": "Harness build time not measured",
    "question": "Decision 008 already decided that worlds are built in an agent harness that drafts, checks and edits (docs/decisions/008-build-worlds-in-an-agent-harness.md), and the live service does not yet call scripts/world_harness.py. What is open is only whether a harness build fits the 150 s first-round target. How long does a harness build take against that target?",
    "blocks": "when the harness replaces the fixed build calls and the rules retry (Q1) on the live path",
-   "resolves_with": "A measurement, from saved traces first: time the harness's draft-check-edit loop on the saved c1r24 and airfield build inputs (free, the build traces hold the prompts) and compare with the 85-111 s fixed builds; a paid harness build only if the saved inputs cannot be replayed.",
+   "resolves_with": "Audit 2026-11-12: Harness adoption is settled by Decision 008; performance remains unknown. Replaying old fixed-call outputs cannot measure a new adaptive harness. Inspect existing harness traces or measure a bounded actual build against the first-round target, including failures and cost.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -713,7 +754,7 @@ window.PAGE_DATA = {
    "short": "Run page hides own-words attempts",
    "question": "The run page's round text reads row.belief and row.expects (scripts/world_builder_home.html:651) and never summary.unmatched_attempts; since #333 it shows an attempt the system could not read in the person's own words (scripts/world_builder_home.html:646, and the picture's card at scripts/run_authored_world.py:1242), but an allowed or refused move still shows only the move, not the words behind it (view gap G17). The plan's inspectable result is that the run page shows each person's own-words attempt. How should the page show them?",
    "blocks": "the plan's inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done",
-   "resolves_with": "Build and look: show each row's attempt text and reading in the round text and list summary.unmatched_attempts, then open the saved S1 airfield share (evidence/open-attempt/s1-airfield/) in a browser and confirm Sam's refused and unmatched attempts read in his own words.",
+   "resolves_with": "Audit 2026-11-12: Design settled: show original attempt, interpretation and outcome together. Implementation closes on visible ordinary/refused/unmatched attempts in the saved S1 airfield page; no new simulation needed.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -795,7 +836,7 @@ window.PAGE_DATA = {
    "short": "Build accepted with a task never possible",
    "question": "A build is accepted although its own test runs say a described task is never possible: in the S1 airfield build every test run reported 'never possible: practice flight' and the third rules attempt was accepted anyway (#244). Should such a build be repaired or refused instead?",
    "blocks": "A2 and A3 on any newly built world (they need the helicopter and the wall reachable), and whether a visitor's world can do what they described; A2 and A3 on the saved fixture tests/fixtures/airfield-s1-live.json do not wait for it",
-   "resolves_with": "Reading the S1 airfield build record settles what happened (evidence/open-attempt/s1-airfield/TRACE_READ.md:32). The fix is technical: treat a described task reported never possible as a rules-retry trigger (within Q1's time cut-off) and, if it survives, say so on the page; check on the saved airfield build that it is flagged.",
+   "resolves_with": "Audit 2026-11-12: A scripted run never exercising a task does not prove it unreachable. Inspect actual reachability, record the mismatch and repair or visibly mark unsupported requested behavior. Close on the saved airfield disposition and coverage.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -815,7 +856,7 @@ window.PAGE_DATA = {
    "short": "Refusal reason reads as a fact",
    "question": "A refusal reason reads as a fact ('you are the dispatcher') rather than as the requirement that failed, because the page shows the check's label as written (#245). Should refusal text be phrased as the requirement?",
    "blocks": "whether a person, and a reader of the run, can tell why a move was refused",
-   "resolves_with": "Progress 2026-11-03 (#333): the engine's own checks now read as requirements ('the one acting is allowed to make this move', src/world_substrate/action_authoring.py:655; 'the {name} named exists', src/world_substrate/action_authoring.py:664) and shared recordings show the old engine names in the same plain words (scripts/world_builder_service.py:664); the rules writer's labels are still shown as written, so the question stays open for them. An argument settles the cause: the label is the rules writer's own sentence, shown as is. The choice is technical (ask the rules writer for requirement-style labels, or show 'needs: <label>' with actual against required); check on the saved airfield world's refused rows.",
+   "resolves_with": "Audit 2026-11-12: Design settled: show the failed requirement and actual versus required values. Implement consistent labels and inspect saved refused airfield rows; no paid run needed.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -832,7 +873,7 @@ window.PAGE_DATA = {
    "short": "Readout picks the wrong lens",
    "question": "The readout chose the goods-flow lens for a training world (#246). How should the readout choose its lens?",
    "blocks": "whether a run's readout describes the world the visitor wrote",
-   "resolves_with": "Read the S1 airfield run's readout call and prompt to see what the lens choice was given; the fix is technical (choose from the world's kind and description, with the reason recorded). Check with one owner-allowance readout call on the saved run, no new build.",
+   "resolves_with": "Audit 2026-11-12: Choose the lens from the analyst question and represented mechanisms, not world kind alone; keep that question outside actor context. Inspect the saved prompt/output, then verify the readout answers the training question.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -849,7 +890,7 @@ window.PAGE_DATA = {
    "short": "Seeded roll versus no randomness",
    "question": "Piece 3 rolls dice from hash(run_seed, event_id), while today no rule uses randomness (docs/plans/open_attempt.md:124). Where does run_seed live, do saved worlds replay unchanged, and who gives a generated person like Sam piloting 0?",
    "blocks": "S3's design, A7 and the full canonical run (A9)",
-   "resolves_with": "An argument settles the first two: the run loop draws run_seed once when a run starts and records it in the run record, and each roll event records its dice, so a replay reads the dice and never rolls; a world with no roll never draws, so every saved world replays unchanged (A8). The rule stays a function of state plus the recorded seed, so the invariant becomes 'no unrecorded randomness'. The third part is open: the rules writer must give people skill fields from the description ('has never flown' gives piloting 0) and the roll may read only that field. Settled in S3 by a free probe that regenerates the airfield spec and reads Sam's recorded skill.",
+   "resolves_with": "Audit 2026-11-12: Seed/replay design settled: recorded run seed and per-event draws, replay from records, no unrecorded randomness. Skill initialization requires a scenario-defined scale; never flown does not imply universal piloting=0. S3 implementation and A7/A8 evidence remain open.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -870,7 +911,7 @@ window.PAGE_DATA = {
    "short": "Read scopes recorded, not enforced",
    "question": "Declared read scopes are recorded but not enforced (AGENTS.md:21; docs/model/ODD.md:87): a hand-written rule can read a field outside its declared reads and nothing reports it. Should the Engine enforce or check read scopes?",
    "blocks": "whether causal links built from declared reads are complete: F1's blocked_by_event names the event that changed what a refused move's failed checks read, and Piece 2's reactions cite parents, so an undeclared read would leave a refusal or reaction without its true cause",
-   "resolves_with": "Reading the compiler settles generated rules: their reads are derived from their own selector, checks and effects (_derived_reads, src/world_substrate/action_authoring.py:173), so they cannot read outside them. Open are hand-written mechanisms and reference worlds. Technical choice: a test-time state view that records each hand-written rule's actual reads and fails on an undeclared one; check with a test rule that reads an undeclared field. The transition-engine spec keeps the measured recording-proxy design (openspec/specs/transition-engine/spec.md:379); until one lands the project check reports read_scopes_enforced as a constant (scripts/check_project.py:348, Q66).",
+   "resolves_with": "Audit 2026-11-12: Known enforcement gap. Generated reads are derived; hand-written reads need actual-read instrumentation before supporting complete ancestry. Close on undeclared-read detection and ordinary-mechanism coverage, not metadata alone.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -911,7 +952,7 @@ window.PAGE_DATA = {
    "short": "How a misreading is caught",
    "question": "If the interpreter reads 'fly the helicopter' as a walk, the move is legal and nothing flags it; R1's failure mode is exactly that. How is a misreading caught, apart from its cost (Q29)?",
    "blocks": "R1 (residents can try anything), A2, and whether a TRACE_READ.md can trust readings",
-   "resolves_with": "Argument plus a check, no paid run: each reading keeps quoted_span per field (attempt.py:81), so a reader can compare the words with the kind. The plan's checks are A2's negative fixture (fly never binds to move) and the TRACE_READ.md sample of ordinary attempts. Technical addition: list every wait reading of a non-wait attempt (Q39) in the run summary so the trace read covers them all, not a sample. (Listing readings whose kind differs from nearest_kind would catch nothing: read_interpretation sets nearest_kind to the matched kind, attempt.py:122.)",
+   "resolves_with": "Audit 2026-11-12: Quoted spans enable inspection, not semantic correctness. Preserve original attempts and unmatched results, flag non-wait attempts interpreted as wait, and inspect the negative fly-versus-walk case and full trace before closure.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -929,7 +970,7 @@ window.PAGE_DATA = {
    "short": "Added doorway listed as left out",
    "question": "In the scripted S1 airfield run the builder added two doorway entities around the brick wall, and the build record put them under 'Left out of the simulation' (#241). A doorway around the wall changes A3 (the wall is no longer the only way), Q25 and F6. Should the builder be allowed to add a way the description did not name, and where is it shown?",
    "blocks": "A3 on any newly built airfield world, and whether a visitor can see what the builder added",
-   "resolves_with": "Reading the build record settles what happened (evidence/open-attempt/s1-airfield-scripted/TRACE_READ.md, finding 3). The fix is technical: a builder addition gets its own field and heading ('Added to make it run'), and A3 is judged on the saved fixture tests/fixtures/airfield-s1-live.json, whose wall is the only way (Q30).",
+   "resolves_with": "Audit 2026-11-12: Separate additions from omissions, but labeling an added doorway does not justify removing the wall obstacle. Required interventions must survive authored additions. Close on the saved build after truthful coverage and preserved wall semantics.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -947,7 +988,7 @@ window.PAGE_DATA = {
    "short": "Does S1 close #128",
    "question": "#128 asks that people try from what they believe and discover failure over time, not get a pre-checked menu. S1 lets residents say any attempt, and the tasks goal let a task fail part-way (Q19). Does that close #128?",
    "blocks": "whether #128 stays open on the board",
-   "resolves_with": "Read #128's wanted list against the code: attempts from belief are built (S1, scripts/concordia_residents.py:45), part-way failure is built (Q19, scripts/attempts.py:131), and a person learns an outcome only from what they see (observation, engine.py:278). Close #128 once A3 shows a refused wall attempt chosen from belief in a saved run, citing that row.",
+   "resolves_with": "Audit 2026-11-12: Acceptance evidence remains open: inspect original issue requirements and a saved refused wall attempt chosen from local belief, including full context and interpretation. Message filtering alone does not establish asymmetric knowledge.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1085,7 +1126,7 @@ window.PAGE_DATA = {
    "short": "Which heuristic checks retire",
    "question": "The build runs about fourteen hand-written checks, each added after one bad world (dead-end stock, goods from nothing, a second source, vanishing moves, unanswered demand, starved holders, unsourced inputs and others in scripts/world_builder_service.py:922-1272), and some raise false alarms (the customer false alarm, pencil12 and 13). Which ones do declared laws and the review replace, and which stay?",
    "blocks": "S4: which checks are removed, and so whether validation stops growing one check per bug",
-   "resolves_with": "Part argument, part the Q44 measurement. Argument: checks that report what the scripted test run actually saw (idle or stalled people, circling, moves never possible, people never together, refusals at the start) are observations of a real run, not guesses, so they stay. Checks that guess at bookkeeping from the rules' shape (conjuring processes, vanishing moves, second sources) retire one by one, each only when the saved world of its incident (docs/plans/declared_laws.md, Incidents) is refused by a declared law. Checks that guess at reachability (unsourced inputs, starved holders, unanswered demand, dead-end stock) cannot be replaced by laws (Q43); each becomes a report of what the test run saw (a move never possible, a field that only grew), which stays, or retires only when the review names its incident on the saved world. The missing-component check is a structural fact and stays. Moving processes retire only if the review names c4-run16's shape. Progress 2026-10-30: the people-world change (scripts/people_world.py:298) asks people worlds for laws and sends their rules to the review too. One live people-world build has run since (evidence/declared-laws/s4-waltzman-2/TRACE_READ.md:5): it declared no laws, which fits that world, and its review was skipped; #317 fixed the skip, and the next live people-world build (evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:3, 2026-11-04) exercised it: the designer again declared no laws (llm-calls id 23037 returned empty resources and laws) and the review ran (id 23042) with two findings, one of them that decision-postponed-at-deadline starts with max_postponements 0 so the decision can never be delayed; the build kept those rules without a rewrite (Q55). Laws can be dropped or left out (Q49), no check has been retired yet, and the retirement table is still owed.",
+   "resolves_with": "Audit 2026-11-12: Retirement policy settled: keep structural checks; treat one scripted run as bounded observation, not universal reachability. Record per-check keep/replace/retire and verify incident coverage before removing heuristics.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1142,7 +1183,7 @@ window.PAGE_DATA = {
    "short": "A law that allows too much",
    "question": "The designer may declare a law that is wrong for the world. Too narrow (a total that omits a move the description needs) shows up as a refusal and the review names it; that half is settled. Too permissive (a total that lets a move create cash the description says it cannot, or a pairing on a move that is a gift) breaks nothing at run time. What catches a law that allows too much?",
    "blocks": "S4: whether a heuristic check whose incident is a conjured good may retire on the strength of a declared total law, when that law might itself list the conjuring move",
-   "resolves_with": "Argument: a permissive law is model output read by the same outside reviewer, which is asked about moves that conjure or destroy a good the description says comes from somewhere (prompts/rules_reviewer.yaml:35). So S4 retires a conjuring check only when the review names the conjuring move on the incident's saved world, not when a law merely exists. That rule is the answer; it stays open until S4 applies it to the conjuring checks' saved worlds, and reopens if the review misses a permissive law on one of them.",
+   "resolves_with": "Audit 2026-11-12: Laws enforce stated constraints but do not validate the model. Retire a permissive-law heuristic only after the replacement detects the saved incident; presence of a fallible outside reviewer is not evidence enough.",
    "owner": "agent",
    "status": "open",
    "evidence": "Too-narrow half settled 2026-10-30: evidence/declared-laws/s3-review-choice/README.md:20 (gemini on pencil-s2-2: \"the cedar law does not name this move and would refuse it\"); prompts/rules_reviewer.yaml:37 asks about laws naming too few moves; ODD 8.22 (docs/model/ODD.md:275) records that the review reads the laws, the decision this question first blocked.",
@@ -1162,7 +1203,7 @@ window.PAGE_DATA = {
    "short": "A law the designer leaves out",
    "question": "In 5 of 9 saved pencil builds the designer declared no payment law (s1-pencil, s2-pencil-2, s2-pencil-3, s3-pencil-2 with no laws at all, and the shared s3-pencil-4 run whose 8 laws only limit which moves change a stock). A missing law refuses nothing, and the reviewer is told not to report a good for being absent from the laws. What catches a sale nobody pays for when no law covers it?",
    "blocks": "S4: Q45 retires a check when its incident's saved world is refused by a declared law; with laws left out that test can pass on worlds that still have the bug. Also A1 and A4, whose expected results include a payment law.",
-   "resolves_with": "Argument from the runs: the review already looks for 'a purchase that moves goods but no money' (prompts/rules_reviewer.yaml:30-31) whether or not a law names it, so the catch is the review, not the law. S4 therefore retires a pairing check only when the review names the unpaid move on the incident's saved world; the s3-review-choice run shows that held for pencil13 (gemini) and failed for pencil-s2-kept (no reviewer), so the pairing checks stay until the review catches pencil-s2-kept. Asking the designer for a pairing law on every move that changes two holders' stock is the other route; it is a prompt change to try only if the review keeps missing it.",
+   "resolves_with": "Audit 2026-11-12: Missing laws enforce nothing. Verify the replacement on the saved unpaid-sale incident before retirement. Do not require payment on every two-holder transfer: gifts and negotiated exchanges may be legitimate.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1184,11 +1225,11 @@ window.PAGE_DATA = {
    "id": "Q50",
    "short": "What counts as finished",
    "question": "The declared-laws plan's done_when (L1-L8) checks that its parts work, and its do_not_gate_on excludes Brian's review of a run. Nothing states when the product itself is good enough, so each paid build finds a new defect and asks for another. In Brian's words on 2026-11-03: \"we just seem to be rerunning the simulation\". What result ends this work?",
-   "blocks": "Whether the paid builds in S5, L5, A4 and A6 run now, and which defect is fixed next. Merges under the plan stay ungated by Brian's review; only new paid builds wait.",
-   "resolves_with": "Brian's judgement on a working run, not a test: he reads one shared Waltzman run and says what is wrong. Since 2026-11-04 a shared run recorded after #317 and #320 exists: the Waltzman rebuild at 096c129, share jyVbywXT8N8F (evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:3, saved without a readout), but its rules carry a review finding the build kept (no postponement possible, Q55), and the rules are written afresh on each build (5 of 5 needed and no postponement here, 4 of 5 and one postponement in s4-waltzman-2, evidence/declared-laws/s4-waltzman-3/TRACE_READ.md:16), so it is the one to judge only once Q55 is answered or with that caveat stated beside it; the recommendation to keep one saved world and improve it is what makes builds that differ comparable. His first reaction (\"this is blank and doesnt play\") was answered by #328 and #329: a shared run's picture is now drawn from its recorded rounds (scripts/world_builder_home.html:913).",
+   "blocks": "No current believability approval gate. The implementation plans retain their own functional and evidence requirements.",
+   "resolves_with": "Resolved by Brian on 2026-11-09: use off-the-shelf people agents, no custom believability metric or finish gate, tune behavior after the rest works. The evidence field preserves the decision.",
    "owner": "brian",
    "status": "resolved",
-   "recommendation": "Finished when Brian reads one shared Waltzman run and the people behave believably and something surprising follows from their choices. Keep one saved world and improve it; his reaction to it picks the next fix.",
+   "recommendation": "Follow the accepted decision: keep functional defects and unsupported modeling explicit; do not hold paid builds for a separate subjective believability approval.",
    "sources": [
     "scripts/world_builder_home.html:913",
     "evidence/declared-laws/s4-waltzman-2/TRACE_READ.md:5",
@@ -1205,7 +1246,7 @@ window.PAGE_DATA = {
    "short": "Live network with no lines",
    "question": "Issue #316 says the live Network view drew NaN links in the s4w2 build. Its body misprints the shared address as ?share=NZfTwkrNpsQo; the page reads only ?run= (scripts/world_builder_home.html:1272), and the probes behind the issue used ?run=. The shared case draws its links. Is the fault in a live first round still open?",
    "blocks": "Whether the Network view can be trusted in a live run; issue #316.",
-   "resolves_with": "The shared case held twice: the probes behind the issue (786 links, no NaN) and a browser check on 2026-11-03 (no console error, links drawn). Only the live first-round case stays unreproduced. Read the console in the next live run; no paid run for this alone.",
+   "resolves_with": "Audit 2026-11-12: Unreproduced live-path defect. Inspect the next otherwise-needed live first round or a retained reproduction; do not buy a build solely for this. Shared replay success neither diagnoses nor fixes the live path.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1222,7 +1263,7 @@ window.PAGE_DATA = {
    "short": "Does the person asked respond",
    "question": "#326 delivers a request to the person asked, and a live pencil build (2026-11-01, 1 round played) delivered one: the shop's words reached the supplier's memory for round 2. Round 2 never ran, because the test browser closed; the cause of the stop is unresolved and is not a result about the world (evidence/declared-laws/s5-requests/TRACE_READ.md:18). Does an asked person act on a request, or ignore it?",
    "blocks": "Whether requests are worth more work.",
-   "resolves_with": "Reading what the person asked tries in the next round. Replaying a saved world through /run costs cents and needs no rebuild; a new build needs Brian's yes.",
+   "resolves_with": "Audit 2026-11-12: Behavioral evidence remains open because the recipient never had a second turn. A valid response can be refusal or inaction, not just obedience. Inspect complete recipient input and subsequent response in a bounded saved interaction.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1259,7 +1300,7 @@ window.PAGE_DATA = {
    "short": "People keep trying a closed door",
    "question": "In the same run discuss-local-concern-at-meeting was refused 12 times, mostly because the concern was no longer open. Why do people keep choosing a move whose condition is gone?",
    "blocks": "Whether residents see enough of the world to choose moves that can succeed; how much of a run is wasted turns.",
-   "resolves_with": "Reading, no paid run: the recorded rounds keep each person's stated reason and what they could see; read the 12 refused rows' reasons against the open-concern state they were shown.",
+   "resolves_with": "Audit 2026-11-12: Read all twelve failures against complete actor input, interpretation and state at decision/commit. Their stated beliefs include still-open concerns and the misleading requirement label The concern is open; one also fails entity-kind checking. These rows do not establish one common cause.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1275,7 +1316,7 @@ window.PAGE_DATA = {
    "short": "A flagged world kept without a rewrite",
    "question": "In the 2026-11-04 Waltzman rebuild the rules review found that decision-postponed-at-deadline starts with max_postponements 0, so the decision can never be delayed, and the build kept those rules after one try. The run was then rejected at the round-8 deadline with postponing impossible. Why does a build keep a world its review flagged, and should it?",
    "blocks": "Whether the shared Waltzman run (share jyVbywXT8N8F) is fit for Brian to judge under Q50, and whether the plan's S3 (review findings go to the rules writer's revision step) holds on the people-world path.",
-   "resolves_with": "The cause by reading, no paid run: the people-world loop breaks before a rewrite once the build has run longer than PEOPLE_REWRITE_BY_S (80 s, scripts/world_builder_service.py:266, checked at :2254); this build's first call was 15:53:10 and its review returned 15:55:29, while cost ($0.14) was far under PEOPLE_WORLD_BUDGET ($1.30, :94), so the time limit is the likely cause; the progress line that would confirm it is not saved. What remains is technical: when the review names a rule, either rewrite despite the time limit or keep the rules and show the finding beside the run. Check it on a free replay of the saved world before any new build.",
+   "resolves_with": "Audit 2026-11-12: Known review-disposition gap. Time cutoff is supported but unconfirmed because the progress line is absent. Preserve findings, repair within a declared budget and expose retained unsupported behavior; close on a saved-input disposition check.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1295,7 +1336,7 @@ window.PAGE_DATA = {
    "short": "A rule that writes less than it declared",
    "question": "A mechanic that declares a write path and then fails to change it passes the write-scope guard by design: the guard only checks that each committed change falls under a declared path (src/world_substrate/engine.py:104). In the M4 spill experiment only the conservation assay caught such a gap (src/world_substrate/assay.py:269), and that assay balances only quantities it is told about. How should an under-written declared path be caught for quantities no ledger or law models?",
    "blocks": "Whether a world's declared write scopes can be read as what its rules actually maintain; a generated rule that silently stops updating a field it owns goes unnoticed.",
-   "resolves_with": "Argument first: a declared world law (scripts/scaffold_world.py:45, src/world_substrate/laws.py) already balances a named resource inside the same commit, so a world that declares the quantity as a resource gets the check. For paths no law covers the choice is technical: have the scripted test run list each declared write path that no accepted event ever changed. Check it free on a copy of the M4 spill rule with one write removed.",
+   "resolves_with": "Audit 2026-11-12: A write scope is permission, not a promise to change every path. Missing required effects need scenario postconditions, conservation or a specific counterexample; unexercised writes are diagnostics only. Keep the M4 effect defect separate from scope enforcement.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1315,7 +1356,7 @@ window.PAGE_DATA = {
    "short": "String fields have no declared values",
    "question": "The Warehouse Rush preflight (2026-10-02) found that a component's string fields declare no set of allowed values, so a generated rule or an interpreted attempt can use a value the world does not mean; it deferred a domain feature until a fully specified v1 law had been generated and tried. That v1 law was never generated (evidence/warehouse-rush/ holds attempts 1 to 5 of v0 only). Do string fields need declared values?",
    "blocks": "Whether the interpreter and compiler can refuse a value outside a world's vocabulary (a dock, a route, a status) instead of accepting any string.",
-   "resolves_with": "Reading, no paid run: read the interpreter rows of the saved declared-laws and open-attempt runs for a string value the world does not mean. If one appears, add declared values to string fields and have the compiler and the attempt reading refuse others; if none appears, record the gap as not yet earned and close it.",
+   "resolves_with": "Audit 2026-11-12: Use finite values for genuinely closed scenario vocabularies and free text elsewhere. Absence of invalid values in saved cases is not universal coverage evidence. Track a concrete unsupported finite-domain requirement before adding validation.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1334,7 +1375,7 @@ window.PAGE_DATA = {
    "short": "Promises beyond support (a Commitment kind)",
    "question": "The scenario-metamodel plan chose to compose a Commitment kind with Singh's states (conditional, met, broken) so a person could owe another something if a condition holds. It was never built; conditional support for the one decision is carried by the support component instead (spikes/any-scenario-2026-10/compile_spec.py:66). Is a Commitment kind still needed?",
    "blocks": "Whether a people world can hold a promise one person makes another that is not support for the decision.",
-   "resolves_with": "One counterexample settles it: look in the saved pasted descriptions (evidence/declared-laws) for a promise other than support for the decision. If one exists and the people-world rules cannot hold it, build the Commitment kind from Singh's states; if every case is decision support, close it as covered.",
+   "resolves_with": "Audit 2026-11-12: Represent promise parties/content/conditions/lifecycle when required; decision support is not general commitment. Prefer ordinary components/rules before a new kind. No promises in sampled cases cannot establish general coverage; explicit deferral is not implementation.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1352,7 +1393,7 @@ window.PAGE_DATA = {
    "short": "Does the people path transfer to a different situation",
    "question": "The 2026-11-07 lineage review found that the people-world path keeps the compiler's fixed concern and decision families and drops generated actions whose effects were all discarded (scripts/people_world.py:424), so a new description can reuse the same central situation shape under new labels. Can the ordinary path instantiate a materially different situation (for example a transport operation where a damaged bridge, permissions and commitments interact) without scenario-specific compiler code?",
    "blocks": "Whether 'describe any scenario' (Decision 007) holds beyond decision-with-concerns situations; feeds Q60.",
-   "resolves_with": "Argument first, no paid run: list which parts of such a description the fixed families in spikes/any-scenario-2026-10/compile_spec.py cannot hold, by reading compile_spec.py and assemble_people_world. A paid build of a different situation waits for Q50 and Q60.",
+   "resolves_with": "Audit 2026-11-12: Inspect concrete transport mechanisms against compiled families and generated-effect filtering. Current limits do not establish universal failure. Q50 is resolved and is not a paid-run gate; Q60 retains its narrow social comparison. New runs address only remaining behavior uncertainty.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1371,10 +1412,10 @@ window.PAGE_DATA = {
    "short": "Act on the Waltzman lineage review",
    "question": "The 2026-11-07 lineage review found that the generated Waltzman world stipulates outcomes its mechanisms should produce: an open concern turns a full supporter's support conditional by rule (spikes/any-scenario-2026-10/compile_spec.py:316) and a remedy resolves a concern by elapsed rounds (:332), so a coordination failure in a run can come from the stipulated procedure rather than from influence. It recommends a bounded comparison on the same cases, today's generated-rule path against a plain model given the whole scenario and an event ledger, before more repair. Should that comparison run before more declared-laws or people-world repair?",
    "blocks": "What the next goal is after the declared-laws slices, and whether a Waltzman run can be shown as evidence of a social mechanism.",
-   "resolves_with": "A priority call by Brian: the review's recommendations are proposals and none is adopted (docs/audits/waltzman-lineage-review-2026-11-07.md:121).",
+   "resolves_with": "Resolved as scoped in the evidence: the standing plain-first rule requires a narrow social-part comparison, not replacement of automatic consequences by a plain model. The modeling guide requires argument/construction first and a named remaining uncertainty before a new run.",
    "owner": "agent",
    "status": "resolved",
-   "recommendation": "Yes: run the bounded comparison first on the existing Waltzman case and one materially different case, starting with the plain version (one model given the whole scenario, each person's view and an event ledger, its proposed changes validated), per the 2026-11-06 plain-version rule; state the question and what result counts against each approach before running, and measure one complete case before any batch.",
+   "recommendation": "Retain the separately approved narrow social comparison. First establish the required distinctions and counterexamples by source inspection; if an empirical question remains, state exactly what decision it changes and work out its cost. Do not interpret the comparison as a whole-engine bake-off or an automatic prerequisite to documentation repair.",
    "sources": [
     "docs/audits/waltzman-lineage-review-2026-11-07.md:53",
     "docs/audits/waltzman-lineage-review-2026-11-07.md:93",
@@ -1394,7 +1435,7 @@ window.PAGE_DATA = {
    "short": "Outside vocabularies never evaluated",
    "question": "The 2026-09-25 off-the-shelf survey named effect systems (for derived reads and writes), W3C PROV-O (for causal evidence on events), Halpern-Pearl actual causation (for claims about why a transition occurred) and the Karagiannis-Kuhn modelling-method framework (for describing the authoring stack), and none was evaluated (docs/research/flexible-simulator-prior-art-2026-10/formal.md:11). Should any be adopted?",
    "blocks": "Whether the run log's causal fields, the derived scopes and the project's causal claims use an outside vocabulary or stay project-specific.",
-   "resolves_with": "Prior-art reading, no run: map each onto the field or claim it would serve (PROV-O onto cause and causal_parent_event_ids; effect typing onto _derived_reads and _derived_writes at src/world_substrate/action_authoring.py:173; Halpern-Pearl onto the exact-history intervention). Adopt one only where it replaces project code or makes a claim checkable; otherwise record compose or reject with the reason.",
+   "resolves_with": "Audit 2026-11-12: Map each formalism to a current field/claim and adopt only where it replaces code or enables a needed check. Separate event provenance from scientific actual causation. Record reasoned defer/reject where no consumer needs it; evaluation backlog does not require implementation.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1413,7 +1454,7 @@ window.PAGE_DATA = {
    "short": "Meaning coverage beyond the six bound moves",
    "question": "Three grounding questions were left open in the discussion-traceability ledger: whether attributes need their own ontology category or can be relations, qualities or components; whether state relations such as birthplace, parenthood, citizenship and headquarters need a coverage audit against Linguistic Core and its donors before any overlay; and how rights (possession, ownership, transfer) decompose. Generated move kinds are not semantically bound at all. None blocks a current world.",
    "blocks": "Adding any overlay term beyond the six bound M1 move kinds, and binding generated move kinds to a meaning.",
-   "resolves_with": "The semantic-binding spec's vocabulary coverage audit is the procedure (openspec/specs/semantic-binding/spec.md:79): run it when a world first needs one of these terms. No run until then.",
+   "resolves_with": "Audit 2026-11-12: Timing is already settled by the semantic-binding coverage procedure: audit a term when a concrete world requires it. Record vocabulary gaps as deferred coverage, not a prerequisite to unrelated implementation; deferral does not answer the ontology questions.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1430,10 +1471,12 @@ window.PAGE_DATA = {
    "short": "A non-authoritative estimate as a rule input",
    "question": "Brian reopened this on 2026-11-10: \"im not saying jsut the judge uses jev. i can see there being a way where we have certain types of rules/contstatins that progagte base don jev\" (then \"i approve\" to planning it now). A live Jev probe answered typed maintenance estimates without changing state (evidence/jev/maintenance-estimator-probe-v0.json:299), and Decision 005 keeps Jev available but off the critical path (docs/decisions/005-native-waltzman-delivery.md:86). May a rule cite such an estimate as an input, and under what contract?",
    "blocks": "The estimate-rules plan (docs/plans/estimate_rules.md) and its first slice E1; any world whose rules need a chance or amount that no installed mechanic computes.",
-   "resolves_with": "Answered by argument in docs/plans/estimate_rules.md (Decided 1-7); closes when slice E1 lands and its acceptance checks A1-A3 pass. The contract carried from the retired Jev note and kept: an estimate is a recorded, non-authoritative input, like the skill roll's recorded dice; it never becomes canonical state or consequence authority by itself, only through an installed rule that declares its question, reads, answer type, model, a required fallback and its outcomes, and turns a chance into an outcome by a recorded draw from the run seed (never a threshold); the event records the estimate, its inputs and the model version; replay reads the record and never calls Jev; approximate ranking never silently drops a valid action.",
+   "resolves_with": "Audit 2026-11-12: Contract settled by estimate plan and modeling guide: recorded non-authoritative typed input with declared reads, model/version, question, fallback and outcomes. Sample modeled event variability, not every answer confidence or persistent condition. E1 acceptance owns implementation; contract resolution does not claim E1 built.",
    "owner": "agent",
-   "status": "open",
+   "status": "resolved",
+   "evidence": "Conceptual contract resolved, 2026-11-12, by docs/plans/estimate_rules.md Decided and docs/model/modeling-choices.md Probability is a modeling decision. The question asks whether an estimate may be an input and under what authority; that design is settled. E1 remains unbuilt and its acceptance evidence remains in the owning plan. Sampling is conditional on event semantics, not mandatory for confidence about an existing fact.",
    "sources": [
+    "docs/model/modeling-choices.md",
     "docs/plans/estimate_rules.md:123",
     "evidence/jev/maintenance-estimator-probe-v0.json:299",
     "docs/decisions/005-native-waltzman-delivery.md:86",
@@ -1452,7 +1495,7 @@ window.PAGE_DATA = {
    "short": "Meaning is looked up by bare move name",
    "question": "The Engine attaches a semantic binding by bare action kind (src/world_substrate/engine.py:233, table at src/world_substrate/semantic.py:247), and each binding names a Castaway mechanic id (src/world_substrate/semantic.py:69). Any world whose move is called give, take, fill or pour therefore gets that binding and mechanic id whatever its own rule does; Kitchen and Greenhouse events can carry Castaway mechanic ids. Should bindings be keyed by the installed mechanic instead?",
    "blocks": "Whether an event's semantic_binding and mechanic id can be trusted to describe the rule that actually ran.",
-   "resolves_with": "Technical, no run: key the binding by the installed mechanic (or have the profile carry it), and add a test that a non-Castaway world's give event carries no Castaway mechanic id.",
+   "resolves_with": "Audit 2026-11-12: Known semantic-provenance defect: bind through installed mechanic/profile, not bare move names. Close after non-Castaway give events cannot inherit Castaway mechanic ids and legitimate bindings remain.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1471,7 +1514,7 @@ window.PAGE_DATA = {
    "short": "The bundle schema refuses declared laws",
    "question": "The world-authoring-bundle JSON schema closes its top level (schemas/world-authoring-bundle-v0.schema.json:99) and has no resources or laws, while the validator accepts them (scripts/scaffold_world.py:45) and the spec says a bundle may declare them (openspec/specs/world-authoring-bundle/spec.md:84). A law-bearing bundle fails the published schema. Fix the schema?",
    "blocks": "Any outside tool or test that validates a declared-laws bundle against the published schema.",
-   "resolves_with": "Technical, no run: add optional resources and laws to the schema matching _validate_laws, and a test that one saved law-bearing bundle passes both the schema and the validator.",
+   "resolves_with": "Audit 2026-11-12: Known schema/spec mismatch: align optional resources/laws with validator and accepted bundle spec. Close on saved law-bearing bundles accepted through both routes and malformed law data rejected.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1490,7 +1533,7 @@ window.PAGE_DATA = {
    "short": "The read-scope status fact is a constant",
    "question": "The project check reports read_scopes_enforced as the constant False (scripts/check_project.py:348) and compares it with the transition-engine spec's status block (openspec/specs/transition-engine/spec.md:25). It pins the spec's wording but is not computed from code, so it cannot notice enforcement landing or being removed. Should it be computed?",
    "blocks": "Whether the status check is evidence about read scopes or only about the spec's text; Q34.",
-   "resolves_with": "Technical: when Q34's read check lands, compute the fact from code (for example whether the Engine hands rules a read-recording view); until then the check's output names the fact as a constant.",
+   "resolves_with": "Audit 2026-11-12: Label the current fact as an asserted constant, not measured evidence. When Q34 lands, derive status from the checked path. Close when the status cannot silently disagree with actual enforcement.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1508,7 +1551,7 @@ window.PAGE_DATA = {
    "short": "Write-path placeholders bind to any participant",
    "question": "A <name> placeholder in a declared write path may bind to any entity the attempt referenced, not to the participant it names (src/world_substrate/engine.py:127): a give rule declaring entities.<recipient>.inventory can also write the giver's inventory through that placeholder. Bind each placeholder to its own role?",
    "blocks": "Whether a declared write scope limits a rule to the participants it names; listed in the roadmap hardening queue.",
-   "resolves_with": "Technical, no run: bind each placeholder to the participant of the same name, and add a test rule that writes the wrong participant through a correctly shaped path and is refused.",
+   "resolves_with": "Audit 2026-11-12: Known authority defect: bind placeholders to their named roles, including process semantics. Close on wrong-role refusal and permitted role-bound writes; no paid run needed.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1526,7 +1569,7 @@ window.PAGE_DATA = {
    "short": "No lockfile; donor check needs a missing checkout",
    "question": "The repository has no lockfile or pyproject (the project check installs pinned names with uv --with at run time), and the Castaway extractor's check (scripts/extract_castaway_fixture.py --check, run by check_project.py --with-donors) needs a donor checkout at ../castaway-world/worktrees/world-systems (references/sources.json:8); on 2026-11-09 that checkout did not exist under /home/brian/code2/castaway-world and the check exited 1. What should change?",
    "blocks": "Reproducing a run's exact dependencies, and running the donor check at all.",
-   "resolves_with": "Technical: add a lockfile when a dependency enters a reproducible production path (roadmap hardening queue); make the donor check report the missing checkout as skipped with its path, or restore the donor worktree from the archived castaway-world repository at the pinned revision.",
+   "resolves_with": "Audit 2026-11-12: Separate dependency reproducibility from donor availability. Use the deployed path's dependency source/lock. Missing optional donors are not checked, never passed; close each gap with its own evidence and preserve donor history.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1544,7 +1587,7 @@ window.PAGE_DATA = {
    "short": "Hardening: law identity, discovery cap, mechanic errors",
    "question": "Three hardening gaps from the roadmap queue: the frozen profile id hashes the packages and findings but no compiler or interpreter version (src/world_substrate/profile.py:266); move discovery stops at 256 offered moves with no record (src/world_substrate/action_authoring.py:31, :572); and a mechanic that raises mid-rule is rolled back and re-raised rather than recorded as a refusal (src/world_substrate/engine.py:802, :901). Fix each?",
    "blocks": "Whether an approval names one exact executable law, whether a decider ever silently misses moves, and whether a broken rule leaves a trace in the run.",
-   "resolves_with": "Technical, no paid run: add the compiler version to the frozen identity; record overflow as a finding when discovery reaches the cap; record a mechanic exception as a refused event with the exception text. One test each.",
+   "resolves_with": "Audit 2026-11-12: Track three independent repairs: compiler/interpreter identity, reported discovery overflow, and traced atomic refusal on mechanic exception. Close each on its specific version-change, overflow or throwing-rule case; one passing item cannot close all three.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1585,7 +1628,7 @@ window.PAGE_DATA = {
    "short": "The live build imports spike code",
    "question": "The live people-world build loads the scenario-spec pipeline from spikes/any-scenario-2026-10/ (scripts/people_world.py:26), so code in a folder marked as a spike is on the public path. Move it?",
    "blocks": "Whether spike code is held to the live path's tests and review; whether the spike folder can be archived.",
-   "resolves_with": "Technical: move what the live path imports into scripts/ or src/ when it is next changed, keeping its tests; no run needed.",
+   "resolves_with": "Audit 2026-11-12: Move production-owned pipeline modules when changing them, preserving imports/tests. A spike folder name alone does not prove missing coverage. Close when live imports and authoritative docs name the maintained location.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1599,10 +1642,10 @@ window.PAGE_DATA = {
   },
   {
    "id": "Q72",
-   "short": "Living-scene profiles refuse a render key the layout reads (plausible)",
+   "short": "Living-scene profile and layout disagree on render (confirmed)",
    "question": "Plausible, not reproduced: the living-scene v1 loader refuses unknown top-level keys and 'render' is not among the allowed ones (src/world_substrate/living_scene.py:22), while the layout documents a radius read from the profile's render.gather_radius (src/world_substrate/living_scene_layout.py:19) and the composed renderer reads visual['render'] (scripts/render_composed_living_scene.py:59). Is a v1 profile with a render block refused?",
    "blocks": "Whether a scene author can set the gather radius the layout documents.",
-   "resolves_with": "Reading plus one free test: load a v1 profile with a render block; if it is refused, allow the key (or move the setting under presentation) and fix the docstring.",
+   "resolves_with": "Audit 2026-11-12: Confirmed by source: _ALLOWED_TOP_LEVEL excludes render, _validate_v1_profile rejects unknown keys, and layout reads profile.render. Choose one supported presentation path. Repair remains open until configured radius reaches layout and invalid fields still fail.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1619,10 +1662,12 @@ window.PAGE_DATA = {
    "short": "Decision 006's wrong-when names a missing adapter",
    "question": "Decision 006's wrong-when condition compares a Concordia game-master component with 'the CognitionAdapter path' (docs/decisions/006-governed-rules-layer-scope.md:34), but no CognitionAdapter exists in src/ or scripts/ (git grep, 2026-11-09); residents are hosted on Concordia directly. How should the condition be read?",
    "blocks": "Whether that wrong-when condition can ever be checked.",
-   "resolves_with": "Argument: read it against today's Concordia resident path. Decision records are not edited; arc42 section 9 states the reading, and a later decision record restates it if the condition is ever tested.",
+   "resolves_with": "Audit 2026-11-12: Naming ambiguity settled in arc42 section 9: compare Decision 006 against the actual Concordia resident integration, not a nonexistent adapter. Preserve the historical ADR; any future wrong-when test still needs actual integration evidence.",
    "owner": "agent",
-   "status": "open",
+   "status": "resolved",
+   "evidence": "Resolved 2026-11-12 by the current interpretation in docs/architecture/arc42.md section 9: compare Decision 006 against scripts/concordia_residents.py and scripts/run_authored_world.py with scripts/judge.py, preserving consequence authority and bounded adapter work. The original ADR is historical; no nonexistent CognitionAdapter is required.",
    "sources": [
+    "docs/architecture/arc42.md:404",
     "docs/decisions/006-governed-rules-layer-scope.md:34"
    ],
    "touches": [
@@ -1653,10 +1698,12 @@ window.PAGE_DATA = {
    "short": "Constraint question or someone's choice",
    "question": "How does the judge tell a constraint question (can coins change hands here?) from another person's choice (does Rosa accept the bribe?), so that choices always go to the person and never to a ruling?",
    "blocks": "J2's routing step and A5 (Rosa's own resident decides accept or refuse).",
-   "resolves_with": "Argument, in J2's design: an attempt whose effect needs another resident's act is routed to that resident (the #326 request path, generalised); the judge sees only what remains. One counterexample from the port world would reopen it.",
+   "resolves_with": "Audit 2026-11-12: Authority decision settled: another person's required act belongs to their policy, not the judge. Q96 retains the actual unsound exchange implementation and Q94 reuse; settling the rule does not establish their fixes.",
    "owner": "agent",
-   "status": "open",
+   "status": "resolved",
+   "evidence": "Conceptual authority resolved by Brian's approved distinction in docs/plans/ai_judge.md Decided and its explicit constraint/decision/norm section, reinforced by docs/model/modeling-choices.md. The judge cannot decide for another actor. This does not close the installed exchange defect: Q96 owns specific offer/response binding and Q94 owns subsequent rule reuse.",
    "sources": [
+    "docs/model/modeling-choices.md",
     "docs/plans/ai_judge.md:494",
     "docs/plans/ai_judge.md:153"
    ],
@@ -1670,7 +1717,7 @@ window.PAGE_DATA = {
    "short": "How to write norms and credential holders",
    "question": "How should a breakable norm and a credential holder be represented in the rules declaration language, without writing a norm as a declared law (which the engine would never let anyone break)?",
    "blocks": "J4's design and A6 (the password fixture: Mallory phishes Alice's password, is logged in, and the breach has consequences only after an observer acts).",
-   "resolves_with": "Prior art first: Crawford and Ostrom's grammar of institutions, Institutional Grammar 2.0 (Frantz and Siddiki), and Cybernetic Influence v3's split of identity proof, permission, availability and outcome; a short design step opens J4.",
+   "resolves_with": "Audit 2026-11-12: Separate verifier/credential possession, normative permission, observation and enforcement decision. A breakable norm is represented state/information, not an invariant forbidding violation. Reuse donor representations where sufficient; J4 implementation and its credential/breach example remain open.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1685,10 +1732,10 @@ window.PAGE_DATA = {
   },
   {
    "id": "Q77",
-   "short": "Wiki cap and durable-document checks fail on main",
+   "short": "Documentation and AES conformance gaps",
    "question": "On origin/main d89a446 (and unchanged on the estimate-rules branch, 2026-11-10) the wiki and Markdown cap check (md_file_cap.py --repo . --ref HEAD) exits 1: the file count is within the exception limit (162 of 180), but 28 documents are unreachable from the entry point (10 not linked, 18 more than two links deep): 13 older documents (for example docs/VISUAL_FEEDBACK.md, docs/audits/kitchen-contested-world.md), the 5 J0 trace reads under evidence/ai-judge/j0/ (linked from docs/catalog.md, still more than two links deep), and 10 files under openspec/changes/archive/ from 2026-11-10, which md_file_cap counts although .doc-reachability-ignore excludes them. The durable-document check (durable_docs_check.py --arc42) reports 16 findings: 3 arc42 headings, 1 extension label, 2 goal fields, 1 goal context and 1 lineage finding in docs/architecture/arc42.md, and 8 system-model rules whose owner files changed after their last review (RULE-ATOMIC-COMMIT-OR-REFUSAL, RULE-WRITE-SCOPE and RULE-CHECKS-ARE-READ-ONLY on src/world_substrate/engine.py and RULE-DERIVED-AUTHORITY on action_authoring.py, changed by the judge plan's J0; RULE-FROZEN-PROFILE on scripts/run_authored_world.py; RULE-APPROVAL-BEFORE-RUN, RULE-BUDGET-FAILS-CLOSED and RULE-DURABLE-RUN-RECORD on scripts/world_builder_service.py). Should the deep documents be linked closer or retired, the archive files excluded, the arc42 and goal fields filled and the rule reviews brought up to date?",
    "blocks": "Whether the wiki-compliance and durable-document checks pass again for every package in this repository.",
-   "resolves_with": "Argument: read the 13 older documents and link or retire them by the documentation rules (docs/AGENTS.md); link the J0 trace reads from docs/index.md (the judge's follow-up pull request #363 does); have md_file_cap honour .doc-reachability-ignore or link the archived OpenSpec changes; fill the arc42 goal fields from docs/GOAL.md; re-read the 8 rules against their owner files' changes and set reviewed_at (#363 re-reads the four J0 touched). No run needed.",
+   "resolves_with": "Audit 2026-11-12: Recheck present sources/counts under the applicable current standard. Repair actual navigation/authority/review gaps, distinguishing them from superseded checker expectations. Never rewrite historical evidence or refresh review dates without reading owner changes.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1786,7 +1833,7 @@ window.PAGE_DATA = {
    "short": "Does Jev's chance follow the facts",
    "question": "In the sawmill example, does Jev's chance that the blade fails today rise with days since service, or is it flat or coarse? The existing probe's chance answers were coarse (0.6, 0.55) and its choice probabilities were 0 or 1 (evidence/jev/maintenance-estimator-probe-v0.json).",
    "blocks": "Whether a chance roll on Jev gives a believable world in E1 (A1), and whether picks (E3) collapse to a certainty.",
-   "resolves_with": "One probe, E1's first step before the live run: 10 Jev calls, one for each of days 1 to 10 since service at load 14 (about $0.0003, measured per-call cost $0.0000279 from llm-cost estimate --task feedback-collector.triage --model jev), run as E1's first step. If flat, E1 reports it and the rule's question or reads change before the live run.",
+   "resolves_with": "Audit 2026-11-12: First state the scenario failure mechanism: monotonicity is not universally required and proves neither calibration nor believability. A targeted backend probe establishes sensitivity on its inputs only. Do not tune until probabilities look plausible and call that validation.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1803,7 +1850,7 @@ window.PAGE_DATA = {
    "short": "Do the declared reads leave out facts Jev needs",
    "question": "Jev sees only the fields an estimate rule declares (days since service, load), never the whole world: argument settles that (a whole-world read makes the cache key the whole world and can reach what A5 forbids). Do the sawmill rule's two declared reads leave out facts Jev needs, and which causal dependencies and interventions justify the read set? Comparisons with the plain version can reveal sensitivity, not prove sufficiency.",
    "blocks": "Which fields the E1 sawmill rule declares, and from E2 a rules-check warning when a rule reads too little; not the declared-reads design.",
-   "resolves_with": "First identify the scenario causal dependencies and interventions and justify the declared read set. E1 comparisons on 10 cases are sensitivity diagnostics, not proof that the read set is sufficient. A disagreement requires inspecting omitted mechanisms and facts, not assuming the whole-world answer is better. Add justified relevant reads; preserve the declared-read boundary.",
+   "resolves_with": "Audit 2026-11-12: Define dependencies, interventions and latent-state lifetime before justifying reads. Small comparisons are sensitivity diagnostics, not sufficiency proofs or evidence that more-context answers are better. Backend adequacy remains empirical.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1820,7 +1867,7 @@ window.PAGE_DATA = {
    "short": "A chance that someone notices",
    "question": "How should a chance decide whether an observation reaches a person (the harbourmaster noticing a hand-over), given that information delivery is not a field write?",
    "blocks": "Slice E5 and the port part of A5.",
-   "resolves_with": "A short design step opening E5: an estimate on the delivery of an information item (src/world_substrate/information.py:57), recorded like any estimate; what the person does after stays their resident's choice.",
+   "resolves_with": "Audit 2026-11-12: Separate delivery, sensory availability, noticing, interpretation and response. Put estimates only at declared uncertain events with dependencies/lifetimes; never equate delivery with belief or persuasion. E5 implementation and scenario adequacy remain open.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1838,7 +1885,7 @@ window.PAGE_DATA = {
    "short": "Jev latency in worlds with many chances",
    "question": "Successful Jev calls averaged 0.43 s, but 6.6% failed (network failures after 20.2 s on average), measured in ~/projects/data/llm_observability.db, 2026-11-10. With a 5 s timeout and one retry a chance takes about 0.61 s on average and at most 10 s (computed), about 18 s for a 30-day sawmill run; a world with many estimate rules could ask thousands of times. Does sequential asking fit the run-time targets?",
    "blocks": "Worlds with many estimate rules after E1; not E1 itself.",
-   "resolves_with": "E1's measured run times; add parallel asking within one moment only if a run shows it is needed.",
+   "resolves_with": "Audit 2026-11-12: Derive workload, cache misses, critical path, concurrency, quotas and memory first. One sawmill run cannot settle thousands-of-estimates performance. Measure a stated workload envelope including tails/saturation; parallelize only causally independent work.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1854,7 +1901,7 @@ window.PAGE_DATA = {
    "short": "Jev for the plain-words stopping point",
    "question": "The judge plan's J5 asks the judge after a changed round whether a plain-words stopping point is reached (about $0.0016 per call, gpt-6-luna). A Jev chance question over the world state would cost about 1/50 of that. Should J5 use Jev?",
    "blocks": "Nothing in the estimate-rules plan; an option for the judge plan's J5.",
-   "resolves_with": "The judge plan's call when J5 is built: Jev answers a probability that J5 would turn into stop or not, and Jev has not been shown to read a whole world's state well; J5 can test it on its own saved runs.",
+   "resolves_with": "Audit 2026-11-12: Retain adopted J5 assessment until substitution has a concrete justification. Stopping assesses an existing fact; do not sample confidence as a world event. Jev adequacy/cost need evidence on the same stopping questions and do not block estimate rules.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1892,7 +1939,7 @@ window.PAGE_DATA = {
    "short": "Do declared chances match Jev's",
    "question": "A rule can carry declared bands instead of an estimate: its checks choose among literal chances the rules writer writes (for the sawmill, under 5 days since service 0.05, 5 to 9 days 0.2, 10 or more 0.4), with no Jev call and no new code. On the 10 sawmill cases, do the bands the rules writer writes from the description give the same chances as Jev (within 0.1 on at least 8 of the 10)?",
    "blocks": "Whether E2's rules-writer instructions prefer declared bands for a chance that depends on one or two facts, keeping Jev for the rest; not E1.",
-   "resolves_with": "First justify the bands applicability, dependencies, thresholds and responses to investigation-relevant interventions. E1 variant (d) compares their outputs with Jev on 10 cases as a diagnostic only: agreement establishes neither interchangeability nor correctness. Prefer bands only when that analysis supports the approximation; disagreement or flat Jev answers alone does not select a winner.",
+   "resolves_with": "Audit 2026-11-12: Justify surrogate applicability, dependencies, thresholds and intervention responses first. Ten matching cases or flat Jev outputs establish neither interchangeability nor correctness. Bands are justified analytically when the stipulated mechanism is piecewise; otherwise adequacy stays unresolved.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1969,7 +2016,7 @@ window.PAGE_DATA = {
    "short": "A ruling can move goods at a price far from the world's price and nothing flags it",
    "question": "The J2 cold review (docs/planning/ai-judge/cold-review.md, item 7) found the sawmill ruling moved 3 logs for 1 coin against a world price of 10 and nothing flagged it. Since J3 a confirmed ruling like that is installed (or held) as a rule. In 18 live tries on the lumberyard world (tests/judge_worlds.py lumberyard; run on the J3 branch before it shipped) the judge wrote rules with literal totals or a free payment field that pass the rules check and the test run but do not tie the payment to the posted price. Should the rules check or the judge's review compare what a ruling moves with the prices the world states, and which of the two catches it?",
    "blocks": "Trust in installed rulings that move goods or coins; not the J3 mechanism, which installs only what passed the rules check and the test run.",
-   "resolves_with": "Run the saved sawmill ruling and the lumberyard rulings through a candidate comparison of moved values against stored price fields and read how many it flags and how many it flags wrongly; or a Brian decision that the owner's Approve is the check.",
+   "resolves_with": "Audit 2026-11-12: Distinguish posted price, negotiated offer, agreed consideration and mandatory pricing. Below-list-price transfers are not automatically wrong. Where the world requires price times quantity, preserve that contract or disclose unsupported arithmetic. Inspect saved rulings against that requirement; Q96 separately owns consent. Approval is not mathematical fidelity.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -1987,7 +2034,7 @@ window.PAGE_DATA = {
    "short": "The language gap never happened on price times quantity",
    "question": "The plan expected a price-times-quantity ruling to be refused as 'no rule could express this' because the rule language has no multiplication. In 19 paid tries on the lumberyard world (18 on a local service, 1 on the live service on 2026-11-11, evidence/ai-judge/j3/price-times-quantity) the judge never wrote a rule the rules check rejected: it wrote literal numbers or a free payment parameter, or withdrew, or said no rule was needed. The language-gap path works (tests/test_judge_rulings.py with a scripted judge) but has no live example. Is a gap rarer than the plan assumed, does A4's third case need a world where no literal can stand in for the arithmetic, or should a withdrawal that names the missing arithmetic count as a gap?",
    "blocks": "A4's third case (a ruling the language cannot express listed as a language gap) as a live saved run.",
-   "resolves_with": "Brian's reading of whether a scripted-judge saved run is an acceptable demonstration of the gap path, or a world and attempt found by reading the 18 tries' judge records for one where a literal cannot stand in.",
+   "resolves_with": "Audit 2026-11-12: Separate deterministic language-gap handling from how often a live model identifies gaps. A scripted case proves the path only; literal substitution may express an instance but not a general rule. Read existing attempts first; no repeated paid search for an illustrative failure. Preserve explicit live criteria as unmet unless authorized to change them.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -2003,7 +2050,7 @@ window.PAGE_DATA = {
    "short": "A later offer joins an installed rule only when the judge wrote the giver's move (waits on Q96)",
    "question": "The plan's example rule is the giver's move ('a person may hand coins they hold to a person at the same place'). In live runs the judge wrote either that (hand-over-coins: a second trader's later offer was decided by the rule with the judge not asked) or the receiver's acceptance (accept-coin-offer: a second trader's later offer was read as unmatched and the judge was asked again, producing a second near-duplicate rule). The live J3 runs (2026-11-11) showed both shapes are defective as rules (Q96): the giver's move settles without the receiver choosing, the receiver's move lets anyone take coins nobody offered. So this question now waits on Q96: once a two-person exchange has a sound rule shape, check that a second offer is read against it.",
    "blocks": "How reliably A4's 'decided by rule, judge not asked' shows on a second trader (the cold review's item 8 saw the same split).",
-   "resolves_with": "Reading the interpreter's reading of the second offer in the default-case tries and the judge's two rule shapes; then either a line in the judge's steps (Brian's call whether that is our own judge prompt, Q91) or an interpreter change.",
+   "resolves_with": "Audit 2026-11-12: Waits on Q96. Then inspect the second offer's interpretation and bound offer/response state for reuse without another ruling. Generic giver-rule reuse is not success if consent or exact terms disappear.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -2020,7 +2067,7 @@ window.PAGE_DATA = {
    "short": "The engine's own replay of a run that installed a rule mid-round",
    "question": "Engine.replay of a round that installs a rule mid-round fails because the world's recorded rule versions change when the rule is installed. The live path never calls it (a shared run replays from its recorded rounds, and each round continues from a sealed snapshot with the installed rules sealed beside it), so no saved run is affected. Does anything need the engine to replay a run that installed rulings, and if so should the event log record the install?",
    "blocks": "Nothing that exists; any future audit or export that replays a judged run through Engine.replay.",
-   "resolves_with": "Search for callers of Engine.replay on run records and decide whether an install event belongs in the event log; a test that replays a judged run.",
+   "resolves_with": "Audit 2026-11-12: Defer expansion absent a current consumer: live runs restore sealed snapshots/rulings, not Engine.replay of judged runs. Preserve rule/install provenance. If an audit/export needs command replay, include installs and demonstrate that contract; never equate projection replay with it.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -2036,7 +2083,7 @@ window.PAGE_DATA = {
    "short": "An installed coin rule lets a person take another's coins with no offer from them",
    "question": "In the live wait-approve run (evidence/ai-judge/j3/wait-approve, share F_ND9bo29lvp) the judge wrote the receiver's move, accept-coin-handover (the actor takes coins from a named trader at the same place), the review confirmed it and the owner approved it. Nothing in the world records an offer, so once installed the move was listed to everyone against every trader, and in round 4 Ines took 10 coins from Vik, who had offered nothing (r4-e00001). The other shape fails the other way: the giver's move hand-over-coins (evidence/ai-judge/j3/install-default) moves coins into the receiver's purse without the receiver choosing, though its ruling says it 'settles only if Rosa accepts'. In the 5 live tries where the judge ruled on Vik's offer and Ines's handover (default tries 1 to 3, wait tries hold-1 and hold-2), it wrote the receiver shape 4 times: the review withdrew it 3 times for this reason and confirmed it once (hold-2). How should a ruling that needs two people's choices become a rule: should a move that takes from someone other than the actor be offered only in answer to that person's routed attempt, should the rule language gain an offer, or should the judge be steered to the giver's move and the receiver's choice dropped?",
    "blocks": "Trust in installed rulings that move another person's goods or coins (A4, A5); not the install, hold, approve and reject mechanism itself.",
-   "resolves_with": "A free scripted replay of the wait-approve run with each candidate (offer the taking move only to the person an attempt was routed to, with that attempt's giver and amount) showing Ines can no longer take Vik's coins while Rosa can still take Ines's; then one live run. The decision it settles: which of the three shapes the judge's rules take; the first is preferred on argument (it keeps both choices and needs no new rule language), so the replay only has to show it works.",
+   "resolves_with": "Audit 2026-11-12: Require acceptance bound to a live offer, giver, recipient, amount and validity, then consume/expire it. Routed state suffices only if bindings survive discovery, delayed approval and replay; a routed prompt alone does not. Keep implementation open until unoffered/stale/reused taking fails and the actual offer succeeds, then inspect one bounded live interaction.",
    "owner": "agent",
    "status": "open",
    "sources": [
@@ -3537,12 +3584,6 @@ window.PAGE_DATA = {
     "explain": "Blocks: Adding any overlay term beyond the six bound M1 move kinds, and binding generated move kinds to a meaning.."
    },
    {
-    "id": "Q63",
-    "label": "Q63: A non-authoritative estimate as a rule input",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: The estimate-rules plan (docs/plans/estimate_rules.md) and its first slice E1; any world whose rules need a chance or amount that no installed mechanic computes.."
-   },
-   {
     "id": "Q64",
     "label": "Q64: Meaning is looked up by bare move name",
     "kind": "AgentQuestion",
@@ -3586,21 +3627,9 @@ window.PAGE_DATA = {
    },
    {
     "id": "Q72",
-    "label": "Q72: Living-scene profiles refuse a render key the layout reads (plausible)",
+    "label": "Q72: Living-scene profile and layout disagree on render (confirmed)",
     "kind": "AgentQuestion",
     "explain": "Blocks: Whether a scene author can set the gather radius the layout documents.."
-   },
-   {
-    "id": "Q73",
-    "label": "Q73: Decision 006's wrong-when names a missing adapter",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: Whether that wrong-when condition can ever be checked.."
-   },
-   {
-    "id": "Q75",
-    "label": "Q75: Constraint question or someone's choice",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: J2's routing step and A5 (Rosa's own resident decides accept or refuse).."
    },
    {
     "id": "Q76",
@@ -3610,7 +3639,7 @@ window.PAGE_DATA = {
    },
    {
     "id": "Q77",
-    "label": "Q77: Wiki cap and durable-document checks fail on main",
+    "label": "Q77: Documentation and AES conformance gaps",
     "kind": "AgentQuestion",
     "explain": "Blocks: Whether the wiki-compliance and durable-document checks pass again for every package in this repository.."
    },
@@ -3877,13 +3906,6 @@ window.PAGE_DATA = {
     "label": "Readout",
     "kind": "Concept",
     "explain": "One AI summary of a run whose every cited event id is checked against the run."
-   },
-   {
-    "id": "recorded-estimate",
-    "label": "Recorded estimate",
-    "kind": "Concept",
-    "dashed": true,
-    "explain": "Plan estimate-rules E1 (planned, not implemented): on the event, the question, the declared inputs and their values, Jev's answer, the model version returned, the trace id, the cost and whether it was reused from the run's cache; evidence, never world state (Q63)."
    },
    {
     "id": "resident",
@@ -4388,30 +4410,6 @@ window.PAGE_DATA = {
     "label": "bears on"
    },
    {
-    "id": "Q63-mechanic",
-    "source": "Q63",
-    "target": "mechanic",
-    "label": "bears on"
-   },
-   {
-    "id": "Q63-skill-roll",
-    "source": "Q63",
-    "target": "skill-roll",
-    "label": "bears on"
-   },
-   {
-    "id": "Q63-estimate-rule",
-    "source": "Q63",
-    "target": "estimate-rule",
-    "label": "bears on"
-   },
-   {
-    "id": "Q63-recorded-estimate",
-    "source": "Q63",
-    "target": "recorded-estimate",
-    "label": "bears on"
-   },
-   {
     "id": "Q64-sense",
     "source": "Q64",
     "target": "sense",
@@ -4517,24 +4515,6 @@ window.PAGE_DATA = {
     "id": "Q72-scene-replay",
     "source": "Q72",
     "target": "scene-replay",
-    "label": "bears on"
-   },
-   {
-    "id": "Q73-resident",
-    "source": "Q73",
-    "target": "resident",
-    "label": "bears on"
-   },
-   {
-    "id": "Q75-judge-ruling",
-    "source": "Q75",
-    "target": "judge-ruling",
-    "label": "bears on"
-   },
-   {
-    "id": "Q75-resident",
-    "source": "Q75",
-    "target": "resident",
     "label": "bears on"
    },
    {

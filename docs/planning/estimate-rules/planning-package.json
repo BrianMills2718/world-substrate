@@ -7,17 +7,17 @@
  "parts": {
   "checks": {
    "status": "present",
-   "path": "docs/planning/estimate-rules/checks.txt",
+   "path": "docs/planning/checks.txt",
    "results": [
     {
      "name": "durable documents (arc42)",
      "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
      "exit_status": 1,
      "counts": {
-      "findings": 12
+      "findings": 16
      },
      "tracked_by": "Q77",
-     "note": "12 findings in documents this plan does not touch: 8 arc42 and goal-field findings in docs/architecture/arc42.md and 4 system-model rules marked stale because their owning scripts changed (judge slices); the same on origin/main eefcb16, since this change edits no arc42, goal or system-model rule."
+     "note": "8 arc42 and goal-field findings in docs/architecture/arc42.md and 8 STALE system-model rules whose owner files changed after review; the same 16 on origin/main d89a446 (md_file_cap's durable column reports 16 for both refs), none added by this change."
     },
     {
      "name": "project navigation",
@@ -41,8 +41,19 @@
      "command": "python3 scripts/check_trace_reads.py --root evidence",
      "exit_status": 0,
      "counts": {
-      "runs": 39,
+      "runs": 38,
       "problems": 0
+     }
+    },
+    {
+     "name": "project check (tests, system model, docs)",
+     "command": "/home/brian/.local/bin/uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with pytest-xdist --with gdm-concordia==2.4.0 python scripts/check_project.py",
+     "note": "counts from its line 'Neutral runtime tests: N passed, M skipped' (pytest-xdist)",
+     "exit_status": 0,
+     "counts": {
+      "tests_run": 891,
+      "failed": 0,
+      "skipped": 2
      }
     },
     {
@@ -50,40 +61,18 @@
      "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
      "exit_status": 1,
      "counts": {
-      "md_files": 167,
-      "exception_limit": 180,
-      "unreachable": 27,
-      "not_linked_from_entry": 14,
-      "more_than_two_links_deep": 13,
-      "durable_findings": 12
+      "md_files": 162,
+      "cap": "exception",
+      "unreachable": 28,
+      "not_linked": 10,
+      "more_than_two_links_deep": 18,
+      "durable_findings": 16
      },
      "tracked_by": "Q77",
-     "note": "Also exits 1 on origin/main eefcb16: this change adds no Markdown file (it edits the plan only), so the 167 files, the 27 unreachable (older documents, judge trace reads such as evidence/ai-judge/j1/port/TRACE_READ.md, archived OpenSpec files) and the 12 durable findings are the same there."
-    },
-    {
-     "name": "doc reachability",
-     "command": "python3 $HOME/code2/workspace/scripts/doc_reachability.py .",
-     "exit_status": 1,
-     "counts": {
-      "reachable": 130,
-      "unreachable": 1
-     },
-     "note": "The one unreachable file is the judge's evidence/ai-judge/j1/port/TRACE_READ.md, merged on origin/main eefcb16 by the judge's J1 slice; this change adds no Markdown file and does not touch it.",
-     "tracked_by": "Q77"
-    },
-    {
-     "name": "project check (tests, system model, docs)",
-     "command": "/home/brian/.local/bin/uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with pytest-xdist --with gdm-concordia==2.4.0 python scripts/check_project.py",
-     "note": "counts from its line 'Neutral runtime tests: 902 passed, 2 skipped, 222 subtests passed' (pytest-xdist), run on commit 590530c of this change; ship reruns it on the merged commit",
-     "exit_status": 0,
-     "counts": {
-      "tests_run": 902,
-      "failed": 0,
-      "skipped": 2,
-      "subtests_passed": 222
-     }
+     "note": "Run with --ref HEAD: without it the script checks the default branch, not this change. All 28 unreachable documents are also unreachable on origin/main d89a446 (29 there; docs/planning/ai-judge/cold-review.md is reachable here): 13 older documents, the 5 J0 trace reads (now linked from docs/catalog.md, still more than two links deep), and 10 files under openspec/changes/archive/ from 2026-11-10 (md_file_cap does not read .doc-reachability-ignore)."
     }
-   ]
+   ],
+   "basis": "Shared repository check snapshot from the repository package, not a new run or plan acceptance. Refresh all package check records together after the current normative audit."
   },
   "open_questions": {
    "status": "present",
@@ -173,8 +162,12 @@
     "world-design": "scripts/generate_world_bundle.py:53",
     "rules-review": "scripts/review_rules.py:75",
     "run-stop": "scripts/run_stop.py:65",
-    "consequence-report": "scripts/consequence_report.py:67"
-   }
+    "consequence-report": "scripts/consequence_report.py:67",
+    "judge-ruling": "scripts/judge.py:288",
+    "ruling-rule": "scripts/rulings.py:91",
+    "midrun-setting": "scripts/rulings.py:47"
+   },
+   "spectrum": "docs/model/semantic-spectrum.json"
   },
   "diagrams": {
    "status": "present",
@@ -232,11 +225,12 @@
    "cost_basis": {
     "steps": [
      {
-      "step": "Jev estimate (new, E1: one call per distinct question and inputs per run, on a cache miss)",
+      "step": "Jev blade estimates only: illustrative 30-day component, excluding crossings and retries",
       "cost_per_run_usd": 0.00084,
       "calls_per_run": 30,
-      "basis": "measured",
-      "evidence": "llm-cost estimate --task feedback-collector.triage --model jev (2026-11-10): 14,222 calls, $0.3963 in all, $0.0000279 per call, median 656 input and 78 output tokens; the probe evidence/jev/maintenance-estimator-probe-v0.json measured $0.000027 per call (5 calls, trace world-substrate/jev/probe-eb6d836e64). The model registry has no Jev token price; cost is provider-reported. Calls: at most 30 per sawmill run (one chance question a day for 30 days; fewer with the per-run cache), 30 x $0.0000279 = $0.00084; the one retry on the measured 6.6% of failed calls adds about $0.00006."
+      "basis": "guess",
+      "evidence": "llm-cost estimate --task feedback-collector.triage --model jev (2026-11-10): 14,222 calls, $0.3963 in all, $0.0000279 per call, median 656 input and 78 output tokens; the probe evidence/jev/maintenance-estimator-probe-v0.json measured $0.000027 per call (5 calls, trace world-substrate/jev/probe-eb6d836e64). The model registry has no Jev token price; cost is provider-reported. Illustrative blade-only component: 30 calls x historical $0.0000279/call = $0.000837 (rounded $0.00084), before retries. This is not a measured sawmill run or total estimate workload. Total estimate requests are blade cache misses + crossing/A7 cache misses + retries; count the chosen fixture before execution.",
+      "estimate_method": "Computed from a historical measured per-call average; transfer to this new workload is a guess. The native computed-cost schema supports token pricing only, and Jev bills provider-reported cost."
      },
      {
       "step": "Concordia residents (existing call, E1 live run: A1 needs Mara's own move and reason)",
@@ -252,7 +246,7 @@
        "output_tokens_per_call": 124,
        "output_usd_per_mtok": 0.5
       },
-      "evidence": "Calls: two people over 30 days at 4 resident calls per person per day = 240. Tokens: mean per call in evidence/open-attempt/s2-airfield/llm-calls.jsonl (saved airfield run: one person, 9 rounds, 36 resident and 12 interpreter calls, 1 readout call, all openrouter/openai/gpt-6-luna, 0 cached tokens; recorded per-call costs $0.000188, $0.000133 and $0.000307 match the arithmetic). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing. With Waltzman-sized prompts (evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl: residents 2,761 input and 223 output tokens, $0.000388 per call; interpreter 3,231 and 242, $0.000444) the residents cost $0.093 and the interpreter $0.035, and the whole E1 run about $0.13, which is the run cap (docs/plans/estimate_rules.md, LLM call boundary and cost)."
+      "evidence": "Calls: two people over 30 days at 4 resident calls per person per day = 240. Tokens: mean per call in evidence/open-attempt/s2-airfield/llm-calls.jsonl (saved airfield run: one person, 9 rounds, 36 resident and 12 interpreter calls, 1 readout call, all openrouter/openai/gpt-6-luna, 0 cached tokens; recorded per-call costs $0.000188, $0.000133 and $0.000307 match the arithmetic). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing. With Waltzman-sized prompts (evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl: residents 2,761 input and 223 output tokens, $0.000388 per call; interpreter 3,231 and 242, $0.000444) the residents cost $0.093 and the interpreter $0.035, before additional crossing estimates, retries and workload variation. The E1 cap is $0.13; it limits spending and does not guarantee completion (docs/plans/estimate_rules.md, LLM call boundary and cost)."
      },
      {
       "step": "attempt interpreter (existing call, E1 live run)",
@@ -268,7 +262,7 @@
        "output_tokens_per_call": 68,
        "output_usd_per_mtok": 0.5
       },
-      "evidence": "Calls: two people over 30 days at 1.33 interpreter calls per person per day (12 per 9 person-rounds) = 80. Tokens: mean per call in evidence/open-attempt/s2-airfield/llm-calls.jsonl (saved airfield run: one person, 9 rounds, 36 resident and 12 interpreter calls, 1 readout call, all openrouter/openai/gpt-6-luna, 0 cached tokens; recorded per-call costs $0.000188, $0.000133 and $0.000307 match the arithmetic). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing. Residents, interpreter, readout and Jev together: about $0.057 per run, so the E1 run is about $0.06 for two people over 30 days."
+      "evidence": "Calls: two people over 30 days at 1.33 interpreter calls per person per day (12 per 9 person-rounds) = 80. Tokens: mean per call in evidence/open-attempt/s2-airfield/llm-calls.jsonl (saved airfield run: one person, 9 rounds, 36 resident and 12 interpreter calls, 1 readout call, all openrouter/openai/gpt-6-luna, 0 cached tokens; recorded per-call costs $0.000188, $0.000133 and $0.000307 match the arithmetic). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing. Residents, interpreter, readout and Jev together: about $0.057 per run, an illustrative subtotal about $0.06 for two people over 30 days before extra crossing estimates, retries and workload variation."
      },
      {
       "step": "run readout (existing call, E1 live run, once)",
@@ -324,7 +318,7 @@
       "evidence": "llm-cost estimate --task world-substrate-mechanic-authoring (2026-11-10): 68 calls, median $0.0021 per call, median 11,551 input and 1,574 output tokens, 0% cached. Estimate rules add a few lines to its output; no new call."
      }
     ],
-    "cheapest_design": "Cheapest design that still does the job. Two designs cost nothing per run. (1) A chance formula written into the rule by the rules writer (p = 0.03 x days since service): the rule language has no arithmetic between two values (docs/plans/ai_judge.md Decided 3), so it would need a language change of its own. (2) Declared bands: the rule's ordinary checks choose among literal chances the rules writer writes (sawmill: under 5 days since service 0.05, 5 to 9 days 0.2, 10 or more 0.4), drawn against the same run seed; no arithmetic, no estimator, no Jev call, and a literal chance is the path the rule's {use: value} fallback already takes, so E1 gets bands with no new code. Against bands: every number is the rules writer's guess fixed at build time, the facts count only at the band edges, the numbers multiply with the facts (3 facts in 3 bands each is 27 chances to write and check), and Brian asked for rules that propagate based on Jev. That is an argument about fit, not proof, so E1 measures it as variant (d) of the plain-version comparison (one rules-writer call, measured median $0.0021): agreement within 0.1 on at least 8 of 10 cases is diagnostic only. E2 may prefer bands only after applicability, dependency, threshold and intervention analysis supports that approximation (Q88); agreement does not establish interchangeability or correctness. Jev costs under $0.001 per 30-day run with the per-run cache (one call per distinct question and inputs), reads only the declared fields, and needs no language arithmetic. Chosen: Jev with the per-run cache, with declared bands as the cheaper rival measured in E1 (inferred by agent, 2026-11-10). The binding constraint is latency, not cost (measured, ~/projects/data/llm_observability.db, 2026-11-10): successful Jev calls averaged 0.43 s (99th percentile 2.8 s), but 6.6% of calls failed, provider errors after 0.89 s and network errors after 20.2 s on average. With a 5 s timeout per try and one retry (plan Decided 7), an estimate takes about 0.933 x 0.43 + 0.037 x (0.89 + 0.43) + 0.029 x (5 + 0.43) = 0.61 s on average (computed) and at most 10 s before its fallback, about 18 s for a 30-day run; without the timeout about 1.05 s, about 32 s per run (Q85). For the judge's stopping point, a Jev chance question would cost about 1/50 of the judge's $0.0016 per check; that option is recorded for the judge plan's J5 (Q86), not taken here."
+    "cheapest_design": "Cheapest design that still does the job. Two designs cost nothing per run. (1) A chance formula written into the rule by the rules writer (p = 0.03 x days since service): the rule language has no arithmetic between two values (docs/plans/ai_judge.md Decided 3), so it would need a language change of its own. (2) Declared bands: the rule's ordinary checks choose among literal chances the rules writer writes (sawmill: under 5 days since service 0.05, 5 to 9 days 0.2, 10 or more 0.4), drawn against the same run seed; no arithmetic, no estimator, no Jev call, and a literal chance is the path the rule's {use: value} fallback already takes, so E1 gets bands with no new code. Against bands: every number is the rules writer's guess fixed at build time, the facts count only at the band edges, the numbers multiply with the facts (3 facts in 3 bands each is 27 chances to write and check), and Brian asked for rules that propagate based on Jev. That is an argument about fit, not proof, so E1 measures it as variant (d) of the plain-version comparison (one rules-writer call, measured median $0.0021): agreement within 0.1 on at least 8 of 10 cases is diagnostic only. E2 may prefer bands only after applicability, dependency, threshold and intervention analysis supports that approximation (Q88); agreement does not establish interchangeability or correctness. The illustrative blade-only estimate component costs about $0.00084 for 30 calls using the historical per-call average, excluding crossings and retries; this is not a whole-run bound. The per-run cache keys resolved model, estimator/prompt version, question, type/options and read values, reads only the declared fields, and needs no language arithmetic. Chosen: Jev with the per-run cache, with declared bands as the cheaper rival measured in E1 (inferred by agent, 2026-11-10). Historical provider latency is a candidate constraint, not a demonstrated bottleneck for this workload (measured, ~/projects/data/llm_observability.db, 2026-11-10): successful Jev calls averaged 0.43 s (99th percentile 2.8 s), but 6.6% of calls failed, provider errors after 0.89 s and network errors after 20.2 s on average. With a 5 s timeout per try and one retry (plan Decided 7), an estimate takes about 0.933 x 0.43 + 0.037 x (0.89 + 0.43) + 0.029 x (5 + 0.43) = 0.61 s on average (computed) and at most 10 s before its fallback, about 18 s for 30 sequential blade-estimate calls, excluding crossing calls and other work; without the timeout about 1.05 s, about 32 s for those 30 calls (Q85). For the judge's stopping point, a Jev chance question would cost about 1/50 of the judge's $0.0016 per check; that option is recorded for the judge plan's J5 (Q86), not taken here."
    },
    "plain_baseline": {
     "kind": "planned",
@@ -346,11 +340,11 @@
    "stage_effects": [
     {
      "stage": "declared reads: Jev shown only the fields the rule declares, not the whole world (E1)",
-     "gap": "the plain version (whole world) could let unrelated facts or a resident's words move the chance, and makes the cache key the whole world, so nothing is reused; whether declared reads change Jev's answer is untested until E1's comparison (Q83)",
+     "gap": "the plain version (whole world) could let unrelated facts or a resident's words move the chance, and makes the cache key the whole world, so unrelated world changes invalidate reuse; whether declared reads change Jev's answer is untested until E1's comparison (Q83)",
      "status": "untested"
     },
     {
-     "stage": "per-run cache: one Jev call per distinct question and inputs (E1)",
+     "stage": "per-run cache: resolved model, estimator/prompt version, question/type/options and read values (E1)",
      "gap": "not an answer-quality stage: it removes repeat calls with identical inputs; its effect on cost and time is measured in E1",
      "status": "untested"
     },
@@ -386,5 +380,45 @@
    "reviewed_revision": "8fff8596d96fecabecfe86c69ff1e057966054eb"
   }
  },
- "note": "This is the plan's own package, named by docs/plans/estimate_rules.md's 'Planning package:' line. It shares the repository's open-questions ledger, system model, domain model, metamodel and diagrams with docs/planning/planning-package.json and the declared-laws, open-attempt and ai-judge packages (all rebuilt by tools/planning/build.py, which now also rebuilds every review page). The plan's four new concepts (estimate-rule, estimator, recorded-estimate, recorded-draw) are in the domain model as 'In documents only' (planned, not implemented). Q63 is reopened with Brian's 2026-11-10 words and answered by the plan; its uncertainties are Q82-Q86 and Q88 (open, all agent-owned), Q87 (what the free test run does with a chance and how Jev spend is counted, resolved by argument), Q89 (why estimate rules stay inside Decision 006 as Decision 009 reads it, resolved by agent argument after Q27's precedent; Brian can reopen it) and the existing Q33 (the run seed, shared with the skill roll). No paid call was made for planning: the plain-version comparison (four variants, up to $0.0065) and a 10-call Jev probe (about $0.0003) are E1's first steps. The system model and domain model blocks are copied from the repository package docs/planning/planning-package.json, whose implemented map is the current one. Diagrams: this package lists the container view (ODD section 3, drawn on its page with the estimator added), the domain map and the open-questions map, all drawn on its page. The metamodel graph is left out of this package on purpose: it shows kinds that are built, and the estimate block and the recorded draw are planned, so they are added to docs/model/METAMODEL.md, ODD.md and metamodel.graph.json by slice E1 when they exist; the repository package's page draws the current metamodel. Replay by recorded commands (Engine.replay_commands, src/world_substrate/engine.py:1182) has no node of its own in the domain model: a new built concept must carry a code location in every package's implemented map, including the ai-judge package, which this plan does not edit; the plan cites the code directly (Current truth). The acceptance criteria cite this plan's own run-page router record, docs/planning/estimate-rules/router/run-page.recommendation.json. Checks were run for this package into docs/planning/estimate-rules/checks.txt."
+ "note": "Plan-specific package linked from its owning plan. Shares repository checks, question ledger, domain model and semantic spectrum with docs/planning/planning-package.json. Its acceptance, plan and cold-review remain scoped to this plan; old review verdicts do not certify current edits.",
+ "initiative": {
+  "id": "world-substrate",
+  "role": "home"
+ },
+ "runs_in_production": true,
+ "spectrum_rungs": {
+  "name": "README.md:1",
+  "controlled_vocabulary": "docs/model/semantic-spectrum.json",
+  "glossary": [
+   "docs/model/DOMAIN.md",
+   "docs/model/modeling-choices.md"
+  ],
+  "thesaurus": "docs/model/semantic-spectrum.json",
+  "informal_taxonomy": "docs/model/semantic-spectrum.json",
+  "formal_taxonomy": "docs/model/domain.graph.json",
+  "domain_model": "docs/model/domain.graph.json",
+  "schema": [
+   "schemas/world-authoring-bundle-v0.schema.json",
+   "src/world_substrate/model.py"
+  ],
+  "rules": [
+   "docs/model/trace.yaml",
+   "src/world_substrate/rules.py"
+  ],
+  "instances": "reference_worlds/waltzman/coordination-lab-v0.json",
+  "architecture_views": [
+   "docs/architecture/arc42.md",
+   "docs/architecture/model.c4"
+  ],
+  "behavior_models": "docs/model/ODD.md",
+  "interface_contracts": [
+   "openspec/specs/transition-engine/spec.md",
+   "openspec/specs/world-authoring-bundle/spec.md"
+  ],
+  "executable_specifications": [
+   "tests/test_action_envelopes.py",
+   "tests/test_first_fill.py"
+  ]
+ },
+ "spectrum_basis": "Repository-scoped evidence shared by plan packages: the World Builder is an existing deployed product, while individual plan slices remain built/not-built as their acceptance records state. The domain taxonomy is a flat, typed classification by implementation authority (Substrate, Family, PerWorld, Reference, Theory), not a claim of a deeper inheritance hierarchy. No digital-twin or validated predictive-simulation rung is asserted."
 }

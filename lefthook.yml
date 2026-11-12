@@ -1,7 +1,11 @@
 remotes:
-  - git_url: git@github-personal:BrianMills2718/code2-workspace.git
-    ref: main
+- git_url: git@github-personal:BrianMills2718/code2-workspace.git
+  ref: main
     # lefthook never refreshes its cached copy of the shared config on its own; re-fetch it once a day.
-    refetch_frequency: 24h
-    configs:
-      - hooks/base.yml
+  refetch_frequency: 24h
+  configs:
+  - hooks/base.yml
+pre-commit:
+  commands:
+    lockstep:
+      run: for c in "" trace sources docmeta; do [ -z "$c" ] && ! git rev-parse -q --verify HEAD >/dev/null && continue; uvx --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical lockstep check $c || exit 1; done

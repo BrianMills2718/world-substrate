@@ -6,6 +6,8 @@ description: World Substrate owns only the governed-rules layer; minds and sched
 
 Governs: RULE-DERIVED-AUTHORITY, src/world_substrate/action_authoring.py
 
+Source: Brian, 2026-10-05, "i approve", approving the recommended option as recorded under Decided by and Context below.
+
 **Status:** accepted
 **Date:** 2026-10-05
 **Decided by:** Brian (approved the recommended option in session, 2026-10-05: "i approve")

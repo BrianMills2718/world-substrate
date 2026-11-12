@@ -6,6 +6,8 @@ description: Observability of every transition is required; exact deterministic 
 
 Governs: RULE-DURABLE-RUN-RECORD, RULE-PROJECTION-FROM-CANONICAL-ONLY
 
+Source: historical accepted record dated 2026-09-02, Context and Decision below; the original decider and approval quotation are not retained in this file. This provenance note does not assert a new approval.
+
 **Status:** accepted  
 **Date:** 2026-09-02  
 **Supersedes:** project-wide interpretations of replay in planning and architecture; does not supersede M1 evidence or `core-v0`

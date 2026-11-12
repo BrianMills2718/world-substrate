@@ -1,2 +1,9 @@
-limit: 180
-reason: "Active plans with their /goal launchers, cited audits, research notes and one TRACE_READ.md per saved run are the project's development record; scripts/check_trace_reads.py requires a TRACE_READ.md for every run reported as evidence. Each is linked from docs/catalog.md or docs/index.md."
+limit: 183
+reason: 'Measured at 544c086: 183 tracked Markdown files, including required per-run
+  TRACE_READ records and historical OpenSpec change records. Preserve that evidence;
+  current authority remains docs/index.md and roadmap/README.md. New authored documents
+  require a fresh justification rather than automatic growth.'
+unlinked_ok:
+- path: openspec/changes/archive/
+  reason: Historical change proposals and deltas; current required behavior is openspec/specs/,
+    linked from the documentation index.

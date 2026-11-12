@@ -6,6 +6,8 @@ description: Keep semantic world description separate from the causal mechanics 
 
 Governs: RULE-ATOMIC-COMMIT-OR-REFUSAL, RULE-WRITE-SCOPE, RULE-CHECKS-ARE-READ-ONLY, RULE-INFORMATION-IS-NOT-CAUSE
 
+Source: historical accepted record dated 2026-09-02, Context and Decision below; the original decider and approval quotation are not retained in this file. This provenance note does not assert a new approval.
+
 **Status:** accepted  
 **Date:** 2026-09-02  
 **Related:** [Decision 001](001-project-scope.md), [Decision 002](002-observability-and-replay.md)
@@ -61,6 +63,10 @@ The first extensibility experiment is pre-run and agent-assisted:
 6. run the simulation under that profile.
 
 A mechanics agent may generate declarative mechanics or executable source offline. Scenario/content authoring may only instantiate or configure installed mechanics. Runtime invention or revision of underlying world laws, including retroactive correction and branching semantics, is deferred.
+
+## Later scoped amendment (2026-11-12 reconciliation)
+
+Decision 007 and the adopted [AI judge plan](../plans/ai_judge.md) supersede the historical deferral of runtime rule invention for the checked J3 path. Semantic description still has no consequence authority by itself; the engine commits only through installed, checked mechanics.
 
 ## Consequences
 

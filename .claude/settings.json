@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && PCW_MODE=block uvx --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical lockstep-hook",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

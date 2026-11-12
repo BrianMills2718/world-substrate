@@ -6,6 +6,8 @@ description: "Knock-on effects that declare timing 'immediately' run to the end 
 
 Governs: src/world_substrate/engine.py, docs/plans/open_attempt.md
 
+Source: Brian, 2026-10-26, "i approve", answering Q27 with its recommendation; November 10 amendment approval quoted under Amended below.
+
 **Status:** accepted
 **Date:** 2026-10-26
 **Decided by:** Brian, in session 2026-10-26: "i approve", answering open question Q27 with its recommendation.

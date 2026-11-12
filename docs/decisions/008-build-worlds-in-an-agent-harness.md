@@ -6,6 +6,8 @@ description: "World Builder builds worlds inside an agent harness (Codex on Open
 
 Governs: scripts/people_world.py, scripts/world_builder_service.py, spikes/any-scenario-2026-10
 
+Source: Brian, 2026-10-16, the harness and OpenRouter instructions quoted under Decided by below.
+
 **Status:** accepted (implementation in progress)
 **Date:** 2026-10-16
 **Decided by:** Brian, in session 2026-10-16: "codex agents should be able to flexibly build and then lint/test and then do small etis and iterate untile ach step is done"; "this is rediculous that we arent using the actual harness and are using bare llm calls. no wodner we are having so much problems. please make sure tot odcuemnt this leanring"; billing: "yeah we can use openrotuer".

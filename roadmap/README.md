@@ -9,9 +9,35 @@ reviewed_through: 2026-11-10
 # World Substrate living roadmap
 
 **Authority:** [Decision 006](../docs/decisions/006-governed-rules-layer-scope.md) (current scope: the governed-rules layer on commodity runtimes), [Decision 007](../docs/decisions/007-any-scenario-path.md) (describe any scenario), [Decision 008](../docs/decisions/008-build-worlds-in-an-agent-harness.md) (build worlds in an agent harness), [Decision 009](../docs/decisions/009-same-moment-knock-on-effects.md) (same-moment effects are rule semantics), and Decisions [001](../docs/decisions/001-project-scope.md) to [005](../docs/decisions/005-native-waltzman-delivery.md). Architecture: [arc42](../docs/architecture/arc42.md). Required behavior: the [capability specs](../docs/index.md#2-what-the-code-must-do-openspec-capability-specs).
-**Stage (2026-11-09, `main` at `0e66a98`, #345):** live World Builder alpha. A plain description becomes a world with declared laws and rules, a second model reviews the rules, a free scripted test checks them, and Concordia residents play it live; residents can write open attempts and requests reach the person asked. Two adopted plans are under way: [declared laws](../docs/plans/declared_laws.md) (S1 to S3 built, S4 under way, S5's paid builds wait on Q50) and [open attempts](../docs/plans/open_attempt.md) (S1 and S2 built, S3 skill rolls not built).
+**Stage (reconciled 2026-11-12):** live World Builder alpha. Declared-laws S1–S3, open-attempt S1–S2 and AI-judge J0–J3 are built; their plan status sections distinguish delivered code from observed evidence. Skill rolls and estimate rules remain unbuilt. Declared-laws S5 follows Q60; Q50 is resolved and is not a believability gate. Brian’s November 12 request makes normative documentation, plan reconciliation and question disposition the current task before further implementation.
 **Recent work (#323 to #345, 2026-10-31 to 2026-11-09):** requests reach the person asked (#326); a shared run shows its picture and can be watched (#328, #329, #331); refusals say what really happened (#333); the Network shows one round and uses the fast layout (#338, #344); the Waltzman rebuild was recorded (#339); the planning package caught up (#340); model routes were renamed (#341); the Waltzman lineage review was written, its recommendations not adopted (#342); Brian's scale reason for rules over an AI judge was recorded (#345).
 **Deployment boundary:** the World Builder backend runs on the personal VPS and its pages on Cloudflare; shipping is `scripts/deploy_world_builder.sh`. The donor-backed `/waltzman/` demo stays a fallback and must not be presented as a native run.
+
+## Pre-implementation review and AES adoption (2026-11-12)
+
+The review covers current architecture, accepted decisions, four active plans, their packages and all 49
+previously open questions. Three conceptual questions are resolved (Q63, Q73, Q75); 46 remain because the
+ledger also tracks known defects, unbuilt contracts and empirical evidence. An open implementation item is
+not an undecided design principle. Do not require fabricated closure before building the evidence it needs.
+
+AES currently means Lockstep plus the feedback and policy layers. The approved one-tool design keeps
+OpenSpec, installs Lockstep from AES canonical, and retains Company Planning's substantive review workflow.
+The legacy `aes` CLI and `.aes/target.yaml` are not the adoption target. [Lockstep configuration](../lockstep.yaml)
+declares the normative-document/specification scope; Claude/Codex hook entries and a lefthook command are
+configured. Runtime files are not yet covered by that layout, and this review does not claim installed git-hook
+execution merely from a configuration file. The existing global hook chain remains unchanged.
+
+`make planning-check` checks source attribution, the three acceptance files used by the four plans, and
+OpenSpec; it is now part of `make check`. `make lockstep` additionally exposes the whole-tree/trace checks.
+The baseline trace check reports 344 missing requirement-to-code/test links. Its blocking configuration is
+preserved; full trace conformance is not claimed. Q77 owns the remaining compliance gap. Plan-format checks,
+substantive review and complete runtime traceability are separate claims.
+
+The documented design defaults preserve actor-owned choices, norms distinct from constraints, explicit
+estimate semantics, scenario-specific skill/price assumptions and first-principles adequacy before empirical
+comparison. Remaining behavioral, performance and implementation questions retain their closure evidence in
+the [ledger](../docs/planning/open-questions.json). Checks and cold-review reports bind their own revisions;
+this paragraph does not declare universal optimality or predictive validity.
 
 ## Outcome and success criteria
 
@@ -133,13 +159,19 @@ Hard constraints:
 | Natural-language World Builder | live since 2026-10-05 | one box, Create simulation, live play, share links |
 | Concordia residents | live since 2026-10-16 | AI residents through an established framework |
 | Open attempts | S1 and S2 built; S3 not built | own-words attempts; same-moment knock-on effects; skill rolls next |
-| AI judge ([plan](../docs/plans/ai_judge.md)) | J0, J1, J2 and J3 built 2026-11-10; J5 next; J4 exploration only | knock-on chains of any length; an AI judge (Concordia's game master) rules only on what no rule covers, from the engine's consequence report |
+| AI judge ([plan](../docs/plans/ai_judge.md)) | J0, J1, J2 and J3 built 2026-11-10; Q96 exchange consent before J5; J4 exploration only | knock-on chains of any length; an AI judge (Concordia's game master) rules only on what no rule covers, from the engine's consequence report |
 | Declared laws | S1 to S3 built; S4 under way; S5 follows the plain-version comparison (Q60) | worlds declare laws, the engine keeps them, a second model reviews the rules |
 | Estimate rules | plan 2026-11-10, package compliant (#366); nothing built | a rule's outcome can depend on a chance Jev estimates from named facts, rolled, recorded and replayed without Jev; only slice E4 (judge-proposed estimate rules) waits for the judge's J3 ([plan](../docs/plans/estimate_rules.md)) |
 | Hardening | queued | law fingerprint with compiler version, role-bound scopes, visible discovery overflow, recorded mechanic exceptions, locking |
 | Persistence and second-domain proof | later | saved user worlds beyond share links; proof beyond Waltzman |
 
-### Active slice — declared laws S4, then skill rolls
+### Current task — preimplementation readiness review
+
+Source: Brian, 2026-11-12: "before we move to implementaiotn ... make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved ... maybe get complaint with the new aes canonical system". Reconcile the actual current standard, authoritative documents and every question before resuming implementation. A resolved design decision is not evidence that its code works. Questions requiring implementation, calibration or scale evidence stay explicit with closure conditions; do not close them to produce a zero count.
+
+The modeling guide’s [biosurveillance application](../docs/model/modeling-choices.md#worked-application-the-biosurveillance-partnership) recommends causal separation for the next social-model slice; it is not an independent implementation authorization or replacement roadmap.
+
+### Previously planned implementation sequence (conditional on this review)
 
 1. **Declared laws S4** ([plan](../docs/plans/declared_laws.md)): let declared laws and the rules review retire the hand-written build checks. Done so far: free replay of every saved world (`scripts/check_saved_worlds.py`), fixes from the S4 live builds (one-way moves kept #309, places and owners shown to the reviewer #310, fields only one thing can fill #312, people worlds get laws and review #314, every kept people try reviewed #317, trades named from one side #319, the round told to each person #320 and #323). Not yet done: retiring any hand-written check (Q45).
 2. **Declared laws S5**: live builds of four varied descriptions in parallel. Follows the plain-version comparison (Q60, settled 2026-11-09 by Brian's plain-version rule); one Waltzman rebuild ran on 2026-11-04 on his yes for that build (`evidence/declared-laws/s4-waltzman-3/`).
@@ -263,6 +295,8 @@ Replan rather than extend blindly if:
 - a feature is proposed for completeness rather than a concrete product or evidence need.
 
 ## Exact next action
+
+Finish the November 12 normative/readiness review: reconcile current authorities and plan dependencies, disposition every question with evidence or a precise remaining closure condition, and verify the applicable compliance standard. The list below records the prior implementation queue; it is not an instruction to start a paid run during this documentation review. Q96 must be addressed before J5, as the AI judge plan specifies.
 
 1. **Declared laws S4:** retire the first hand-written build check whose incident a declared law or the rules review now covers, proven on the saved worlds with `scripts/check_saved_worlds.py` and `scripts/replay_build.py` before any paid run (Q45).
 2. Before S5's paid builds or more people-world repair, run the plain-version comparison (Q60), with its cost worked out first.

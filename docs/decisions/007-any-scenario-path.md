@@ -6,6 +6,8 @@ description: "Describe-any-scenario path: model up front, attempt over time, rul
 
 Governs: RULE-FROZEN-PROFILE, spikes/any-scenario-2026-10
 
+Source: Brian, 2026-10-07, "i approve", approving option A as recorded under Decided by and Context below.
+
 **Status:** accepted
 **Date:** 2026-10-07
 **Decided by:** Brian (approved option A in session, 2026-10-07: "i approve")
@@ -51,6 +53,10 @@ Build toward the demo in three layers.
 Every state change is structured data, so World Substrate's living-scene projection can animate it.
 
 This reverses the deferral of "runtime invention or revision of laws" in `docs/research/cybernetic-influence-lineage-review.md`. It also amends Decision 006's pre-run human approval: rules written mid-run are applied after automatic checks and reviewed by a person after the run.
+
+## Later scoped amendment (2026-11-12 reconciliation)
+
+The original decision above is preserved as history. Brian’s November 9 approval and November 10 build approval of [the AI judge plan](../plans/ai_judge.md) narrow layer 3: an unexpressible or rejected ruling is refused and recorded as a language gap, not applied as a one-off effect. J3 uses the world’s preselected approval mode (automatic checked installation or explicit in-run approval) and sealed run-state rules. These later decisions govern the World Builder path.
 
 ## First step
 

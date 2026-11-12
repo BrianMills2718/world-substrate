@@ -7,17 +7,17 @@
  "parts": {
   "checks": {
    "status": "present",
-   "path": "docs/planning/ai-judge/checks.txt",
+   "path": "docs/planning/checks.txt",
    "results": [
     {
      "name": "durable documents (arc42)",
      "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
      "exit_status": 1,
      "counts": {
-      "findings": 12
+      "findings": 16
      },
      "tracked_by": "Q77",
-     "note": "12 findings in documents this plan does not own (docs/architecture/arc42.md goal fields and headings; 4 system-model rules whose owner files the run-stop slices changed); the 4 rules J0's files own were re-read and restamped in docs/model/trace.yaml."
+     "note": "8 arc42 and goal-field findings in docs/architecture/arc42.md and 8 STALE system-model rules whose owner files changed after review; the same 16 on origin/main d89a446 (md_file_cap's durable column reports 16 for both refs), none added by this change."
     },
     {
      "name": "project navigation",
@@ -46,41 +46,33 @@
      }
     },
     {
-     "name": "wiki and Markdown cap",
-     "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
-     "exit_status": 1,
-     "counts": {
-      "md_files": 160,
-      "exception_limit": 180,
-      "more_than_two_links_deep": 13,
-      "not_linked_from_entry": 10,
-      "durable_findings": 12
-     },
-     "tracked_by": "Q77",
-     "note": "The 10 not linked are archived OpenSpec changes (listed in .doc-reachability-ignore, which this check does not read) and older audits and research notes; this change adds no new Markdown file and links the J0 trace reads and the ai-judge cold review from docs/index.md."
-    },
-    {
-     "name": "doc reachability",
-     "command": "python3 $HOME/code2/workspace/scripts/doc_reachability.py .",
-     "exit_status": 0,
-     "counts": {
-      "reachable": 127,
-      "unreachable": 0
-     }
-    },
-    {
      "name": "project check (tests, system model, docs)",
-     "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with pytest-xdist --with gdm-concordia==2.4.0 python scripts/check_project.py",
-     "note": "counts from its line 'Neutral runtime tests: 891 passed, 2 skipped, 222 subtests passed' (pytest-xdist); run on commit 6dc7d37 of this change",
+     "command": "/home/brian/.local/bin/uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with pytest-xdist --with gdm-concordia==2.4.0 python scripts/check_project.py",
+     "note": "counts from its line 'Neutral runtime tests: N passed, M skipped' (pytest-xdist)",
      "exit_status": 0,
      "counts": {
       "tests_run": 891,
       "failed": 0,
-      "skipped": 2,
-      "subtests_passed": 222
+      "skipped": 2
      }
+    },
+    {
+     "name": "wiki and Markdown cap",
+     "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
+     "exit_status": 1,
+     "counts": {
+      "md_files": 162,
+      "cap": "exception",
+      "unreachable": 28,
+      "not_linked": 10,
+      "more_than_two_links_deep": 18,
+      "durable_findings": 16
+     },
+     "tracked_by": "Q77",
+     "note": "Run with --ref HEAD: without it the script checks the default branch, not this change. All 28 unreachable documents are also unreachable on origin/main d89a446 (29 there; docs/planning/ai-judge/cold-review.md is reachable here): 13 older documents, the 5 J0 trace reads (now linked from docs/catalog.md, still more than two links deep), and 10 files under openspec/changes/archive/ from 2026-11-10 (md_file_cap does not read .doc-reachability-ignore)."
     }
-   ]
+   ],
+   "basis": "Shared repository check snapshot from the repository package, not a new run or plan acceptance. Refresh all package check records together after the current normative audit."
   },
   "open_questions": {
    "status": "present",
@@ -170,8 +162,12 @@
     "world-design": "scripts/generate_world_bundle.py:53",
     "rules-review": "scripts/review_rules.py:75",
     "run-stop": "scripts/run_stop.py:65",
-      "consequence-report": "scripts/consequence_report.py:67"
-   }
+    "consequence-report": "scripts/consequence_report.py:67",
+    "judge-ruling": "scripts/judge.py:288",
+    "ruling-rule": "scripts/rulings.py:91",
+    "midrun-setting": "scripts/rulings.py:47"
+   },
+   "spectrum": "docs/model/semantic-spectrum.json"
   },
   "diagrams": {
    "status": "present",
@@ -374,5 +370,45 @@
    "reviewed_revision": "31142e0364fa837fbb4a5e4e4168f30eb1631bbb"
   }
  },
- "note": "This is the plan's own package, named by docs/plans/ai_judge.md's 'Planning package:' line. It shares the repository's open-questions ledger, system model, domain model, metamodel and diagrams with docs/planning/planning-package.json and the declared-laws and open-attempt packages (all rebuilt by tools/planning/). The plan's six new concepts are in the domain model as 'In documents only' (planned, not implemented); its uncertainties U1-U3 are Q74-Q76 (Q74 resolved by measurement), and the agent's technical calls made in answer to the 2026-11-09 cold review are resolved questions Q78 (two-pass judge), Q79 (rule language gap), Q80 (wait mode) and Q81 (replay under the recorded limit). The plain baseline was run (3 calls, $0.0061, evidence/ai-judge/plain-baseline/). The acceptance criteria cite the run page's own router record, docs/planning/ai-judge/router/run-page.recommendation.json. Checks were rerun for this package into docs/planning/ai-judge/checks.txt; the repository-wide docs/planning/checks.txt is left as its own package recorded it. The cold review of 2026-11-10 (docs/planning/ai-judge/cold-review.md, verdict revise, saved word for word) calls the judge's two new questions Q89 and Q90; they are Q90 and Q91 here, renumbered when the estimate-rules plan took Q89 on main. Its four blocking findings were fixed in the same change without a second review round, so the verdict stays revise and freshness fails until the package is reviewed again."
+ "note": "Plan-specific package linked from its owning plan. Shares repository checks, question ledger, domain model and semantic spectrum with docs/planning/planning-package.json. Its acceptance, plan and cold-review remain scoped to this plan; old review verdicts do not certify current edits.",
+ "initiative": {
+  "id": "world-substrate",
+  "role": "home"
+ },
+ "runs_in_production": true,
+ "spectrum_rungs": {
+  "name": "README.md:1",
+  "controlled_vocabulary": "docs/model/semantic-spectrum.json",
+  "glossary": [
+   "docs/model/DOMAIN.md",
+   "docs/model/modeling-choices.md"
+  ],
+  "thesaurus": "docs/model/semantic-spectrum.json",
+  "informal_taxonomy": "docs/model/semantic-spectrum.json",
+  "formal_taxonomy": "docs/model/domain.graph.json",
+  "domain_model": "docs/model/domain.graph.json",
+  "schema": [
+   "schemas/world-authoring-bundle-v0.schema.json",
+   "src/world_substrate/model.py"
+  ],
+  "rules": [
+   "docs/model/trace.yaml",
+   "src/world_substrate/rules.py"
+  ],
+  "instances": "reference_worlds/waltzman/coordination-lab-v0.json",
+  "architecture_views": [
+   "docs/architecture/arc42.md",
+   "docs/architecture/model.c4"
+  ],
+  "behavior_models": "docs/model/ODD.md",
+  "interface_contracts": [
+   "openspec/specs/transition-engine/spec.md",
+   "openspec/specs/world-authoring-bundle/spec.md"
+  ],
+  "executable_specifications": [
+   "tests/test_action_envelopes.py",
+   "tests/test_first_fill.py"
+  ]
+ },
+ "spectrum_basis": "Repository-scoped evidence shared by plan packages: the World Builder is an existing deployed product, while individual plan slices remain built/not-built as their acceptance records state. The domain taxonomy is a flat, typed classification by implementation authority (Substrate, Family, PerWorld, Reference, Theory), not a claim of a deeper inheritance hierarchy. No digital-twin or validated predictive-simulation rung is asserted."
 }

@@ -196,3 +196,16 @@ Every document still in the repository that the [documentation index](index.md) 
 - [Trace read: truck without fuel (J0, acceptance A1 blocked step)](../evidence/ai-judge/j0/truck-without-fuel/TRACE_READ.md)
 - [Trace read: the same wind chain with J0 (J0, acceptance A7 comparison)](../evidence/ai-judge/j0/wind-chain-now/TRACE_READ.md)
 - [Trace read: wind chain under the old limit of 32 (J0, acceptance A7)](../evidence/ai-judge/j0/wind-chain-old-limit/TRACE_READ.md)
+
+## evidence/ai-judge/j1-j3
+
+- [j1/port trace read](../evidence/ai-judge/j1/port/TRACE_READ.md)
+- [j2/blocked-chain trace read](../evidence/ai-judge/j2/blocked-chain/TRACE_READ.md)
+- [j2/empty-purse trace read](../evidence/ai-judge/j2/empty-purse/TRACE_READ.md)
+- [j2/long-line trace read](../evidence/ai-judge/j2/long-line/TRACE_READ.md)
+- [j2/port trace read](../evidence/ai-judge/j2/port/TRACE_READ.md)
+- [j2/sawmill trace read](../evidence/ai-judge/j2/sawmill/TRACE_READ.md)
+- [j3/install-default trace read](../evidence/ai-judge/j3/install-default/TRACE_READ.md)
+- [j3/price-times-quantity trace read](../evidence/ai-judge/j3/price-times-quantity/TRACE_READ.md)
+- [j3/wait-approve trace read](../evidence/ai-judge/j3/wait-approve/TRACE_READ.md)
+- [j3/wait-reject trace read](../evidence/ai-judge/j3/wait-reject/TRACE_READ.md)
