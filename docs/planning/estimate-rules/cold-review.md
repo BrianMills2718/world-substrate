@@ -348,3 +348,16 @@ Scoped dispositions for the shared changes: repository **pass**; open-attempt **
 Reviewed revision: 05356af5ded4f719d5b4c3878bb7fc91ab6c5008
 
 Verdict: pass
+
+
+## Complete documentation review, 2026-11-12
+
+Reviewer: independent planning-compliance-reviewer, fresh context. Second broad review at 5238aae followed by targeted repairs at fdca8f4; reviewed revision: fdca8f49e7bd9b15d44532f31a7cae0841235048. Verdict: pass.
+
+Scope: documentation goal, architecture, complete actor-information contract, canonical concern scenario, owning plans, affected OpenSpec, acceptance criteria and visible page sources. No simulator behavior, unrelated inherited evidence, metadata freshness or publication certification.
+
+All concrete findings closed: Q31 refusal disclosure restricted to authorized information; proposed deadline no longer presented as an enforced maximum; sensitivity probe conditional on a named decision; one run cannot establish larger workload performance; latent/event/classification uncertainty separated; public hold correctly permits inference of failed validation while withholding test details; Q72 selects a conditional minimal presentation default.
+
+The contract covers perception, briefs, summaries, memory, recent events, offered actions, refusals, tools, continuation and UI. Source findings agree with _recent_for and information.entity_visible_to_actor. The concern scenario separates condition, claim, exposure, interpretation, assent and institutional consequence. Open-attempt I0/I1 own the sequence; information-delivery targets are explicitly unbuilt. A6/A5 require actual actor-context inspection and continuation/retry cases. Credential and sensor examples preserve authority without claiming integrated adapters. Jev identity agrees with official documentation. No additional material conceptual question needs a human decision.
+
+Reviewer checks: package validator at 5238aae exited1 only for pending freshness:10/10parts,10/12substance with2pending,4/5initiative/tier with1pending;96questions(43open/53resolved),80concepts138relations,7criteria. Navigation reproduced0findings exit0. Repair diff at fdca8f4:5documentation/pagefiles,6insertions/6deletions, clean tree. Coordinator must finish regeneration, freshness and live verification. Backend adequacy, actor fidelity, broad performance and implemented information isolation remain open; this review does not close them.

@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "05356af5ded4f719d5b4c3878bb7fc91ab6c5008",
+  "subject_revision": "fdca8f49e7bd9b15d44532f31a7cae0841235048",
   "request": "Brian 2026-11-09 \"i approve\" (to: docs/plans/ai_judge.md, an AI judge fed by automatic propagation, after Decided 5); the plan's 'Planning package:' line names this file",
   "parts": {
     "checks": {
@@ -34,13 +34,13 @@
           "command": "python3 /home/brian/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
           "exit_status": 0,
           "counts": {
-            "md_files": 186,
-            "cap": 186,
+            "md_files": 189,
+            "cap": 189,
             "unreachable": 0,
             "durable_findings": 0,
             "stale_rule_reviews": 0
           },
-          "note": "Coordinator committed check at 05356af, 2026-11-12: 186/186 Markdown files, 0 unreachable, 0 durable findings, 0 stale rule reviews; exit 0. Three new files are the required OpenSpec archive records. This document check does not establish simulator fidelity or complete AES runtime trace links."
+          "note": "Committed candidate5238aae:189/189,0unreachable,0durablefindings; exit0. Extra three files preserve OpenSpec adoption."
         },
         {
           "name": "project navigation",
@@ -421,8 +421,8 @@
       "status": "present",
       "path": "docs/planning/ai-judge/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "05356af5ded4f719d5b4c3878bb7fc91ab6c5008",
-      "package_commit": "05356af5ded4f719d5b4c3878bb7fc91ab6c5008"
+      "reviewed_revision": "fdca8f49e7bd9b15d44532f31a7cae0841235048",
+      "package_commit": "fdca8f49e7bd9b15d44532f31a7cae0841235048"
     },
     "investigation": {
       "status": "present",

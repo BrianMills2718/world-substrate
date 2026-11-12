@@ -701,3 +701,283 @@ WAIT coverage: outcome and criteria against Brian's asked_by (2 requirements of 
 ok   goal provenance: every goal part names its source (required from now (the manifest sets full_method (first commit 2026-08-31))) (0 goal pages: 0 parts, 0 sourced, 0 agent judgment, 0 unsourced, 0 unverified quotes, 0 stale vs requirements, 0 without the actor/job form)
 ok   freshness: reviewed at 05356af5ded4, 0 plan files changed since (code commits never count)
 Verdict: compliant (2 AI step costs are guesses; plain-version comparison is planned (Conditional diagnostic only: first name the backend or omitted-dependency decision that survives mechanism/intervention analysis under Q83, and the observation that would change it. No comparative run is authorized merely to satisfy this record. If needed, use the retained candidate set in docs/plans/estimate_rules.md.); 3 stages untested: declared varying inputs plus fixed model context under the Q83 mechanism/intervention contract, per-run cache: resolved model, estimator/prompt version, question/type/options and read values (E1), draw against the estimate instead of using the estimate as the outcome (E1); 1 initiative, spectrum-tier and system-map checks pending until 2026-11-17; goal coverage re-judged nightly)
+
+
+Documentation final-candidate receipts, 2026-11-12; design revision fdca8f4.
+make check: exit0;13specspassed;938testspassed,2skipped,225subtests; measured38.29stesttime;16pinnedsources. No donor checkout verification.
+Five package validators --offline-coverage: each exit0 with current freshness fdca8f4. Pending baseline/stage evidence, future system-map deadline and nightly criterion coverage remain explicit; no full AES runtime conformance claim.
+md_file_cap --ref HEAD at5238aae:189/189,0unreachable,0durablefindings exit0. durable_docs_check afterfdca8f4:0findings exit0.
+Playwright render:4reviewpages at1440px/390px=8HTTP200loads,0pageerrors; mobile screenshot inspected. This is technical page evidence, not stakeholder comprehension or runtime behavior.
+
+Exact final design-candidate make check output (exit0):
+uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep check sources
+RESULT sources brian=18 inferred=83 other=48 missing=0 exit=0
+uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep plan check --acceptance docs/planning/open-attempt/acceptance-criteria.json
+ok   acceptance: 9 criteria: 9 not built, 0 built, 0 judged pass, 0 judged fail
+ok   requirements: 4 requirements: 3 covered, 0 deferred, 1 about the planning process
+OUTCOME ok: 0 problems
+uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep plan check --acceptance docs/planning/declared-laws/acceptance-criteria.json
+ok   acceptance: 7 criteria: 5 not built, 2 built, 0 judged pass, 0 judged fail
+ok   requirements: 7 requirements: 6 covered, 0 deferred, 1 about the planning process
+OUTCOME ok: 0 problems
+uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep plan check --acceptance docs/planning/ai-judge/acceptance-criteria.json
+ok   acceptance: 8 criteria: 3 not built, 5 built, 0 judged pass, 0 judged fail
+ok   requirements: 13 requirements: 12 covered, 0 deferred, 1 about the planning process
+pending: criteria edited or added: A4, A6; re-judge with Company Planning's coverage_check.py
+OUTCOME ok: 0 problems
+uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep plan check --acceptance docs/planning/estimate-rules/acceptance-criteria.json
+ok   acceptance: 7 criteria: 7 not built, 0 built, 0 judged pass, 0 judged fail
+ok   requirements: 2 requirements: 2 covered, 0 deferred, 0 about the planning process
+pending: criteria edited or added: A1, A4, A5; re-judge with Company Planning's coverage_check.py
+OUTCOME ok: 0 problems
+openspec validate --specs --no-interactive
+✓ spec/ai-judge
+  ℹ [INFO] requirements[0]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[1]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[3]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[4]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[5]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[6]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[7]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[8]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[10]: Requirement text is very long (>500 characters). Consider breaking it down.
+✓ spec/causal-model-authoring
+  ℹ [INFO] requirements[0]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[1]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[2]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[3]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[4]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[5]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[6]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ⚠ [WARNING] requirements[0]: Requirement "One declaration per action kind" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[1]: Requirement "Authority is derived, not claimed" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[2]: Requirement "Supported state surface" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[3]: Requirement "Terminal condition" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[4]: Requirement "Model generation and repair" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[5]: Requirement "Review and execution boundary" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[6]: Requirement "Processes, timing and linked participants (current code)" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[7]: Requirement "Create simulation is the approval (current code)" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[8]: Requirement "Discovery cap (current code)" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+✓ spec/cvs-situation-import
+  ℹ [INFO] requirements[0]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[1]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[2]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[3]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[4]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ⚠ [WARNING] requirements[0]: Requirement "Implemented path" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[1]: Requirement "Identity" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[2]: Requirement "Structural meaning retained" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[3]: Requirement "Causal boundary" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[4]: Requirement "Pinned integration evidence" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+✓ spec/information-delivery
+  ℹ [INFO] requirements[0]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[1]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[2]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[4]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[5]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[6]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ⚠ [WARNING] requirements[0]: Requirement "Representation" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[1]: Requirement "Observation rule" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[2]: Requirement "Causality rule" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[3]: Requirement "Current limits" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+✓ spec/live-projection
+  ℹ [INFO] requirements[0]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ⚠ [WARNING] requirements[0]: Requirement "Wire shape" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[1]: Requirement "Authority" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[2]: Requirement "Incremental delivery" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[3]: Requirement "Branching" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+✓ spec/living-scene
+  ℹ [INFO] requirements[0]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[2]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[3]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[4]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[5]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[7]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[8]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[9]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[10]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[11]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[12]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[13]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ⚠ [WARNING] requirements[0]: Requirement "Living Scene: Authority" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[1]: Requirement "Living Scene: Input seam" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[2]: Requirement "Living Scene: Profile shape" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[3]: Requirement "Living Scene: Exact event bindings" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[4]: Requirement "Living Scene: Deterministic frame reconstruction" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[5]: Requirement "Living Scene: Information and outcome presentation" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[6]: Requirement "Living Scene: Time boundary" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[7]: Requirement "Living Scene: Time boundary: Responsive presentation overrides" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[8]: Requirement "Living Scene: Compatibility" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[9]: Requirement "Living Scene: Verification fixture" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[10]: Requirement "Living Scene: Current implementation boundary" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[11]: Requirement "Composed scene: Authority boundary" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[12]: Requirement "Composed scene: Generic presentation primitives" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[13]: Requirement "Composed scene: Product-quality rule" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+✓ spec/mechanic-installation
+  ℹ [INFO] requirements[0]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[1]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ⚠ [WARNING] requirements[0]: Requirement "Mechanic package" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[1]: Requirement "Installation" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[2]: Requirement "Agent-authored output" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+✓ spec/native-coordination
+  ℹ [INFO] requirements[1]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[2]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[3]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[4]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[5]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[7]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[9]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[11]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[12]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[14]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[17]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[18]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[19]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[20]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[21]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[22]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[23]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[24]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ⚠ [WARNING] requirements[0]: Requirement "Authoring: Product path" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[1]: Requirement "Authoring: Model authority" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[2]: Requirement "Authoring: Intent completeness boundary" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[3]: Requirement "Authoring: Supported family" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[4]: Requirement "Authoring: Approval and staleness" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[5]: Requirement "Authoring: Execution authority" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[6]: Requirement "Authoring: Provider spend" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[7]: Requirement "Authoring: Debugging evidence" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[8]: Requirement "Authoring: First verification" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[9]: Requirement "Comparison: Purpose" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[10]: Requirement "Comparison: Baseline retention" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[11]: Requirement "Comparison: Supported intervention" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[12]: Requirement "Comparison: Mechanics authority" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[13]: Requirement "Comparison: Fresh execution" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[14]: Requirement "Comparison: Presentation" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[15]: Requirement "Comparison: Limits" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[16]: Requirement "Comparison: Verification" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[17]: Requirement "Diagnostics: Acceptance authority" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[18]: Requirement "Diagnostics: Diagnostic run identity" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[19]: Requirement "Diagnostics: Required artifacts" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[20]: Requirement "Diagnostics: Failure categories" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[21]: Requirement "Diagnostics: Stage discipline" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[22]: Requirement "Diagnostics: Matrix command" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[23]: Requirement "Diagnostics: Privacy and causal boundary" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[24]: Requirement "Diagnostics: Hashing and reproducibility" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+✓ spec/scene-replay
+  ℹ [INFO] requirements[0]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[1]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[2]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[3]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[6]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[7]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[8]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[9]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[10]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ⚠ [WARNING] requirements[0]: Requirement "Authority" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[1]: Requirement "Wire shape" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[2]: Requirement "Action projection" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[3]: Requirement "Station item layout" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[4]: Requirement "Moment projection" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[5]: Requirement "Generation" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[6]: Requirement "Profile bootstrapping" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[7]: Requirement "Profile bootstrapping: Optional presentation auto-layout" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[8]: Requirement "Profile bootstrapping: Explicit action-presentation bindings" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[9]: Requirement "Implemented evidence" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[10]: Requirement "Limits" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[11]: Requirement "Fresh-world presentation wins over the shared catalog (current code)" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+✓ spec/semantic-binding
+  ℹ [INFO] requirements[0]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[1]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[2]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[3]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[4]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ⚠ [WARNING] requirements[0]: Requirement "Boundary" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[1]: Requirement "Predicate-local role compatibility" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[2]: Requirement "Binding rules" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[3]: Requirement "Initial worked binding" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[4]: Requirement "Vocabulary coverage audit" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+✓ spec/transition-engine
+  ℹ [INFO] requirements[0]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[1]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[2]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[3]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[4]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[5]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[6]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[8]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[10]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[11]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[12]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[13]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[16]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[17]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[18]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[19]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[20]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[21]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[22]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[23]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[24]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ⚠ [WARNING] requirements[0]: Requirement "Core: Records: World" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[1]: Requirement "Core: Records: Entity" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[2]: Requirement "Core: Records: Rule" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[3]: Requirement "Core: Records: Action" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[4]: Requirement "Core: Records: Event" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[5]: Requirement "Core: Transition kernel" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[6]: Requirement "Core: Engine operations: Discover" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[7]: Requirement "Core: Engine operations: Apply" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[8]: Requirement "Core: Engine operations: Causal event fields" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[9]: Requirement "Core: Engine operations: Advance" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[10]: Requirement "Core: Engine operations: Observe" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[11]: Requirement "Core: Engine operations: Snapshot and replay" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[12]: Requirement "Core: Implementation traceability obligation" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[13]: Requirement "Core: Canonical freshwater probe" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[14]: Requirement "Core: First-slice exclusions" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[15]: Requirement "Transition envelope: Pipeline" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[16]: Requirement "Transition envelope: Requirements" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[17]: Requirement "Transition envelope: Examples" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[18]: Requirement "Read scope (proposed, not built): Why writes were easy and reads are not" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[19]: Requirement "Read scope (proposed, not built): Mechanism: a recording proxy at the rule boundary" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[20]: Requirement "Read scope (proposed, not built): Measured cost" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[21]: Requirement "Read scope (proposed, not built): Recommended staging" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[22]: Requirement "Read scope (proposed, not built): What it still cannot see" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[23]: Requirement "Read scope (proposed, not built): Relationship to the existing assay" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+✓ spec/world-authoring-bundle
+  ℹ [INFO] requirements[0]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[1]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[2]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[3]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ⚠ [WARNING] requirements[0]: Requirement "What the bundle owns" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[1]: Requirement "Causal boundary" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[2]: Requirement "Generated package" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[3]: Requirement "Supported v0 types" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[4]: Requirement "Declared resources and laws (current code)" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+✓ spec/world-builder-page
+  ℹ [INFO] requirements[0]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[7]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[9]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[12]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[13]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[14]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ⚠ [WARNING] requirements[0]: Requirement "Opens on a landing page" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[1]: Requirement "Natural-language building" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[2]: Requirement "A failed build says what to try" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[3]: Requirement "Unrepresentable parts are listed" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[4]: Requirement "Refusals are shown per person per round" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[5]: Requirement "Rule checks read as plain English" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[6]: Requirement "Surprise world and clarifying dialogue" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[7]: Requirement "Worlds are continuous, not only tasks" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[8]: Requirement "Owner budget override" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[9]: Requirement "Every control has a tooltip" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[10]: Requirement "Secondary pages link home" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[11]: Requirement "Never red against green" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[12]: Requirement "One box and one Create simulation button" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+Totals: 13 passed, 0 failed (13 items)
+uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with pytest-xdist --with gdm-concordia==2.4.0 python scripts/check_project.py
+World Substrate project check passed.
+Neutral runtime tests: 938 passed, 2 skipped, 225 subtests passed in 38.29s
+Passed-tree stamp: 1a2f47836abe
+Reading path: AGENTS.md -> docs/wiki/README.md -> task authority
+Planning path: README.md -> roadmap/README.md -> active slice
+Pinned source records checked: 16
+Donor checkout verification skipped (use --with-donors to enable).
