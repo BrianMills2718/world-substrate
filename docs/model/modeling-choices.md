@@ -20,6 +20,78 @@ A locked door involves a credential-checking program, a person who knows a passw
 
 Replacing all four with “only Alice can enter” removes credential theft, persuasion, disobedience and forced entry by construction. No comparative run is needed to establish that loss. A study only of queue length may deliberately abstract those mechanisms away. The question determines which distinctions must survive.
 
+## Worked application: the biosurveillance partnership
+
+**Status:** first-principles application and implementation recommendation, November 12. Brian approved applying this guide to a concrete influence-operations scenario after PR #374. This section does not report a new run or amend the active implementation sequence.
+
+Use the existing partnership deciding whether to activate a cross-border early-warning system by a deadline ([scenario source in ODD](ODD.md#10-the-any-scenario-pipeline-and-this-model)). That repository formulation already says concerns slow meetings and make support conditional. Those are candidate effects to investigate; putting them in the scenario as required outcomes would prejudge the result. The paper's conceptual influence hypothesis motivates this question; the choices below are our modeling recommendations, not equations supplied by the paper.
+
+**Investigation:** under what circumstances do locally plausible communications change collective coordination, and when is delay instead a reasonable response to a genuine problem? A useful run can end in informed approval, informed refusal, unnecessary delay or pressure having no effect. Activation alone is not success, and delay alone is not evidence of manipulation.
+
+An outcome-neutral starting description would establish the partnership, deadline, decision procedure, participants' differing responsibilities and relationships, system readiness, communication channels and available evidence. It would let groups communicate concerns without instructing recipients how to react. The analyst's hypothesis and desired comparison stay outside actor context; each actor receives only its own goals, memories and accessible observations.
+
+### Distinctions the investigation needs
+
+| Distinction | Concrete instance | Consequence of collapsing it |
+| --- | --- | --- |
+| Actual condition versus reported claim | A validation test failed; someone says it failed; someone falsely reports a failure | Cannot distinguish warranted caution from misleading communication |
+| Delivery versus interpretation | Mara receives a report but doubts its source or judges it irrelevant | Receipt becomes persuasion by definition |
+| Interpretation versus personal commitment | Mara accepts a narrow flaw but still supports a limited launch | Concern automatically becomes opposition |
+| Personal stance versus institutional hold | Mara remains supportive while a mandatory verification hold remains active | A procedural blocker is mistaken for changed belief |
+| Task completion versus problem resolution | A review finishes but identifies a remaining flaw | Waiting becomes a cure regardless of what was done |
+| Individual decision versus collective result | Ari disagrees; the decision procedure may or may not require Ari's assent | A vote, veto, consensus and informal agreement become interchangeable |
+| Shared source versus independent evidence | Several reports repeat one originating claim | Repetition is mistaken for corroboration |
+| Legitimate disagreement versus coordinated pressure | Similar concerns arise independently or from shared direction | The model labels disagreement as manipulation before examining it |
+
+These distinctions are necessary by construction: a model with no independent underlying condition cannot answer whether caution tracks real defects. No sample of successful runs repairs that representational omission.
+
+### Process-level model choices
+
+| Process | Recommended starting representation | Required boundary / approximation |
+| --- | --- | --- |
+| People reading, discussing and committing | Off-the-shelf cognition, normally LLM policies with distinct profiles and persistent memory | Recipient owns interpretation and choice; no omniscient briefing or rule-forced stance change |
+| Routing messages and recording evidence provenance | Code for recipients, channels, timing, access and source identity | Delivery does not update support; information becomes available through represented communication, observation or inference |
+| Technical readiness and validation | Explicit state and task-specific mechanics; use established dynamics only if their detail matters | A compact readiness condition may suffice if it preserves distinct defects, remedies and decision-relevant evidence; engineering-performance questions need appropriate technical detail |
+| Formal decision procedure and deadline | Executable institution-specific rules | Represent actual voting/hold rules, not a universal consensus procedure; distinguish mandatory rules from breakable norms |
+| Resource use and remediation | Code for allocations and elapsed work, with scenario-specific completion effects | Spending or completing a task does not by itself establish that the defect is gone |
+| Bounded observation or equipment judgment | Jev or another estimator when the contextual task and alternatives are specified | Its estimate is not ground truth; persistent uncertainty and per-event variation have different lifetimes |
+| Bounded choices inside an actor policy | A typed model is an optional implementation choice | Preserve that actor's information, goals and state; do not move the choice into world mechanics |
+| Post-run interpretation | Analysis over the retained event and observation record | A model's explanation is not proof of a mental cause; distinguish exposure, stated reasons and committed actions |
+
+Do not aggregate the decision makers or communicating groups in this initial question: their different information, relationships and institutional roles are the mechanism of interest. Background services and quiet intervals may be coarsened if doing so preserves delivery, deadlines and task dependencies.
+
+### First-principles checks before choosing a run
+
+Read the authored rules and actor-context construction against these counterexamples:
+
+1. A recipient can receive a concern and retain support; a mandatory hold can still prevent activation.
+2. A false report can influence a person without changing the actual equipment condition.
+3. A repair can change equipment state without instantly changing everyone's beliefs; the result must reach them.
+4. A completed review can conclude that activation should remain blocked.
+5. A repeated report retains common provenance; it need not be interpreted as fresh independent evidence.
+
+These are representational possibilities, not prescribed human responses or a new believability score. Source inspection can reject a design that forbids them. A focused execution test is justified later where it is uncertain whether the implemented boundary actually works. Existing approved comparison work retains its own scope.
+
+### Resource choices for this scenario
+
+Use actor activations and relevant message deliveries as the workload units, rather than polling every person on every tick. Deliberation may also be triggered by a remembered obligation, meeting or deadline; silence is not proof that cognition has no work to do. Batch only decisions that are independent at the same simulated moment, and preserve causal ordering when one person's message changes another's information.
+
+A worked-out accounting form is **calls = authoring calls + sum of cognition calls over actor activations + interpretation calls + uncached estimate calls + adjudication calls + retries**. Do not count a call twice when a backend combines roles. Compute token or request charges using the selected backend's actual billing units; no price or latency measurement is asserted here. Trace storage includes model inputs/outputs and observations, not just committed world events. Longer memories, shared evidence and large meetings affect workload even with a fixed population.
+
+Reduce unnecessary activations, repeated prompt material and irrelevant context before replacing consequential human choices with scripted rules. Cache technical estimates only while all their relevant dependencies are unchanged. Consider a surrogate when the same bounded process is reused enough to repay construction and validation costs; preserve the causal distinctions above and document its domain. Actual throughput and the point at which aggregation becomes necessary remain Q85/workload-specific questions.
+
+### Recommended next implementation work
+
+Source inspection at revision `019287b` finds two distinct starting points. The [native reference mechanics](../../reference_worlds/waltzman/mechanics.py) derive stance from objective resource/constraint state (`_expected_stance`, `reassess_commitment`); the [reference probe](../../reference_worlds/waltzman/probe.py) scripts briefing, relay and intervention sequences and asserts blocked/ready outcomes. Preserve this as a declared fixture. Separately, the [generated-world compiler](../../spikes/any-scenario-2026-10/compile_spec.py) installs `concern-makes-support-conditional` and timed `remedy-completes` processes. This is source evidence about those paths, not a claim that every authored world uses them.
+
+The first useful slice is one concern traveling from source to recipient, with four independently represented things: **the underlying condition, the delivered claim, the recipient's stance, and any institutional hold**. Use the existing authoring and actor-policy seams. A communication should alter delivery and available evidence; the recipient chooses its response; a real task changes only its declared condition; institutional rules determine the procedural consequence. Keep each step inspectable, including the actual context shown to the recipient.
+
+Review the entire resident input boundary: observation, recent events, summary, brief and memory. [Information filtering](../../src/world_substrate/information.py) filters message entities by delivery but passes non-information entities through; [resident context construction](../../scripts/run_authored_world.py) also adds recent actor/rule labels. Message filtering alone therefore does not establish asymmetric knowledge across the complete input. Trace each included field to information the actor can legitimately access before claiming that boundary works.
+
+This is a recommendation for the owning people-world plan, not authorization to build a new cognition framework or change the roadmap here. It can be assessed against the counterexamples above before adding more actors, richer numeric trust variables or a Jev approximation. Existing Q60 and Q75/Q76 own the social-model and decision/norm questions; existing estimate questions own backend adequacy and performance. Where the separation already exists, reuse it; where a compiler or generated rule forces the response, repair that owner rather than add an overlay.
+
+The remaining substantive uncertainties are the adequacy of the chosen actor policies, which scenario-specific conditions determine readiness, and which institution's decision procedure is intended. Those need explicit scenario assumptions and, where behavior remains unknown, targeted evidence. They do not prevent identifying the required causal separation now.
+
 ## Glossary
 
 ### What is represented
