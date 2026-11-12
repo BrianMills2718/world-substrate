@@ -178,10 +178,10 @@ a{color:var(--have)}
 
 <!-- package:start -->
 <h2>The planning package behind this page</h2>
-<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/declared-laws/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Current normative-readiness checks, 2026-11-12. Working tree: world-substrate-normative-readiness. These are scoped structural checks, not simulator fidelity or full compliance. Current make check result is recorded below; the older runtime-test result remains historical); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
+<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/declared-laws/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Latest receipts are appended chronologically below. Earlier sections retain their dated candidate evidence and do not certify later edits); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
 <div class="tablewrap"><table class="pkg"><thead><tr><th>Check</th><th>Counts</th><th>Result</th></tr></thead><tbody>
 <tr><td>trace reads</td><td>runs 47, problems 0</td><td><span class="tag have">exit 0</span></td></tr>
-<tr><td>durable documents (legacy arc42 checker)</td><td>findings 8, legacy format mismatches 8, stale rule reviews 0 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
+<tr><td>durable documents (legacy arc42 checker)</td><td>findings 0, legacy format mismatches 0, stale rule reviews 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>wiki and Markdown cap</td><td>md files 183, cap 183, unreachable 0, durable findings 8 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
 <tr><td>project navigation</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>repository format</td><td>compliant 1, of 1</td><td><span class="tag have">exit 0</span></td></tr>
@@ -189,8 +189,9 @@ a{color:var(--have)}
 <tr><td>Lockstep source provenance</td><td>brian 16, inferred 83, other 48, missing 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>planning routes</td><td>records 4, passed 4, failed 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>project make check</td><td>passed 938, skipped 2, subtests passed 225, specs passed 13</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>Lockstep requirement/scenario trace links</td><td>findings 329, missing requirement annotations 128, missing scenario markers 201, unknown ids 0 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
 </tbody></table></div>
-<h3 class="sub">Open questions: 46 open, 50 resolved</h3>
+<h3 class="sub">Open questions: 43 open, 53 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
 <div class="tablewrap"><table class="qs"><thead><tr><th>Question</th><th>Whose call</th><th>Blocks</th></tr></thead><tbody>
 <tr><td><b>Q1</b> Rules retry never runs here</td><td>agent</td><td>whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower</td></tr>
@@ -226,11 +227,8 @@ a{color:var(--have)}
 <tr><td><b>Q69</b> Hardening: law identity, discovery cap, mechanic errors</td><td>agent</td><td>Whether an approval names one exact executable law, whether a decider ever silently misses moves, and whether a broken rule leaves a trace in the run.</td></tr>
 <tr><td><b>Q71</b> The live build imports spike code</td><td>agent</td><td>Whether spike code is held to the live path&#x27;s tests and review; whether the spike folder can be archived.</td></tr>
 <tr><td><b>Q72</b> Living-scene profile and layout disagree on render (confirmed)</td><td>agent</td><td>Whether a scene author can set the gather radius the layout documents.</td></tr>
-<tr><td><b>Q76</b> How to write norms and credential holders</td><td>agent</td><td>J4&#x27;s design and A6 (the password fixture: Mallory phishes Alice&#x27;s password, is logged in, and the breach has consequences only after an observer acts).</td></tr>
 <tr><td><b>Q77</b> Documentation and AES conformance gaps</td><td>agent</td><td>Whether the wiki-compliance and durable-document checks pass again for every package in this repository.</td></tr>
 <tr><td><b>Q82</b> Does Jev&#x27;s chance follow the facts</td><td>agent</td><td>Whether a chance roll on Jev gives a believable world in E1 (A1), and whether picks (E3) collapse to a certainty.</td></tr>
-<tr><td><b>Q83</b> Do the declared reads leave out facts Jev needs</td><td>agent</td><td>Which fields the E1 sawmill rule declares, and from E2 a rules-check warning when a rule reads too little; not the declared-reads design.</td></tr>
-<tr><td><b>Q84</b> A chance that someone notices</td><td>agent</td><td>Slice E5 and the port part of A5.</td></tr>
 <tr><td><b>Q85</b> Jev latency in worlds with many chances</td><td>agent</td><td>Worlds with many estimate rules after E1; not E1 itself.</td></tr>
 <tr><td><b>Q86</b> Jev for the plain-words stopping point</td><td>agent</td><td>Nothing in the estimate-rules plan; an option for the judge plan&#x27;s J5.</td></tr>
 <tr><td><b>Q88</b> Do declared chances match Jev&#x27;s</td><td>agent</td><td>Whether E2&#x27;s rules-writer instructions prefer declared bands for a chance that depends on one or two facts, keeping Jev for the rest; not E1.</td></tr>
@@ -249,7 +247,7 @@ a{color:var(--have)}
 <p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 80 ideas, 138 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
 <div class="graph" id="map-domain"></div>
 <p class="mapinfo" id="map-domain-info">Click an idea to see what it is and where it lives in the code.</p>
-<p class="lede">The open-questions map: each open question beside the ideas it touches (46 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
+<p class="lede">The open-questions map: each open question beside the ideas it touches (43 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
 <div class="graph" id="map-questions"></div>
 <p class="mapinfo" id="map-questions-info">Click a question to read it.</p>
 <!-- maps:end -->

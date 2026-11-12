@@ -21,14 +21,13 @@
         {
           "name": "durable documents (legacy arc42 checker)",
           "command": "python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
-          "exit_status": 1,
+          "exit_status": 0,
           "counts": {
-            "findings": 8,
-            "legacy_format_mismatches": 8,
+            "findings": 0,
+            "legacy_format_mismatches": 0,
             "stale_rule_reviews": 0
           },
-          "tracked_by": "Q77",
-          "note": "Source-grounded review of four owner rules at fd877da reconciles profile/approval behavior and narrows budget/durability claims. Eight legacy exact-heading/label findings remain, exit 1. docs/model/trace.yaml explicitly retains unverified downstream aggregate spending and storage-failure durability limits; review freshness is not behavioral completion."
+          "note": "2026-11-12 modeling-contracts refresh: exact arc42 headings, thesis/disproof, documentation-locality citation and lineage now satisfy the retained checker. No desired runtime guarantee was weakened; budget and storage-failure limits remain explicit."
         },
         {
           "name": "wiki and Markdown cap",
@@ -41,7 +40,7 @@
             "durable_findings": 8
           },
           "tracked_by": "Q77",
-          "note": "Navigation/cap receipt: 183/183 and 0 unreachable. Subsequent durable-check rerun has 8 legacy findings, 0 stale reviews; combined command has not been rerun after trace review. Exit remains 1; no full compliance claim."
+          "note": "Historical committed receipt at 0d2a875: 183/183, 0 unreachable, 8 durable findings, exit 1. Current working-tree durable check is 0; cap configuration now allows 186 for three OpenSpec archive documents. A fresh committed --ref HEAD cap receipt is pending; do not read this historical result as the current working-tree finding count."
         },
         {
           "name": "project navigation",
@@ -59,7 +58,7 @@
             "compliant": 1,
             "of": 1
           },
-          "note": "Rerun after Makefile documents the actual variable-expanded lockstep check command. Static format check only; not full Lockstep conformance."
+          "note": "2026-11-12 modeling-contracts refresh: 1 of 1, exit 0. Static format only; not full Lockstep conformance."
         },
         {
           "name": "semantic spectrum",
@@ -71,7 +70,7 @@
             "project_terms": 80,
             "planning_terms": 13
           },
-          "note": "Rerun after adding theory-only voluntary exchange offer: 156 names, 96 questions, all 9 rules pass."
+          "note": "2026-11-12 modeling-contracts refresh: 156 names, 96 questions, 80 project terms; all 9 rules pass. Conceptual contract decisions do not certify unbuilt runtime behavior."
         },
         {
           "name": "Lockstep source provenance",
@@ -104,7 +103,20 @@
             "subtests_passed": 225,
             "specs_passed": 13
           },
-          "note": "Coordinator executed on current normative-readiness working tree, 2026-11-12; pytest reported 61.71 seconds. Includes planning/source subset; does not claim the separate full Lockstep conformance target passes."
+          "note": "Historical normative-readiness result; current modeling-contracts make check is running and will be recorded when its actual exit and counts are available."
+        },
+        {
+          "name": "Lockstep requirement/scenario trace links",
+          "command": "uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep check trace",
+          "exit_status": 1,
+          "counts": {
+            "findings": 329,
+            "missing_requirement_annotations": 128,
+            "missing_scenario_markers": 201,
+            "unknown_ids": 0
+          },
+          "tracked_by": "Q77",
+          "note": "2026-11-12: configured real source roots and linked 13 existing test functions with 15 existing=True markers covering 6 distinct scenario IDs. This is annotation coverage, not 329 demonstrated behavior defects. Proposed/unbuilt requirements remain unmapped; full AES conformance is not claimed."
         }
       ]
     },

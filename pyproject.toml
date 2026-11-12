@@ -1,0 +1,8 @@
+# Tool configuration only: dependency installation still uses the repository Makefile.
+# Include the actual runtime owners, not only the src/ package.
+[tool.lockstep]
+source = ["src", "scripts", "spikes/any-scenario-2026-10", "reference_worlds"]
+tests = ["tests"]
+
+[tool.pytest.ini_options]
+markers = ["req(id, existing=False): link an existing test to an OpenSpec scenario"]

@@ -18,6 +18,8 @@ import sys
 import unittest
 from pathlib import Path
 
+import pytest
+
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
@@ -86,6 +88,7 @@ class ReachesHealthHydrationProcess(HydrationDecayProcess):
 
 
 class WriteScopeTests(unittest.TestCase):
+    @pytest.mark.req('transition-engine/a-rule-writes-outside-its-declared-scope', existing=True)
     def test_action_reaching_undeclared_components_is_refused(self) -> None:
         engine = _two_owner_engine()
         _swap_action(engine, ReachesOtherComponentsGiveRule())
@@ -119,6 +122,7 @@ class WriteScopeTests(unittest.TestCase):
         )
         self.assertEqual(engine.world.entities["friday"].actor.health, 100)
 
+    @pytest.mark.req('transition-engine/a-rule-writes-outside-its-declared-scope', existing=True)
     def test_action_reaching_a_third_party_through_a_declared_shape_is_refused(
         self,
     ) -> None:
@@ -157,6 +161,7 @@ class WriteScopeTests(unittest.TestCase):
         self.assertEqual(engine.world.material_hash(), before_hash)
         self.assertEqual(engine.world.entities["friday"].actor.health, 100)
 
+    @pytest.mark.req('transition-engine/a-process-writes-outside-its-declared-scope', existing=True)
     def test_process_reaching_undeclared_state_stops_the_tick(self) -> None:
         engine = _two_owner_engine()
         _swap_process(engine, ReachesHealthHydrationProcess())

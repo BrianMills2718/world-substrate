@@ -1444,19 +1444,21 @@ Q = [
   "short": "How to write norms and credential holders",
   "question": "How should a breakable norm and a credential holder be represented in the rules declaration language, without writing a norm as a declared law (which the engine would never let anyone break)?",
   "blocks": "J4's design and A6 (the password fixture: Mallory phishes Alice's password, is logged in, and the breach has consequences only after an observer acts).",
-  "resolves_with": "Audit 2026-11-12: Separate verifier/credential possession, normative permission, observation and enforcement decision. A breakable norm is represented state/information, not an invariant forbidding violation. Reuse donor representations where sufficient; J4 implementation and its credential/breach example remain open.",
+  "resolves_with": "Design resolved: symbolic credential values, actor-scoped access, physical custody, current verifier validity and breakable norms are separate under the Q76 contract. J4/A6 remain unbuilt; neither technical access nor a norm supplies human consent.",
   "owner": "agent",
-  "status": "open",
+  "status": "resolved",
   "sources": [
-   "docs/plans/ai_judge.md:497",
-   "docs/plans/ai_judge.md:204"
+   "docs/plans/ai_judge.md",
+   "docs/model/modeling-choices.md"
   ],
   "touches": [
    "norm",
    "credential-holder",
    "world-law"
-  ]
+  ],
+  "evidence": "The Q76 contract in docs/plans/ai_judge.md selects the representation under Brian's 2026-11-12 approval to resolve modeling contracts. Copying differs from custody transfer; revocation does not erase memory; detection differs from sanction. Counterexamples settle the separation without simulation. Scope is symbolic credentials, not cryptographic strength or verified actor-view secrecy."
  },
+
  {
   "id": "Q77",
   "short": "Documentation and AES conformance gaps",
@@ -1577,36 +1579,40 @@ Q = [
   "short": "Do the declared reads leave out facts Jev needs",
   "question": "Jev sees only the fields an estimate rule declares (days since service, load), never the whole world: argument settles that (a whole-world read makes the cache key the whole world and can reach what A5 forbids). Do the sawmill rule's two declared reads leave out facts Jev needs, and which causal dependencies and interventions justify the read set? Comparisons with the plain version can reveal sensitivity, not prove sufficiency.",
   "blocks": "Which fields the E1 sawmill rule declares, and from E2 a rules-check warning when a rule reads too little; not the declared-reads design.",
-  "resolves_with": "Audit 2026-11-12: Define dependencies, interventions and latent-state lifetime before justifying reads. Small comparisons are sensitivity diagnostics, not sufficiency proofs or evidence that more-context answers are better. Backend adequacy remains empirical.",
+  "resolves_with": "Design resolved: declare varying reads plus fixed model context, applicability and interventions. The two E1 fields are selected only within the explicit homogeneous-blade approximation; no general sufficiency or calibration claim is made. E1/A5 retain enforcement and input-trace checks; Q82 retains backend adequacy.",
   "owner": "agent",
-  "status": "open",
+  "status": "resolved",
   "sources": [
-   "docs/plans/estimate_rules.md:465",
-   "docs/plans/estimate_rules.md:158"
+   "docs/plans/estimate_rules.md",
+   "docs/model/modeling-choices.md"
   ],
   "touches": [
    "estimate-rule",
    "estimator"
-  ]
+  ],
+  "evidence": "The Q83 contract in docs/plans/estimate_rules.md fixes dependency selection by mechanism and intervention counterexamples. Omitted causes must be fixed, explicitly marginalized, represented as persistent latent state, or added as inputs. A wider-context model comparison is optional diagnostic evidence only for a named residual decision. This closes the declared-model design choice, not real-world adequacy."
  },
+
  {
   "id": "Q84",
   "short": "A chance that someone notices",
   "question": "How should a chance decide whether an observation reaches a person (the harbourmaster noticing a hand-over), given that information delivery is not a field write?",
   "blocks": "Slice E5 and the port part of A5.",
-  "resolves_with": "Audit 2026-11-12: Separate delivery, sensory availability, noticing, interpretation and response. Put estimates only at declared uncertain events with dependencies/lifetimes; never equate delivery with belief or persuasion. E5 implementation and scenario adequacy remain open.",
+  "resolves_with": "Design resolved: recipient-specific sensory availability is a committed delivery transition with stable exposure identity, shared causes and no actor-facing leaks. It never assigns belief or response. E5/A5 retain implementation and scenario-adequacy evidence.",
   "owner": "agent",
-  "status": "open",
+  "status": "resolved",
   "sources": [
-   "docs/plans/estimate_rules.md:110",
-   "src/world_substrate/information.py:57"
+   "docs/plans/estimate_rules.md",
+   "docs/model/modeling-choices.md"
   ],
   "touches": [
    "estimate-rule",
    "information",
    "resident"
-  ]
+  ],
+  "evidence": "The Q84 contract in docs/plans/estimate_rules.md chooses delivery after the source event, before actor observation, using the existing information/delivery seam. Repeated exposure queries reuse one disposition; failed delivery leaks neither content nor a negative observation. The actor retains interpretation and response. No runtime implementation or perception calibration is claimed."
  },
+
  {
   "id": "Q85",
   "short": "Jev latency in worlds with many chances",

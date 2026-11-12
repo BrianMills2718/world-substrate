@@ -8,7 +8,7 @@ This is the architecture entry point. It states what exists, what is targeted an
 
 On 2026-11-09 this page took over from `docs/architecture.md`, `docs/architecture/GOAL.md` and `docs/source-dispositions.md` and carries their current facts, plus current facts from the audits, research notes and plans named in section 8. Those files were compared with this page and retired on 2026-11-09; section 8, "Provenance of retired material", lists each with its successor and the commit that restores it.
 
-## 1. Introduction and goals
+## 1. Introduction and Goals
 
 ### Architectural thesis
 
@@ -26,9 +26,9 @@ Where the code stands against that reason (reconciled 2026-11-12 against J0–J3
 
 World Substrate lets a person describe a bounded world in plain language, review the rules the system compiles from that description, approve them, and then run residents (scripted, human or LLM policies) through the world. Residents only express intents. Installed, reviewed mechanics alone decide what changes in the canonical world, and every change or refusal leaves an inspectable record. Per [Decision 006](../decisions/006-governed-rules-layer-scope.md), the repository owns only the governed-rules layer; agent minds, generic schedulers and planners are hosted on off-the-shelf runtimes that call into it. Today that means Concordia hosts the live residents (`scripts/concordia_residents.py`, since 2026-10-16, commit `477b209`); Mesa and a PDDL toolchain were shown to compose in the replacement-first spikes (`spikes/replacement-2026-10/`) and are not used on any live path.
 
-North star: generative worlds with executable laws. A person describes any bounded world in plain words, approves the laws the system proposes, and watches residents live in it while every consequence traces back to an approved, installed rule.
+North star (AES extension): generative worlds with executable laws. A person describes any bounded world in plain words, approves the laws the system proposes, and watches residents live in it while every consequence traces back to an approved, installed rule.
 
-### Requirements overview
+### Requirements Overview
 
 These five requirements carry over from the former goal page; each names how it is checked and what would disprove it. Detailed required behavior is in the capability specs.
 
@@ -64,7 +64,7 @@ A person can describe a scenario outside the reference worlds and get a modelled
 Success: a fresh description produces a reviewable draft, an approved run on the native Engine, and the automatic living view, with mid-run rules passing the same compiler review as up-front ones (evidence under `spikes/any-scenario-2026-10/evidence/`).
 Disproof: a described scenario that can only run after hand-written Python mechanics, or a mid-run rule installed without compiler review.
 
-### Quality goals
+### Quality Goals
 
 1. Truthfulness of consequence: what the world records is what installed mechanics did, never what a model asserted.
 2. Inspectability: a person can answer "why did this happen" from the retained record alone; observability is required, exact replay is not ([Decision 002](../decisions/002-observability-and-replay.md)).
@@ -82,9 +82,11 @@ Disproof: a described scenario that can only run after hand-written Python mecha
 
 ### Thesis and how it would fail
 
-A world built by LLMs stays trustworthy only if consequences come from reviewed, installed mechanics with explicit local authority, and the canonical state they write is the single place truth lives: views, cognition and analysis read it but never become alternate truth.
+Thesis (AES extension): consequences must come from reviewed, installed mechanics with explicit local authority, and the canonical state they write is the single place material world truth lives: views, cognition and analysis read it but never become alternate truth. This provides attributable consequences within the declared model; it does not establish scientific fidelity. For documentation ownership, [AES-CTX-004](https://github.com/BrianMills2718/agentic-engineering-system-canonical/blob/a70eb0233376fc06f99a2124a43f1e36a8dc2871/docs/architecture/SYSTEM_BOUNDARY.md#aes-ctx-004--truth-lives-where-it-is-edited) requires artifact-local contracts and derived indexes; that is a documentation rule, distinct from canonical simulated-world state.
 
-The thesis fails if a reviewed, approved world still produces consequences the person cannot trace to an installed rule, or if keeping consequences in reviewed mechanics makes describing a new scenario so slow that a direct LLM narration (for example YuLan-OneSim or Concordia's game master) gives users equally trustworthy worlds at a fraction of the effort, as measured in `spikes/any-scenario-2026-10/evidence/onesim-comparison.md`.
+Thesis disproof (AES extension): a reviewed, approved world still produces consequences the person cannot trace to an installed rule, or keeping consequences in reviewed mechanics makes describing a new scenario so slow that a direct LLM narration (for example YuLan-OneSim or Concordia's game master) gives users equally trustworthy worlds at a fraction of the effort, as measured in `spikes/any-scenario-2026-10/evidence/onesim-comparison.md`.
+
+Lineage (AES extension): original canonical general world-substrate initiative, established by [Decision 001](../decisions/001-project-scope.md). Castaway is the first reference world and implementation donor; Cybernetic Influence V3 is a related product and selective donor, not a wholesale predecessor replaced by this repository.
 
 ## 2. Architecture constraints
 
@@ -269,11 +271,13 @@ One canonical simulated timeline with independently scheduled mechanisms is the 
 
 Shipping is one command, `scripts/deploy_world_builder.sh [rev]`: it runs the gate, deploys the backend and pages, checks the live page matches the build and reports the backend commit. Browser and measurement checks in `scripts/e2e/` and `scripts/measure_world_builder.py` spend the owner allowance, never the public budget.
 
-The public service boundary (from the live-authoring audit `docs/audits/live-world-authoring.md`, checked against today's code): public calls must be same-origin, are rate-limited and have a 512,000-byte body cap (`world_builder_service.py:46`, `:306-314`); every model call reserves its whole cap from the `world-builder-llm-budget/v1` ledger under one lock before it runs and settles afterwards (`:129-203`), so concurrent jobs cannot overspend; visitors share $3.00 a day (`DAILY_LLM_BUDGET`, `:52`) and the owner, by password, has $5.00 a day (`OWNER_DAILY_BUDGET`, `:60`); up to four AI jobs run at once (`:142-146`); trace ids are `world-builder-live/<kind>/<uuid hex>` (`TRACE_ROOT` at `world_builder_service.py:128`, built at `:522`).
+The public service boundary (from the live-authoring audit `docs/audits/live-world-authoring.md`, checked against today's code): public calls must be same-origin, are rate-limited and have a 512,000-byte body cap (`world_builder_service.py:46`, `:306-314`); AI build/run request admission reserves an allowance from the `world-builder-llm-budget/v1` ledger under one lock and settles recorded cost afterwards; this does not establish an aggregate cap across every downstream call, concurrent task or late hedge (RULE-BUDGET-FAILS-CLOSED in `docs/model/trace.yaml`); visitors share $3.00 a day (`DAILY_LLM_BUDGET`, `:52`) and the owner, by password, has $5.00 a day (`OWNER_DAILY_BUDGET`, `:60`); up to four AI jobs run at once (`:142-146`); trace ids are `world-builder-live/<kind>/<uuid hex>` (`TRACE_ROOT` at `world_builder_service.py:128`, built at `:522`).
 
 ## 8. Crosscutting concepts
 
 ### Authority boundaries
+
+One governed commit boundary does not imply one modeling method. The generated rule language, colocated-entity observation and once-per-pair reaction sweep are scoped implementations, not a universal program language, information policy or dynamics solver. A commodity host may propose effects under declared reads/writes, time/coupling, invariant and failure contracts; cognition, program execution and numerical dynamics remain with their appropriate hosts. Such integration is not yet demonstrated merely by native Python expressibility. The [three-process architecture challenge](../model/modeling-choices.md#architecture-challenge-across-three-kinds-of-process) records the concrete counterexamples and recommended sequence.
 
 | Boundary | Owns | Must not own |
 | --- | --- | --- |
@@ -426,7 +430,7 @@ Each item has an entry in [the open questions ledger](../planning/open-questions
 - The discovery cap of 256 truncates silently (`action_authoring.py:31`). Bounded presentation does not bound candidate generation: measured at M1, Castaway's 69 colocated vessels yielded 4,927 candidate actions and a 73.3 KB prompt (research synthesis).
 - A mechanic exception is rolled back and re-raised, not recorded as a refusal event (`engine.py:785-788`).
 - The law fingerprint omits the compiler version (`profile.py:266-279`).
-- No lockfile or `pyproject.toml`; the project check pins its tools on the command line.
+- No dependency lockfile; `pyproject.toml` currently configures Lockstep scan roots only, while the project check pins its tools on the command line.
 - Concurrency semantics between concurrent deliberation and contended writes are undefined; indexing and observation selection at scale are unmeasured.
 
 ## 12. Glossary

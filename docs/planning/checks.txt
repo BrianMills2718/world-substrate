@@ -1,3 +1,5 @@
+Latest receipts are appended chronologically below. Earlier sections retain their dated candidate evidence and do not certify later edits.
+
 Current normative-readiness checks, 2026-11-12. Working tree: world-substrate-normative-readiness. These are scoped structural checks, not simulator fidelity or full compliance. Current make check result is recorded below; the older runtime-test result remains historical.
 
 == python3 scripts/check_trace_reads.py --root evidence
@@ -410,3 +412,49 @@ ok   coverage: outcome and criteria against Brian's asked_by (2 requirements of 
 ok   goal provenance: every goal part names its source (required from now (the manifest sets full_method (first commit 2026-08-31))) (0 goal pages: 0 parts, 0 sourced, 0 agent judgment, 0 unsourced, 0 unverified quotes, 0 stale vs requirements, 0 without the actor/job form)
 ok   freshness: reviewed at 0d2a8752ee56, 0 plan files changed since (code commits never count)
 Verdict: compliant (2 AI step costs are guesses; plain-version comparison is planned (E1, before the live sawmill run: the same model (Jev) given the whole world state instead of the declared fields, side by side with Jev given the declared fields, gpt-6-luna given the declared fields, and (d) declared bands the rules writer writes from the sawmill's description with no Jev call, on 10 cases; no Jev call is made for planning (Brian's brief, 2026-11-10)); 3 stages untested: declared reads: Jev shown only the fields the rule declares, not the whole world (E1), per-run cache: resolved model, estimator/prompt version, question/type/options and read values (E1), draw against the estimate instead of using the estimate as the outcome (E1); 1 initiative, spectrum-tier and system-map checks pending until 2026-11-17)
+
+
+== Modeling contracts and first-principles review: fresh structural receipts, 2026-11-12
+Working tree: world-substrate-modeling-contracts. No simulator-fidelity or full AES claim.
+
+Command: python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42
+durable-docs: mode=repo repo=/home/brian/code2/worktrees/world-substrate-modeling-contracts findings=0 (none), exit 0
+Exit: 0
+
+Command: uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep check sources
+RESULT sources brian=16 inferred=83 other=48 missing=0 exit=0
+Exit: 0
+
+Command: python3 scripts/check_trace_reads.py --root evidence
+RESULT runs=47 problems=0
+Exit: 0
+
+Command: python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .
+DELEGATED wiki/index.md: workspace wiki rule; project-wiki/v1 schema not applied; reachability, cap and layout are checked by python3 ~/code/project-meta/scripts/md_file_cap.py --repo R
+REPORT ONLY: 0 finding(s); semantic truth and approval were not evaluated
+Exit: 0
+
+Command: python3 /home/brian/code2/workspace/scripts/repo_format.py .
+RESULT repo-format compliant=1 of=1 exit=0
+Exit: 0
+
+Command: python3 /home/brian/code2/company-planning/plugins/company-planning/skills/planning-compliance/scripts/spectrum_check.py --repo . docs/planning/planning-package.json
+ok   L1 project S1   Every project term has a definition in the domain graph (80 checked)
+ok   L1 project S1b  Every node in the domain graph is a term in the project or planning layer (80 checked)
+ok   L3 project S3   Every term names a kind that exists (80 checked)
+ok   L4 project S4   Every project term connects to at least one other term (80 checked)
+ok   L2 both    P2   No other name points to two different terms (22 checked)
+ok   L2 both    P2c  No two terms have near-identical names unless an ambiguous entry separates them (156 checked)
+ok   L2 both    P2b  Each ambiguous word lists only terms that exist (5 checked)
+ok   L3 both    P3   A project file does not redefine a planning term or give one another kind (80 checked)
+ok   L5 project S5   Every open question touches only concepts that are terms (96 checked)
+spectrum_check: 9 passed, 0 failed of 9 (13 planning terms, 80 project terms); exit 0
+Exit: 0
+
+Command: uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep check trace
+RESULT trace findings=329 exit=1
+Counted native finding rows: unimplemented annotations=128, untested scenario markers=201, unknown IDs=0. Exit 1. Configured source roots expose existing implementations; these names do not establish behavioral defects.
+
+Read-only AST marker inventory against HEAD for tests/test_rule_authority.py, tests/test_waltzman_world.py and tests/test_write_scope.py: 13 existing test functions gained 15 existing=True markers for 6 distinct scenario IDs; exit 0. Test behavior is unchanged; current project check will verify collection/execution.
+
+Committed Markdown-cap refresh awaits the candidate commit: configured limit186 includes three required OpenSpec archive files; no uncommitted file count is represented as a HEAD receipt.

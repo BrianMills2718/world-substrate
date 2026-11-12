@@ -462,7 +462,7 @@ window.MAPS = {
     "id": "credential-holder",
     "label": "Credential holder",
     "kind": "Theory",
-    "explain": "Plan ai-judge J4 (planned, not implemented): who holds a credential (a password, a signed release) as a fact in the world that can change: told, overheard, copied, forged or phished. The mechanism checks the credential, not the holder. Code: none yet."
+    "explain": "Plan ai-judge J4/Q76 (design settled, not implemented): credential value and verifier validity are separate from actor-scoped access, physical token custody and institutional permission. Copying can add access without removing the sender; revocation changes validity without erasing memory. Acquiring, forging or presenting a credential requires its declared mechanism. Code: none yet."
    },
    {
     "id": "norm",
@@ -1566,12 +1566,6 @@ window.MAPS = {
     "explain": "Blocks: Whether a scene author can set the gather radius the layout documents.."
    },
    {
-    "id": "Q76",
-    "label": "Q76: How to write norms and credential holders",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: J4's design and A6 (the password fixture: Mallory phishes Alice's password, is logged in, and the breach has consequences only after an observer acts).."
-   },
-   {
     "id": "Q77",
     "label": "Q77: Documentation and AES conformance gaps",
     "kind": "AgentQuestion",
@@ -1582,18 +1576,6 @@ window.MAPS = {
     "label": "Q82: Does Jev's chance follow the facts",
     "kind": "AgentQuestion",
     "explain": "Blocks: Whether a chance roll on Jev gives a believable world in E1 (A1), and whether picks (E3) collapse to a certainty.."
-   },
-   {
-    "id": "Q83",
-    "label": "Q83: Do the declared reads leave out facts Jev needs",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: Which fields the E1 sawmill rule declares, and from E2 a rules-check warning when a rule reads too little; not the declared-reads design.."
-   },
-   {
-    "id": "Q84",
-    "label": "Q84: A chance that someone notices",
-    "kind": "AgentQuestion",
-    "explain": "Blocks: Slice E5 and the port part of A5.."
    },
    {
     "id": "Q85",
@@ -1704,13 +1686,6 @@ window.MAPS = {
     "explain": "Turns proposed rules into installed rules and derives what each may read and write."
    },
    {
-    "id": "credential-holder",
-    "label": "Credential holder",
-    "kind": "Concept",
-    "dashed": true,
-    "explain": "Plan ai-judge J4 (planned, not implemented): who holds a credential (a password, a signed release) as a fact in the world that can change: told, overheard, copied, forged or phished. The mechanism checks the credential, not the holder."
-   },
-   {
     "id": "engine",
     "label": "Engine",
     "kind": "Concept",
@@ -1762,12 +1737,6 @@ window.MAPS = {
     "explain": "Decision 008: worlds built by an agent that drafts, checks and edits; scripts/world_harness.py exists but the live service does not call it."
    },
    {
-    "id": "information",
-    "label": "Information item",
-    "kind": "Concept",
-    "explain": "A piece of information with a source and per-recipient deliveries; hidden until delivered."
-   },
-   {
     "id": "judge-ruling",
     "label": "Judge ruling",
     "kind": "Concept",
@@ -1797,13 +1766,6 @@ window.MAPS = {
     "label": "Mechanisms library",
     "kind": "Concept",
     "explain": "Reusable hand-written rule families (liquid, ownership, thermal, damage, time) that reference worlds such as Castaway register (reference_worlds/castaway/overheat.py:14); generated worlds get only their compiled mechanics and processes (scripts/run_authored_world.py:71, Q28)."
-   },
-   {
-    "id": "norm",
-    "label": "Norm",
-    "kind": "Concept",
-    "dashed": true,
-    "explain": "Plan ai-judge J4 (planned, not implemented): what people expect or forbid (bribery is illegal; only Alice should log in). It can be broken; a breach is recorded and has consequences only when someone notices and acts. Never written as a declared law."
    },
    {
     "id": "observation",
@@ -2459,24 +2421,6 @@ window.MAPS = {
     "label": "bears on"
    },
    {
-    "id": "Q76-norm",
-    "source": "Q76",
-    "target": "norm",
-    "label": "bears on"
-   },
-   {
-    "id": "Q76-credential-holder",
-    "source": "Q76",
-    "target": "credential-holder",
-    "label": "bears on"
-   },
-   {
-    "id": "Q76-world-law",
-    "source": "Q76",
-    "target": "world-law",
-    "label": "bears on"
-   },
-   {
     "id": "Q77-run-log",
     "source": "Q77",
     "target": "run-log",
@@ -2492,36 +2436,6 @@ window.MAPS = {
     "id": "Q82-estimator",
     "source": "Q82",
     "target": "estimator",
-    "label": "bears on"
-   },
-   {
-    "id": "Q83-estimate-rule",
-    "source": "Q83",
-    "target": "estimate-rule",
-    "label": "bears on"
-   },
-   {
-    "id": "Q83-estimator",
-    "source": "Q83",
-    "target": "estimator",
-    "label": "bears on"
-   },
-   {
-    "id": "Q84-estimate-rule",
-    "source": "Q84",
-    "target": "estimate-rule",
-    "label": "bears on"
-   },
-   {
-    "id": "Q84-information",
-    "source": "Q84",
-    "target": "information",
-    "label": "bears on"
-   },
-   {
-    "id": "Q84-resident",
-    "source": "Q84",
-    "target": "resident",
     "label": "bears on"
    },
    {

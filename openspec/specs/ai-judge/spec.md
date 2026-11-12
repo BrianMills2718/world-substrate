@@ -153,9 +153,12 @@ Source: the AI judge plan, `docs/plans/ai_judge.md` (Canonical example steps 3 a
 ### Requirement: Another person's choice goes to that person
 
 A ruling SHALL cover only whether the world allows the move, never what another person chooses. When an attempt needs
-another person's choice (to accept, sell, sign or hand over), the judge SHALL name that person, the rule SHALL be
-written as that person's own move, and the attempt SHALL go to that person as their decision. The person trying SHALL
-never be named as the one whose choice it is.
+another person's choice (to accept, sell, sign or hand over), the judge SHALL name that person and the attempt SHALL
+go to that person as their decision. A voluntary exchange SHALL require each party's agreement bound to the exact
+live offer, parties and terms. A guarded giver-shaped conditional move or receiver-shaped settlement is permitted;
+neither shape SHALL transfer goods without that agreement. Rule installation and owner approval SHALL NOT supply
+actor agreement, revive an expired offer or reuse agreement for altered terms. Settlement SHALL also satisfy current
+world constraints and consume the offer once; duplicate acceptance SHALL NOT repeat its effects.
 
 Source: the AI judge plan, `docs/plans/ai_judge.md` (Decided 4, R5); Brian, 2026-11-09: "whether the bribe works seems
 like should be a deicsion made by the person being bribed"; build approved 2026-11-10
@@ -164,10 +167,13 @@ like should be a deicsion made by the person being bribed"; build approved 2026-
 
 - **WHEN** Vik offers Rosa 40 coins to sign without inspecting, or the sawmill offers to pay the logger for its cedar
   logs
-- **THEN** the ruling names Rosa (or the logger) as the one whose choice it is, its rule is her (or the logger's) own
-  move, the words reach her as her decision, and no coin or log moves on the offerer's move alone
+- **THEN** the ruling names Rosa (or the logger) as the one whose choice it is, the exact offer reaches that
+  person, and no coin or log moves without that person's matching agreement; either guarded settlement shape
+  applies current constraints, and an expired, changed or consumed offer cannot settle
 
 Example clarification (2026-11-12): agreeing to the bribe does not satisfy the existing `inspected` check in pass 1. Rosa’s signing attempt remains blocked while that fact is false, and a signature-conditional exchange cannot settle. A scenario permitting signing without inspection must separately represent that executable capability and a breakable norm; the judge does not override the installed blocker. This clarifies the existing no-override requirement, not a new runtime behavior.
+
+Source: 2026-11-12 normative reconciliation, inferred by agent from the Q96 exact-offer contract in docs/plans/ai_judge.md under Brian's approval to resolve design contracts. Required behavior; lifecycle implementation remains unbuilt.
 
 ### Requirement: The judge rules on attempts no installed rule covers, and only those
 
@@ -256,8 +262,10 @@ make this configurable? or is that more troubel than it is worth. if so i say ye
 #### Scenario: Approving installs the rule and settles both waiting attempts
 
 - **WHEN** the owner approves the held ruling and the next round starts
-- **THEN** the rule is installed after the rules check, each waiting attempt settles through it (it reaches the
-  person whose choice it is, or the engine commits it), and the ruling is listed as installed and approved
+- **THEN** the rule is installed after the rules check and the ruling is listed as installed and approved;
+  each waiting voluntary exchange settles only if its own offer is still live, has matching actor agreement
+  bound to the approved effects, and satisfies current constraints. Otherwise its pending or terminal
+  disposition is recorded without transfer; approval alone supplies no actor agreement
 
 #### Scenario: Rejecting refuses both waiting attempts and names the ruling
 
@@ -269,6 +277,8 @@ make this configurable? or is that more troubel than it is worth. if so i say ye
 
 - **WHEN** a world is built with no setting, with "wait", and with a value that is neither
 - **THEN** the world saves "create", "wait", and is refused with an error, and a shared run records the setting
+
+Source: 2026-11-12 normative reconciliation, inferred by agent from the Q96 exact-offer contract in docs/plans/ai_judge.md under Brian's approval to resolve design contracts. Required behavior; lifecycle implementation remains unbuilt.
 
 ### Requirement: A ruling the language cannot express is refused and listed as a language gap
 

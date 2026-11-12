@@ -459,7 +459,7 @@
    "id": "credential-holder",
    "label": "Credential holder",
    "kind": "Theory",
-   "explain": "Plan ai-judge J4 (planned, not implemented): who holds a credential (a password, a signed release) as a fact in the world that can change: told, overheard, copied, forged or phished. The mechanism checks the credential, not the holder. Code: none yet."
+   "explain": "Plan ai-judge J4/Q76 (design settled, not implemented): credential value and verifier validity are separate from actor-scoped access, physical token custody and institutional permission. Copying can add access without removing the sender; revocation changes validity without erasing memory. Acquiring, forging or presenting a credential requires its declared mechanism. Code: none yet."
   },
   {
    "id": "norm",
