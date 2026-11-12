@@ -1,10 +1,13 @@
-limit: 186
+limit: 189
 reason: 'Measured at 544c086: 183 tracked Markdown files, including required per-run
   TRACE_READ records and historical OpenSpec change records. Preserve that evidence;
   current authority remains docs/index.md and roadmap/README.md. New authored documents
   require a fresh justification rather than automatic growth. On 2026-11-12 add three required
   OpenSpec archive documents for the consent-contract normative reconciliation (proposal,
-  tasks and full spec delta); no new parallel planning authority.'
+  tasks and full spec delta). Add three required archive documents for the complete
+  actor-information target contract (proposal, tasks and delta); these preserve
+  normative adoption separately from unbuilt runtime behavior, with no new parallel
+  planning authority.'
 unlinked_ok:
 - path: openspec/changes/archive/
   reason: Historical change proposals and deltas; current required behavior is openspec/specs/,

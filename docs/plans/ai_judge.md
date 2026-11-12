@@ -712,3 +712,7 @@ None open. Mid-run rulings and approval was answered on 2026-11-09 (Decided 5).
 
 Organisations and institutions beyond single norms; an AI judge writing outcomes; any claim that a ruling is true
 of the real world.
+
+## Complete actor-information dependency (documentation design, 2026-11-12)
+
+Source: Brian's November 12 documentation goal; design application inferred by agent. The [modeling guide](../model/modeling-choices.md) owns the complete actor-information contract and single-concern example. Credential secrecy (J4) and uncertain delivery (E5) depend on that contract across observation, brief, summary, memory, events, offered actions, refusals and actor-facing UI. Item-level message filtering alone is insufficient. These slices must retain the actual authorized context in restricted evidence and demonstrate that an undelivered fact cannot enter through another surface. Analyst access is separate. This dependency is proposed required behavior, not an assertion that current read scopes or projections enforce it. Implementation remains on hold under the documentation goal.

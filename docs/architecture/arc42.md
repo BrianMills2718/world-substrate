@@ -433,6 +433,8 @@ Each item has an entry in [the open questions ledger](../planning/open-questions
 - No dependency lockfile; `pyproject.toml` currently configures Lockstep scan roots only, while the project check pins its tools on the command line.
 - Concurrency semantics between concurrent deliberation and contended writes are undefined; indexing and observation selection at scale are unmeasured.
 
+The complete actor-information boundary and asymmetric-evidence design are specified in the [modeling guide](../model/modeling-choices.md). This is a target contract across all resident inputs; current item filtering and recorded read scopes do not establish its enforcement.
+
 ## 12. Glossary
 
 For fidelity, modeling methods, uncertainty and resource tradeoffs, see the

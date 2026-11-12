@@ -174,10 +174,7 @@ would settle it, its owner and sources. The ones that shape the next work:
    The same setting now also takes "Stop after N rounds" and "Stop when this run has spent $X" (the cost llm_client
    recorded for the run's calls, checked before each round), each optional; the run stops at whichever fires first.
    The plain-words stopping point waits for the judge ([AI judge plan](../plans/ai_judge.md), R11, A8).
-3. **Q63 (agent, reopened 2026-11-10):** Brian: "i can see there being a way where we have certain types of
-   rules/contstatins that progagte base don jev". Answered by the [estimate rules plan](../plans/estimate_rules.md):
-   a rule asks Jev a fixed question about named facts, the engine rolls against the answer, both are recorded, and
-   replay never calls Jev; its first slice's own steps settle Q82-Q85.
+3. **Q63 (conceptual design resolved 2026-11-12):** estimate meaning determines how it is used. The [estimate rules plan](../plans/estimate_rules.md) distinguishes latent conditions, event variation, classifications and actor choices. An answer probability does not automatically become a world-event frequency or require a random roll. Q82/Q85 retain backend adequacy and resource evidence needs; Q83/Q84 select dependency and observation contracts, with implementation still unbuilt.
 4. **Q14:** the Decision 008 harness exists but the live service does not use it.
 5. **Q34:** declared read scopes are not enforced.
 6. **Q45, Q48, Q49:** retiring hand-written build checks once declared laws cover them; laws that are
