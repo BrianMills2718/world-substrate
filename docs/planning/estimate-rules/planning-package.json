@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73",
+  "subject_revision": "05356af5ded4f719d5b4c3878bb7fc91ab6c5008",
   "request": "Brian 2026-11-10 \"im not saying jsut the judge uses jev. i can see there being a way where we have certain types of rules/contstatins that progagte base don jev\", then \"i approve\" to planning it now in parallel with the AI judge build; the plan docs/plans/estimate_rules.md names this file on its 'Planning package:' line",
   "parts": {
     "checks": {
@@ -32,15 +32,15 @@
         {
           "name": "wiki and Markdown cap",
           "command": "python3 /home/brian/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
-          "exit_status": 1,
+          "exit_status": 0,
           "counts": {
-            "md_files": 183,
-            "cap": 183,
+            "md_files": 186,
+            "cap": 186,
             "unreachable": 0,
-            "durable_findings": 8
+            "durable_findings": 0,
+            "stale_rule_reviews": 0
           },
-          "tracked_by": "Q77",
-          "note": "Historical committed receipt at 0d2a875: 183/183, 0 unreachable, 8 durable findings, exit 1. Current working-tree durable check is 0; cap configuration now allows 186 for three OpenSpec archive documents. A fresh committed --ref HEAD cap receipt is pending; do not read this historical result as the current working-tree finding count."
+          "note": "Coordinator committed check at 05356af, 2026-11-12: 186/186 Markdown files, 0 unreachable, 0 durable findings, 0 stale rule reviews; exit 0. Three new files are the required OpenSpec archive records. This document check does not establish simulator fidelity or complete AES runtime trace links."
         },
         {
           "name": "project navigation",
@@ -103,7 +103,7 @@
             "subtests_passed": 225,
             "specs_passed": 13
           },
-          "note": "Historical normative-readiness result; current modeling-contracts make check is running and will be recorded when its actual exit and counts are available."
+          "note": "Coordinator run during modeling-contracts working-tree editing, based on 65ffed8 plus the candidate later committed as 05356af: exit 0; 938 passed, 2 skipped, 225 subtests, 126.57 seconds; 13 specs passed. This is a working-tree receipt, not an exact-commit check. ship will check the final committed candidate. Full Lockstep trace conformance remains a separate failing check."
         },
         {
           "name": "Lockstep requirement/scenario trace links",
@@ -431,8 +431,8 @@
       "status": "present",
       "path": "docs/planning/estimate-rules/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73",
-      "package_commit": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73"
+      "reviewed_revision": "05356af5ded4f719d5b4c3878bb7fc91ab6c5008",
+      "package_commit": "05356af5ded4f719d5b4c3878bb7fc91ab6c5008"
     },
     "investigation": {
       "status": "present",

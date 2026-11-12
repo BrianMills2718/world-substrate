@@ -53,8 +53,8 @@ Written by `plan_checklist.py --write`, not by hand. `--check` re-runs the valid
 if any line below differs from what it says now. Unticked pending items are not passes.
 
 Manifest: `docs/planning/estimate-rules/planning-package.json`
-Package revision: `0d2a8752ee56`
-Verdict: compliant, 1 pending
+Package revision: `05356af5ded4`
+Verdict: compliant, 2 pending
 
 - [x] part investigation: ok
 - [x] part checks: ok
@@ -83,7 +83,7 @@ Verdict: compliant, 1 pending
 - [x] tiers production rungs 12-14 are cited when it runs in production: ok
 - [x] tiers thesaurus separates near-identical names (rung 4): ok
 - [ ] system_map system map names every code unit: pending
-- [x] coverage goal coverage: ok
+- [ ] coverage goal coverage: pending
 - [x] goal_provenance goal provenance: ok
 - [x] freshness package is current: ok
 <!-- /planning-compliance-checklist -->
