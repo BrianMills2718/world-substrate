@@ -118,3 +118,25 @@ Scoped dispositions: repository **pass**; open-attempt **pass**; declared-laws *
 Reviewed revision: 0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73
 
 Verdict: pass
+
+---
+
+### Modeling-contract re-review — 2026-11-12
+
+Scope: changes since `65ffed8` to the shared modeling contracts, question dispositions, acceptance criteria, review pages and AES mappings used by all five planning packages. This is a substantive review of those changes, not a fresh certification of every historical claim or runtime capability.
+
+- **Q76 — resolved appropriately:** the selected contract separates credential knowledge, physical custody, current verifier validity and institutional permission. Disclosure belongs to the actor; verification belongs to the mechanism. Revocation does not erase memory, and detecting a norm violation does not supply an observer with knowledge or compel a human response. Symbolic credentials are explicitly an approximation.
+- **Q83 — resolved appropriately:** dependency selection follows the modeled mechanism and interventions. The blade’s two varying inputs are justified only within explicit fixed assumptions and exclusions. Missing inputs, versioned context, cache identity and persistent/shared uncertainty have defined treatment. Model agreement is not presented as proof of sufficiency.
+- **Q84 — finding fixed:** the original draft left exposure-time context ambiguous. The revised contract captures the projected content, geometry, light, observer position, source revision/time and model identity when the opportunity occurs. Retries preserve that snapshot; changed conditions require a separately authored opportunity; late results cannot overwrite a terminal disposition. Exposure-specific draw identity avoids accidentally sharing one draw across recipients. A5 and the review page reflect this correction.
+- **Architecture challenge — coherent:** the influence, program and physical examples expose different representational requirements without proposing a speculative universal engine. Native expressibility, generated-language support, live integration and scientific adequacy remain distinct. Once-per-pair termination is correctly distinguished from numerical convergence.
+- **AES mappings — appropriately bounded:** the inspected existing tests directly support their named information-delivery, write-scope and hook-authority scenarios. Scan roots include the actual owners. Annotation coverage is not presented as behavioral validation, and existing consent, visibility, durability and spending gaps remain explicit.
+
+Verification: committed revision confirmed; working tree clean at inspection; `git diff --check` returned exit 0 before commit; ledger independently counted **96 questions: 43 open, 53 resolved**. Generated estimate and judge pages contain the revised contract dispositions and exposure-time qualification. No simulation or backend evaluation was performed for this review. The parent’s running full check and final package-validation receipts are separate verification obligations.
+
+No remaining substantive finding or human scope decision was identified for these documentation contracts. J4, E1 and E5 remain unbuilt; the complete actor-input boundary still needs its owning design and implementation. These conceptual closures do not establish credential secrecy, perception accuracy, estimator calibration, scientific fidelity or complete AES conformance.
+
+Scoped dispositions for the shared changes: repository **pass**; open-attempt **pass**; declared-laws **pass**; AI-judge **pass**; estimate-rules **pass**.
+
+Reviewed revision: 05356af5ded4f719d5b4c3878bb7fc91ab6c5008
+
+Verdict: pass
