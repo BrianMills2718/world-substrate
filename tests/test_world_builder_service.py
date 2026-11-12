@@ -1350,6 +1350,44 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertRegex(expected, r"^[0-9a-f]{16}$")
         self.assertEqual([row["result"]["mechanic_profile_id"] for row in self.run_log()], [expected, expected])
 
+    @pytest.mark.req("information-delivery/complete-actor-input-boundary")
+    def test_declared_actor_continuation_seals_all_policy_inputs(self):
+        bundle = json.loads(json.dumps(BUNDLE))
+        bundle["actor_information"] = {"version": 1, "public_summary": "Orchard", "public_entities": [
+            {"id": e["id"], "label": e["label"], "fields": []} for e in bundle["entities"]],
+            "actors": {"ava": {"brief": "My own profile", "initial_knowledge": [], "observable_fields": []}}}
+        causal = self._ongoing_causal()
+        base = {"bundle": bundle, "causal_model": causal, "approved": True, "turns": 1}
+        for extra in ({"resident_memory": {"ava": ["analyst secret"]}}, {"recent": [{"actor": "ava", "action": "secret"}]},
+                      {"briefs": {"ava": "analyst secret"}}):
+            status, error = self.post("/run", {**base, **extra})
+            self.assertEqual(status, 422, error)
+        status, first = self.post("/run", base)
+        self.assertEqual(status, 200, first)
+        state = first["actor_state"]
+        self.assertEqual(state["briefs"], {"ava": "My own profile"})
+        continued = {**base, "continue_from": first["trace"]["final_snapshot"], "continue_seal": first["snapshot_seal"],
+                     "approval": first["approval"], "turn_offset": first["summary"]["last_turn"], "actor_state": state}
+        for key, value in (("resident_memory", {"ava": ["analyst secret"]}),
+                           ("recent", [{"actor": "ava", "action": "secret"}]), ("briefs", {"ava": "secret"}),
+                           ("underway", [{"actor": "ava", "work": "secret"}]), ("turn_offset", 75)):
+            changed = json.loads(json.dumps(state)); changed[key] = value
+            status, error = self.post("/run", {**continued, "actor_state": changed})
+            self.assertEqual(status, 422, error)
+            status, error = self.post("/run", {**continued, key: value})
+            self.assertEqual(status, 422, error)
+        status, second = self.post("/run", continued)
+        self.assertEqual(status, 200, second)
+
+    @pytest.mark.req("information-delivery/complete-actor-input-boundary")
+    def test_exact_actor_inputs_are_retained_in_run_log(self):
+        trace = {"actor_inputs": {"ava": [{"messages": [{"content": "authorized"}], "provenance": ["public"]}]},
+                 "actor_information_mode": "declared-v1"}
+        summary = service._result_summary("/run", 200, {"trace": trace, "actor_state": {"briefs": {}}})
+        self.assertEqual(summary["actor_inputs"], trace["actor_inputs"])
+        self.assertEqual(summary["actor_information_mode"], "declared-v1")
+        self.assertEqual(summary["actor_state"], {"briefs": {}})
+
     def test_continued_round_must_start_from_the_state_this_server_returned(self):
         # Issue #127 (G11): the server trusted whatever world state the browser sent back.
         causal = self._ongoing_causal()

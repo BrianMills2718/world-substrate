@@ -7,7 +7,7 @@ Deterministic, no model call. What compiles to what:
                        delivers it, unchanged. That rule sets `information.active`, so one entity carries one
                        delivery; an item for three recipients becomes three entities with the same topic.
   world record      -> an entity with one component named after the record, public and hidden fields alike
-                       (hidden fields are prefixed `hidden_`; actor-scoped visibility is not enforced yet)
+                       (hidden fields are prefixed `hidden_`; new authored worlds carry explicit actor-information grants)
   scheduled moment  -> an entity with a `moment` countdown, driven by two processes (declarative rules cannot read
                        the world clock): `moment-countdown` lowers ticks_until each tick, `moment-occurs` fires at 0,
                        counts the occurrence and restarts the countdown from every_ticks (-1 means never again)
@@ -617,6 +617,76 @@ def limit_to_work_cycle(mechanics: list[dict[str, Any]], cycle: dict[str, Any] |
     return out
 
 
+# Implements: native-coordination/independent-generated-concern-procedure
+def _independent_family(spec, entities, components):
+    """Validation governs a hold; residents alone record stance and assent."""
+    d = spec.independent_decision
+    did = _eid(d.decision_id)
+    definitions = {
+        "technical_condition": {"passing": d.condition_initially_passing},
+        "validation_decision": {"validation": d.initial_validation, "hold": d.initial_validation == "failed",
+                                "review": "idle", "assents": 0, "active": False, "condition_id": f"condition-{did}"},
+        "actor_position": {"holder_id": "placeholder", "assent": False, "stance": "unexpressed"},
+        "technical_role": {"holder_id": "placeholder", "validator": False, "repairer": False}}
+    for name, fields in definitions.items():
+        components.append({"name": name, "fields": [
+            {"name": k, "type": "entity_ref" if k.endswith("_id") else _field_type(v), "default": v}
+            for k, v in fields.items()]})
+    def entity(eid, label, category, comp, values):
+        entities.append({"id": eid, "label": label, "categories": [category], "components": {comp: values}})
+    entity(did, d.question, "validation-decision", "validation_decision", definitions["validation_decision"].copy())
+    entity(f"condition-{did}", "Technical condition", "technical-condition", "technical_condition", definitions["technical_condition"].copy())
+    for actor in d.required_actor_ids:
+        entity(f"position-{_eid(actor)}", f"Recorded position of {actor}", "actor-position", "actor_position",
+               {"holder_id": _eid(actor), "assent": False, "stance": "unexpressed"})
+    for actor in dict.fromkeys(d.validator_ids + d.repairer_ids):
+        entity(f"technical-role-{_eid(actor)}", f"Technical authority of {actor}", "technical-role", "technical_role",
+               {"holder_id": _eid(actor), "validator": actor in d.validator_ids, "repairer": actor in d.repairer_ids})
+    sel = lambda category, comp: {"categories": [category], "components": [comp]}
+    decision = {"decision": sel("validation-decision", "validation_decision")}
+    own_position = _check("the actor owns this position", _ref("position", "components.actor_position.holder_id"), "eq", {"entity_id": "actor"})
+    own_role = _check("the actor owns this authority", _ref("authority", "components.technical_role.holder_id"), "eq", {"entity_id": "actor"})
+    rules = []
+    def rule(kind, participants, checks, effects):
+        rules.append(_mechanic(kind, kind.replace("-", " "), participants, checks, effects))
+    positions = {**decision, "position": sel("actor-position", "actor_position")}
+    for kind, assent in (("record-assent", True), ("withdraw-assent", False)):
+        rule(kind, positions, [own_position, _check("the recorded assent changes", _ref("position", "components.actor_position.assent"), "eq", not assent)],
+             [_effect("position", "components.actor_position.assent", "set", assent),
+              _effect("decision", "components.validation_decision.assents", "add" if assent else "subtract", 1)])
+    for stance in ("supportive", "concerned", "undecided"):
+        rule(f"state-{stance}", {"position": sel("actor-position", "actor_position")}, [own_position],
+             [_effect("position", "components.actor_position.stance", "set", stance)])
+    rule("request-review", decision, [_check("a review is not already requested", _ref("decision", "components.validation_decision.review"), "ne", "requested")], [_effect("decision", "components.validation_decision.review", "set", "requested")])
+    technical = {**decision, "authority": sel("technical-role", "technical_role")}
+    rule("complete-validation", technical, [own_role,
+         _check("the actor is an authorized validator", _ref("authority", "components.technical_role.validator"), "eq", True)],
+         [_effect("decision", "components.validation_decision.review", "set", "completed")])
+    rule("repair-condition", {"authority": sel("technical-role", "technical_role"), "condition": sel("technical-condition", "technical_condition")},
+         [own_role, _check("the actor is an authorized repairer", _ref("authority", "components.technical_role.repairer"), "eq", True)],
+         [_effect("condition", "components.technical_condition.passing", "set", True)])
+    rule("activate", decision, [
+        _check("validation has passed", _ref("decision", "components.validation_decision.validation"), "eq", "passed"),
+        _check("there is no technical hold", _ref("decision", "components.validation_decision.hold"), "eq", False),
+        _check("every required actor recorded assent", _ref("decision", "components.validation_decision.assents"), "eq", len(d.required_actor_ids)),
+        _check("activation has not occurred", _ref("decision", "components.validation_decision.active"), "eq", False)],
+        [_effect("decision", "components.validation_decision.active", "set", True)])
+    processes = []
+    for passing in (False, True):
+        processes.append({"process_id": "validation-passes" if passing else "validation-fails", "timing": "immediately",
+            "rationale": "An authorized completed validation records the actual outcome independently of claims and assent.",
+            "selector": sel("validation-decision", "validation_decision"),
+            "participants": {"condition": {"link": "ref:validation_decision.condition_id", "selector": sel("technical-condition", "technical_condition")}},
+            "checks": [_check("validation was completed", _ref("it", "components.validation_decision.review"), "eq", "completed"),
+                       _check("the tested condition", _ref("condition", "components.technical_condition.passing"), "eq", passing)],
+            "effects": [_effect("it", "components.validation_decision.validation", "set", "passed" if passing else "failed"),
+                        _effect("it", "components.validation_decision.hold", "set", not passing),
+                        _effect("it", "components.validation_decision.review", "set", "idle")]})
+    actions = [{"kind": r["action_kind"], "description": r["rationale"],
+                "fields": [{"name": name, "type": "entity_ref"} for name in r["participants"]]} for r in rules]
+    return actions, rules, processes
+
+
 def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     """Return (bundle, causal, coverage). Ids in the world are the spec ids with '_' turned into '-'."""
     entities: list[dict[str, Any]] = []
@@ -625,6 +695,11 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
         entities.append({"id": _eid(p.entity_id), "label": p.label, "categories": ["actor", "member"],
                          "components": {"member": {"role": p.position, "authorized": False, "approved": False,
                                                    "aware": False}}})
+    if spec.public_summary or spec.independent_decision:
+        components.append({"name": "claim_provenance", "fields": [
+            {"name": "apparent_source", "type": "string", "default": "unspecified"},
+            {"name": "source_lineage", "type": "string", "default": "unspecified"},
+            {"name": "hidden_origin", "type": "string", "default": "unspecified"}]})
     for item in spec.information_items:
         for r in item.recipient_ids:
             info_id = f"info-{_eid(item.representation_id)}-to-{_eid(r)}"
@@ -632,6 +707,11 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
                              "components": {"information": {"content": item.content, "source_id": _eid(item.holder_id),
                                                             "channel_id": item.channel_id, "visibility": "direct",
                                                             "topic": item.representation_id, "active": False}}})
+            if spec.public_summary or spec.independent_decision:
+                entities[-1]["components"]["claim_provenance"] = {
+                    "apparent_source": item.apparent_source,
+                    "source_lineage": item.source_lineage or item.representation_id,
+                    "hidden_origin": json.dumps([e.model_dump() for e in item.hidden_provenance], sort_keys=True)}
             entities.append({"id": f"delivery-{info_id}", "label": f"Delivery to {r}", "categories": ["delivery"],
                              "components": {"delivery": {"info_id": info_id, "recipient_id": _eid(r),
                                                          "channel_id": item.channel_id, "status": "pending"}}})
@@ -685,6 +765,8 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
                 if e["id"] == _eid(d.deadline_moment_id) and mo and mo["ticks_until"] < MIN_DECISION_TICKS:
                     mo["ticks_until"] = MIN_DECISION_TICKS
         decision_actions, decision_mechanics, decision_processes = _decision_rules(bool(d.deadline_moment_id))
+    if spec.independent_decision:
+        decision_actions, decision_mechanics, decision_processes = _independent_family(spec, entities, components)
     bundle = {"schema_version": BUNDLE_SCHEMA,
               "world": {"id": _eid(spec.scenario_id), "label": spec.title, "summary": spec.description[:400],
                         "location": "scenario", "content_version": 1},
@@ -694,6 +776,53 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
                                           "delivery": {"kind": "text", "value": "→"}},
                                "category_assets": {"member": "participant", "information": "information",
                                                    "delivery": "delivery"}, "station_roles": {}}}
+    if spec.public_summary or spec.independent_decision:
+        from spec_pipeline import person_briefs
+        briefs = person_briefs(spec)
+        public = []
+        actors = {_eid(p.entity_id): {"brief": briefs[_eid(p.entity_id)],
+                  "initial_knowledge": [{"id": f"profile-{_eid(p.entity_id)}", "text": briefs[_eid(p.entity_id)],
+                                         "source": f"scenario-profile:{p.entity_id}"}], "observable_fields": []} for p in spec.people}
+        records = {_eid(r.record_id): r for r in spec.world_records}
+        for e in entities:
+            fields = []
+            comps = e["components"]
+            if "member" in comps:
+                fields = ["member.role"]
+            elif "information" in comps:
+                fields = [f"information.{k}" for k in comps["information"]]
+                fields += ["claim_provenance.apparent_source", "claim_provenance.source_lineage"]
+            elif "delivery" in comps:
+                fields = [f"delivery.{k}" for k in comps["delivery"]]
+            elif "validation_decision" in comps or "actor_position" in comps or "technical_role" in comps:
+                fields = [f"{c}.{k}" for c, values in comps.items() for k in values]
+            if e["id"] in records:
+                record = records[e["id"]]
+                for actor in record.visible_to_actor_ids:
+                    actors[_eid(actor)]["observable_fields"].append({"entity": e["id"],
+                        "paths": [f"{record.record_id}.{entry.key}" for entry in record.public_state
+                                  if not isinstance(entry.value, list) and entry.value is not None]})
+            # Labels of undelivered claims must never contain their content or private identifiers.
+            label = "Report" if "information" in comps else "Delivery" if "delivery" in comps else e["label"]
+            public.append({"id": e["id"], "label": label, "fields": fields})
+        forms = []
+        if spec.independent_decision:
+            from itertools import product
+            # Static signatures and declared participant categories, never applicability or canonical values.
+            for mechanic in decision_mechanics:
+                names = list(mechanic["participants"])
+                options = [[e["id"] for e in entities if _matches(e, mechanic["participants"][name])] for name in names]
+                for values in product(*options):
+                    forms.append({"kind": mechanic["action_kind"], "description": mechanic["rationale"],
+                                  "fields": dict(zip(names, values))})
+        for e in entities:
+            if "delivery" in e["components"]:
+                delivery = e["components"]["delivery"]
+                forms.append({"kind": "communicate", "description": "Deliver a held report to its declared recipient.",
+                              "fields": {"information": delivery["info_id"], "delivery": e["id"],
+                                         "recipient": delivery["recipient_id"]}})
+        bundle["actor_information"] = {"version": 1, "public_summary": spec.public_summary,
+                                       "public_entities": public, "actors": actors, "public_actions": forms}
     communicate = json.loads(COORDINATION_CAUSAL.read_text())["mechanics"][0]
     causal = {"schema_version": "world-substrate-causal-model/v0", "mechanics": [communicate, *decision_mechanics],
               # deadline processes after the moment ones: they read happening_now, set this tick by moment-occurs

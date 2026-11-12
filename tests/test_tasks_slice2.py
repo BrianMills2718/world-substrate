@@ -30,7 +30,9 @@ LEGAL = "info-legal-local-concern-to-country-two"
 
 @lru_cache(maxsize=1)
 def _built() -> str:
-    return json.dumps(replay(C1R20_BUILD))
+    from scripts.generate_world_bundle import recorded_authoring_replay
+    with recorded_authoring_replay():
+        return json.dumps(replay(C1R20_BUILD))
 
 
 def built() -> dict:
@@ -264,7 +266,9 @@ class DecisionCopyTests(unittest.TestCase):
         # c1r22 r10-e00009: the partnership's deploy move set the readiness record to 'deployed' while the decision was
         # authorized and rolling out (deployed only at r14-e00004). Readiness takes other values too, so the one-way
         # check missed it; the value is one the decision itself moves to.
-        world = replay(REPO / "tests" / "fixtures" / "c1r22_waltzman_build.json")
+        from scripts.generate_world_bundle import recorded_authoring_replay
+        with recorded_authoring_replay():
+            world = replay(REPO / "tests" / "fixtures" / "c1r22_waltzman_build.json")
         dropped = [d for d in world["dropped_generated_rules"] if "copied the decision's status" in d]
         self.assertEqual(len(dropped), 1, dropped)
         self.assertIn("deploy-early-warning-system", dropped[0])

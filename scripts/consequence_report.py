@@ -83,10 +83,56 @@ def pass_one(engine: Engine, actor: str, named: Iterable[str], *, people: Iterab
     }
 
 
+# Implements: native-coordination/independent-generated-concern-procedure
+_INDEPENDENT_COMPONENTS = frozenset({"information", "delivery", "technical_condition", "validation_decision", "actor_position", "technical_role", "claim_provenance"})
+
+
+class IndependentRuleAuthorityError(ValueError):
+    """A proposed rule attempted to replace a compiled procedural authority."""
+
+
+def _independent(bundle: dict[str, Any]) -> bool:
+    return any("validation_decision" in e.get("components", {}) for e in bundle.get("entities", []))
+
+
+def _protected_writer(declaration: dict[str, Any]) -> bool:
+    return any(str(effect.get("path", "")).split(".")[1:2] and
+               str(effect.get("path", "")).split(".")[1] in _INDEPENDENT_COMPONENTS
+               for effect in declaration.get("effects", []))
+
+
+def _check_independent_writers(bundle: dict[str, Any], causal: dict[str, Any]) -> None:
+    """Raw candidate validation accepts only exact compiler-owned procedural writers, never names alone."""
+    if not _independent(bundle):
+        return
+    from types import SimpleNamespace
+    from scripts.people_world import _pipeline
+    compiler, _ = _pipeline()
+    entities = bundle["entities"]
+    decision = next(e for e in entities if "validation_decision" in e.get("components", {}))
+    state = decision["components"]["validation_decision"]
+    condition = next(e for e in entities if e["id"] == state["condition_id"])["components"]["technical_condition"]
+    roles = [e["components"]["technical_role"] for e in entities if "technical_role" in e.get("components", {})]
+    procedure = SimpleNamespace(decision_id=decision["id"], question=decision["label"],
+        required_actor_ids=[e["components"]["actor_position"]["holder_id"] for e in entities if "actor_position" in e.get("components", {})],
+        validator_ids=[r["holder_id"] for r in roles if r["validator"]],
+        repairer_ids=[r["holder_id"] for r in roles if r["repairer"]],
+        condition_initially_passing=condition["passing"], initial_validation=state["validation"])
+    _, mechanics, processes = compiler._independent_family(SimpleNamespace(independent_decision=procedure), [], [])
+    import json
+    mechanics = [json.loads(compiler.COORDINATION_CAUSAL.read_text())["mechanics"][0], *mechanics]
+    for declarations, allowed in ((causal.get("mechanics", []), mechanics), (causal.get("processes", []), processes)):
+        for declaration in declarations:
+            if _protected_writer(declaration) and declaration not in allowed:
+                raise IndependentRuleAuthorityError("independent procedural state may only be written by its exact compiled rules")
+
+
 def with_rule(bundle: dict[str, Any], causal_value: dict[str, Any],
               rule: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
     """Copies of the world's bundle and rules with the proposed rule added: its action to the bundle's actions and its
     mechanic to the rules, the same two places a build writes every rule."""
+    if _independent(bundle) and _protected_writer(rule.get("mechanic") or {}):
+        raise IndependentRuleAuthorityError("a proposed rule cannot write independent procedural state; use its actor-owned installed actions")
     bundle2, causal2 = deepcopy(bundle), deepcopy(causal_value)
     bundle2.setdefault("actions", []).append(deepcopy(rule.get("action")))
     causal2.setdefault("mechanics", []).append(deepcopy(rule.get("mechanic")))
@@ -99,6 +145,7 @@ def rules_check(bundle: dict[str, Any], causal_value: dict[str, Any]) -> tuple[d
     from scripts.run_authored_world import build_engine
 
     try:
+        _check_independent_writers(bundle, causal_value)
         engine, _, _ = build_engine(bundle, causal_value, reaction_limit=None)
     except Exception as error:  # every rejection is data for the judge, whatever raised it
         return {"ok": False, "error": f"{type(error).__name__}: {error}"}, None
@@ -142,7 +189,10 @@ def pass_two(bundle: dict[str, Any], causal_value: dict[str, Any], engine: Engin
              move: dict[str, Any]) -> dict[str, Any]:
     """Rules-check a proposed rule, then test-run `move` (the attempt as the rule's typed move: actor, kind, fields) on
     a copy of `engine`'s world with the rule installed. The real world, bundle and rules are left unchanged."""
-    bundle2, causal2 = with_rule(bundle, causal_value, rule)
+    try:
+        bundle2, causal2 = with_rule(bundle, causal_value, rule)
+    except IndependentRuleAuthorityError as error:
+        return {"rules_check": {"ok": False, "error": f"IndependentRuleAuthorityError: {error}"}, "test_run": None}
     check, trial = rules_check(bundle2, causal2)
     if trial is None:
         return {"rules_check": check, "test_run": None}

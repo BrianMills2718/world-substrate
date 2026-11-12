@@ -96,7 +96,11 @@ def replay(folder: Path, follow_record: bool = False) -> dict[str, Any]:
     sys.modules["llm_client"] = stub
     service.RULES_SIDE_BY_SIDE = False  # the recorded replies are handed out in order
     try:
-        Replay()._generate_world("replay", build["request"])
+        # Recorded-only transport cannot make a fresh call. Old authoring replies
+        # retain their explicit legacy semantics without weakening live generation.
+        from scripts.generate_world_bundle import recorded_authoring_replay
+        with recorded_authoring_replay():
+            Replay()._generate_world("replay", build["request"])
     except Unrecorded as error:
         out["stopped"] = str(error)
     finally:

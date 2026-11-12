@@ -262,6 +262,19 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       <button class="primary" type="button" id="play-btn" title="Stop after the current round; the world waits exactly where it is until you press Play">⏸ Pause</button>
     </div>
     <p class="small muted" id="live-status" role="status"></p>
+    <div class="row">
+      <label for="context-mode">Context view</label>
+      <select id="context-mode" title="Analyst shows the whole run. Actor shows only the retained inputs supplied to one person."><option value="analyst">Analyst: whole run</option><option value="actor">Actor: authorized inputs</option></select>
+      <label for="context-actor">Person</label>
+      <select id="context-actor" title="Choose whose exact authorized inputs to inspect. Switching views never changes their memory."></select>
+    </div>
+    <section id="actor-context" hidden aria-label="Authorized actor inputs">
+      <p class="small">This is the selected person's recorded input, before their choice. Viewing it does not change the simulation.</p>
+      <p id="actor-context-status" role="status"></p>
+      <div id="actor-context-records"></div>
+    </section>
+    <div id="analyst-context">
+    <details><summary title="Read the exact retained policy inputs and provenance across all people. This is privileged Analyst context.">Exact inputs and provenance</summary><pre id="analyst-inputs" style="white-space:pre-wrap"></pre></details>
     <div id="stuck-note"></div>
     <p class="outcome" id="outcome" data-tip="Allowed: moves that went through. Refused: moves someone tried that did not go through. Held back by the rules: people who had moves the rules did not let them try that round (counted once per person per round). By itself: changes the world made on its own."></p>
     <div class="rulings" id="rulings-panel" hidden aria-label="The judge’s rulings in this run"></div>
@@ -299,6 +312,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         <button class="secondary" type="button" id="download-btn" title="Save this world and its rules as a JSON file you can load in the advanced editor">Download this world</button>
       </div>
     </details>
+    </div>
   </section>
 </main>
 <footer class="site">
@@ -1237,6 +1251,51 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     });
   }
 
+  function actorContextRecords(inputs, actor) {
+    // No fallback to world state, summaries, other people's inputs, or legacy replay data.
+    return inputs && Array.isArray(inputs[actor]) ? inputs[actor] : [];
+  }
+
+  function actorVisibleInput(record) {
+    // Provenance and tool/engine diagnostics belong to the Analyst view. These fields are actual policy I/O.
+    const visible = {};
+    ["round", "turn", "model", "messages", "schema", "context", "memory", "output"].forEach((key) => {
+      if (Object.prototype.hasOwnProperty.call(record, key)) visible[key] = record[key];
+    });
+    if (record.error) visible.status = "Policy call failed; these are the inputs assembled before failure.";
+    return visible;
+  }
+
+  function renderActorContext() {
+    const actorMode = $("context-mode").value === "actor";
+    $("analyst-inputs").textContent = JSON.stringify((live && live.actorInputs) || {}, null, 2);
+    $("analyst-context").hidden = actorMode;
+    $("live-status").hidden = actorMode;
+    if (actorMode) $("run-h").textContent = "Actor context";
+    $("actor-context").hidden = !actorMode;
+    $("context-actor").disabled = !actorMode;
+    const selector = $("context-actor"), previous = selector.value;
+    const authorizedInputs = live && live.actorInformationMode === "declared-v1" ? live.actorInputs : {};
+    const actors = Object.keys(authorizedInputs || {});
+    selector.replaceChildren();
+    actors.forEach((actor) => { const option = document.createElement("option"); option.value = actor; option.textContent = actor; selector.append(option); });
+    if (actors.includes(previous)) selector.value = previous;
+    const lastRound = live && live.rounds.length ? live.rounds[live.rounds.length - 1].turn : 0;
+    const records = actorContextRecords(authorizedInputs, selector.value).filter((record) => (record.round ?? record.turn ?? 0) <= lastRound);
+    $("actor-context-status").textContent = records.length ? `${selector.value}: ${records.length} recorded input(s).` : "No authorized input recording is available for this person in this run. Older recordings remain available in Analyst view.";
+    const panel = $("actor-context-records"); panel.replaceChildren();
+    records.forEach((record) => {
+      const detail = document.createElement("details"), summary = document.createElement("summary"), pre = document.createElement("pre");
+      summary.textContent = `Input before round ${record.round ?? record.turn ?? "?"}${record.error ? " (attempt failed)" : ""}`;
+      summary.title = "Inspect the exact messages, context, memory and model schema supplied to this person.";
+      pre.style.whiteSpace = "pre-wrap";
+      pre.textContent = JSON.stringify(actorVisibleInput(record), null, 2);
+      detail.append(summary, pre); panel.append(detail);
+    });
+  }
+  $("context-mode").addEventListener("change", () => { if (live) renderLive(); });
+  $("context-actor").addEventListener("change", renderActorContext);
+
   function renderLive() {
     const t = live.totals, n = live.rounds.length;
     const last = n ? live.rounds[n - 1].turn : 0;
@@ -1278,6 +1337,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       note.append(n);
     }
     renderNetwork();
+    renderActorContext();
   }
 
   function recentMoves() {
@@ -1294,20 +1354,21 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     // their own words what they try (docs/plans/open_attempt.md). People worlds add each person's brief; in a things
     // world a resident knows the world, its own state and what it sees.
     const request = { bundle: world.bundle, causal_model: world.causal_model, approved: true, policy: "resident", turns: 1 };
-    if (world.briefs) request.briefs = world.briefs;
+    if (world.briefs && !world.bundle.actor_information) request.briefs = world.briefs;
     // A world saved without a stop setting runs every round, as before.
     if (world.run_stop) request.run_stop = activeStop();
     if (world.run_stop && live.snapshot && live.stopHistory) request.stop_history = live.stopHistory;
     // What this run has spent so far, as recorded by the server, so a spending limit counts the whole run.
     if (request.run_stop && request.run_stop.max_spend_usd != null && live.snapshot && live.spent != null) request.run_spent_usd = live.spent;
-    if (live.memory) request.resident_memory = live.memory;
+    if (live.memory && !world.bundle.actor_information) request.resident_memory = live.memory;
+    if (live.actorState) request.actor_state = live.actorState;
     // Ruling to rule (ai-judge plan J3): the setting travels with the world; the run's rulings come back sealed with the
     // snapshot, and the owner's Approve or Reject answers are applied as the next round starts.
     if (world.judge_rulings) request.judge_rulings = world.judge_rulings;
     if (live.snapshot && (live.rulings || []).length) request.rulings = live.rulings;
     const sentDecisions = (live.decisions || []).slice();
     if (live.snapshot && sentDecisions.length) request.decisions = sentDecisions.map((d) => ({ id: d.id, decision: d.decision }));
-    if (live.snapshot) { request.continue_from = live.snapshot; request.continue_seal = live.seal; request.approval = live.approval; request.turn_offset = live.lastTurn; request.recent = recentMoves(); if (live.underway) request.underway = live.underway; }
+    if (live.snapshot) { request.continue_from = live.snapshot; request.continue_seal = live.seal; request.approval = live.approval; request.turn_offset = live.lastTurn; if (!world.bundle.actor_information) request.recent = recentMoves(); if (live.underway) request.underway = live.underway; }
     // AI rounds take a few seconds and go through a job.
     const run = await apiJob("/run", request, 1000);
     run.sentDecisions = sentDecisions;
@@ -1338,6 +1399,11 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         const rounds = run.trace.transcript || [];
         live.snapshot = run.trace.final_snapshot; live.seal = run.snapshot_seal; live.approval = run.approval; live.lastTurn = run.summary.last_turn;
         if (run.trace.resident_memory) live.memory = run.trace.resident_memory;
+        if (run.actor_state) live.actorState = run.actor_state;
+        live.actorInformationMode = run.trace.actor_information_mode || "legacy-unrestricted";
+        Object.entries(run.trace.actor_inputs || {}).forEach(([actor, records]) => {
+          live.actorInputs[actor] = (live.actorInputs[actor] || []).concat(records);
+        });
         live.rulings = run.trace.rulings || [];
         live.decisions = (live.decisions || []).filter((d) => !(run.sentDecisions || []).includes(d));
         live.underway = run.trace.underway || [];
@@ -1438,7 +1504,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const recorded = (options && options.rounds) || (world.shared && world.shared.rounds) || null;
     live = { gen: live ? live.gen + 1 : 1, rounds: [], buffer: recorded ? recorded.slice() : [], snapshot: null, lastTurn: 0, playing: false, quiet: 0,
              totals: { allowed: 0, refused: 0, held: 0, byItself: 0, refusedByItself: 0 }, finished: false, endsAt: null, why: "",
-             sincePlay: 0, lastChanged: {}, runIds: [], replay: !!recorded, recorded, rulings: [], decisions: [] };
+             actorInformationMode: recorded && world.shared ? world.shared.actor_information_mode : null, actorInputs: recorded && world.shared ? (world.shared.actor_inputs || {}) : {}, actorState: null, sincePlay: 0, lastChanged: {}, runIds: [], replay: !!recorded, recorded, rulings: [], decisions: [] };
     $("share-out").textContent = ""; $("readout-out").innerHTML = "";
     $("readout-btn").hidden = live.replay && !(world.shared && world.shared.readout);
     $("share-btn").hidden = live.replay;

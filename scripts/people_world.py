@@ -231,6 +231,9 @@ def prepare_people_world(description: str, *, trace_id: str, max_budget: float, 
     spec, _ = hedged(trace_id, lambda: sp.scenario_spec(description, model=PEOPLE_MODEL, trace_id=trace_id,
                                                         max_budget=max_budget, reasoning_effort=SPEC_EFFORT,
                                                         route_policy=fast_route(PEOPLE_MODEL)))
+    from scripts.generate_world_bundle import is_recorded_authoring_replay
+    if not spec.public_summary.strip() and not is_recorded_authoring_replay():
+        raise ValueError("Fresh people-world authoring requires an explicit actor-safe public_summary")
     progress("done", f"Found {len(spec.people)} people or groups", "each with goals, beliefs and what they know",
              [p.label for p in spec.people])
     if spec.information_items or spec.scheduled_moments:
@@ -245,7 +248,7 @@ def prepare_people_world(description: str, *, trace_id: str, max_budget: float, 
     progress("doing", "Working out what each person can try to do")
     sigs, _ = hedged(trace_id, lambda: sp.action_signatures(
         spec, bundle, coverage, model=DEFAULT_MODEL, trace_id=trace_id, max_budget=max_budget,
-        guidance=ACTION_LIVENESS_GUIDANCE, reasoning_effort=EFFORT, route_policy=fast_route(DEFAULT_MODEL)))
+        guidance=(INDEPENDENT_GUIDANCE if spec.independent_decision else ACTION_LIVENESS_GUIDANCE), reasoning_effort=EFFORT, route_policy=fast_route(DEFAULT_MODEL)))
     sigs = sp.record_fields(spec, sigs)
     bundle["actions"] = bundle["actions"] + [{k: a[k] for k in ("kind", "description", "fields")} for a in sigs]
     work_cycle = compile_spec.add_work_cycle(spec, bundle, compiled, [a["kind"] for a in sigs])
@@ -367,8 +370,19 @@ def write_people_rules(prepared: dict[str, Any], *, trace_id: str, max_budget: f
     return assemble_people_world(prepared, generated)
 
 
+INDEPENDENT_GUIDANCE = (
+    "Preserve independent technical condition, report lineage, delivery, personal stance, recorded assent and public hold. "
+    "Residents choose their responses. No rule may force a stance or assent from evidence, require conflict or agreement, "
+    "or turn elapsed time into successful repair. The compiled independent procedure owns technical intervention, "
+    "authorized validation, hold, public positions and assent; do not duplicate or write those components. "
+    "Additional actions express choices or practical tasks explicitly requested by the scenario. Waiting is permitted."
+)
+
+
 def rules_guidance(prepared: dict[str, Any], guidance: str = "") -> str:
     """What the rule writer is told beyond the response contract (also the harness workspace's instructions)."""
+    if prepared["spec"].independent_decision:
+        return ATTEMPT_GUIDANCE + " " + INDEPENDENT_GUIDANCE + " " + guidance
     behaviors = [r["behavior"] for r in prepared["coverage"]["rows"] if r["classification"] == "to_generate"]
     return (
         ATTEMPT_GUIDANCE + " " + LIVENESS_GUIDANCE + " The `communicate` action is already defined by a reviewed "

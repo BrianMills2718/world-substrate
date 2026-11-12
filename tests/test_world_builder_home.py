@@ -145,6 +145,28 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn("c.title = \"Use this answer", self.page)
         self.assertIn("const tipTarget = (node) => node && node.closest", self.page)
 
+    @pytest.mark.req("information-delivery/complete-actor-input-boundary")
+    def test_actor_view_uses_only_recorded_policy_inputs_and_never_restores_display_text(self):
+        import json, subprocess
+        funcs = []
+        for name in ("actorContextRecords", "actorVisibleInput"):
+            match = re.search(r"^  function " + name + r"\(.*?^  }$", self.page, re.S | re.M)
+            self.assertIsNotNone(match)
+            funcs.append(match.group())
+        script = "\n".join(funcs) + "\nconsole.log(JSON.stringify([actorContextRecords({}, 'ava'), actorVisibleInput({messages:['known'],context:{brief:'own'},output:'my thought',provenance:'analyst secret',error:'private diagnostic',definitions:'private rules'})]));"
+        result = subprocess.run(["node", "-e", script], text=True, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        absent, visible = json.loads(result.stdout)
+        self.assertEqual(absent, [])
+        self.assertEqual(visible["context"], {"brief": "own"})
+        self.assertEqual(visible["output"], "my thought")
+        self.assertNotIn("analyst secret", result.stdout)
+        self.assertNotIn("private diagnostic", result.stdout)
+        self.assertNotIn("private rules", result.stdout)
+        self.assertIn('$("analyst-context").hidden = actorMode;', self.page)
+        self.assertIn('if (live.actorState) request.actor_state = live.actorState;', self.page)
+        self.assertNotIn('request.actor_inputs', self.page)
+
     def test_page_script_is_valid_javascript(self):
         # A syntax error stops every handler on the page; the gate must catch it.
         import re, shutil, subprocess, tempfile
