@@ -672,7 +672,7 @@ small-case interchangeability conclusion is superseded by the applicability requ
 example now samples crossing variability conditional on persistent passability, never passability itself.
 
 - **U1 (agent, Q82):** does Jev's chance rise with the facts it reads (days since service), or is it flat or
-  coarse? The probe's chance answers were coarse (0.6, 0.55). Settled by E1's first step (the 10-call probe).
+  coarse? The probe's chance answers were coarse (0.6, 0.55). The ten-call probe is conditional on a named backend-sensitivity decision remaining after dependency analysis; it inspects only those cases and cannot establish calibration or adequacy.
 - **U2 (agent, Q83 design resolved 2026-11-12):** the dependency contract above selects two varying fields only
   within the stated E1 homogeneous-blade approximation. Other investigations must declare their own dependencies
   and interventions. Enforcement, backend adequacy and any real-world sufficiency claim remain unproved.
@@ -682,7 +682,7 @@ example now samples crossing variability conditional on persistent passability, 
   exposure records before actor observation, with no belief update or choice imposed. E5 still must implement
   the shared gate across narration and projection and demonstrate the listed negative cases.
 - **U5 (agent, Q85):** latency for worlds with many estimates (about 0.61 s expected per estimate, computed in
-  Agent technical calls); settled by E1's measured run and, if needed, a parallel ask within a moment.
+  Agent technical calls); a measured E1 run characterizes only its own workload. A larger supported workload needs a declared envelope, dependency depth, concurrency, tail latency and saturation evidence. Establish enforceable deadlines separately; parallel calls help only independent work.
 - **U6 (agent, Q86):** whether J5's stopping point should use Jev; belongs to the judge plan.
 - **U7 (agent, Q88):** whether declared bands written by the rules writer give the same chances as Jev on the
   10 cases. E1 variant (d) is diagnostic, not a replacement decision. E2 may prefer bands only after
