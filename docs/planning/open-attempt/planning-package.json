@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "4ff4c274a7a97508fc004c24f2cce6bdae412136",
+  "subject_revision": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73",
   "request": "Brian 2026-10-25 \"yes\" (to: write a short design for free-form attempts plus the fallback for unmatched attempts, then knock-on effects and skill rolls, tracing the wall, glass and helicopter examples, with a review page)",
   "parts": {
     "checks": {
@@ -358,7 +358,8 @@
       "status": "present",
       "path": "docs/planning/open-attempt/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "4ff4c274a7a97508fc004c24f2cce6bdae412136"
+      "reviewed_revision": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73",
+      "package_commit": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73"
     },
     "investigation": {
       "status": "present",

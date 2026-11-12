@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "f83c6d8a1589dfb8ec8d129c0e0a0e3e3fb9df82",
+  "subject_revision": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73",
   "request": "Brian 2026-10-28 \"yes lets make it companhy plannign complaint\" (to: the world declares its own laws, the engine enforces them generically, and an independent AI review checks the rules against the description and the laws, replacing the growing list of heuristic checks)",
   "parts": {
     "checks": {
@@ -351,7 +351,8 @@
       "status": "present",
       "path": "docs/planning/declared-laws/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "f83c6d8a1589dfb8ec8d129c0e0a0e3e3fb9df82"
+      "reviewed_revision": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73",
+      "package_commit": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73"
     },
     "acceptance": {
       "status": "present",

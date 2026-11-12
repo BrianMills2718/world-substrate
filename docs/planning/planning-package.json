@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "32860542557cf2698a05669b4b29b5041a7e1818",
+  "subject_revision": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73",
   "request": "Brian 2026-10-24 \"do that\" (after: \"ok are we company planning compliant? would it have prevented or mitgated these probelms if we were?\")",
   "parts": {
     "checks": {
@@ -351,8 +351,8 @@
       "status": "present",
       "path": "docs/planning/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "7160bda9d8ec8b74d5599b17de91ba105377daba",
-      "package_commit": "7160bda9d8ec8b74d5599b17de91ba105377daba"
+      "reviewed_revision": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73",
+      "package_commit": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73"
     },
     "acceptance": {
       "status": "present",

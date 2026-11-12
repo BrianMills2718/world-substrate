@@ -177,3 +177,236 @@ Rendered-page inspection (2026-11-12): local isolated Chromium opened open-attem
 Documentation sweep: doc_sweep.py . --since '1 day ago' reported12 candidates,0broken entry links. Current navigation/model/status were reconciled; historical audits remain dated history; OpenSpec skill references are procedure, not current implementation claims. The backup AI-judge branch retains history; the separate ws-judge-j5 working tree is another writer's unfinished work and was not modified. This owned normative branch is the candidate being finished.
 
 Review interpretation: this is a documentation reconciliation, not a claim that all open questions are closed or all simulations are valid. Later-slice design gates Q76/J4, Q83/E1 and Q84/E5 remain explicit. Q96 is designed but unbuilt. Full AES trace linking remains344 findings; eight legacy format findings remain. Source reread found logging failure and aggregate-budget limits, recorded as risks rather than erasing the underlying desired guarantees.
+
+Final rendered candidate 0d2a875: four review pages at 1440px and 390px (8 HTTP200 loads), all 21 interactive example buttons exercised at both widths (42 clicks), 0 JavaScript page errors; exit 0. Three pages fit both widths. AI-judge retains 7px mobile overflow (397px body at 390px viewport), a cosmetic limitation; no claim of fully polished mobile UI. Screens inspected locally.
+Final committed md_file_cap check at 0d2a875: 183/183 files, 0 unreachable, 8 durable legacy-format findings, 0 stale; exit 1. No AES runtime coverage is inferred from document reachability.
+
+Final package validation after recording the independent review (2026-11-12):
+
+== planning; validate_planning_package.py --repo . --offline-coverage; exit 0
+scope: the manifest sets full_method (first commit 2026-08-31): dated requirements apply
+route: reset
+ok   investigation: present (5 places searched, 5 findings: 3 holds, 1 fails, 1 unknown; cost not applicable)
+ok   checks: present (9 results, 2 found problems)
+ok   open_questions: present (96 questions, 46 open, 50 resolved)
+ok   system_model: present
+ok   domain_model: present (80 concepts, 138 relations)
+ok   diagrams: present (4 diagrams)
+ok   plan: present
+ok   acceptance: present (7 criteria: 5 not built, 2 built, 0 judged pass, 0 judged fail)
+ok   review_page: present (https://hive.brianmills.dev/plans/world-substrate/main/proposals/planning-package/review-page/)
+ok   cold_review: present (verdict pass)
+10 of 10 parts ok, 0 failing
+ok   substance: route follows from its path decision (route reset)
+ok   substance: citations resolve (271 file citations checked, 23 other sources)
+ok   substance: domain model has a glossary (docs/model/DOMAIN.md)
+ok   substance: project layer checks against the planning layer (8 rules, 13 planning terms, 80 project terms)
+ok   substance: concepts point at their code (68 implemented, 12 dashed)
+ok   substance: plan names the concepts it relies on (18 concepts)
+ok   substance: plan records the cost basis of each AI step (8 AI steps: 8 measured, 0 computed)
+WAIT substance: plan compares its AI answer path with the plain version (planned: 2 cases, answer path: Independent semantic review of rules against the description; rule/law authoring itself is checkable-artifact construction under the harness exception.)
+WAIT substance: plan shows what each stage adds over the plain version (1 stages: 0 shown, 0 none, 1 untested)
+ok   substance: plan records Brian's stops on this work (searched 4 ways; 1 stop found: 1 hold, 0 lifted)
+       - stop holds: Brian, 2026-11-12, "before we move to implementaiotn my instinct is that we should make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved" (Brian, current normative-readiness conversation, 2026-11-12; recorded here verbatim); applies to New simulator feature implementation while normative review remains unfinished; documentation reconciliation is authorized.
+ok   substance: type-level model of executable rules (29 types, 29 mapped onto BrianMills2718/scientific-hypergraph@7b0638fe0aef)
+ok   substance: cold review read this revision (reviewed 0d2a8752ee56)
+10 of 12 substance checks ok, 0 failing, 2 pending
+ok   initiative: initiative names its home (world-substrate: this repository is the home of a one-repository initiative)
+ok   tiers: spectrum rungs 1-11 are cited (11 rungs cited)
+ok   tiers: production rungs 12-14 are cited when it runs in production (runs in production; rungs cited)
+ok   tiers: thesaurus separates near-identical names (rung 4) (156 names compared)
+WAIT system_map: system map names every code unit (system_model.units is absent; no diagram item has kind system_map; required from 2026-11-17)
+4 of 5 initiative, spectrum-tier and system-map checks ok, 0 failing, 1 pending
+ok   coverage: outcome and criteria against Brian's asked_by (7 requirements of Brian's words: 6 covered, 0 deferred, 1 about the planning process; stored judgment by claude-code/sonnet at 2026-10-28T03:58:12-0400)
+       R1 [outcome] "fix root not symptoms" -> A7
+       R2 [outcome] "fix substrate problem" -> A2, A7
+       R3 [outcome] "fix world generating process" -> A1, A6
+       R4 [outcome] "fix world validating process" -> A3
+       R5 [constraint] "no built-in move types" -> A5
+       R6 [outcome] "LLM uses domain knowledge" -> A1, A2
+       R7 [process] "company planning compliant" -> about the planning process: met by the validator and cold review, not a criterion
+ok   goal provenance: every goal part names its source (required from now (the manifest sets full_method (first commit 2026-08-31))) (0 goal pages: 0 parts, 0 sourced, 0 agent judgment, 0 unsourced, 0 unverified quotes, 0 stale vs requirements, 0 without the actor/job form)
+ok   freshness: reviewed at 0d2a8752ee56, 0 plan files changed since (code commits never count)
+Verdict: compliant (plain-version comparison is planned (Only if a named decision survives argument and retained evidence review; no run authorized by this metadata repair.); untested stage: Independent model review after authoring and structural checks; 1 initiative, spectrum-tier and system-map checks pending until 2026-11-17)
+
+== open-attempt; validate_planning_package.py --repo . --offline-coverage; exit 0
+scope: the manifest sets full_method (first commit 2026-08-31): dated requirements apply
+route: durable_solo
+ok   investigation: present (5 places searched, 5 findings: 3 holds, 1 fails, 1 unknown; cost not applicable)
+ok   checks: present (9 results, 2 found problems)
+ok   open_questions: present (96 questions, 46 open, 50 resolved)
+ok   system_model: present
+ok   domain_model: present (80 concepts, 138 relations)
+ok   diagrams: present (4 diagrams)
+ok   plan: present
+ok   acceptance: present (9 criteria: 9 not built, 0 built, 0 judged pass, 0 judged fail)
+ok   review_page: present (https://hive.brianmills.dev/plans/world-substrate/main/proposals/open-attempt/review-page/)
+ok   cold_review: present (verdict pass)
+10 of 10 parts ok, 0 failing
+ok   substance: route follows from its path decision (route durable_solo)
+ok   substance: citations resolve (271 file citations checked, 23 other sources)
+ok   substance: domain model has a glossary (docs/model/DOMAIN.md)
+ok   substance: project layer checks against the planning layer (8 rules, 13 planning terms, 80 project terms)
+ok   substance: concepts point at their code (68 implemented, 12 dashed)
+ok   substance: plan names the concepts it relies on (39 concepts)
+ok   substance: plan records the cost basis of each AI step (6 AI steps: 6 measured, 0 computed)
+WAIT substance: plan compares its AI answer path with the plain version (planned: 2 cases, answer path: Attempt interpretation: free expression to typed command.)
+WAIT substance: plan shows what each stage adds over the plain version (1 stages: 0 shown, 0 none, 1 untested)
+ok   substance: plan records Brian's stops on this work (searched 4 ways; 1 stop found: 1 hold, 0 lifted)
+       - stop holds: Brian, 2026-11-12, "before we move to implementaiotn my instinct is that we should make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved" (Brian, current normative-readiness conversation, 2026-11-12; recorded here verbatim); applies to New simulator feature implementation while normative review remains unfinished; documentation reconciliation is authorized.
+ok   substance: type-level model of executable rules (29 types, 29 mapped onto BrianMills2718/scientific-hypergraph@7b0638fe0aef)
+ok   substance: cold review read this revision (reviewed 0d2a8752ee56)
+10 of 12 substance checks ok, 0 failing, 2 pending
+ok   initiative: initiative names its home (world-substrate: this repository is the home of a one-repository initiative)
+ok   tiers: spectrum rungs 1-11 are cited (11 rungs cited)
+ok   tiers: production rungs 12-14 are cited when it runs in production (runs in production; rungs cited)
+ok   tiers: thesaurus separates near-identical names (rung 4) (156 names compared)
+WAIT system_map: system map names every code unit (system_model.units is absent; no diagram item has kind system_map; required from 2026-11-17)
+4 of 5 initiative, spectrum-tier and system-map checks ok, 0 failing, 1 pending
+ok   coverage: outcome and criteria against Brian's asked_by (4 requirements of Brian's words: 3 covered, 0 deferred, 1 about the planning process; stored judgment by openrouter/anthropic/claude-sonnet-5.5 at 2026-11-12T15:58:40-0500)
+       R1 [outcome] "attempt to walk through wall" -> A3, A1, A9
+       R2 [outcome] "such attempts not successful" -> A3
+       R3 [outcome] "unskilled helicopter flying crashes" -> A7; UNSURE: 2 of 3 runs found a gap
+       R4 [process] "approval of attempts design" -> about the planning process: met by the validator and cold review, not a criterion
+ok   goal provenance: every goal part names its source (required from now (the manifest sets full_method (first commit 2026-08-31))) (0 goal pages: 0 parts, 0 sourced, 0 agent judgment, 0 unsourced, 0 unverified quotes, 0 stale vs requirements, 0 without the actor/job form)
+ok   freshness: reviewed at 0d2a8752ee56, 0 plan files changed since (code commits never count)
+Verdict: compliant (plain-version comparison is planned (Only if a named decision survives argument and retained evidence review; no run authorized by this metadata repair.); untested stage: Attempt interpretation before Engine.submit; 1 initiative, spectrum-tier and system-map checks pending until 2026-11-17)
+
+== declared-laws; validate_planning_package.py --repo . --offline-coverage; exit 0
+scope: the manifest sets full_method (first commit 2026-08-31): dated requirements apply
+route: reset
+ok   investigation: present (5 places searched, 5 findings: 3 holds, 1 fails, 1 unknown; cost not applicable)
+ok   checks: present (9 results, 2 found problems)
+ok   open_questions: present (96 questions, 46 open, 50 resolved)
+ok   system_model: present
+ok   domain_model: present (80 concepts, 138 relations)
+ok   diagrams: present (4 diagrams)
+ok   plan: present
+ok   acceptance: present (7 criteria: 5 not built, 2 built, 0 judged pass, 0 judged fail)
+ok   review_page: present (https://hive.brianmills.dev/plans/world-substrate/main/proposals/declared-laws/review-page/)
+ok   cold_review: present (verdict pass)
+10 of 10 parts ok, 0 failing
+ok   substance: route follows from its path decision (route reset)
+ok   substance: citations resolve (271 file citations checked, 23 other sources)
+ok   substance: domain model has a glossary (docs/model/DOMAIN.md)
+ok   substance: project layer checks against the planning layer (8 rules, 13 planning terms, 80 project terms)
+ok   substance: concepts point at their code (68 implemented, 12 dashed)
+ok   substance: plan names the concepts it relies on (18 concepts)
+ok   substance: plan records the cost basis of each AI step (8 AI steps: 8 measured, 0 computed)
+WAIT substance: plan compares its AI answer path with the plain version (planned: 2 cases, answer path: Independent semantic review of rules against the description; rule/law authoring itself is checkable-artifact construction under the harness exception.)
+WAIT substance: plan shows what each stage adds over the plain version (1 stages: 0 shown, 0 none, 1 untested)
+ok   substance: plan records Brian's stops on this work (searched 4 ways; 1 stop found: 1 hold, 0 lifted)
+       - stop holds: Brian, 2026-11-12, "before we move to implementaiotn my instinct is that we should make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved" (Brian, current normative-readiness conversation, 2026-11-12; recorded here verbatim); applies to New simulator feature implementation while normative review remains unfinished; documentation reconciliation is authorized.
+ok   substance: type-level model of executable rules (29 types, 29 mapped onto BrianMills2718/scientific-hypergraph@7b0638fe0aef)
+ok   substance: cold review read this revision (reviewed 0d2a8752ee56)
+10 of 12 substance checks ok, 0 failing, 2 pending
+ok   initiative: initiative names its home (world-substrate: this repository is the home of a one-repository initiative)
+ok   tiers: spectrum rungs 1-11 are cited (11 rungs cited)
+ok   tiers: production rungs 12-14 are cited when it runs in production (runs in production; rungs cited)
+ok   tiers: thesaurus separates near-identical names (rung 4) (156 names compared)
+WAIT system_map: system map names every code unit (system_model.units is absent; no diagram item has kind system_map; required from 2026-11-17)
+4 of 5 initiative, spectrum-tier and system-map checks ok, 0 failing, 1 pending
+ok   coverage: outcome and criteria against Brian's asked_by (7 requirements of Brian's words: 6 covered, 0 deferred, 1 about the planning process; stored judgment by claude-code/sonnet at 2026-10-28T03:58:12-0400)
+       R1 [outcome] "fix root not symptoms" -> A7
+       R2 [outcome] "fix substrate problem" -> A2, A7
+       R3 [outcome] "fix world generating process" -> A1, A6
+       R4 [outcome] "fix world validating process" -> A3
+       R5 [constraint] "no built-in move types" -> A5
+       R6 [outcome] "LLM uses domain knowledge" -> A1, A2
+       R7 [process] "company planning compliant" -> about the planning process: met by the validator and cold review, not a criterion
+ok   goal provenance: every goal part names its source (required from now (the manifest sets full_method (first commit 2026-08-31))) (0 goal pages: 0 parts, 0 sourced, 0 agent judgment, 0 unsourced, 0 unverified quotes, 0 stale vs requirements, 0 without the actor/job form)
+ok   freshness: reviewed at 0d2a8752ee56, 0 plan files changed since (code commits never count)
+Verdict: compliant (plain-version comparison is planned (Only if a named decision survives argument and retained evidence review; no run authorized by this metadata repair.); untested stage: Independent model review after authoring and structural checks; 1 initiative, spectrum-tier and system-map checks pending until 2026-11-17)
+
+== ai-judge; validate_planning_package.py --repo . --offline-coverage; exit 0
+scope: the manifest sets full_method (first commit 2026-08-31): dated requirements apply
+route: durable_solo
+ok   investigation: present (5 places searched, 5 findings: 3 holds, 1 fails, 1 unknown; cost not applicable)
+ok   checks: present (9 results, 2 found problems)
+ok   open_questions: present (96 questions, 46 open, 50 resolved)
+ok   system_model: present
+ok   domain_model: present (80 concepts, 138 relations)
+ok   diagrams: present (4 diagrams)
+ok   plan: present
+ok   acceptance: present (8 criteria: 3 not built, 5 built, 0 judged pass, 0 judged fail)
+ok   review_page: present (https://hive.brianmills.dev/plans/world-substrate/main/proposals/ai-judge/review-page/)
+ok   cold_review: present (verdict pass)
+10 of 10 parts ok, 0 failing
+ok   substance: route follows from its path decision (route durable_solo)
+ok   substance: citations resolve (271 file citations checked, 23 other sources)
+ok   substance: domain model has a glossary (docs/model/DOMAIN.md)
+ok   substance: project layer checks against the planning layer (8 rules, 13 planning terms, 80 project terms)
+ok   substance: concepts point at their code (68 implemented, 12 dashed)
+ok   substance: plan names the concepts it relies on (29 concepts)
+ok   substance: plan records the cost basis of each AI step (4 AI steps: 1 measured, 3 computed)
+ok   substance: plan compares its AI answer path with the plain version (side_by_side: 3 cases on openrouter/openai/gpt-6-luna; verdict: The plain version reads the world correctly at these sizes, so the judge's input starts from it (the whole world). It is not enough on its own. Shown: the declaration check stops malformed rules (2 of 3 rejected, rules-check.json). Not shown: that pass 2 stops a wrong but valid rule; the accepted sawmill rule passed the declaration check and the scripted test run (sawmill-test-run.json), so those checks catch malformed rules only, and whether the judge's reading of the test-run report and its one revision catch such a rule is not established by retained J2/J3 evidence: J2 delivered the report and named its fuel blocker, while J3 still installed a consent-violating transfer (Q96). These are not controlled reruns of the three baseline cases. Pass 1 (discover for the person acting and each person named, plus the named entities' values) showed no added value here and is kept only because it costs no call.)
+WAIT substance: plan shows what each stage adds over the plain version (4 stages: 1 shown, 0 none, 3 untested)
+ok   substance: plan records Brian's stops on this work (searched 3 ways; 2 stops found: 1 hold, 1 lifted)
+       - stop holds: Brian, 2026-11-12, "before we move to implementaiotn my instinct is that we should make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved" (Brian, current normative-readiness conversation, 2026-11-12; recorded here verbatim); applies to New simulator feature implementation while normative review remains unfinished; documentation reconciliation is authorized.
+ok   substance: type-level model of executable rules (29 types, 29 mapped onto BrianMills2718/scientific-hypergraph@7b0638fe0aef)
+ok   substance: cold review read this revision (reviewed 0d2a8752ee56)
+11 of 12 substance checks ok, 0 failing, 1 pending
+ok   initiative: initiative names its home (world-substrate: this repository is the home of a one-repository initiative)
+ok   tiers: spectrum rungs 1-11 are cited (11 rungs cited)
+ok   tiers: production rungs 12-14 are cited when it runs in production (runs in production; rungs cited)
+ok   tiers: thesaurus separates near-identical names (rung 4) (156 names compared)
+WAIT system_map: system map names every code unit (system_model.units is absent; no diagram item has kind system_map; required from 2026-11-17)
+4 of 5 initiative, spectrum-tier and system-map checks ok, 0 failing, 1 pending
+ok   coverage: outcome and criteria against Brian's asked_by (13 requirements of Brian's words: 12 covered, 0 deferred, 1 about the planning process; stored judgment by openrouter/anthropic/claude-sonnet-5.5 at 2026-11-12T16:05:31-0500)
+       R1 [outcome] "facts have implications and blockers" -> A1
+       R2 [outcome] "causal chain propagates automatically" -> A1, A7
+       R3 [constraint] "50 things, 100 links deep" -> A1, A2
+       R4 [outcome] "deliver propagation results to judge" -> A2
+       R5 [outcome] "bribe decided by person bribed" -> A5; UNSURE: 2 of 3 runs found a gap
+       R6 [process] "discuss rules versus decisions" -> about the planning process: met by the validator and cold review, not a criterion
+       R7 [outcome] "release norm vs programmatic entry" -> A6
+       R8 [outcome] "social-engineered password works for others" -> A6
+       R9 [outcome] "Ostrom stuff" -> A6
+       R10 [outcome] "make it configurable" -> A4
+       R11 [outcome] "stop by budget" -> A8
+       R12 [outcome] "stop by number of rounds" -> A8
+       R13 [outcome] "stop by natural language point" -> A8
+ok   goal provenance: every goal part names its source (required from now (the manifest sets full_method (first commit 2026-08-31))) (0 goal pages: 0 parts, 0 sourced, 0 agent judgment, 0 unsourced, 0 unverified quotes, 0 stale vs requirements, 0 without the actor/job form)
+ok   freshness: reviewed at 0d2a8752ee56, 0 plan files changed since (code commits never count)
+Verdict: compliant (3 stages untested: pass 2, test run: a proposed rule run on a copy of the world, its report read by the judge before install (J1, J2), one revision after the test run (J2), pass 1: engine.discover for the person acting and each person the attempt names, plus the named entities' current values, given to the judge (J1); 1 initiative, spectrum-tier and system-map checks pending until 2026-11-17)
+
+== estimate-rules; validate_planning_package.py --repo . --offline-coverage; exit 0
+scope: the manifest sets full_method (first commit 2026-08-31): dated requirements apply
+route: durable_solo
+ok   investigation: present (5 places searched, 5 findings: 3 holds, 1 fails, 1 unknown; cost not applicable)
+ok   checks: present (9 results, 2 found problems)
+ok   open_questions: present (96 questions, 46 open, 50 resolved)
+ok   system_model: present
+ok   domain_model: present (80 concepts, 138 relations)
+ok   diagrams: present (3 diagrams)
+ok   plan: present
+ok   acceptance: present (7 criteria: 7 not built, 0 built, 0 judged pass, 0 judged fail)
+ok   review_page: present (https://hive.brianmills.dev/plans/world-substrate/main/proposals/estimate-rules/review-page/)
+ok   cold_review: present (verdict pass)
+10 of 10 parts ok, 0 failing
+ok   substance: route follows from its path decision (route durable_solo)
+ok   substance: citations resolve (271 file citations checked, 23 other sources)
+ok   substance: domain model has a glossary (docs/model/DOMAIN.md)
+ok   substance: project layer checks against the planning layer (8 rules, 13 planning terms, 80 project terms)
+ok   substance: concepts point at their code (68 implemented, 12 dashed)
+ok   substance: plan names the concepts it relies on (31 concepts)
+WAIT substance: plan records the cost basis of each AI step (8 AI steps: 2 measured, 4 computed, 2 guess; guess: Jev blade estimates only: illustrative 30-day component, excluding crossings and retries, plain-version comparison, Jev variants (E1, once: declared reads and whole world) (measure with llm-cost, or work out the arithmetic))
+WAIT substance: plan compares its AI answer path with the plain version (planned: 10 cases, answer path: Jev's estimate of a chance (later a pick or an amount) from the world's facts, used by an estimate rule)
+WAIT substance: plan shows what each stage adds over the plain version (3 stages: 0 shown, 0 none, 3 untested)
+ok   substance: plan records Brian's stops on this work (searched 4 ways; 1 stop found: 1 hold, 0 lifted)
+       - stop holds: Brian, 2026-11-12, "before we move to implementaiotn my instinct is that we should make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved" (Brian, current normative-readiness conversation, 2026-11-12; recorded here verbatim); applies to New simulator feature implementation while normative review remains unfinished; documentation reconciliation is authorized.
+ok   substance: type-level model of executable rules (29 types, 29 mapped onto BrianMills2718/scientific-hypergraph@7b0638fe0aef)
+ok   substance: cold review read this revision (reviewed 0d2a8752ee56)
+9 of 12 substance checks ok, 0 failing, 3 pending
+ok   initiative: initiative names its home (world-substrate: this repository is the home of a one-repository initiative)
+ok   tiers: spectrum rungs 1-11 are cited (11 rungs cited)
+ok   tiers: production rungs 12-14 are cited when it runs in production (runs in production; rungs cited)
+ok   tiers: thesaurus separates near-identical names (rung 4) (156 names compared)
+WAIT system_map: system map names every code unit (system_model.units is absent; no diagram item has kind system_map; required from 2026-11-17)
+4 of 5 initiative, spectrum-tier and system-map checks ok, 0 failing, 1 pending
+ok   coverage: outcome and criteria against Brian's asked_by (2 requirements of Brian's words: 2 covered, 0 deferred, 0 about the planning process; stored judgment by openrouter/anthropic/claude-sonnet-5.5 at 2026-11-12T15:55:47-0500)
+       R1 [outcome] "not just the judge uses jev" -> A1, A7, A6
+       R2 [outcome] "rules/constraints that propagate" -> A1, A4, A7, A6
+ok   goal provenance: every goal part names its source (required from now (the manifest sets full_method (first commit 2026-08-31))) (0 goal pages: 0 parts, 0 sourced, 0 agent judgment, 0 unsourced, 0 unverified quotes, 0 stale vs requirements, 0 without the actor/job form)
+ok   freshness: reviewed at 0d2a8752ee56, 0 plan files changed since (code commits never count)
+Verdict: compliant (2 AI step costs are guesses; plain-version comparison is planned (E1, before the live sawmill run: the same model (Jev) given the whole world state instead of the declared fields, side by side with Jev given the declared fields, gpt-6-luna given the declared fields, and (d) declared bands the rules writer writes from the sawmill's description with no Jev call, on 10 cases; no Jev call is made for planning (Brian's brief, 2026-11-10)); 3 stages untested: declared reads: Jev shown only the fields the rule declares, not the whole world (E1), per-run cache: resolved model, estimator/prompt version, question/type/options and read values (E1), draw against the estimate instead of using the estimate as the outcome (E1); 1 initiative, spectrum-tier and system-map checks pending until 2026-11-17)

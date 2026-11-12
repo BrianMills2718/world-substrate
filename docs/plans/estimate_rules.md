@@ -53,8 +53,8 @@ Written by `plan_checklist.py --write`, not by hand. `--check` re-runs the valid
 if any line below differs from what it says now. Unticked pending items are not passes.
 
 Manifest: `docs/planning/estimate-rules/planning-package.json`
-Package revision: `590530c76df5`
-Verdict: not compliant, 1 pending
+Package revision: `0d2a8752ee56`
+Verdict: compliant, 1 pending
 
 - [x] part investigation: ok
 - [x] part checks: ok
@@ -77,7 +77,6 @@ Verdict: not compliant, 1 pending
 - [ ] substance plan shows what each stage adds over the plain version: failing
 - [x] substance plan records Brian's stops on this work: ok
 - [x] substance type-level model of executable rules: ok
-- [ ] substance cold review report states its verdict: failing
 - [x] substance cold review read this revision: ok
 - [x] initiative initiative names its home: ok
 - [x] tiers spectrum rungs 1-11 are cited: ok
@@ -86,7 +85,7 @@ Verdict: not compliant, 1 pending
 - [ ] system_map system map names every code unit: pending
 - [x] coverage goal coverage: ok
 - [x] goal_provenance goal provenance: ok
-- [ ] freshness package is current: failing
+- [x] freshness package is current: ok
 <!-- /planning-compliance-checklist -->
 
 

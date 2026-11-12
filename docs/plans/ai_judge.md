@@ -61,8 +61,8 @@ Written by `plan_checklist.py --write`, not by hand. `--check` re-runs the valid
 if any line below differs from what it says now. Unticked pending items are not passes.
 
 Manifest: `docs/planning/ai-judge/planning-package.json`
-Package revision: `89dc1c696e1f`
-Verdict: not compliant, 1 pending
+Package revision: `0d2a8752ee56`
+Verdict: compliant, 1 pending
 
 - [x] part investigation: ok
 - [x] part checks: ok
@@ -73,7 +73,7 @@ Verdict: not compliant, 1 pending
 - [x] part plan: ok
 - [x] part acceptance: ok
 - [x] part review_page: ok
-- [ ] part cold_review: failing
+- [x] part cold_review: ok
 - [x] substance route follows from its path decision: ok
 - [x] substance citations resolve: ok
 - [x] substance domain model has a glossary: ok
@@ -93,7 +93,7 @@ Verdict: not compliant, 1 pending
 - [ ] system_map system map names every code unit: pending
 - [x] coverage goal coverage: ok
 - [x] goal_provenance goal provenance: ok
-- [ ] freshness package is current: failing
+- [x] freshness package is current: ok
 <!-- /planning-compliance-checklist -->
 
 
