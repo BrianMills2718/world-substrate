@@ -10,10 +10,13 @@ import sys
 import unittest
 from copy import deepcopy
 from pathlib import Path
+from types import SimpleNamespace
 
 REPO = Path(__file__).resolve().parents[1]
 SPIKE = REPO / "spikes/any-scenario-2026-10"
 sys.path.insert(0, str(SPIKE))
+
+import pytest
 
 from pydantic import ValidationError  # noqa: E402
 from scenario_spec import ScenarioSpecV1, from_donor_scenario  # noqa: E402
@@ -801,3 +804,112 @@ class ImpossibleCheckTests(unittest.TestCase):
         self.assertEqual(len(dropped), 1)
         both = {**rule, "participants": {"rec": {"categories": ["moment"]}, "mom": {"categories": ["moment"]}}}
         self.assertEqual(drop_impossible_checks([both], bundle)[0][0]["checks"], [same, keep])  # possible: kept
+
+
+class IndependentGeneratedDecisionTests(unittest.TestCase):
+    """Captured authoring output passes the production compiler and assembly, without model spend."""
+
+    def setUp(self):
+        from compile_spec import compile_spec
+        from scripts.people_world import assemble_people_world
+        value = _minimal()
+        value["people"].append({"entity_id": "bo", "label": "Bo", "position": "Member",
+                                "disposition": "Independent", "behavioral_profile": {}})
+        value["public_summary"] = "A partnership considers activation after validation and individual assent."
+        value["independent_decision"] = {"decision_id": "activation", "question": "Activate the system",
+            "required_actor_ids": ["country_b", "bo"], "validator_ids": ["legal_group"],
+            "repairer_ids": ["legal_group"], "condition_initially_passing": False, "initial_validation": "failed"}
+        self.spec = ScenarioSpecV1.model_validate(value)
+        from unittest.mock import patch
+        from scripts import people_world
+        # The saved structured response replaces transport only; production authoring, compile and assembly execute.
+        with patch.dict(sys.modules, {"llm_client": SimpleNamespace(call_llm_structured=lambda *a, **kw: (self.spec, None))}), patch.object(people_world, "HEDGE_COPIES", 1):
+            prepared = people_world.prepare_people_world("A validation and assent scenario", trace_id="free-i1-authoring",
+                max_budget=0, progress=lambda *args: None)
+        self.built = assemble_people_world(prepared, {"mechanics": [], "processes": [], "terminal": None})
+        from scripts.run_authored_world import build_engine
+        self.engine, _, _ = build_engine(self.built["bundle"], self.built["causal_model"])
+
+    def do(self, actor, kind):
+        offered = [r["action"] for r in self.engine.discover(actor)["available"] if r["action"]["kind"] == kind]
+        self.assertTrue(offered, (actor, kind))
+        result = self.engine.submit(dict(offered[0], controller="test"))
+        self.assertEqual(result["status"], "accepted", result)
+
+    def decision(self):
+        return self.engine.world.entities["activation"].as_dict()["components"]["validation_decision"]
+
+    @pytest.mark.req("native-coordination/claims-and-delivery-do-not-decide-technical-condition-or-assent")
+    @pytest.mark.req("native-coordination/passing-revalidation-clears-only-the-technical-hold")
+    def test_delivery_review_repair_and_assent_remain_distinct(self):
+        before = self.decision().copy()
+        self.do("country-b", "state-supportive")
+        self.do("legal-group", "communicate")
+        self.engine.advance(5)
+        self.assertEqual(self.decision(), before)
+        self.assertFalse(self.engine.world.entities["condition-activation"].component("technical_condition").passing)
+        self.do("legal-group", "complete-validation")
+        self.assertTrue(self.decision()["hold"])
+        self.assertEqual(self.decision()["validation"], "failed")
+        self.do("legal-group", "repair-condition")
+        self.assertTrue(self.decision()["hold"])
+        self.do("legal-group", "complete-validation")
+        self.assertEqual((self.decision()["hold"], self.decision()["validation"], self.decision()["assents"]), (False, "passed", 0))
+        self.do("country-b", "record-assent")
+        self.assertFalse(any(r["action"]["kind"] == "activate" for r in self.engine.discover("country-b")["available"]))
+        self.do("bo", "record-assent")
+        self.do("bo", "activate")
+        self.assertTrue(self.decision()["active"])
+
+    @pytest.mark.req("native-coordination/generated-authoring-preserves-independent-choice")
+    def test_no_forced_support_timer_or_claim_truth_and_safe_metadata(self):
+        processes = {p["process_id"] for p in self.built["causal_model"]["processes"]}
+        self.assertNotIn("remedy-completes", processes)
+        self.assertNotIn("concern-makes-support-conditional", processes)
+        contract = self.built["bundle"]["actor_information"]
+        self.assertEqual(contract["public_summary"], self.spec.public_summary)
+        self.assertNotIn("technical_condition.passing", next(r for r in contract["public_entities"] if r["id"] == "condition-activation")["fields"])
+        self.assertFalse(any(r["action"]["kind"] == "complete-validation" for r in self.engine.discover("bo")["available"]))
+
+
+    @pytest.mark.req("native-coordination/static-action-forms-do-not-reveal-technical-condition")
+    def test_action_forms_are_present_and_invariant_under_hidden_condition_changes(self):
+        from compile_spec import compile_spec
+        forms = self.built["bundle"]["actor_information"]["public_actions"]
+        self.assertTrue(forms)
+        self.assertIn("record-assent", {f["kind"] for f in forms})
+        self.assertIn("complete-validation", {f["kind"] for f in forms})
+        variant = self.spec.model_copy(deep=True)
+        variant.independent_decision.condition_initially_passing = True
+        changed, _, _ = compile_spec(variant)
+        self.assertEqual(forms, changed["actor_information"]["public_actions"])
+
+
+    @pytest.mark.req("native-coordination/generated-authoring-preserves-independent-choice")
+    def test_fresh_authoring_rejects_missing_public_summary_but_legacy_compile_remains(self):
+        from unittest.mock import patch
+        from scripts import people_world
+        from compile_spec import compile_spec
+        legacy = ScenarioSpecV1.model_validate(_minimal())
+        self.assertNotIn("actor_information", compile_spec(legacy)[0])
+        with patch.dict(sys.modules, {"llm_client": SimpleNamespace(call_llm_structured=lambda *a, **kw: (legacy, None))}), patch.object(people_world, "HEDGE_COPIES", 1):
+            with self.assertRaisesRegex(ValueError, "public_summary"):
+                people_world.prepare_people_world("Fresh description", trace_id="free-missing-summary", max_budget=0,
+                                                 progress=lambda *args: None)
+            from scripts.generate_world_bundle import recorded_authoring_replay, is_recorded_authoring_replay
+            with recorded_authoring_replay():
+                prepared = people_world.prepare_people_world("Recorded description", trace_id="free-recorded-summary", max_budget=0,
+                                                             progress=lambda *args: None)
+                self.assertNotIn("actor_information", prepared["bundle"])
+            self.assertFalse(is_recorded_authoring_replay())
+            with self.assertRaisesRegex(ValueError, "public_summary"):
+                people_world.prepare_people_world("Fresh description again", trace_id="free-fresh-after-replay", max_budget=0,
+                                                 progress=lambda *args: None)
+
+    @pytest.mark.req("native-coordination/static-action-forms-do-not-reveal-technical-condition")
+    def test_static_communication_form_is_available_only_with_authorized_message_identity(self):
+        from scripts.actor_information import actor_page
+        holder = actor_page(self.engine, self.built["bundle"], "legal-group")
+        recipient = actor_page(self.engine, self.built["bundle"], "country-b")
+        self.assertTrue(any(r["action"]["kind"] == "communicate" for r in holder["available"]))
+        self.assertFalse(any(r["action"]["kind"] == "communicate" for r in recipient["available"]))

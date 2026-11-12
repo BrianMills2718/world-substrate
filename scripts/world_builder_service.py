@@ -410,7 +410,7 @@ def _canon(value: Any) -> Any:
     return value
 
 
-def _snapshot_seal(snapshot: Any, bundle: Any, causal: Any, approval: Any = None, rulings: Any = None) -> str:
+def _snapshot_seal(snapshot: Any, bundle: Any, causal: Any, approval: Any = None, rulings: Any = None, actor_state: Any = None) -> str:
     """Issue #127 (G11): a keyed hash of the world state a round ended in, under these exact rules.
 
     The browser holds the state between live rounds; a continued round must bring back one this
@@ -421,7 +421,8 @@ def _snapshot_seal(snapshot: Any, bundle: Any, causal: Any, approval: Any = None
     # The run's judge rulings (ai-judge plan J3) are sealed with it, so a list the server did not send is refused; a
     # run with none is sealed exactly as before.
     sealed = {"snapshot": snapshot, "bundle": bundle, "causal_model": causal, "approval": approval,
-              **({"rulings": rulings} if rulings else {})}
+              **({"rulings": rulings} if rulings else {}),
+              **({"actor_state": actor_state} if actor_state is not None else {})}
     canonical = json.dumps(_canon(sealed), sort_keys=True, separators=(",", ":"))
     return hmac.new(key, canonical.encode(), "sha256").hexdigest()
 
@@ -500,6 +501,9 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             **({"reaction_limit": trace["reaction_limit"]} if "reaction_limit" in trace else {}),
             # Concordia residents' memories after the round (policy resident), the state each person decided from.
             "resident_memory": trace.get("resident_memory"),
+            "actor_inputs": trace.get("actor_inputs"),
+            "actor_information_mode": trace.get("actor_information_mode"),
+            "actor_state": value.get("actor_state"),
             # The frozen rules identity (MechanicProfile.freeze()): same id, same
             # installed law. Gap G7 (docs/model/VIEW_COVERAGE.md): it was dropped.
             "mechanic_profile_id": trace.get("mechanic_profile_id"),
@@ -690,6 +694,7 @@ def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dic
         raise ValueError("a shared run must start from round 1 of its world")
     fingerprint = first["request"].get("world_fingerprint")
     rounds: list[dict[str, Any]] = []
+    actor_inputs: dict[str, list[Any]] = {}
     last = 0
     for row in runs:
         if row["path"] != "/run" or row["request"].get("world_fingerprint") != fingerprint:
@@ -699,6 +704,8 @@ def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dic
         if transcript and transcript[0].get("turn") != last + 1:
             raise ValueError("those rounds are not one unbroken run")
         rounds += transcript
+        for actor, inputs in (row["result"].get("actor_inputs") or {}).items():
+            actor_inputs.setdefault(actor, []).extend(inputs)
         last = (row["result"].get("summary") or {}).get("last_turn") or last
     bundle, causal = first["request"]["bundle"], first["request"]["causal_model"]
     build = rows.get(build_trace_id) if build_trace_id else None
@@ -732,6 +739,8 @@ def _assemble_share(build_trace_id: str | None, run_trace_ids: list[str]) -> dic
             "trace_id": build_trace_id if build is not None else None,
         },
         "rounds": rounds,
+        "actor_inputs": actor_inputs,
+        "actor_information_mode": first["result"].get("actor_information_mode", "legacy-unrestricted"),
         "runs": [{"trace_id": r["trace_id"], "mover": r["result"].get("mover"), "policy": r["request"].get("policy"),
                   "first_turn": (r["result"].get("summary") or {}).get("first_turn"),
                   "last_turn": (r["result"].get("summary") or {}).get("last_turn"), "cost_usd": r.get("cost_usd"),
@@ -2608,9 +2617,30 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             seal = body.get("continue_seal")
             if not isinstance(seal, str) or not hmac.compare_digest(
                     seal.encode(), _snapshot_seal(continue_from, body.get("bundle"), causal,
-                                                  body.get("approval"), body.get("rulings")).encode()):
+                                                  body.get("approval"), body.get("rulings"),
+                                                  body.get("actor_state") if "actor_information" in body["bundle"] else None).encode()):
                 raise ValueError("This world cannot carry on: the state sent back does not match the last round "
                                  "this server ran under these rules. Press Start over.")
+        # I0: new worlds restore only server-sealed actor inputs. Legacy saved runs retain their old contract.
+        bounded_information = "actor_information" in body["bundle"]
+        if bounded_information:
+            declaration = body["bundle"]["actor_information"]
+            declared_briefs = {actor: row.get("brief", "") for actor, row in declaration.get("actors", {}).items()}
+            if continue_from is not None:
+                actor_state = body.get("actor_state")
+                if not isinstance(actor_state, dict) or set(actor_state) != {"resident_memory", "recent", "briefs", "underway", "turn_offset"}:
+                    raise ValueError("This world cannot carry on without its sealed actor state. Press Start over.")
+                for key in ("resident_memory", "recent", "briefs", "underway", "turn_offset"):
+                    if key in body and body[key] != actor_state[key]:
+                        raise ValueError("This world cannot carry on: actor context differs from the sealed state.")
+                    body[key] = actor_state[key]
+            else:
+                if (body.get("resident_memory") or body.get("recent") or body.get("actor_state")
+                        or body.get("underway") or body.get("turn_offset", 0) != 0):
+                    raise ValueError("A new run cannot restore unsealed actor memory or recent events.")
+                if body.get("briefs") and body["briefs"] != declared_briefs:
+                    raise ValueError("Actor briefs must match this world's declared actor information.")
+                body["briefs"] = declared_briefs
         turn_offset = body.get("turn_offset", 0)
         if type(turn_offset) is not int or not 0 <= turn_offset <= MAX_CONTINUED_TURNS:
             raise ValueError(f"turn_offset must be an integer between 0 and {MAX_CONTINUED_TURNS}")
@@ -2728,6 +2758,16 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         judge_test_runs = _judge_test_runs(trace)
         if request is not None and judge_test_runs:
             request["judge_test_runs"] = judge_test_runs
+        actor_state = None
+        if bounded_information:
+            next_recent = list(recent)
+            for turn in trace.get("transcript") or []:
+                for actor, row in (turn.get("actors") or {}).items():
+                    if row.get("status") == "accepted" and row.get("did"):
+                        next_recent.append({"actor": actor, "action": str(row["did"]["kind"])[:80]})
+            actor_state = {"resident_memory": trace.get("resident_memory") or {},
+                           "recent": next_recent[-MAX_RECENT_MOVES:], "briefs": briefs,
+                           "underway": trace.get("underway") or [], "turn_offset": trace["summary"]["last_turn"]}
         self._json(
             HTTPStatus.OK,
             {
@@ -2738,7 +2778,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "replay_html": replay,
                 # The next continued round must send this back with final_snapshot (#127).
                 "snapshot_seal": _snapshot_seal(trace.get("final_snapshot"), body.get("bundle"), causal, approval,
-                                                trace.get("rulings")),
+                                                trace.get("rulings"), actor_state),
+                **({"actor_state": actor_state} if actor_state is not None else {}),
                 "approval": approval,
                 "cost_usd": trace.get("cost_usd", 0.0),
                 "daily_cost_usd": daily_cost,

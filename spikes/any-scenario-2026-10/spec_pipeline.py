@@ -17,29 +17,23 @@ from compile_spec import compile_spec
 from scenario_spec import ScenarioSpecV1
 
 SPEC_SYSTEM = (
-    "You define a simulation world from a plain-language scenario, filling the given schema exactly. "
-    "Rules: (1) Every person, group, organisation or country the scenario names or implies as acting is a person, "
-    "with a behavioral profile taken from what the scenario says about them; never fold a named group into "
-    "another. A body the others belong to (a partnership, council, alliance or board) is a person of its own when "
-    "the scenario has it decide, convene, coordinate or deploy, besides its members. (2) Information that the scenario says someone holds or passes on is an information item: its holder "
-    "is who has it at the start, its recipients are who it should reach, its channel is the route named or implied "
-    "(for example a group's own channel). Make concrete items: a short true statement each, not a category. "
-    "(3) Regular events (meetings, reviews, deadlines) are scheduled moments with a tick and, if they repeat, "
-    "every_ticks; one tick is one week unless the scenario implies otherwise; a deadline is a moment too. "
-    "(4) Quantities and states that change (readiness, time available, a pace) are world records with public_state "
-    "values; visible_to_actor_ids names who can see them. (5) Each behavior the scenario "
-    "says must be possible (raising concerns, meetings slowing, settled issues reopening, support becoming "
-    "conditional, delay, deployment) is a behavior whose subject_refs name the people, records, items or moments it "
-    "involves. (6) Ids are lowercase with underscores. (7) Anything the schema cannot represent goes in "
-    "`unsupported` in plain words; never drop it silently. (8) When several people must support a decision (a vote, "
-    "an approval, an activation), fill `decision`: who decides, who supports it at the start, how many must fully "
-    "support it, the deadline moment and what happens if support is short then. Each decider's support, the concerns "
-    "it may wait on (the information items they receive) and the decision's status are then exact compiled records, "
-    "so do not also make world records for support, votes or the decision's status. (9) Where the scenario leaves a "
-    "person's position, beliefs or tendencies unstated, give each person a plausible, distinct profile that makes the "
-    "dynamics the scenario describes possible (for example, if concerns are said to make support conditional, the "
-    "deciders who receive them weigh those concerns before supporting, some more cautious than others); never leave a "
-    "decider with no stance, and list every such invented detail in fidelity_assumptions."
+    "Define a simulation world from the scenario using the schema. Every named actor has its own profile and memory. "
+    "Profiles contain that actor's beliefs, not omniscient truth or required reactions. Claims may be false or disputed; "
+    "information_items preserve the holder, intended recipients, apparent source, common source_lineage and hidden provenance. "
+    "Separate actual technical state from claims, delivery, personal interpretation, public stance, recorded assent and institutional holds. "
+    "Write public_summary using only facts explicitly shared by all actors before any delivery; never copy the omniscient description. "
+    "World records declare visible_to_actor_ids for public_state; hidden_state stays private. Use stable neutral labels without private facts. "
+    "Each actor's memories and profile contain only their declared knowledge, own interpretations and plausible personal tendencies. "
+    "Use independent_decision for fresh collective activation/approval scenarios involving technical validation: declare required_actor_ids, "
+    "validator_ids, repairer_ids, condition_initially_passing and initial_validation. This compiles actor-owned public stance and assent, "
+    "requests for review, authorized repair and actual validation, a public technical hold and activation checks. "
+    "A failed validation creates the hold; authorized passing revalidation clears only that hold. Repair is a declared effective technical intervention, "
+    "never the passing of time. Reports never alter the technical condition or force agreement or assent. "
+    "Use legacy decision only for explicitly stipulated scripted conditional-support fixtures, not as a model of persuasion. "
+    "Do not duplicate compiled decision, condition, stance or assent records as world_records. "
+    "Regular meetings/deadlines may be scheduled_moments. Behaviors state possibilities, never prescribed actor responses. "
+    "Use lowercase underscore ids. List omitted unsupported details and invented fidelity assumptions explicitly. "
+    "No ending, social reaction, timer cure or recurrent conflict is required. Actors may disagree, ignore evidence or retain support."
 )
 SPEC_MODEL_WHY = ("The scenario spec is the whole world definition; the stronger tier is used for the same reason as "
                   "rule writing (see RULE_MODEL_WHY).")
@@ -73,6 +67,9 @@ def scenario_spec(text: str, *, model: str, trace_id: str, max_budget: float = 0
         task="world-substrate-scenario-spec", trace_id=trace_id, max_budget=max_budget, reasoning_effort=reasoning_effort,
         num_retries=1, model_justification=SPEC_MODEL_WHY,
         **({"openrouter_route_policy": route_policy} if route_policy else {}))
+    from scripts.generate_world_bundle import is_recorded_authoring_replay
+    if not spec.public_summary.strip() and not is_recorded_authoring_replay():
+        raise ValueError("Fresh scenario authoring requires an explicit actor-safe public_summary")
     return spec, result
 
 
@@ -129,7 +126,8 @@ def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: di
 # declares them). 2026-10-16: a generated action declared "actor" and the whole Waltzman build failed.
 RESERVED_ACTION_FIELDS = {"actor", "kind", "base_revision", "controller"}
 
-COMPILED_COMPONENTS = ("information", "delivery", "moment", "support", "concern", "group_decision")  # written only by the compiled rules
+COMPILED_COMPONENTS = ("information", "delivery", "moment", "support", "concern", "group_decision",
+                       "claim_provenance", "technical_condition", "validation_decision", "actor_position", "technical_role")  # written only by the compiled rules
 
 
 # The one compiled field a generated move may write: matters put before a group decision (compile_spec GROUP_DECISION).

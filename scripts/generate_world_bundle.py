@@ -11,6 +11,8 @@ here; up to two validator-guided repairs are allowed.
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
+from contextvars import ContextVar
 import json
 import sys
 import uuid
@@ -21,6 +23,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
+from scripts.actor_information import validate_actor_information
 from scripts.scaffold_world import FIELD_TYPES, SCHEMA_VERSION, BundleError, validate_bundle
 
 DEFAULT_MODEL = "openrouter/openai/gpt-6-luna"
@@ -90,9 +93,32 @@ SIZE_RULES = [
 ]
 
 
+_RECORDED_AUTHORING_REPLAY: ContextVar[bool] = ContextVar("recorded_authoring_replay", default=False)
+
+
+def is_recorded_authoring_replay() -> bool:
+    """Whether this execution context is inside the offline authoring replay adapter."""
+    return _RECORDED_AUTHORING_REPLAY.get()
+
+
+@contextmanager
+def recorded_authoring_replay():
+    """Compatibility for an offline recorded-only transport, never a fresh service request.
+
+    The replay owner must install its recorded llm_client stub first. Prompts stay current;
+    replay matching/forced-call accounting remains the replay tool's responsibility.
+    """
+    token = _RECORDED_AUTHORING_REPLAY.set(True)
+    try:
+        yield
+    finally:
+        _RECORDED_AUTHORING_REPLAY.reset(token)
+
+
 def _contract() -> dict[str, Any]:
     return {
         "schema_version": SCHEMA_VERSION,
+        "actor_information": json.loads((REPO / "schemas/world-authoring-bundle-v0.schema.json").read_text())["properties"]["actor_information"],
         "world": "{id (lowercase-slug), label, summary (one sentence), location (slug), content_version: 1}",
         "components": "[{name (python identifier), fields: [{name, type, default}]}]",
         "field_types": sorted(FIELD_TYPES),
@@ -141,6 +167,20 @@ def _contract() -> dict[str, Any]:
             "be (dice-roll chance, real clock time). Use [] when everything was represented."
         ),
         "rules": [
+            "actor_information is REQUIRED for every fresh proposal, including a redesign. Use version 1 and a "
+            "nonempty public_summary describing only what every actor may know; never copy the full description "
+            "or world.summary into actor context, because they may contain analyst-only truth. Public entity "
+            "labels must themselves be safe for every actor. Private conditions and evidence stay out of labels.",
+            "Declare every entity that may choose actions in actor_information.actors, keyed by entity id, with "
+            "its own brief, initial_knowledge [{id,text,source}], and observable_fields [{entity,paths}]. The brief "
+            "is that actor's own profile, not the analyst's description. Give each initial fact an explicit source; "
+            "do not give another actor's private evidence to everyone. Empty knowledge and observations are valid.",
+            "public_entities is an explicit allowlist [{id,label,fields}] of known identities and public readable "
+            "component.field paths. Each actor must have a public identity there. observable_fields grants additional "
+            "component.field paths to that actor only. Never assume all fields are public: only deliberately "
+            "declared paths are readable. Unknown executability must not be revealed as an action candidate or error.",
+            "Optionally declare public_actions [{kind,description,fields}] as concrete known attempts with every "
+            "signature field bound; these are public intent shapes, not promises that the rules will allow them.",
             "Every entity component object must list exactly the component's declared fields, with values of the declared type.",
             "entity_ref values must name an entity id that exists in this bundle.",
             # #179, 2026-10-19 (pencil c4-run10, trace world-builder-live/world/299ad248382d414ba7b65867475a002f):
@@ -208,6 +248,22 @@ SIZE_BY_KIND["open"] = SIZE_BY_KIND["ongoing"]
 KIND_RULES["open"] = KIND_RULES["ongoing"]
 
 
+def _example_bundle() -> dict[str, Any]:
+    """A deliberately public orchard example; historical fixture remains unchanged."""
+    example = json.loads(EXAMPLE.read_text())
+    example["actor_information"] = {
+        "version": 1, "public_summary": "Ava tends an apple tree in an orchard.",
+        "public_entities": [
+            {"id": "ava", "label": "Ava", "fields": []},
+            {"id": "tree-1", "label": "Apple tree", "fields": []},
+            {"id": "apple-1", "label": "Apple", "fields": ["fruit.stage", "fruit.tree_id"]}],
+        "actors": {"ava": {"brief": "You tend the orchard and may pick fruit.", "initial_knowledge": [],
+                           "observable_fields": [{"entity": "ava", "paths": ["worker.stamina"]}]}},
+        "public_actions": [{"kind": "pick", "description": "Try to pick the apple.", "fields": {"fruit": "apple-1"}}],
+    }
+    return example
+
+
 def _messages(description: str, world_kind: str = "task") -> list[dict[str, str]]:
     return [
         {
@@ -228,7 +284,7 @@ def _messages(description: str, world_kind: str = "task") -> list[dict[str, str]
                     "world_kind_rule": KIND_RULES[world_kind],
                     "world_size_rule": SIZE_BY_KIND[world_kind],
                     "contract": _contract(),
-                    "example_bundle": json.loads(EXAMPLE.read_text()),
+                    "example_bundle": _example_bundle(),
                 },
                 indent=2,
             ),
@@ -300,7 +356,14 @@ def generate_world_bundle(
             not_modeled = parsed.pop("not_modeled", [])
             if not isinstance(not_modeled, list) or not all(isinstance(x, str) for x in not_modeled):
                 raise BundleError("not_modeled must be a list of strings")
+            if "actor_information" not in parsed and not is_recorded_authoring_replay():
+                raise BundleError("fresh world proposal must declare actor_information version 1")
             bundle = validate_bundle(parsed)
+            validate_actor_information(bundle)
+            if "actor_information" in bundle:
+                information = bundle["actor_information"]
+                if not information["public_summary"].strip() or not information["actors"]:
+                    raise BundleError("fresh world actor_information needs a public_summary and actor profiles")
             if not bundle["actions"]:
                 raise BundleError("bundle must declare at least one action")
             if previous is not None and previous.get("laws") and not bundle.get("laws"):

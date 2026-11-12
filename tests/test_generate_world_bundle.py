@@ -3,14 +3,27 @@ from __future__ import annotations
 import json
 import sys
 import unittest
+
+import pytest
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
 from unittest.mock import MagicMock, patch
 
-from scripts.generate_world_bundle import generate_world_bundle
+from scripts.generate_world_bundle import _example_bundle, generate_world_bundle
 
 REPO = Path(__file__).resolve().parents[1]
 ORCHARD = json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text())
+FRESH_ORCHARD = _example_bundle()
+
+
+def fresh_shop(bundle):
+    """Explicit minimal fake author output; no hidden field grants."""
+    result = json.loads(json.dumps(bundle))
+    actor = result["entities"][0]
+    result["actor_information"] = {"version": 1, "public_summary": "A shop trades pencils.",
+        "public_entities": [{"id": actor["id"], "label": "Shop participant", "fields": []}],
+        "actors": {actor["id"]: {"brief": "You trade pencils.", "initial_knowledge": [], "observable_fields": []}}}
+    return result
 
 
 def fake_llm(*contents: str) -> tuple[ModuleType, MagicMock]:
@@ -22,6 +35,65 @@ def fake_llm(*contents: str) -> tuple[ModuleType, MagicMock]:
 
 
 class GenerateWorldBundleTests(unittest.TestCase):
+    @pytest.mark.req("information-delivery/complete-actor-input-boundary")
+    def test_fresh_proposal_missing_actor_declaration_is_repaired_or_refused(self):
+        module, call = fake_llm(json.dumps(ORCHARD), json.dumps(FRESH_ORCHARD))
+        with patch.dict(sys.modules, {"llm_client": module}):
+            bundle, _, _ = generate_world_bundle("PRIVATE ANALYST DETAIL", trace_id="t")
+        self.assertEqual(call.call_count, 2)
+        self.assertIn("must declare actor_information", call.call_args_list[1].args[1][-1]["content"])
+        self.assertNotIn("PRIVATE ANALYST DETAIL", json.dumps(bundle["actor_information"]))
+        module, call = fake_llm(*[json.dumps(ORCHARD)] * 3)
+        with patch.dict(sys.modules, {"llm_client": module}):
+            with self.assertRaisesRegex(ValueError, "must declare actor_information"):
+                generate_world_bundle("orchard", trace_id="t")
+        self.assertEqual(call.call_count, 3)
+        from scripts.scaffold_world import validate_bundle
+        self.assertNotIn("actor_information", validate_bundle(ORCHARD))
+
+    @pytest.mark.req("information-delivery/complete-actor-input-boundary")
+    def test_fresh_proposal_invalid_grants_fail_closed_and_schema_is_in_prompt(self):
+        from scripts.generate_world_bundle import _messages
+        prompt = json.loads(_messages("orchard")[1]["content"])
+        schema = json.loads((REPO / "schemas/world-authoring-bundle-v0.schema.json").read_text())
+        self.assertEqual(prompt["contract"]["actor_information"], schema["properties"]["actor_information"])
+        self.assertEqual(prompt["example_bundle"]["actor_information"]["version"], 1)
+        bad = json.loads(json.dumps(FRESH_ORCHARD))
+        bad["actor_information"]["actors"]["ava"]["observable_fields"][0]["paths"] = ["worker.secret"]
+        module, call = fake_llm(*[json.dumps(bad)] * 3)
+        with patch.dict(sys.modules, {"llm_client": module}):
+            with self.assertRaisesRegex(ValueError, "field reference"):
+                generate_world_bundle("orchard", trace_id="t")
+        self.assertEqual(call.call_count, 3)
+
+    @pytest.mark.req("information-delivery/complete-actor-input-boundary")
+    def test_recorded_authoring_replay_is_explicit_and_resets_after_failure(self):
+        from scripts.generate_world_bundle import is_recorded_authoring_replay, recorded_authoring_replay
+        self.assertFalse(is_recorded_authoring_replay())
+        module, call = fake_llm(json.dumps(ORCHARD), *[json.dumps(ORCHARD)] * 3)
+        with patch.dict(sys.modules, {"llm_client": module}):
+            with self.assertRaisesRegex(RuntimeError, "replay interrupted"):
+                with recorded_authoring_replay():
+                    self.assertTrue(is_recorded_authoring_replay())
+                    bundle, _, _ = generate_world_bundle("recorded orchard", trace_id="offline")
+                    self.assertNotIn("actor_information", bundle)
+                    raise RuntimeError("replay interrupted")
+            self.assertFalse(is_recorded_authoring_replay())
+            with self.assertRaisesRegex(ValueError, "must declare actor_information"):
+                generate_world_bundle("fresh orchard", trace_id="fresh")
+        self.assertEqual(call.call_count, 4)
+
+    @pytest.mark.req("information-delivery/complete-actor-input-boundary")
+    def test_recorded_authoring_replay_does_not_allow_invalid_declarations(self):
+        from scripts.generate_world_bundle import recorded_authoring_replay
+        bad = json.loads(json.dumps(FRESH_ORCHARD))
+        bad["actor_information"]["version"] = 99
+        module, call = fake_llm(*[json.dumps(bad)] * 3)
+        with patch.dict(sys.modules, {"llm_client": module}), recorded_authoring_replay():
+            with self.assertRaisesRegex(ValueError, "unsupported actor_information version"):
+                generate_world_bundle("recorded orchard", trace_id="offline")
+        self.assertEqual(call.call_count, 3)
+
     def test_contract_asks_hand_off_actions_to_name_the_other_party(self):
         # #179: a deliver action with only a quantity field can never move goods to anyone.
         from scripts.generate_world_bundle import _messages
@@ -70,7 +142,7 @@ class GenerateWorldBundleTests(unittest.TestCase):
 
     def test_redesign_sends_the_previous_structure_and_the_test_run(self):
         # #187: the structure is redesigned from what the test run showed, not only the rules.
-        module, call = fake_llm(json.dumps(ORCHARD))
+        module, call = fake_llm(json.dumps(FRESH_ORCHARD))
         with patch.dict(sys.modules, {"llm_client": module}):
             generate_world_bundle("One worker picks a ripe apple.", trace_id="t", max_budget=0.01,
                                   feedback="pick-apple was never possible for anyone.", previous={"world": {"id": "old"}})
@@ -83,7 +155,7 @@ class GenerateWorldBundleTests(unittest.TestCase):
         # S2 pencil Fw7SHbEtW3Un: the design it revised declared 17 laws, the redesign none.
         from tests.test_declared_laws import SHOP
         lawless = {k: v for k, v in SHOP.items() if k not in ("resources", "laws")}
-        module, call = fake_llm(json.dumps(lawless), json.dumps(SHOP))
+        module, call = fake_llm(json.dumps(fresh_shop(lawless)), json.dumps(fresh_shop(SHOP)))
         with patch.dict(sys.modules, {"llm_client": module}):
             bundle, _, _ = generate_world_bundle("A shop sells pencils.", trace_id="t", max_budget=0.01,
                                                  feedback="sell-pencil was never possible.", previous=SHOP)
@@ -93,7 +165,7 @@ class GenerateWorldBundleTests(unittest.TestCase):
         self.assertIn("Keep the world's resources and laws", call.call_args_list[0].args[1][3]["content"])
 
     def test_valid_proposal_is_returned_validated(self):
-        module, call = fake_llm(json.dumps(ORCHARD))
+        module, call = fake_llm(json.dumps(FRESH_ORCHARD))
         with patch.dict(sys.modules, {"llm_client": module}):
             bundle, _, _ = generate_world_bundle("One worker picks a ripe apple.", trace_id="t", max_budget=0.01)
         self.assertEqual(bundle["world"]["id"], "orchard")
@@ -102,9 +174,9 @@ class GenerateWorldBundleTests(unittest.TestCase):
         self.assertEqual(sent["description"], "One worker picks a ripe apple.")
 
     def test_validator_error_drives_exactly_one_repair(self):
-        broken = json.loads(json.dumps(ORCHARD))
+        broken = json.loads(json.dumps(FRESH_ORCHARD))
         broken["entities"][2]["components"]["fruit"]["tree_id"] = "no-such-tree"
-        good = dict(ORCHARD, not_modeled=["the deadline before noon"])
+        good = dict(FRESH_ORCHARD, not_modeled=["the deadline before noon"])
         module, call = fake_llm(json.dumps(broken), json.dumps(good))
         with patch.dict(sys.modules, {"llm_client": module}):
             bundle, not_modeled, _ = generate_world_bundle("orchard", trace_id="t", max_budget=0.01)
@@ -116,8 +188,9 @@ class GenerateWorldBundleTests(unittest.TestCase):
         self.assertEqual(bundle["world"]["id"], "orchard")
 
     def test_invalid_after_repairs_fails_loudly_naming_the_reason(self):
-        no_actions = json.loads(json.dumps(ORCHARD))
+        no_actions = json.loads(json.dumps(FRESH_ORCHARD))
         no_actions["actions"] = []
+        no_actions["actor_information"]["public_actions"] = []
         module, call = fake_llm(*[json.dumps(no_actions)] * 3)
         with patch.dict(sys.modules, {"llm_client": module}):
             with self.assertRaisesRegex(ValueError, "invalid after 2 repairs: .*at least one action"):

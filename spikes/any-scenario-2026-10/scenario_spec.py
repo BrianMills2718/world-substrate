@@ -75,6 +75,7 @@ class InformationItem(_Strict):
     channel_id: str = Field(pattern=_ID, description="The route the item travels (for example a group's own channel).")
     recipient_ids: list[str] = Field(min_length=1)
     hidden_provenance: list[StateEntry] = Field(default_factory=list)
+    source_lineage: str = Field(default="", description="Common originating claim identity, not an independent corroboration.")
 
 
 class ScheduledMoment(_Strict):
@@ -111,6 +112,17 @@ class GroupDecision(_Strict):
     max_postponements: int = Field(default=3, ge=0, description="After this many postponements it is rejected.")
 
 
+class IndependentDecision(_Strict):
+    """Explicit validation and actor-owned assent; no persuasion or remedy inferred from time."""
+    decision_id: str = Field(pattern=_ID)
+    question: str = Field(min_length=1)
+    required_actor_ids: list[str] = Field(min_length=1)
+    validator_ids: list[str] = Field(min_length=1)
+    repairer_ids: list[str] = Field(default_factory=list)
+    condition_initially_passing: bool = False
+    initial_validation: Literal["untested", "failed", "passed"] = "untested"
+
+
 class ScenarioSpecV1(_Strict):
     scenario_spec_version: Literal[1] = 1
     scenario_id: str = Field(pattern=_ID)
@@ -126,6 +138,8 @@ class ScenarioSpecV1(_Strict):
                                          description="Parts of the scenario this schema cannot represent, said plainly.")
     unresolved_questions: list[Statement] = Field(default_factory=list)
     decision: GroupDecision | None = None
+    independent_decision: IndependentDecision | None = None
+    public_summary: str = ""
 
     @model_validator(mode="after")
     def unique_ids_and_references(self) -> "ScenarioSpecV1":
@@ -156,6 +170,21 @@ class ScenarioSpecV1(_Strict):
         for m in self.scheduled_moments:
             if missing := set(m.participant_ids) - people:
                 raise ValueError(f"scheduled moment {m.moment_id} names undeclared participants {sorted(missing)}")
+        if self.decision and self.independent_decision:
+            raise ValueError("choose legacy decision or independent_decision, not both")
+        if independent := self.independent_decision:
+            if not self.public_summary.strip():
+                raise ValueError("independent decision requires an explicitly authored public_summary")
+            refs = set(independent.required_actor_ids + independent.validator_ids + independent.repairer_ids)
+            if missing := refs - people:
+                raise ValueError(f"independent decision names undeclared people {sorted(missing)}")
+            if len(set(independent.required_actor_ids)) != len(independent.required_actor_ids):
+                raise ValueError("independent decision has duplicate required actors")
+            if independent.initial_validation == "passed" and not independent.condition_initially_passing:
+                raise ValueError("passing initial validation requires a passing condition")
+            if independent.decision_id in all_ids:
+                raise ValueError("independent decision id is already used")
+            all_ids.append(independent.decision_id)
         if d := self.decision:
             if missing := (set(d.decider_ids) | set(d.supporters_at_start)) - people:
                 raise ValueError(f"decision {d.decision_id} names undeclared people {sorted(missing)}")

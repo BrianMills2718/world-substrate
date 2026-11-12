@@ -36,8 +36,9 @@ def replay(fixture: str | Path) -> dict[str, Any]:
     sys.path.insert(0, str(ROOT))
     from scripts import people_world
 
+    from scripts.generate_world_bundle import recorded_authoring_replay
     saved = json.loads(Path(fixture).read_text())
-    with patch.dict(sys.modules, {"llm_client": _stand_in(saved["responses"])}):
+    with patch.dict(sys.modules, {"llm_client": _stand_in(saved["responses"])}), recorded_authoring_replay():
         prepared = people_world.prepare_people_world(saved["description"], trace_id="replay", max_budget=0.0,
                                                      progress=lambda *a, **k: None)
         return people_world.write_people_rules(prepared, trace_id="replay", max_budget=0.0,
