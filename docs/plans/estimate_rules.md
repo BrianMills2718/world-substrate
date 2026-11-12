@@ -481,12 +481,12 @@ and the live narration path; a field-write example alone does not demonstrate th
   calls averaged 0.43 s, but 6.6% of calls failed, provider errors after 0.89 s and network errors after 20.2 s
   on average. With the 5 s timeout and one retry (Decided 7), the expected time per estimate is 0.933 x 0.43 s +
   0.037 x (0.89 + 0.43) s + 0.029 x (5 + 0.43) s = about 0.61 s (computed from those shares), so about 18 s for a
-  30-day sawmill run, and at most 10 s for any one estimate before its fallback. Without the timeout it would be
+  30-day sawmill run, and a proposed 10 s request-time allowance before fallback, conditional on an actually enforced deadline. The current `LLM_CLIENT_TIMEOUT_POLICY=ban` does not establish that bound; two five-second arguments alone cannot guarantee it. Without the timeout it would be
   about 1.05 s per estimate, about 32 s per run. A world with many estimate rules could ask thousands of times;
   E1 asks sequentially and measures, and parallel asking within a moment is added only if a run shows it is
   needed (Q85).
 - **The moment waits for the estimate.** The estimate is asked inside the commit, so the moment, including a
-  knock-on chain computed in the same moment (Decision 009), waits for it: about 0.6 s expected, 10 s at most.
+  knock-on chain computed in the same moment (Decision 009), waits for it: the worked-out estimate above is about 0.6 s under its assumptions; no enforced maximum is established by the current timeout policy.
   Each run has its own Engine and one canonical world (`docs/model/ODD.md`, section 3), so the wait holds only
   that run, and the fixpoint itself is unchanged: an estimate rule in a knock-on chain is one more rule whose
   effects are known once its draw is made.
@@ -656,9 +656,7 @@ and omitted mechanisms; they do not prove that (b) is better or that (a) reads t
 only when causal and intervention analysis justifies them, preserving the declared-read boundary (Q83).
 No Jev call was made for planning.
 
-**Probe proposed, not run:** 10 Jev calls, one for each of days 1 to 10 since service at load 14 (about
-$0.0003, measured per-call figure), would settle U1 (whether Jev's chance rises with days since service). It is
-E1's first step, before the live run, and cheap enough that it is not run now.
+**Conditional probe, not run:** if backend sensitivity remains a named decision after the dependency review, ten Jev calls for days 1 to 10 at load 14 could inspect monotonicity on those inputs. Worked-out cost is ten times the historical per-call figure, about $0.0003 for that input size. This does not establish calibration or adequacy, is not a mandatory E1 checklist step, and requires the diagnostic justification above before execution.
 
 ## Irreversible actions and spend
 
@@ -703,7 +701,8 @@ feature; the argument is Q89 (resolved, inferred by agent), and he can reopen it
 
 Estimates of people's choices; calibration against real-world failure data; free-number estimates (Jev has none);
 parameter sweeps over many runs (Mesa's job, Decision 006); using Jev for the judge's stopping point (J5's call);
-carrying a probability through a chain of rules, as a probabilistic logic network such as ProbLog does. Each
-estimate rule draws its own outcome and the knock-on effects follow the drawn outcome, which is how this plan
-reads "propagate"; over many runs, how often a knock-on effect happens is the chained chance, so no second
-machinery is needed.
+carrying a probability through a chain of rules, as a probabilistic logic network such as ProbLog does. An estimate is used according to its declared semantics: a latent condition persists, an event may draw once per declared identity, and a classification follows its assessment policy. Knock-on effects consume that recorded result. Shared causes require explicit dependence; frequencies across chains are not generally products of independent chances. No generic probabilistic-logic machinery is adopted.
+
+## Complete actor-information dependency (documentation design, 2026-11-12)
+
+Source: Brian's November 12 documentation goal; design application inferred by agent. The [modeling guide](../model/modeling-choices.md) owns the complete actor-information contract and single-concern example. Credential secrecy (J4) and uncertain delivery (E5) depend on that contract across observation, brief, summary, memory, events, offered actions, refusals and actor-facing UI. Item-level message filtering alone is insufficient. These slices must retain the actual authorized context in restricted evidence and demonstrate that an undelivered fact cannot enter through another surface. Analyst access is separate. This dependency is proposed required behavior, not an assertion that current read scopes or projections enforce it. Implementation remains on hold under the documentation goal.

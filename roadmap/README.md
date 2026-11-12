@@ -38,7 +38,7 @@ execution merely from a configuration file. The existing global hook chain remai
 
 `make planning-check` checks source attribution, the four plan acceptance files, and
 OpenSpec; it is now part of `make check`. `make lockstep` additionally exposes the whole-tree/trace checks.
-The baseline trace check reports 344 missing requirement-to-code/test links. Its blocking configuration is
+The reviewed trace check at PR #377 reports 329 missing requirement-to-code/test links (128 requirement annotations and 201 scenario markers). Its blocking configuration is
 preserved; full trace conformance is not claimed. Q77 owns the remaining compliance gap. Plan-format checks,
 substantive review and complete runtime traceability are separate claims.
 
@@ -49,6 +49,22 @@ the [ledger](../docs/planning/open-questions.json). Checks and cold-review repor
 this paragraph does not declare universal optimality or predictive validity.
 
 The rule-source review exposed two remaining evidence risks under Q77. Budget admission reserves the remaining allowance and rejects an unreadable ledger, but this does not establish a hard aggregate cap across all downstream model calls, concurrency and late hedges ([service budget boundaries](../scripts/world_builder_service.py), [reviewed trace contract](../docs/model/trace.yaml)). Separately, `_record_response` catches log-write failures and continues the request; a successful response therefore does not guarantee a retained run record. Storage-failure durability remains unmet, and stronger spending guarantees remain unverified. Neither is closed by updating the source-review date; implementation or focused evidence must resolve them before those stronger claims are made.
+
+## Active documentation completion checklist
+
+Source: Brian's November 12 documentation-only goal, following PR #377. This section owns progress for that goal; implementation remains on hold. The completion criterion is coherent, reviewable contracts and explicit residual uncertainty, not closing implementation defects on paper.
+
+| Authority / source class | Disposition and remaining work | Completion evidence |
+| --- | --- | --- |
+| Accepted decisions, arc42, ODD, DOMAIN and METAMODEL | Keep their scoped authority; reconcile promises against the selected heterogeneous-model and information boundaries | No contradictory current promise; expressibility, integration and adequacy distinguished |
+| Modeling choices and conceptual glossary | Update the complete actor-input contract and concrete single-concern scenario; verify JEV/System 1 and conceptual source qualifications | End-to-end asymmetric-evidence example, cross-checked against credentials and physical sensing |
+| Active AI-judge, estimate, declared-laws and open-attempt plans and OpenSpec specs | Update only affected requirements, dependencies and acceptance examples; preserve built/unbuilt distinctions | Each proposed change has an owning slice and reviewable outcome; no implementation claimed |
+| Question source and generated ledger | Review every open item; retain known defects and evidence needs with classification, owner, dependency, closure evidence and revisit trigger | No agent-resolvable conceptual blocker left undispositioned; no fabricated empirical closure |
+| Source manifests, lineage reviews and retained run records | Keep as source/historical evidence; current recommendations cite successor decisions where they differ | Claims trace to sources; historical evidence is not rewritten into a new result |
+| Planning packages and generated review pages | Regenerate from owning sources after contract changes; preserve historical evidence and pending judgments | Focused validators, substantive independent review and live final-candidate page verification |
+| Current AES documentation requirements | Reconcile current sources and justified links; retain runtime conformance gaps | Report documentation findings separately from missing traceability and behavioral defects |
+
+Current increment: complete actor-information and single-concern design, then reconcile question dispositions and affected normative owners. Next: independent review of the final documentation candidate, repair concrete findings, merge and verify hosted pages. No paid runs or feature work belong to this goal. After three substantive increments, compare progress with this outcome; broad review is bounded to two rounds, with later repair tied to concrete findings.
 
 ## Outcome and success criteria
 
