@@ -151,7 +151,10 @@ class Rulebook:
         kind = kind_of(rule)
         if kind in engine.registry.action_kinds():
             return {"ok": False, "error": f"a rule for {kind} is already installed"}
-        bundle2, causal2 = consequence_report.with_rule(self.bundle, self.causal, rule)
+        try:
+            bundle2, causal2 = consequence_report.with_rule(self.bundle, self.causal, rule)
+        except ValueError as error:
+            return {"ok": False, "error": str(error)}
         check, trial = consequence_report.rules_check(bundle2, causal2)
         if trial is None:
             return {"ok": False, "error": check.get("error")}

@@ -519,7 +519,7 @@ Concordia 2.4.0, a clingo cross-check, and any change to Cybernetic Influence v3
 
 ## Information-boundary and concern follow-up (selected design, unbuilt)
 
-Source: Brian's November 12 pre-implementation documentation goal; slice decomposition inferred by agent. These follow-up slices own the [complete actor-information contract](../model/modeling-choices.md#complete-actor-information-contract) and its single-concern scenario, with normative targets in [information-delivery](../../openspec/specs/information-delivery/spec.md). Existing S1–S3 status is unchanged. Implementation requires a later authorization.
+Source: Brian's November 12 pre-implementation documentation goal; slice decomposition inferred by agent. These follow-up slices own the [complete actor-information contract](../model/modeling-choices.md#complete-actor-information-contract) and its single-concern scenario, with normative targets in [information-delivery](../../openspec/specs/information-delivery/spec.md). Existing S1–S3 status is unchanged. Brian approved I0/I1 implementation on 2026-11-12 after PR #378 ("i approve. givem e the /goal text"), then activated the I0/I1 goal. This authorizes these two slices through their own deployment and necessary bounded evidence within existing owner budgets; unrelated roadmap work remains outside scope.
 
 | Slice | Required outcome and dependencies | Direct acceptance / known broken case |
 | --- | --- | --- |

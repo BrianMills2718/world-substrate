@@ -18,6 +18,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
+from scripts import actor_information as actor_info
 from scripts import attempts
 from scripts import consequence_report
 from scripts import rulings as rulings_mod
@@ -231,6 +232,24 @@ def _quiet(engine: Engine, live: list[tuple[dict[str, Any], str]]) -> Any:
     return hidden
 
 
+def _boundary_bundle(engine: Engine) -> dict[str, Any] | None:
+    return getattr(engine, "actor_information_bundle", None)
+
+
+def _input_provenance(engine: Engine, actor: str) -> dict[str, Any]:
+    bundle = _boundary_bundle(engine)
+    if not bundle:
+        return {"mode": "legacy-unrestricted"}
+    return {**actor_info.actor_input_provenance(bundle, actor),
+            "world_revision": engine.world.revision, "simulated_tick": engine.world.tick,
+            "observation": actor_info.actor_observation(engine, bundle, actor)}
+
+
+def _policy_context(engine: Engine, actor: str, context: dict[str, Any], round_no: int | None = None) -> dict[str, Any]:
+    bundle = _boundary_bundle(engine)
+    return actor_info.actor_context(engine, bundle, actor, round_no) if bundle else context
+
+
 def _view(engine: Engine, actor: str, page: dict[str, Any],
           live: list[tuple[dict[str, Any], str]] | None = None, round_no: int | None = None) -> dict[str, Any]:
     """present() without other people's private bookkeeping records, nor zeros no rule touches (live_fields).
@@ -238,6 +257,8 @@ def _view(engine: Engine, actor: str, page: dict[str, Any],
     `round_no` replaces the world's tick in what the person is told: an authored world installs no clock process, so
     its tick stays 0, and every person read "Turn 0" beside memory lines saying "Round 11" (2026-10-30 pencil s3p4,
     call 22648)."""
+    if _boundary_bundle(engine):
+        return actor_info.actor_context(engine, _boundary_bundle(engine), actor, round_no)
     entities = {
         eid: (rec if eid == actor else {**rec, "components": {k: v for k, v in (rec.get("components") or {}).items()
                                                                if k not in PRIVATE_TO_HOLDER}})
@@ -249,6 +270,8 @@ def _view(engine: Engine, actor: str, page: dict[str, Any],
 
 
 def _recent_for(engine: Engine, actor: str, seen: dict[str, int]) -> list[str]:
+    if _boundary_bundle(engine):
+        return []  # delivered projections and actor-owned feedback carry news
     start = seen.get(actor, 0)
     lines: list[str] = []
     for event in engine.world.events[start:]:
@@ -365,7 +388,17 @@ def _read_attempt(engine: Engine, actor: str, text: str | None, signatures: list
 
     # getattr: test doubles of llm_client carry only the calls they fake.
     over_budget, llm_error = (getattr(llm_client, name, ()) for name in ("LLMBudgetExceededError", "LLMError"))
-    labels = {eid: entity.label for eid, entity in sorted(engine.world.entities.items())}
+    boundary = _boundary_bundle(engine)
+    labels = ({eid: row["label"] for eid, row in actor_info.actor_observation(engine, boundary, actor)["entities"].items()}
+              if boundary else {eid: entity.label for eid, entity in sorted(engine.world.entities.items())})
+    if boundary:
+        known_forms = {row["kind"]: row["description"] for row in boundary["actor_information"].get("public_actions", [])}
+        signatures = deepcopy([row for row in signatures if row.get("kind") in known_forms])
+        for signature in signatures:
+            signature["description"] = known_forms[signature["kind"]]
+            for field in signature.get("fields", []):
+                field.pop("only", None)  # canonical singleton cardinality is itself hidden information
+                field.pop("from", None)  # hidden canonical state cannot supply an actor's argument
     try:
         reading, cost = open_attempt.interpret(text, actor=actor, signatures=signatures, entities=labels, model=model,
                                                trace_id=trace_id, max_budget=max_budget)
@@ -381,6 +414,8 @@ def _read_attempt(engine: Engine, actor: str, text: str | None, signatures: list
         entity = engine.world.entities.get(entity_id)
         return _entity_value(entity, path) if entity is not None else None
 
+    if boundary:
+        return reading, cost  # never fill actor-chosen fields from hidden canonical values
     return open_attempt.fill_derived(reading, signatures, value_of, set(labels)), cost
 
 
@@ -514,18 +549,30 @@ def _llm_choice(
     context["recent"] = recent
     context["world_summary"] = world_summary
     context["brief"] = brief
+    context = _policy_context(engine, actor, context, round_no)
     messages = render_prompt(REPO / "prompts/generic_world_policy.yaml", **context)
-    value, result = call_llm_json_schema(
-        model,
-        messages,
-        schema,
-        schema_name="world_substrate_live_policy_choice",
-        task="world-builder-live-policy",
-        trace_id=trace_id,
-        max_budget=max_budget,
-        max_tokens=512,
-        reasoning_effort="low",
-    )
+    record = deepcopy({"actor": actor, "model": model, "trace_id": trace_id,
+                       "round": context.get("tick"), "context": context, "messages": messages, "schema": schema,
+                       "provenance": _input_provenance(engine, actor),
+                       "max_tokens": 512, "reasoning_effort": "low"})
+    if hasattr(engine, "actor_calls"):
+        engine.actor_calls.setdefault(actor, []).append(record)
+    try:
+        value, result = call_llm_json_schema(
+            model,
+            messages,
+            schema,
+            schema_name="world_substrate_live_policy_choice",
+            task="world-builder-live-policy",
+            trace_id=trace_id,
+            max_budget=max_budget,
+            max_tokens=512,
+            reasoning_effort="low",
+        )
+    except Exception as exc:
+        record["error"] = type(exc).__name__
+        raise
+    record["output"] = value
     reasoning = str(value.get("reasoning", "")) if isinstance(value, dict) else "model returned non-object"
     action_id = str(value.get("action_id", "")) if isinstance(value, dict) else ""
     choice = resolve_choice(page, action_id, reasoning)
@@ -649,6 +696,8 @@ def run_world(
         engine = Engine(resumed, engine.registry, reaction_limit=reaction_limit)
     if type(turn_offset) is not int or turn_offset < 0:
         raise ValueError("turn_offset must be a nonnegative integer")
+    engine.actor_information_bundle = bundle if actor_info.has_actor_boundary(bundle) else None
+    engine.actor_calls = {}
     actors = actor_ids(engine, causal_model)
     trace_id = trace_id or f"world-builder-live-run-{uuid.uuid4().hex}"
     # Tasks that take several rounds (#128): started by a move, ended by whatever is true in a later round. A task a
@@ -748,10 +797,22 @@ def run_world(
     def label_of(entity_id: str) -> str:
         return engine.world.entities[entity_id].label
 
+    def ruling_notice(actor: str, text: str) -> None:
+        residents.observe(actor, "Your earlier attempt has an updated disposition; inspect your authorized observations." if _boundary_bundle(engine) else text)
+
     def reach(round_no: int, actor: str, attempt: str, person: str, note: str) -> None:
         """The attempt needs another person's choice (Decided 4): their own resident is asked, in the words tried."""
-        residents.observe(actor, f"Round {round_no}: {note} Your words reach {label_of(person)}, who decides what to do.")
-        residents.observe(person, f"Round {round_no}: {label_of(actor)} asked you, in their words: \"{attempt}\"")
+        boundary = _boundary_bundle(engine)
+        if boundary:
+            visible = actor_info.actor_observation(engine, boundary, actor)["entities"]
+            theirs = actor_info.actor_observation(engine, boundary, person)["entities"]
+            if person not in visible or actor not in theirs:
+                return
+            residents.observe(actor, f"Round {round_no}: your request was delivered to {visible[person]['label']}.")
+            residents.observe(person, f"Round {round_no}: {theirs[actor]['label']} asked: {attempt}")
+        else:
+            residents.observe(actor, f"Round {round_no}: {note} Your words reach {label_of(person)}, who decides what to do.")
+            residents.observe(person, f"Round {round_no}: {label_of(actor)} asked you, in their words: \"{attempt}\"")
 
     def decide(round_no: int, choices: list[dict[str, str]]) -> list[dict[str, Any]]:
         """The owner's Approve or Reject of held rulings, applied as the round starts (ai-judge plan J3, Decided 5).
@@ -788,7 +849,7 @@ def run_world(
                     item["state"] = "refused"
                     result.update(result="refused", why=f"the ruling {ruling['id']} ({ruling.get('description') or ruling['kind']}) was "
                                   + ("rejected" if failed is None else f"refused by the rules check: {failed}"))
-                    residents.observe(actor, f"Round {round_no}: you tried to {attempt}; it was refused, because the new rule "
+                    ruling_notice(actor, f"Round {round_no}: you tried to {attempt}; it was refused, because the new rule "
                                       f"the game master proposed for it ({ruling['id']}) was not approved. Nothing changed.")
                 elif person in actors and person != actor:
                     item["state"] = "routed"
@@ -798,13 +859,13 @@ def run_world(
                     settled = settle_by_rule(round_no, item["move"])
                     item["state"] = "accepted" if settled["status"] == "accepted" else "refused"
                     result.update(result=item["state"], **settled)
-                    residents.observe(actor, f"Round {round_no}: you tried to {attempt}; the new rule {ruling['id']} was approved and the "
+                    ruling_notice(actor, f"Round {round_no}: you tried to {attempt}; the new rule {ruling['id']} was approved and the "
                                       f"engine {'carried it out' if item['state'] == 'accepted' else 'refused it'}"
                                       + ("." if item["state"] == "accepted" else f" ({'; '.join(settled['refused_because'])[:160]}).")) 
                 else:
                     item["state"] = "installed"
                     result.update(result="installed")
-                    residents.observe(actor, f"Round {round_no}: the new rule {ruling['id']} for your try was approved; it is in force now.")
+                    ruling_notice(actor, f"Round {round_no}: the new rule {ruling['id']} for your try was approved; it is in force now.")
                 events.append(result)
         return events
 
@@ -823,7 +884,8 @@ def run_world(
         blocked_by_rules: dict[str, list[dict[str, Any]]] = {}
         pages: dict[str, dict[str, Any]] = {}
         for actor in actors:
-            raw = engine.discover(actor)
+            raw = (actor_info.actor_page(engine, bundle, actor) if _boundary_bundle(engine) and policy != "scripted"
+                   else engine.discover(actor))
             offered_kinds.update(row["action"].get("kind", "") for row in raw.get("available") or [])
             for row in raw.get("blocked") or []:
                 kind = row["action"].get("kind", "")
@@ -832,7 +894,7 @@ def run_world(
                 # person's ("this worker assembles pencils: was 'grows timber'"), which says nothing about the gap.
                 if failed and (kind not in refused_why or len(failed) < len(refused_why[kind])):
                     refused_why[kind] = failed
-            page = _without_no_ops(engine, raw, bookkeeping=bookkeeping, law_refusals=preview_law_refusals)
+            page = raw if _boundary_bundle(engine) and policy != "scripted" else _without_no_ops(engine, raw, bookkeeping=bookkeeping, law_refusals=preview_law_refusals)
             # What the installed rules refused this actor at this moment, and why.
             # Recorded for every policy so a viewer can see refusals even when the
             # policy itself only ever picks allowed actions.
@@ -861,7 +923,7 @@ def run_world(
                     last_done.setdefault(actor, {})[intents[actor].get("kind", "")] = turn
         if policy == "resident":
             recents = {actor: _recent_for(engine, actor, seen) for actor in actors}
-            if turn == 1 and prior_recent:
+            if turn == 1 and prior_recent and not _boundary_bundle(engine):
                 for actor in actors:
                     earlier = [f"{'you' if m['actor'] == actor else m['actor']}: {m['action']}" for m in prior_recent]
                     recents[actor] = (earlier + recents[actor])[-6:]
@@ -871,9 +933,11 @@ def run_world(
                 context = _view(engine, actor, page, live, turn + turn_offset)
                 context.update(recent=recents[actor], world_summary=bundle["world"]["summary"],
                                brief=(briefs or {}).get(actor, ""))
+                context = _policy_context(engine, actor, context, turn + turn_offset)
                 residents.observe(actor, f"Round {turn + turn_offset}. What just happened: "
                                   + ("; ".join(recents[actor]) or "nothing new") + ".")
-                attempt = residents.choose(actor, [row["action_id"] for row in page["available"]], context)
+                kwargs = {"provenance": _input_provenance(engine, actor)} if _boundary_bundle(engine) else {}
+                attempt = residents.choose(actor, [row["action_id"] for row in page["available"]], context, **kwargs)
                 if open_attempts:
                     attempt["reading"], attempt["interpreter_cost"] = _read_attempt(
                         engine, actor, attempt.get("attempt"), signatures, model=model_name, trace_id=trace_id,
@@ -901,7 +965,7 @@ def run_world(
             # 7-business pencil chain took ~7 minutes for 12 rounds asked one
             # at a time (2026-10-06).
             recents = {actor: _recent_for(engine, actor, seen) for actor in actors}
-            if turn == 1 and prior_recent:
+            if turn == 1 and prior_recent and not _boundary_bundle(engine):
                 # Moves from before this request (live play sends the last few).
                 for actor in actors:
                     earlier = [
@@ -970,6 +1034,10 @@ def run_world(
             did = wanted
             retried = False
             said_retry = None
+            if outcome["status"] == "stale_revision" and _boundary_bundle(engine):
+                wanted = {**wanted, "base_revision": engine.world.revision}
+                did = wanted
+                outcome = engine.submit(wanted)
             if outcome["status"] == "stale_revision":
                 retried = True
                 page = _without_no_ops(engine, engine.discover(actor), bookkeeping=bookkeeping, law_refusals=preview_law_refusals)
@@ -1171,6 +1239,16 @@ def run_world(
             for actor in actors:
                 row, attempt = rows[actor], beliefs.get(actor) or {}
                 row["belief"], row["expects"] = attempt.get("belief"), attempt.get("expected_effect")
+                if _boundary_bundle(engine):
+                    # Own attempt and public interface result only; internal blockers,
+                    # task details and judge diagnostics remain in analyst evidence.
+                    residents.observe(actor, f"Round {turn + turn_offset}: you believed: {row['belief']} "
+                        f"You tried: {attempt.get('attempt') or attempt.get('action_id') or 'wait'}. "
+                        f"Result: {'accepted' if row['status'] == 'accepted' else 'not carried out'}.")
+                    asked = (row.get("did") or {}).get("asks")
+                    if (row.get("did") or {}).get("kind") == open_attempt.UNMATCHED_KIND and asked in actors and asked != actor:
+                        reach(turn + turn_offset, actor, str((row.get("did") or {}).get("attempt") or ""), asked, "")
+                    continue
                 did = (row.get("did") or {}).get("kind") or "waited"
                 result = row["status"] + ("" if row.get("changed") or row["status"] != "accepted" else ", changed nothing")
                 if row.get("refused_because"):
@@ -1249,7 +1327,7 @@ def run_world(
                 open_tasks.extend(attempts.started(world_watchers, WORLD, str(event.get("rule_id")), changes,
                                                    round_no, run_id))
         underway_now = this_round + [{**t, "status": "underway"} for t in open_tasks]
-        if residents is not None:
+        if residents is not None and not _boundary_bundle(engine):
             # Each open or just-ended task, seen by the person who started it next round: their own expectation
             # beside the field as it is now. Nobody tells them it failed.
             entities = engine.world.material_dict()["entities"]
@@ -1387,6 +1465,10 @@ def run_world(
     if residents is not None:
         # Each resident's Concordia memory after this request; live play sends it back with the next round.
         trace["resident_memory"] = residents.memory_state()
+        trace["actor_inputs"] = {actor: list(getattr(act, "calls", [])) for actor, act in getattr(residents, "acts", {}).items()}
+    if residents is None:
+        trace["actor_inputs"] = engine.actor_calls
+    trace["actor_information_mode"] = "declared-v1" if _boundary_bundle(engine) else "legacy-unrestricted"
     breaches = _law_breach_rows(engine_events + preview_law_refusals)
     if breaches:
         # Steps the engine refused for breaking the world's declared laws, tried or only previewed, once per (rule,

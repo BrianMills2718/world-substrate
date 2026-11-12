@@ -197,6 +197,8 @@ def validate_bundle(value: object) -> dict[str, Any]:
         if asset_id not in assets: raise BundleError(f"category {category} references unknown asset {asset_id}")
     for category, role in presentation.get("station_roles", {}).items():
         if role not in {"source", "workstation", "surface", "goal"}: raise BundleError(f"category {category} has unsupported station role {role}")
+    from scripts.actor_information import validate_actor_information
+    validate_actor_information(value)
     return deepcopy(value)
 
 def load_bundle(path: Path) -> dict[str, Any]:
