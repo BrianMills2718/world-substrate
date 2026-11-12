@@ -1,0 +1,226 @@
+# Adopted scope: normative documents and current specifications. Runtime trace linkage remains a migration gap.
+# Documentation rows assert file purpose, not runtime implementation or test coverage.
+schema: lockstep.side.v1
+checks:
+  trace: block
+  arch: block
+  test-first: block
+  sources: block
+  docmeta: block
+  project: block
+owner: BrianMills2718
+sources:
+  human_pattern: brian
+governed:
+- docs/architecture/
+- docs/decisions/
+- docs/plans/
+- roadmap/
+- openspec/specs/
+layout:
+- path: docs/architecture/arc42.md
+  purpose: 'Architecture authority: purpose, boundaries, runtime, quality and risks'
+  implements: []
+  tests: []
+- path: docs/architecture/model.c4
+  purpose: Architecture dependency model
+  implements: []
+  tests: []
+- path: docs/decisions/001-project-scope.md
+  purpose: 'Accepted decision and provenance: project scope'
+  implements: []
+  tests: []
+- path: docs/decisions/002-observability-and-replay.md
+  purpose: 'Accepted decision and provenance: observability and replay'
+  implements: []
+  tests: []
+- path: docs/decisions/003-semantic-mechanical-boundary.md
+  purpose: 'Accepted decision and provenance: semantic mechanical boundary'
+  implements: []
+  tests: []
+- path: docs/decisions/004-product-and-adoption-strategy.md
+  purpose: 'Accepted decision and provenance: product and adoption strategy'
+  implements: []
+  tests: []
+- path: docs/decisions/005-native-waltzman-delivery.md
+  purpose: 'Accepted decision and provenance: native waltzman delivery'
+  implements: []
+  tests: []
+- path: docs/decisions/006-governed-rules-layer-scope.md
+  purpose: 'Accepted decision and provenance: governed rules layer scope'
+  implements: []
+  tests: []
+- path: docs/decisions/007-any-scenario-path.md
+  purpose: 'Accepted decision and provenance: any scenario path'
+  implements: []
+  tests: []
+- path: docs/decisions/008-build-worlds-in-an-agent-harness.md
+  purpose: 'Accepted decision and provenance: build worlds in an agent harness'
+  implements: []
+  tests: []
+- path: docs/decisions/009-same-moment-knock-on-effects.md
+  purpose: 'Accepted decision and provenance: same moment knock on effects'
+  implements: []
+  tests: []
+- path: docs/plans/ai_judge.md
+  purpose: AI judge design and acceptance work
+  implements: []
+  tests: []
+- path: docs/plans/attempt-from-belief/index.html
+  purpose: Reviewable attempt-from-belief design
+  implements: []
+  tests: []
+- path: docs/plans/declared-laws.goal.md
+  purpose: Launcher for the adopted declared-laws outcome
+  implements: []
+  tests: []
+- path: docs/plans/declared_laws.md
+  purpose: Declared laws design and implementation sequence
+  implements: []
+  tests: []
+- path: docs/plans/declared_laws.verdicts.json
+  purpose: Retained planning/adoption record for declared laws; substantive plan is
+    the adjacent Markdown authority
+  implements: []
+  tests: []
+- path: docs/plans/declared_laws/activation-facts.json
+  purpose: Retained planning/adoption record for declared laws; substantive plan is
+    the adjacent Markdown authority
+  implements: []
+  tests: []
+- path: docs/plans/declared_laws/checklist.json
+  purpose: Retained planning/adoption record for declared laws; substantive plan is
+    the adjacent Markdown authority
+  implements: []
+  tests: []
+- path: docs/plans/declared_laws/conformance-receipt.adoption-attempts.jsonl
+  purpose: Retained planning/adoption record for declared laws; substantive plan is
+    the adjacent Markdown authority
+  implements: []
+  tests: []
+- path: docs/plans/declared_laws/conformance-receipt.adoption-decision.json
+  purpose: Retained planning/adoption record for declared laws; substantive plan is
+    the adjacent Markdown authority
+  implements: []
+  tests: []
+- path: docs/plans/declared_laws/conformance-receipt.json
+  purpose: Retained planning/adoption record for declared laws; substantive plan is
+    the adjacent Markdown authority
+  implements: []
+  tests: []
+- path: docs/plans/declared_laws/path-decision.json
+  purpose: Retained planning/adoption record for declared laws; substantive plan is
+    the adjacent Markdown authority
+  implements: []
+  tests: []
+- path: docs/plans/estimate_rules.md
+  purpose: Typed estimates design and acceptance work
+  implements: []
+  tests: []
+- path: docs/plans/open-attempt.goal.md
+  purpose: Launcher for the adopted open-attempt outcome
+  implements: []
+  tests: []
+- path: docs/plans/open_attempt.md
+  purpose: Open attempts and skill-roll design
+  implements: []
+  tests: []
+- path: docs/plans/open_attempt.verdicts.json
+  purpose: Retained planning/adoption record for open attempts; substantive plan is
+    the adjacent Markdown authority
+  implements: []
+  tests: []
+- path: docs/plans/open_attempt/activation-facts.json
+  purpose: Retained planning/adoption record for open attempts; substantive plan is
+    the adjacent Markdown authority
+  implements: []
+  tests: []
+- path: docs/plans/open_attempt/checklist.json
+  purpose: Retained planning/adoption record for open attempts; substantive plan is
+    the adjacent Markdown authority
+  implements: []
+  tests: []
+- path: docs/plans/open_attempt/conformance-receipt.adoption-attempts.jsonl
+  purpose: Retained planning/adoption record for open attempts; substantive plan is
+    the adjacent Markdown authority
+  implements: []
+  tests: []
+- path: docs/plans/open_attempt/conformance-receipt.adoption-decision.json
+  purpose: Retained planning/adoption record for open attempts; substantive plan is
+    the adjacent Markdown authority
+  implements: []
+  tests: []
+- path: docs/plans/open_attempt/conformance-receipt.json
+  purpose: Retained planning/adoption record for open attempts; substantive plan is
+    the adjacent Markdown authority
+  implements: []
+  tests: []
+- path: docs/plans/open_attempt/path-decision.json
+  purpose: Retained planning/adoption record for open attempts; substantive plan is
+    the adjacent Markdown authority
+  implements: []
+  tests: []
+- path: roadmap/AGENTS.md
+  purpose: Instructions governing roadmap maintenance
+  implements: []
+  tests: []
+- path: roadmap/README.md
+  purpose: Canonical sequencing and current work
+  implements: []
+  tests: []
+- path: openspec/specs/.gitkeep
+  purpose: Required behavior and scenarios for .gitkeep
+  implements: []
+  tests: []
+- path: openspec/specs/ai-judge/spec.md
+  purpose: Required behavior and scenarios for ai judge
+  implements: []
+  tests: []
+- path: openspec/specs/causal-model-authoring/spec.md
+  purpose: Required behavior and scenarios for causal model authoring
+  implements: []
+  tests: []
+- path: openspec/specs/cvs-situation-import/spec.md
+  purpose: Required behavior and scenarios for cvs situation import
+  implements: []
+  tests: []
+- path: openspec/specs/information-delivery/spec.md
+  purpose: Required behavior and scenarios for information delivery
+  implements: []
+  tests: []
+- path: openspec/specs/live-projection/spec.md
+  purpose: Required behavior and scenarios for live projection
+  implements: []
+  tests: []
+- path: openspec/specs/living-scene/spec.md
+  purpose: Required behavior and scenarios for living scene
+  implements: []
+  tests: []
+- path: openspec/specs/mechanic-installation/spec.md
+  purpose: Required behavior and scenarios for mechanic installation
+  implements: []
+  tests: []
+- path: openspec/specs/native-coordination/spec.md
+  purpose: Required behavior and scenarios for native coordination
+  implements: []
+  tests: []
+- path: openspec/specs/scene-replay/spec.md
+  purpose: Required behavior and scenarios for scene replay
+  implements: []
+  tests: []
+- path: openspec/specs/semantic-binding/spec.md
+  purpose: Required behavior and scenarios for semantic binding
+  implements: []
+  tests: []
+- path: openspec/specs/transition-engine/spec.md
+  purpose: Required behavior and scenarios for transition engine
+  implements: []
+  tests: []
+- path: openspec/specs/world-authoring-bundle/spec.md
+  purpose: Required behavior and scenarios for world authoring bundle
+  implements: []
+  tests: []
+- path: openspec/specs/world-builder-page/spec.md
+  purpose: Required behavior and scenarios for world builder page
+  implements: []
+  tests: []

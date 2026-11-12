@@ -169,12 +169,6 @@
    "explain": "Blocks: Adding any overlay term beyond the six bound M1 move kinds, and binding generated move kinds to a meaning.."
   },
   {
-   "id": "Q63",
-   "label": "Q63: A non-authoritative estimate as a rule input",
-   "kind": "AgentQuestion",
-   "explain": "Blocks: The estimate-rules plan (docs/plans/estimate_rules.md) and its first slice E1; any world whose rules need a chance or amount that no installed mechanic computes.."
-  },
-  {
    "id": "Q64",
    "label": "Q64: Meaning is looked up by bare move name",
    "kind": "AgentQuestion",
@@ -218,21 +212,9 @@
   },
   {
    "id": "Q72",
-   "label": "Q72: Living-scene profiles refuse a render key the layout reads (plausible)",
+   "label": "Q72: Living-scene profile and layout disagree on render (confirmed)",
    "kind": "AgentQuestion",
    "explain": "Blocks: Whether a scene author can set the gather radius the layout documents.."
-  },
-  {
-   "id": "Q73",
-   "label": "Q73: Decision 006's wrong-when names a missing adapter",
-   "kind": "AgentQuestion",
-   "explain": "Blocks: Whether that wrong-when condition can ever be checked.."
-  },
-  {
-   "id": "Q75",
-   "label": "Q75: Constraint question or someone's choice",
-   "kind": "AgentQuestion",
-   "explain": "Blocks: J2's routing step and A5 (Rosa's own resident decides accept or refuse).."
   },
   {
    "id": "Q76",
@@ -242,7 +224,7 @@
   },
   {
    "id": "Q77",
-   "label": "Q77: Wiki cap and durable-document checks fail on main",
+   "label": "Q77: Documentation and AES conformance gaps",
    "kind": "AgentQuestion",
    "explain": "Blocks: Whether the wiki-compliance and durable-document checks pass again for every package in this repository.."
   },
@@ -509,13 +491,6 @@
    "label": "Readout",
    "kind": "Concept",
    "explain": "One AI summary of a run whose every cited event id is checked against the run."
-  },
-  {
-   "id": "recorded-estimate",
-   "label": "Recorded estimate",
-   "kind": "Concept",
-   "dashed": true,
-   "explain": "Plan estimate-rules E1 (planned, not implemented): on the event, the question, the declared inputs and their values, Jev's answer, the model version returned, the trace id, the cost and whether it was reused from the run's cache; evidence, never world state (Q63)."
   },
   {
    "id": "resident",
@@ -1020,30 +995,6 @@
    "label": "bears on"
   },
   {
-   "id": "Q63-mechanic",
-   "source": "Q63",
-   "target": "mechanic",
-   "label": "bears on"
-  },
-  {
-   "id": "Q63-skill-roll",
-   "source": "Q63",
-   "target": "skill-roll",
-   "label": "bears on"
-  },
-  {
-   "id": "Q63-estimate-rule",
-   "source": "Q63",
-   "target": "estimate-rule",
-   "label": "bears on"
-  },
-  {
-   "id": "Q63-recorded-estimate",
-   "source": "Q63",
-   "target": "recorded-estimate",
-   "label": "bears on"
-  },
-  {
    "id": "Q64-sense",
    "source": "Q64",
    "target": "sense",
@@ -1149,24 +1100,6 @@
    "id": "Q72-scene-replay",
    "source": "Q72",
    "target": "scene-replay",
-   "label": "bears on"
-  },
-  {
-   "id": "Q73-resident",
-   "source": "Q73",
-   "target": "resident",
-   "label": "bears on"
-  },
-  {
-   "id": "Q75-judge-ruling",
-   "source": "Q75",
-   "target": "judge-ruling",
-   "label": "bears on"
-  },
-  {
-   "id": "Q75-resident",
-   "source": "Q75",
-   "target": "resident",
    "label": "bears on"
   },
   {

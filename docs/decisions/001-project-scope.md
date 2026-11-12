@@ -9,6 +9,8 @@ decision_owner: user
 
 Governs: README.md, roadmap/README.md
 
+Source: historical accepted record dated 2026-08-31; its frontmatter names `decision_owner: user`. The original approval quotation is not retained in this file.
+
 ## Accepted direction
 
 Create one repository that owns the general world-substrate initiative.
@@ -34,6 +36,10 @@ Related repositories are not bulk-copied. A capability is migrated only through 
 - merging every related repository into a monorepo;
 - claiming predictive accuracy for social or physical systems;
 - public deployment or publication at the current stage.
+
+## Later scoped amendments (2026-11-12 reconciliation)
+
+The non-goals above record the founding scope. Decisions 004/005 later authorized the public World Builder and native showcase; Decision 006 adopted Concordia hosting; Decision 007 and the November 9/10 [AI judge plan](../plans/ai_judge.md) authorize checked model-proposed rules, including mid-run installation. “LLM-generated consequences” now excludes direct prose mutation, not those checked proposals or the separately planned estimate inputs. Seeded skill rolls are adopted in the [open-attempt plan](../plans/open_attempt.md); they remain unbuilt. The historical deferred-choice list below is not a current request for Brian to decide those already-adopted matters.
 
 ## Reversible implementation choices
 

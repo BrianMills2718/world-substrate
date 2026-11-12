@@ -167,6 +167,8 @@ like should be a deicsion made by the person being bribed"; build approved 2026-
 - **THEN** the ruling names Rosa (or the logger) as the one whose choice it is, its rule is her (or the logger's) own
   move, the words reach her as her decision, and no coin or log moves on the offerer's move alone
 
+Example clarification (2026-11-12): agreeing to the bribe does not satisfy the existing `inspected` check in pass 1. Rosa’s signing attempt remains blocked while that fact is false, and a signature-conditional exchange cannot settle. A scenario permitting signing without inspection must separately represent that executable capability and a breakable norm; the judge does not override the installed blocker. This clarifies the existing no-override requirement, not a new runtime behavior.
+
 ### Requirement: The judge rules on attempts no installed rule covers, and only those
 
 In a run with open attempts, the judge SHALL rule on each attempt no installed rule covers, after everyone's move in

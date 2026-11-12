@@ -13,6 +13,10 @@ The mechanic package an offline mechanics agent may author and the installer che
 declared_reader_assay_detects_an_overlap: true
 -->
 
+## Scope clarification (2026-11-12)
+
+This v0 contract governs the original frozen mechanic profile. The later [AI judge specification](../ai-judge/spec.md) governs separately checked ruling-origin rules installed as sealed run state; it does not rewrite the approved world profile. “Runtime law revision is outside v0” below names this contract’s boundary, not a prohibition on the J3 path.
+
 ## Requirements
 
 ### Requirement: Mechanic package

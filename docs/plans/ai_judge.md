@@ -81,9 +81,9 @@ decided the rest.
 
 Project outcome: roadmap/README.md#actor-recurring-job-and-investment-boundary (generative living worlds on top,
 rigorous causal engine underneath; the World Builder is the visitor-facing surface). This plan serves that actor
-directly. **Recurring job and baseline:** a visitor describes a world and watches its people act. Today an attempt
-no rule covers changes nothing (except a request, which reaches the person asked, #326), knock-on chains stop at 32
-reactions per moment, and a blocker is told only to the person who tried. **Inspectable result:** the port world's
+directly. **Recurring job and pre-plan baseline (2026-11-09):** a visitor describes a world and watches its people act. Before J0–J3, an attempt
+no rule covered changed nothing (except a request, which reached the person asked, #326), knock-on chains stopped at 32
+reactions per moment, and a blocker was told only to the person who tried. The Status section records delivered slices and remaining gaps. **Inspectable result:** the port world's
 run page and record (canonical example). **Stage and investment boundary:** prototype stage; six slices, each one
 pull request; at most $3.00 of owner allowance per slice; no new service, engine or repository.
 
@@ -113,13 +113,14 @@ gate, a 100-step chain runs: the crate reaches the warehouse, the warehouse fill
    check rejects it, and the one revision is rejected too), the attempt is refused with "no rule could express
    this" and the run records a language gap.
 5. Only now is the rule installed. Vik's offer goes to Rosa as her decision; no coins move yet.
-6. Rosa's resident decides. If she refuses, the offer lapses and nothing changes. If she accepts, she signs, and
-   the coins move through the installed rule in the same moment: they move only because she chose to sign.
+6. Rosa’s resident decides whether to accept the offer. Acceptance alone does not satisfy the installed signing check: while `inspected` is false, that signing attempt remains blocked and the conditional exchange cannot settle. Coins move only after her own feasible signing action completes under the installed rules; agreement is necessary, not sufficient.
 7. If she signs, Vik holds a signed release. The gate (a mechanism) opens for the valid code however Vik got it.
    "Bribery is forbidden" is a norm: it was broken, and it has consequences only if an inspector notices and acts.
 8. The gate opening sets off the 100-step chain. It runs to the end inside the same moment, each step citing the
    step that caused it.
 9. Later, another trader offers a bribe. The new rule decides the hand-over; the judge is not called again.
+
+Design clarification, 2026-11-12: the existing `inspected` check is a hard blocker in this example. A world intended to permit signing without inspection must separately model that capability and the breakable inspection norm; the judge cannot bypass the existing check by relabeling it. The example’s gate-opening continuation is conditional on a feasible signing action, not guaranteed by accepting the bribe.
 
 This two-pass order is how Brian's "deliver the results of that propagation to the judge" is met: the judge
 sees the propagation of its own proposed rule (pass 2) before anything is installed, plus the blockers that
@@ -232,7 +233,9 @@ repository):
 So this plan adds what v3 left out: who holds each credential, as a fact that can change (told, stolen, phished),
 and norms as breakable rules with consequences only when someone acts on them.
 
-## Current truth (read from code at origin/main `0dcbcd6`, 2026-11-09)
+## Pre-plan baseline (read from code at origin/main `0dcbcd6`, 2026-11-09)
+
+Historical baseline, not current status. J0 removed the cap for new runs; J1–J3 added consequence reports, the judge and sealed mid-run rulings. The Status section above is the current progress authority.
 
 - **Propagation exists but is capped.** `timing: immediately` processes run in waves inside one commit
   ([Decision 009](../decisions/009-same-moment-knock-on-effects.md); `src/world_substrate/engine.py` `_settle`).

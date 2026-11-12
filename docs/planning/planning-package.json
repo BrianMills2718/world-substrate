@@ -165,7 +165,8 @@
         "judge-ruling": "scripts/judge.py:288",
         "ruling-rule": "scripts/rulings.py:91",
         "midrun-setting": "scripts/rulings.py:47"
-      }
+      },
+      "spectrum": "docs/model/semantic-spectrum.json"
     },
     "diagrams": {
       "status": "present",
@@ -229,5 +230,45 @@
       "path": "docs/planning/declared-laws/acceptance-criteria.json"
     }
   },
-  "note": "This is the repository's package: covers the whole repository; its plan part points at the newest adopted plan, docs/plans/declared_laws.md, whose own package is docs/planning/declared-laws/planning-package.json. The open-attempt plan keeps docs/planning/open-attempt/planning-package.json. All three share the checks, open-questions ledger, domain model, metamodel and diagrams, and are rebuilt by tools/planning/ (open question Q41). Only this package is validated at each push; the two plan packages keep the revision of their own last review."
+  "note": "Repository-wide package; the plan reference is a current implementation plan, while roadmap/README.md owns sequencing and the pre-implementation normative review. Open-attempt, declared-laws, AI-judge and estimate-rules each retain their own package and acceptance scope. They share domain/semantic models and the question ledger. Review verdicts refer only to their recorded revisions; this metadata reconciliation does not recertify them.",
+  "initiative": {
+    "id": "world-substrate",
+    "role": "home"
+  },
+  "runs_in_production": true,
+  "spectrum_rungs": {
+    "name": "README.md:1",
+    "controlled_vocabulary": "docs/model/semantic-spectrum.json",
+    "glossary": [
+      "docs/model/DOMAIN.md",
+      "docs/model/modeling-choices.md"
+    ],
+    "thesaurus": "docs/model/semantic-spectrum.json",
+    "informal_taxonomy": "docs/model/semantic-spectrum.json",
+    "formal_taxonomy": "docs/model/domain.graph.json",
+    "domain_model": "docs/model/domain.graph.json",
+    "schema": [
+      "schemas/world-authoring-bundle-v0.schema.json",
+      "src/world_substrate/model.py"
+    ],
+    "rules": [
+      "docs/model/trace.yaml",
+      "src/world_substrate/rules.py"
+    ],
+    "instances": "reference_worlds/waltzman/coordination-lab-v0.json",
+    "architecture_views": [
+      "docs/architecture/arc42.md",
+      "docs/architecture/model.c4"
+    ],
+    "behavior_models": "docs/model/ODD.md",
+    "interface_contracts": [
+      "openspec/specs/transition-engine/spec.md",
+      "openspec/specs/world-authoring-bundle/spec.md"
+    ],
+    "executable_specifications": [
+      "tests/test_action_envelopes.py",
+      "tests/test_first_fill.py"
+    ]
+  },
+  "spectrum_basis": "Repository-scoped evidence shared by plan packages: the World Builder is an existing deployed product, while individual plan slices remain built/not-built as their acceptance records state. The domain taxonomy is a flat, typed classification by implementation authority (Substrate, Family, PerWorld, Reference, Theory), not a claim of a deeper inheritance hierarchy. No digital-twin or validated predictive-simulation rung is asserted."
 }

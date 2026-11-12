@@ -76,8 +76,7 @@ World Builder visitor of the Actor section. **Recurring job and baseline:** a vi
 watches its people act; before S1 each person could only pick from moves the rules already allowed, so
 impossible attempts (the wall) never appeared. S1 (merged at `fe8c492`, #239) lets residents say attempts in
 their own words, and its live run (`evidence/open-attempt/s1-airfield/`, #247) shows residents acting every round; the
-wall refusal and the untrained flight have not yet been seen in a live run, and knock-on chains (S2) and untrained
-failures (S3) still never appear. **Inspectable result this plan
+wall refusal and the untrained flight were not exercised in that run. S2 is built with fixture evidence, while its generated-world evidence remains incomplete; S3 skill rolls remain unbuilt. **Inspectable result this plan
 delivers:** the run page and build record of the airfield world showing the wall refusal, the glass chain
 and the rolled crash. **Stage and investment boundary:** prototype stage; three slices, each one pull
 request and at most $3.00 of owner allowance; no new service, engine or repository.
@@ -111,7 +110,9 @@ Brian's "yes" on 2026-10-25 to this design) found three pieces missing from Worl
 named the established method to copy for each. This plan designs those three, in the order they
 depend on each other.
 
-## Current truth (read from code before S1, 2026-10-25, main 63caf4c; S1 rows added after it merged at fe8c492)
+## Baseline and delivered S1 behavior (2026-10-25/26)
+
+This is historical baseline detail. The slice table and the AI judge plan record later work: S2 is built, J0 removes the cap for new runs, and J2/J3 handle uncovered attempts through checked rulings.
 
 | Have | Where |
 | --- | --- |

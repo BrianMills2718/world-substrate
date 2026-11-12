@@ -25,7 +25,7 @@ authority_refs:
 One page of current state. It summarizes and routes; it does not replace the
 [architecture](../architecture/arc42.md), the [capability specs](../index.md#2-what-the-code-must-do-openspec-capability-specs),
 the decisions, the code, the evidence or the [roadmap](../../roadmap/README.md). Every document is
-listed in the [documentation index](../index.md). Checked against `main` at `0e66a98` on 2026-11-09.
+listed in the [documentation index](../index.md). Plan-status/navigation summary reconciled against `544c086` on 2026-11-12. The current task is the roadmap’s preimplementation readiness review; dated deployment observations below have not been rechecked by this documentation review.
 
 ## What this project is
 
@@ -65,7 +65,7 @@ world needs them.
 | What a world is made of, built versus theory | [Domain model](../model/DOMAIN.md), [metamodel](../model/METAMODEL.md) |
 | What the project does not yet know | [Open questions](../planning/open-questions.json), [planning package](../planning/planning-package.json) |
 | Open attempts, knock-on effects, skill rolls | [Open-attempt plan](../plans/open_attempt.md): S1 and S2 built, S3 not built |
-| An AI judge for what no rule covers; chains of any length | [AI judge plan](../plans/ai_judge.md): J0 built 2026-11-10 (no knock-on cap, blocked steps shown); J1 built 2026-11-10 (consequence report: pass 1 recorded on every unmatched attempt, pass 2 test-runs a proposed rule on a copy); J2 built 2026-11-10 (the judge, Concordia's `EventResolution`, proposes a rule, reads the test run, then confirms, revises once or withdraws; recorded); J3 built 2026-11-10 (a confirmed ruling becomes a rule, installed at once or held until the owner presses Approve; a ruling the rules language cannot express is a language gap); J5 next; J4 exploration only |
+| An AI judge for what no rule covers; chains of any length | [AI judge plan](../plans/ai_judge.md): J0 built 2026-11-10 (no knock-on cap, blocked steps shown); J1 built 2026-11-10 (consequence report: pass 1 recorded on every unmatched attempt, pass 2 test-runs a proposed rule on a copy); J2 built 2026-11-10 (the judge, Concordia's `EventResolution`, proposes a rule, reads the test run, then confirms, revises once or withdraws; recorded); J3 built 2026-11-10 (a confirmed ruling becomes a rule, installed at once or held until the owner presses Approve; a ruling the rules language cannot express is a language gap); Q96 exchange consent before J5; J4 exploration only |
 | Worlds declare their own laws | [Declared-laws plan](../plans/declared_laws.md): S1 to S3 built, S4 under way, S5 follows the plain-version comparison (Q60) |
 | Waltzman lineage against the general simulator vision | [Lineage review, 2026-11-07](../audits/waltzman-lineage-review-2026-11-07.md) (recommendations not adopted) |
 | Prior art for attempts, affordances, knock-on effects | [Flexible simulator prior art](../research/flexible-simulator-prior-art-2026-10.md) |

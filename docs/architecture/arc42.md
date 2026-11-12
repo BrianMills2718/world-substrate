@@ -16,11 +16,11 @@ A rich world comes from **shared persistent state, semantic grounding, and insta
 
 **Why (Brian's reason).** The point is scale, not determinism. Brian, 2026-11-09: "an ai adjudicator doesnt really scale and that we need to facts to have implications and blockers. like 50 things could propagate down a causal chain 100 links deep taht the llm would not be able to understand so we need that causal chain to automaticlaly rpogate and to deliver the resutls of that propagation to he ai judge along with blockers." Brian, 2026-07-22: "in general i dont care about determinism. oftne it is better to have simulations that vary to give you more snese of the possiblity space of outcomes. what i am concerned with is an understanable trace of any simulation and general reasonability/fidelity."
 
-Where the code stands against that reason (2026-11-09):
+Where the code stands against that reason (reconciled 2026-11-12 against J0–J3; deployment evidence remains dated in the AI judge plan):
 
 - **Propagation exists.** A change that follows at once runs as a knock-on process, in waves inside the same moment ([Decision 009](../decisions/009-same-moment-knock-on-effects.md)). Each (process, entity) pair fires at most once per moment, so every chain ends; new runs have no other cap, every step names the step that caused it, and a step a failed check stops is recorded with its blocker (AI judge plan J0, 2026-11-10). Each run records the limit it ran under and replays under it; runs recorded before J0 ran under 32 (`LEGACY_REACTION_LIMIT`, `src/world_substrate/engine.py`). Slower effects run once per round.
-- **Blockers reach only the person who tried.** A refused move tells that person which check failed. It does not name the earlier change behind the failure.
-- **There is no AI judge.** The Concordia game master is kept off (`scripts/concordia_residents.py`, module docstring). An attempt outside the rulebook changes nothing, apart from a request to another person, which is passed on to that person.
+- **Consequence reports feed the judge.** J1 reports installed-rule checks for the people involved and test-runs a proposed rule on a copy; the full chain stays in the record. Ordinary refusals still tell the actor which check failed.
+- **An AI judge handles uncovered attempts.** J2 uses Concordia’s `EventResolution` through `scripts/judge.py`; it cannot override installed-rule blockers. J3 installs checked rulings under the world’s configured approval mode as sealed run state (`scripts/rulings.py`). The original world rules and fingerprint stay unchanged. The known exchange-consent defect Q96 remains open; the presence of a judge does not establish modeling fidelity.
 
 ### What the system is for
 
@@ -41,8 +41,8 @@ Disproof: any test or retained run where a refused transition changed canonical 
 #### REQ-REVIEWED-AUTHORITY
 
 The authority a rule has (what it reads, writes and when it fires) is derived by the compiler from the rule itself and shown to the reviewer; it is never taken from what the model claims.
-Success: the review payload lists compiler-derived read and write paths, unknown effect paths are rejected before installation, and the compiled profile is frozen before the first run step (`tests/test_action_authoring.py`, `tests/test_run_authored_world.py`).
-Disproof: a run whose installed rule wrote a path the review did not show, or a profile that changed between approval and execution.
+Success: the review payload lists compiler-derived read and write paths, unknown effect paths are rejected before installation, and the original compiled profile is frozen before the first run step; J3 adds separately checked, sealed ruling-origin rules under the world’s approved setting (`tests/test_action_authoring.py`, `tests/test_run_authored_world.py`).
+Disproof: a run whose installed rule wrote a path the review did not show, an original profile changed between approval and execution, or an additional ruling installed outside the checked/sealed J3 path.
 
 #### REQ-APPROVAL-AND-BUDGET-BEFORE-SPEND
 
@@ -116,7 +116,7 @@ Likewise, the current bounded causal-adequacy surface is a dependency inventory 
 ### Non-goals
 
 - Recreating Dwarf Fortress, or a universal real-world ontology or physics engine.
-- LLM-generated consequences, or unrestricted natural-language world mutation.
+- Direct LLM prose committing consequences or unrestricted natural-language world mutation. Model-proposed checked rules (J3) and planned non-authoritative estimates are distinct from direct mutation; see the AI judge and estimate plans.
 - Owning agent cognition, generic scheduling or planning that Concordia, Mesa or a PDDL planner already provides ([Decision 006](../decisions/006-governed-rules-layer-scope.md)).
 - Claiming predictive or empirical validity for social or physical systems; causal claims hold inside the represented world under its installed mechanics only.
 - Bulk-copying related repositories into this one ([Decision 001](../decisions/001-project-scope.md)).
@@ -401,7 +401,7 @@ On 2026-11-09 the documents below were compared with their successors and retire
 | [008](../decisions/008-build-worlds-in-an-agent-harness.md) | 2026-10-16 | build worlds in an agent harness (in progress) |
 | [009](../decisions/009-same-moment-knock-on-effects.md) | 2026-10-26 | same-moment knock-on effects are rule semantics |
 
-Decision 006's "wrong when" names a `CognitionAdapter` path that does not exist in the code (open questions ledger).
+Decision 006’s historical "wrong when" names a `CognitionAdapter` path that does not exist. Current interpretation (inferred by agent, 2026-11-12; Q73): assess the actual Concordia integration in `scripts/concordia_residents.py` and its caller `scripts/run_authored_world.py`, with `scripts/judge.py` for the adopted J2 path. The criterion is retained consequence authority and bounded adapter work, not presence of that obsolete class name. New glue is justified only by an explicit capability gap; this interpretation does not certify every current integration or override Decision 006’s ownership limits.
 
 ## 10. Quality requirements
 

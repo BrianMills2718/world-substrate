@@ -106,7 +106,9 @@ rules:
       - docs/decisions/006-governed-rules-layer-scope.md
   - id: RULE-FROZEN-PROFILE
     statement: >-
-      The compiled profile is frozen before the run starts, and a mechanic that fails review never reaches runtime.
+      The original compiled profile is frozen before the run starts, and a mechanic that fails review never reaches runtime.
+      Checked J3 ruling-origin rules use separately sealed run state under the world’s approved mode; they do not
+      mutate that original profile. See openspec/specs/ai-judge/spec.md for the additional installation contract.
     owner: scripts/run_authored_world.py
     reviewed_at: 096c129d045079ff524288f98c700953851cdd27  # re-read 2026-11-03 (#335 squash: card title wording only)
     checks:

@@ -1,0 +1,466 @@
+{
+  "schema_version": "1.0",
+  "record_type": "semantic_spectrum",
+  "basis": "Project vocabulary projection of tools/planning/domain_src.py at the November 12 normative review. IDs, definitions and semantic relationships remain owned by domain_src.py and its generated domain.graph.json/DOMAIN.md. This file adds explicit aliases and classifications for the native planning checker; it is not a new world ontology. It covers the existing implementation/domain inventory, not every conceptual term in modeling-choices.md.",
+  "terms": [
+    {
+      "id": "world",
+      "kind": "Substrate",
+      "aliases": [
+        "canonical world"
+      ]
+    },
+    {
+      "id": "engine",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "event",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "move",
+      "kind": "Substrate",
+      "aliases": [
+        "action"
+      ]
+    },
+    {
+      "id": "process",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "compiler",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "policy",
+      "kind": "Substrate",
+      "aliases": [
+        "actor policy"
+      ]
+    },
+    {
+      "id": "sense",
+      "kind": "Substrate",
+      "aliases": [
+        "semantic sense"
+      ]
+    },
+    {
+      "id": "profile",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "write-scope",
+      "kind": "Substrate",
+      "aliases": [
+        "write authority scope"
+      ]
+    },
+    {
+      "id": "causal-trace",
+      "kind": "Substrate",
+      "aliases": [
+        "event history"
+      ]
+    },
+    {
+      "id": "world-kind",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "builder",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "approval",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "fingerprint",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "information",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "run-loop",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "contention",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "resident",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "task",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "notice",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "build",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "rules-retry",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "test-run",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "run-log",
+      "kind": "Substrate",
+      "aliases": [
+        "request log"
+      ]
+    },
+    {
+      "id": "readout",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "scene-replay",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "share",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "budget",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "people-world",
+      "kind": "Family",
+      "aliases": []
+    },
+    {
+      "id": "communicate",
+      "kind": "Family",
+      "aliases": []
+    },
+    {
+      "id": "moment",
+      "kind": "Family",
+      "aliases": []
+    },
+    {
+      "id": "work-cycle",
+      "kind": "Family",
+      "aliases": []
+    },
+    {
+      "id": "group-decision",
+      "kind": "Family",
+      "aliases": []
+    },
+    {
+      "id": "concern",
+      "kind": "Family",
+      "aliases": []
+    },
+    {
+      "id": "support",
+      "kind": "Family",
+      "aliases": []
+    },
+    {
+      "id": "remedy",
+      "kind": "Family",
+      "aliases": []
+    },
+    {
+      "id": "agenda",
+      "kind": "Family",
+      "aliases": []
+    },
+    {
+      "id": "rollout",
+      "kind": "Family",
+      "aliases": []
+    },
+    {
+      "id": "review",
+      "kind": "Family",
+      "aliases": []
+    },
+    {
+      "id": "person",
+      "kind": "PerWorld",
+      "aliases": []
+    },
+    {
+      "id": "gen-rules",
+      "kind": "PerWorld",
+      "aliases": []
+    },
+    {
+      "id": "waltzman-ref",
+      "kind": "Reference",
+      "aliases": []
+    },
+    {
+      "id": "harness-build",
+      "kind": "Theory",
+      "aliases": []
+    },
+    {
+      "id": "law-fingerprint",
+      "kind": "Theory",
+      "aliases": []
+    },
+    {
+      "id": "affordance",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "check",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "attempt",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "attempt-reading",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "unmatched-attempt",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "observation",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "place-way",
+      "kind": "PerWorld",
+      "aliases": []
+    },
+    {
+      "id": "knock-on-now",
+      "kind": "Substrate",
+      "aliases": [
+        "same-moment knock-on effect"
+      ]
+    },
+    {
+      "id": "skill-roll",
+      "kind": "Theory",
+      "aliases": []
+    },
+    {
+      "id": "projection",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "causal-parent",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "exchange",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "mechanisms",
+      "kind": "Reference",
+      "aliases": []
+    },
+    {
+      "id": "kitchen",
+      "kind": "Reference",
+      "aliases": []
+    },
+    {
+      "id": "mechanic",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "entity-component",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "run-seed",
+      "kind": "Theory",
+      "aliases": []
+    },
+    {
+      "id": "world-law",
+      "kind": "PerWorld",
+      "aliases": []
+    },
+    {
+      "id": "law-check",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "world-design",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "resource",
+      "kind": "PerWorld",
+      "aliases": []
+    },
+    {
+      "id": "rules-review",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "consequence-report",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "judge-ruling",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "ruling-rule",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "credential-holder",
+      "kind": "Theory",
+      "aliases": []
+    },
+    {
+      "id": "norm",
+      "kind": "Theory",
+      "aliases": []
+    },
+    {
+      "id": "midrun-setting",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "run-stop",
+      "kind": "Substrate",
+      "aliases": []
+    },
+    {
+      "id": "stopping-point",
+      "kind": "Theory",
+      "aliases": []
+    },
+    {
+      "id": "estimate-rule",
+      "kind": "Theory",
+      "aliases": []
+    },
+    {
+      "id": "estimator",
+      "kind": "Theory",
+      "aliases": []
+    },
+    {
+      "id": "recorded-estimate",
+      "kind": "Theory",
+      "aliases": []
+    },
+    {
+      "id": "recorded-draw",
+      "kind": "Theory",
+      "aliases": []
+    }
+  ],
+  "classes": [
+    {
+      "id": "Substrate",
+      "definition": "Fixed code every world runs through: the Engine, compiler, run loop, service, records."
+    },
+    {
+      "id": "Family",
+      "definition": "Fixed code every people world gets from compile_spec.py; the group-decision family is added when the description has a decision."
+    },
+    {
+      "id": "PerWorld",
+      "definition": "Not code: an AI writes it for each described world during the build."
+    },
+    {
+      "id": "Reference",
+      "definition": "Hand-written code for the reference worlds (Kitchen, Waltzman and others); no generated world uses it today."
+    },
+    {
+      "id": "Theory",
+      "definition": "Named in decisions or the roadmap, not on the live path."
+    }
+  ],
+  "ambiguous": [
+    {
+      "word": "rule",
+      "means": [
+        "mechanic",
+        "world-law"
+      ],
+      "note": "An installed mechanic supplies executable effects; a declared world law constrains possible effects. State which authority is intended."
+    },
+    {
+      "word": "review",
+      "means": [
+        "review",
+        "rules-review"
+      ],
+      "note": "Operating review within a simulated world differs from the authoring-stage review of proposed rules."
+    },
+    {
+      "word": "person",
+      "means": [
+        "person",
+        "resident"
+      ],
+      "note": "The represented person and the external cognition agent operating its policy are distinct; use person or resident explicitly."
+    }
+  ]
+}

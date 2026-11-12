@@ -197,10 +197,10 @@ on 2026-11-10 from the reading and prior art named with each; they stand as work
    (`recorded_llm_client`, `Unrecorded`, lines 23-49). Replay resubmits recorded commands as today
    (`Engine.replay_commands`, `src/world_substrate/engine.py:1182`), so the recorded estimate and draw give the
    same status for each command. The recorded reader matches an estimate by event and by the cache key below
-   (model, question, answer type and options, input values): if the world's rule was edited after the run, so its
+   (resolved model version, estimator/prompt version, question, answer type and options, input values): if the world's rule was edited after the run, so its
    question or reads no longer match the record, the replay stops with "no recorded estimate for this event"
    instead of reusing an answer to a different question.
-6. **Caching: one call per distinct question per run.** The cache key is (model, question, answer type and its
+6. **Caching: one call per distinct complete input per run.** The cache key is (resolved model version, estimator/prompt version, question, answer type and its
    options, the canonical values of the declared reads). Because a rule declares everything Jev may read, the
    same key means the same question, so the answer is reused for the rest of the run and recorded as "cached,
    first asked at event N". The draw is not cached: each event draws its own number, so day 9 and a later day
@@ -436,8 +436,7 @@ reads (new, only on a cache miss) -> draw (code) -> outcome effects and knock-on
 - **Jev per call (measured):** `llm-cost estimate --task feedback-collector.triage --model jev` (2026-11-10):
   14,222 calls, $0.3963 in all, $0.0000279 per call, median 656 input and 78 output tokens. The probe's 5 calls
   measured $0.000027 each. The registry has no Jev price; cost is provider-reported.
-- **Sawmill run (E1):** at most 30 calls (one per day; fewer with the cache), 30 x $0.0000279 = $0.00084; the
-  retry on 6.6% of calls adds about $0.00006.
+- **Blade estimates in E1 (worked-out scenario estimate, not a run bound):** 30 daily opportunities with one uncached blade query each would cost 30 × $0.0000279 = $0.00084 before retries. The observed 6.6% failure share gives an illustrative retry addition, not a guarantee. E1 also includes A7 crossing estimates: add one call per uncached crossing context and any retry. Total requests are blade cache misses + crossing cache misses + retries; specify those counts for the chosen fixture before running.
 - **The rest of the live E1 run (existing calls, computed):** A1 needs Mara's own move and reason, so the run
   also calls the Concordia residents, the attempt interpreter and the readout. Per person per day, the saved
   airfield run (`evidence/open-attempt/s2-airfield/llm-calls.jsonl`: one person, 9 rounds, 36 resident and 12
@@ -447,8 +446,7 @@ reads (new, only on a cache miss) -> draw (code) -> outcome effects and knock-on
   $0.045, and 80 interpreter calls, $0.011; one readout call (1,523 and 309 tokens) adds $0.0003. With Jev, about
   $0.057, so about $0.06 per run. With Waltzman-sized prompts (`evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl`:
   residents 2,761 and 223 tokens, $0.000388 per call; interpreter 3,231 and 242, $0.000444) the same run is
-  $0.0021 per person per day, about $0.13. The E1 run's cap is $0.13, so a larger prompt cannot stop it before
-  day 30.
+  $0.0021 per person per day, about $0.13 before additional crossing estimates and workload variation. The E1 cap of $0.13 is a spending limit, not assurance of 30 completed days. Larger prompts, additional activations or retries can stop the run earlier; account for the full fixture workload before execution and report an early budget stop as incomplete evidence.
 - **Plain-version comparison (E1, once):** 10 cases x 4 variants (below). Jev with the declared reads:
   10 x $0.0000279 = $0.00028 (measured per-call figure). Jev with the whole world: guess, up to 10 times the
   tokens, so up to 10 x $0.000279 = $0.0028. The two Jev variants: up to $0.0031. The gpt-6-luna variant:

@@ -12,10 +12,12 @@
         {
           "name": "durable documents (arc42)",
           "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
-          "exit_status": 0,
+          "exit_status": 1,
           "counts": {
-            "findings": 0
-          }
+            "findings": 16
+          },
+          "tracked_by": "Q77",
+          "note": "8 arc42 and goal-field findings in docs/architecture/arc42.md and 8 STALE system-model rules whose owner files changed after review; the same 16 on origin/main d89a446 (md_file_cap's durable column reports 16 for both refs), none added by this change."
         },
         {
           "name": "project navigation",
@@ -28,29 +30,28 @@
         {
           "name": "repository format",
           "command": "python3 $HOME/code2/workspace/scripts/repo_format.py .",
-          "exit_status": 1,
+          "exit_status": 0,
           "counts": {
-            "compliant": 0,
+            "compliant": 1,
             "of": 1
-          },
-          "tracked_by": "Q15"
+          }
         },
         {
           "name": "trace reads",
-          "command": "python3 scripts/check_trace_reads.py",
+          "command": "python3 scripts/check_trace_reads.py --root evidence",
           "exit_status": 0,
           "counts": {
-            "runs": 20,
+            "runs": 38,
             "problems": 0
           }
         },
         {
           "name": "project check (tests, system model, docs)",
-          "command": "PYTHONDONTWRITEBYTECODE=1 uv run -q --no-project --python 3.12 --with pydantic --with gdm-concordia==2.4.0 --with pytest --with pytest-xdist python scripts/check_project.py",
+          "command": "/home/brian/.local/bin/uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with pytest-xdist --with gdm-concordia==2.4.0 python scripts/check_project.py",
           "note": "counts from its line 'Neutral runtime tests: N passed, M skipped' (pytest-xdist)",
           "exit_status": 0,
           "counts": {
-            "tests_run": 801,
+            "tests_run": 891,
             "failed": 0,
             "skipped": 2
           }
@@ -58,15 +59,20 @@
         {
           "name": "wiki and Markdown cap",
           "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
-          "exit_status": 0,
+          "exit_status": 1,
           "counts": {
-            "md_files": 157,
+            "md_files": 162,
             "cap": "exception",
-            "orphans": 0
+            "unreachable": 28,
+            "not_linked": 10,
+            "more_than_two_links_deep": 18,
+            "durable_findings": 16
           },
-          "note": "Run with --ref HEAD: without it the script checks the default branch, not this change."
+          "tracked_by": "Q77",
+          "note": "Run with --ref HEAD: without it the script checks the default branch, not this change. All 28 unreachable documents are also unreachable on origin/main d89a446 (29 there; docs/planning/ai-judge/cold-review.md is reachable here): 13 older documents, the 5 J0 trace reads (now linked from docs/catalog.md, still more than two links deep), and 10 files under openspec/changes/archive/ from 2026-11-10 (md_file_cap does not read .doc-reachability-ignore)."
         }
-      ]
+      ],
+      "basis": "Shared repository check snapshot from the repository package, not a new run or plan acceptance. Refresh all package check records together after the current normative audit."
     },
     "open_questions": {
       "status": "present",
@@ -92,36 +98,36 @@
       "path": "docs/model/domain.graph.json",
       "glossary": "docs/model/DOMAIN.md",
       "implemented": {
-        "world": "src/world_substrate/model.py:382",
-        "engine": "src/world_substrate/engine.py:198",
-        "event": "src/world_substrate/engine.py:529",
-        "move": "src/world_substrate/action_authoring.py:49",
-        "process": "src/world_substrate/engine.py:829",
-        "compiler": "src/world_substrate/action_authoring.py:456",
+        "world": "src/world_substrate/model.py:424",
+        "engine": "src/world_substrate/engine.py:222",
+        "event": "src/world_substrate/engine.py:572",
+        "move": "src/world_substrate/action_authoring.py:50",
+        "process": "src/world_substrate/engine.py:1095",
+        "compiler": "src/world_substrate/action_authoring.py:440",
         "policy": "src/world_substrate/policy.py:50",
         "sense": "src/world_substrate/semantic.py:15",
-        "profile": "src/world_substrate/profile.py:266",
-        "write-scope": "src/world_substrate/engine.py:88",
-        "causal-trace": "src/world_substrate/engine.py:529",
-        "world-kind": "scripts/world_builder_service.py:113",
+        "profile": "src/world_substrate/profile.py:249",
+        "write-scope": "src/world_substrate/engine.py:136",
+        "causal-trace": "src/world_substrate/engine.py:572",
+        "world-kind": "scripts/world_builder_service.py:121",
         "builder": "scripts/world_builder_service.py",
-        "approval": "scripts/world_builder_service.py:418",
-        "fingerprint": "scripts/world_builder_service.py:381",
+        "approval": "scripts/world_builder_service.py:426",
+        "fingerprint": "scripts/world_builder_service.py:389",
         "information": "src/world_substrate/information.py:57",
-        "run-loop": "scripts/run_authored_world.py:347",
-        "contention": "scripts/run_authored_world.py:563",
+        "run-loop": "scripts/run_authored_world.py:700",
+        "contention": "scripts/run_authored_world.py:850",
         "resident": "scripts/concordia_residents.py:44",
         "task": "scripts/attempts.py:17",
         "notice": "scripts/attempts.py:234",
-        "build": "scripts/world_builder_service.py:1541",
-        "rules-retry": "scripts/world_builder_service.py:263",
-        "test-run": "scripts/world_builder_service.py:1610",
-        "run-log": "scripts/world_builder_service.py:524",
-        "readout": "scripts/run_readout.py:125",
-        "scene-replay": "scripts/render_scene_replay.py:398",
-        "share": "scripts/world_builder_service.py:598",
-        "budget": "scripts/world_builder_service.py:51",
-        "people-world": "scripts/people_world.py:364",
+        "build": "scripts/world_builder_service.py:1635",
+        "rules-retry": "scripts/world_builder_service.py:110",
+        "test-run": "scripts/world_builder_service.py:1844",
+        "run-log": "scripts/world_builder_service.py:542",
+        "readout": "scripts/run_readout.py:113",
+        "scene-replay": "scripts/render_scene_replay.py:449",
+        "share": "scripts/world_builder_service.py:638",
+        "budget": "scripts/world_builder_service.py:57",
+        "people-world": "scripts/people_world.py:474",
         "communicate": "spikes/any-scenario-2026-10/compile_spec.py:56",
         "moment": "spikes/any-scenario-2026-10/compile_spec.py:48",
         "work-cycle": "spikes/any-scenario-2026-10/compile_spec.py:517",
@@ -135,26 +141,33 @@
         "person": "spikes/any-scenario-2026-10/scenario_spec.py:41",
         "gen-rules": "scripts/people_world.py:251",
         "waltzman-ref": "reference_worlds/waltzman/components.py:11",
-        "affordance": "src/world_substrate/engine.py:352",
+        "affordance": "src/world_substrate/engine.py:395",
         "check": "src/world_substrate/rules.py:48",
-        "attempt": "src/world_substrate/attempt.py:149",
-        "attempt-reading": "src/world_substrate/attempt.py:81",
-        "unmatched-attempt": "src/world_substrate/attempt.py:25",
-        "observation": "src/world_substrate/engine.py:235",
+        "attempt": "src/world_substrate/attempt.py:221",
+        "attempt-reading": "src/world_substrate/attempt.py:92",
+        "unmatched-attempt": "src/world_substrate/attempt.py:34",
+        "observation": "src/world_substrate/engine.py:278",
         "place-way": "scripts/generate_world_bundle.py:96",
         "projection": "src/world_substrate/projection.py:44",
         "causal-parent": "src/world_substrate/rules.py:383",
         "exchange": "src/world_substrate/exchange.py:68",
         "mechanisms": "src/world_substrate/mechanisms/__init__.py:3",
         "kitchen": "reference_worlds/kitchen/mechanics.py",
-        "mechanic": "src/world_substrate/action_authoring.py:456",
-        "entity-component": "src/world_substrate/model.py:223",
-        "knock-on-now": "src/world_substrate/engine.py:938",
+        "mechanic": "src/world_substrate/action_authoring.py:515",
+        "entity-component": "src/world_substrate/model.py:247",
+        "knock-on-now": "src/world_substrate/engine.py:964",
         "world-law": "scripts/scaffold_world.py:45",
         "law-check": "src/world_substrate/laws.py:36",
         "resource": "scripts/scaffold_world.py:45",
-        "world-design": "scripts/generate_world_bundle.py:53"
-      }
+        "world-design": "scripts/generate_world_bundle.py:53",
+        "rules-review": "scripts/review_rules.py:75",
+        "run-stop": "scripts/run_stop.py:65",
+        "consequence-report": "scripts/consequence_report.py:67",
+        "judge-ruling": "scripts/judge.py:288",
+        "ruling-rule": "scripts/rulings.py:91",
+        "midrun-setting": "scripts/rulings.py:47"
+      },
+      "spectrum": "docs/model/semantic-spectrum.json"
     },
     "diagrams": {
       "status": "present",
@@ -234,5 +247,45 @@
       "reviewed_revision": "4ff4c274a7a97508fc004c24f2cce6bdae412136"
     }
   },
-  "note": "This is the plan's own package, named by docs/plans/open_attempt.md's 'Planning package:' line. The other package is docs/planning/planning-package.json; both share the checks, open-questions ledger, domain model, metamodel and diagrams, are rebuilt by tools/planning/ and validated at the same subject revision (open question Q41)."
+  "note": "Plan-specific package linked from its owning plan. Shares repository checks, question ledger, domain model and semantic spectrum with docs/planning/planning-package.json. Its acceptance, plan and cold-review remain scoped to this plan; old review verdicts do not certify current edits.",
+  "initiative": {
+    "id": "world-substrate",
+    "role": "home"
+  },
+  "runs_in_production": true,
+  "spectrum_rungs": {
+    "name": "README.md:1",
+    "controlled_vocabulary": "docs/model/semantic-spectrum.json",
+    "glossary": [
+      "docs/model/DOMAIN.md",
+      "docs/model/modeling-choices.md"
+    ],
+    "thesaurus": "docs/model/semantic-spectrum.json",
+    "informal_taxonomy": "docs/model/semantic-spectrum.json",
+    "formal_taxonomy": "docs/model/domain.graph.json",
+    "domain_model": "docs/model/domain.graph.json",
+    "schema": [
+      "schemas/world-authoring-bundle-v0.schema.json",
+      "src/world_substrate/model.py"
+    ],
+    "rules": [
+      "docs/model/trace.yaml",
+      "src/world_substrate/rules.py"
+    ],
+    "instances": "reference_worlds/waltzman/coordination-lab-v0.json",
+    "architecture_views": [
+      "docs/architecture/arc42.md",
+      "docs/architecture/model.c4"
+    ],
+    "behavior_models": "docs/model/ODD.md",
+    "interface_contracts": [
+      "openspec/specs/transition-engine/spec.md",
+      "openspec/specs/world-authoring-bundle/spec.md"
+    ],
+    "executable_specifications": [
+      "tests/test_action_envelopes.py",
+      "tests/test_first_fill.py"
+    ]
+  },
+  "spectrum_basis": "Repository-scoped evidence shared by plan packages: the World Builder is an existing deployed product, while individual plan slices remain built/not-built as their acceptance records state. The domain taxonomy is a flat, typed classification by implementation authority (Substrate, Family, PerWorld, Reference, Theory), not a claim of a deeper inheritance hierarchy. No digital-twin or validated predictive-simulation rung is asserted."
 }

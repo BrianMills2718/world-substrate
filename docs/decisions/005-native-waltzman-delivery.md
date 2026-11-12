@@ -6,6 +6,8 @@ description: Deliver Waltzman natively on the World Substrate engine and converg
 
 Governs: RULE-APPROVAL-BEFORE-RUN, scripts/world_builder_service.py
 
+Source: historical accepted record dated 2026-09-18. Its October 15 amendments below quote Brian’s approval of Create simulation and the people-world route; the original September approval quotation is not retained here.
+
 **Status:** accepted
 **Date:** 2026-09-18
 **Related:** [Decision 001](001-project-scope.md), [Decision 002](002-observability-and-replay.md), [Decision 003](003-semantic-mechanical-boundary.md), [Decision 004](004-product-and-adoption-strategy.md)

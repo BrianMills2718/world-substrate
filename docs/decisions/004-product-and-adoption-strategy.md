@@ -6,6 +6,8 @@ description: Generative-World Builder product direction and the off-the-shelf ad
 
 Governs: RULE-BUDGET-FAILS-CLOSED, scripts/world_builder_service.py
 
+Source: historical accepted record dated 2026-09-07, updated 2026-09-08; Context records the approved product direction, without retaining its original approval quotation.
+
 **Status:** accepted  
 **Date:** 2026-09-07  
 **Updated:** 2026-09-08
