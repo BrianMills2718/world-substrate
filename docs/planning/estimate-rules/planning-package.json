@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "590530c76df58133e497f6bb26e6985300f2e8bd",
+  "subject_revision": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73",
   "request": "Brian 2026-11-10 \"im not saying jsut the judge uses jev. i can see there being a way where we have certain types of rules/contstatins that progagte base don jev\", then \"i approve\" to planning it now in parallel with the AI judge build; the plan docs/plans/estimate_rules.md names this file on its 'Planning package:' line",
   "parts": {
     "checks": {
@@ -419,7 +419,8 @@
       "status": "present",
       "path": "docs/planning/estimate-rules/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "8fff8596d96fecabecfe86c69ff1e057966054eb"
+      "reviewed_revision": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73",
+      "package_commit": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73"
     },
     "investigation": {
       "status": "present",

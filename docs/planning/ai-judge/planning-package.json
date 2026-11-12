@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "record_type": "planning_package",
   "repository": "BrianMills2718/world-substrate",
-  "subject_revision": "89dc1c696e1f69476012929508228b5e0e81da7f",
+  "subject_revision": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73",
   "request": "Brian 2026-11-09 \"i approve\" (to: docs/plans/ai_judge.md, an AI judge fed by automatic propagation, after Decided 5); the plan's 'Planning package:' line names this file",
   "parts": {
     "checks": {
@@ -408,8 +408,9 @@
     "cold_review": {
       "status": "present",
       "path": "docs/planning/ai-judge/cold-review.md",
-      "verdict": "revise",
-      "reviewed_revision": "31142e0364fa837fbb4a5e4e4168f30eb1631bbb"
+      "verdict": "pass",
+      "reviewed_revision": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73",
+      "package_commit": "0d2a8752ee5625c7e55dd1e1bedb87ab77c7ef73"
     },
     "investigation": {
       "status": "present",
