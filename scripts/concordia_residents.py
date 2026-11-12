@@ -85,6 +85,7 @@ class ResidentAct(entity_component.ActingComponent):
         self._open = open_attempts
         self.request: dict[str, Any] = {}
         self.cost = 0.0
+        self.calls: list[dict[str, Any]] = []
 
     def get_action_attempt(self, context: Any, action_spec: entity_lib.ActionSpec) -> str:
         from llm_client import call_llm_json_schema, render_prompt
@@ -96,11 +97,25 @@ class ResidentAct(entity_component.ActingComponent):
             schema["properties"]["action_id"]["enum"] = list(self.request["offered"]) + [WAIT]
         memory = "\n".join(str(v) for v in context.values() if v)
         messages = render_prompt(REPO / prompt, **self.request["context"], memory=memory)
-        value, result = call_llm_json_schema(
-            self._model, messages, schema, schema_name="world_substrate_concordia_resident",
-            task="world-builder-concordia-resident", trace_id=self._trace, max_budget=self._budget,
-            max_tokens=640, reasoning_effort="low",
-        )
+        # Restricted analyst evidence: retain the actual prompt after memory assembly,
+        # not just the earlier observation. The caller must never feed this record
+        # back as actor context.
+        call = json.loads(json.dumps({"actor": self._actor, "model": self._model,
+            "trace_id": self._trace, "round": self.request["context"].get("tick"), "messages": messages, "schema": schema,
+            "context": self.request["context"], "memory": memory,
+            "provenance": self.request.get("provenance"),
+            "max_tokens": 640, "reasoning_effort": "low"}))
+        self.calls.append(call)
+        try:
+            value, result = call_llm_json_schema(
+                self._model, messages, schema, schema_name="world_substrate_concordia_resident",
+                task="world-builder-concordia-resident", trace_id=self._trace, max_budget=self._budget,
+                max_tokens=640, reasoning_effort="low",
+            )
+        except Exception as exc:
+            call["error"] = type(exc).__name__
+            raise
+        call["output"] = value
         self.cost += float(getattr(result, "cost", 0.0) or 0.0)
         return json.dumps(value if isinstance(value, dict) else {})
 
@@ -129,20 +144,20 @@ class Residents:
     def observe(self, actor: str, text: str) -> None:
         self.agents[actor].observe(text)
 
-    def choose(self, actor: str, offered: list[str], context: dict[str, Any]) -> dict[str, Any]:
+    def choose(self, actor: str, offered: list[str], context: dict[str, Any], *, provenance: dict[str, Any] | None = None) -> dict[str, Any]:
         """The resident's attempt: belief, action_id (an offered id or wait), expected_effect, work, reasoning.
 
         With open attempts it is `attempt` (their own words) in place of action_id, asked even when nothing is offered.
         """
         if self.open_attempts:
-            self.acts[actor].request = {"offered": offered, "context": context}
+            self.acts[actor].request = {"offered": offered, "context": context, "provenance": provenance}
             spec = entity_lib.ActionSpec(call_to_action="Say what you try.", output_type=entity_lib.OutputType.FREE)
             value = json.loads(self.agents[actor].act(spec) or "{}")
             return {k: (str(value[k]) if value.get(k) is not None else None) for k in OPEN_SCHEMA["required"]}
         if not offered:
             return {"belief": None, "action_id": WAIT, "expected_effect": None, "work": None,
                     "reasoning": "wait: no offered action"}
-        self.acts[actor].request = {"offered": offered, "context": context}
+        self.acts[actor].request = {"offered": offered, "context": context, "provenance": provenance}
         spec = entity_lib.ActionSpec(call_to_action="Choose one offered action.", output_type=entity_lib.OutputType.FREE)
         value = json.loads(self.agents[actor].act(spec) or "{}")
         return {k: (str(value[k]) if value.get(k) is not None else None) for k in RESIDENT_SCHEMA["required"]}
