@@ -453,6 +453,12 @@ window.MAPS = {
     "explain": "Plan ai-judge J3 (built 2026-11-10): a rule in the existing declaration language made from a confirmed judge ruling after it passes the World Builder rules check and test run, listed under its ruling, whose entry records where it came from (round, person, attempt, event id) and its state (installed, held, rejected, withdrawn when installing failed, or language gap); it applies to everyone in the same situation and the attempt settles through it. It is run state, sealed with the snapshot, beside the world's own rules (Rulebook). A ruling the language cannot express is refused and recorded as a language gap. Known defect (Q96): a coin rule written for one person's offer can move coins without the other person's choice. Code: scripts/rulings.py:91."
    },
    {
+    "id": "offer",
+    "label": "Voluntary exchange offer",
+    "kind": "Theory",
+    "explain": "Q96 design contract (planned, not implemented): a server-sealed run-continuation record binding a proposer, respondent, exact terms, rule fingerprint and lifecycle state. The respondent owns acceptance or refusal; acceptance authorizes only those terms and settlement still requires a feasible atomic Engine transition. A message or reusable ruling is not consent. Code: none yet."
+   },
+   {
     "id": "credential-holder",
     "label": "Credential holder",
     "kind": "Theory",
@@ -480,7 +486,7 @@ window.MAPS = {
     "id": "stopping-point",
     "label": "Plain-words stopping point",
     "kind": "Theory",
-    "explain": "Plan ai-judge J5 (planned, not implemented): a stopping point the person writes in plain words ('stop once the team has agreed a budget'), assessed by the judge after each round that changed something, as one more condition of the run stop setting. Code: none yet."
+    "explain": "Plan ai-judge J5 (planned, not implemented): a stopping point the person writes in plain words ('stop once the team has agreed a budget'), assessed by the judge after every completed round; skipping requires proof that the complete dependency set is unchanged, unavailable for unrestricted natural-language conditions, as one more condition of the run stop setting. Code: none yet."
    },
    {
     "id": "estimate-rule",
@@ -1176,138 +1182,162 @@ window.MAPS = {
    },
    {
     "id": "e111",
+    "source": "offer",
+    "target": "resident",
+    "label": "respondent decides"
+   },
+   {
+    "id": "e112",
+    "source": "offer",
+    "target": "ruling-rule",
+    "label": "binds exact rule and terms"
+   },
+   {
+    "id": "e113",
+    "source": "offer",
+    "target": "run-log",
+    "label": "sealed with continuation"
+   },
+   {
+    "id": "e114",
+    "source": "offer",
+    "target": "engine",
+    "label": "settles atomically through"
+   },
+   {
+    "id": "e115",
     "source": "ruling-rule",
     "target": "judge-ruling",
     "label": "made from"
    },
    {
-    "id": "e112",
+    "id": "e116",
     "source": "rules-review",
     "target": "ruling-rule",
     "label": "checks"
    },
    {
-    "id": "e113",
+    "id": "e117",
     "source": "ruling-rule",
     "target": "mechanic",
     "label": "is a"
    },
    {
-    "id": "e114",
+    "id": "e118",
     "source": "midrun-setting",
     "target": "ruling-rule",
     "label": "decides when installed"
    },
    {
-    "id": "e115",
+    "id": "e119",
     "source": "midrun-setting",
     "target": "approval",
     "label": "amends"
    },
    {
-    "id": "e116",
+    "id": "e120",
     "source": "run-stop",
     "target": "run-loop",
     "label": "ends"
    },
    {
-    "id": "e117",
+    "id": "e121",
     "source": "budget",
     "target": "run-stop",
     "label": "is separate from"
    },
    {
-    "id": "e118",
+    "id": "e122",
     "source": "stopping-point",
     "target": "run-stop",
     "label": "one condition of"
    },
    {
-    "id": "e119",
+    "id": "e123",
     "source": "judge-ruling",
     "target": "stopping-point",
     "label": "same game master assesses"
    },
    {
-    "id": "e120",
+    "id": "e124",
     "source": "credential-holder",
     "target": "entity-component",
     "label": "is kept in"
    },
    {
-    "id": "e121",
+    "id": "e125",
     "source": "credential-holder",
     "target": "information",
     "label": "can change by"
    },
    {
-    "id": "e122",
+    "id": "e126",
     "source": "norm",
     "target": "world-law",
     "label": "is not a"
    },
    {
-    "id": "e123",
+    "id": "e127",
     "source": "norm",
     "target": "observation",
     "label": "has consequences through"
    },
    {
-    "id": "e124",
+    "id": "e128",
     "source": "estimate-rule",
     "target": "process",
     "label": "is a kind of"
    },
    {
-    "id": "e125",
+    "id": "e129",
     "source": "estimate-rule",
     "target": "estimator",
     "label": "asks"
    },
    {
-    "id": "e126",
+    "id": "e130",
     "source": "estimator",
     "target": "recorded-estimate",
     "label": "writes"
    },
    {
-    "id": "e127",
+    "id": "e131",
     "source": "estimate-rule",
     "target": "recorded-draw",
     "label": "decides by"
    },
    {
-    "id": "e128",
+    "id": "e132",
     "source": "recorded-draw",
     "target": "run-seed",
     "label": "comes from"
    },
    {
-    "id": "e129",
+    "id": "e133",
     "source": "recorded-estimate",
     "target": "causal-trace",
     "label": "recorded in"
    },
    {
-    "id": "e130",
+    "id": "e134",
     "source": "recorded-draw",
     "target": "causal-trace",
     "label": "recorded in"
    },
    {
-    "id": "e131",
+    "id": "e135",
     "source": "estimate-rule",
     "target": "knock-on-now",
     "label": "sets off"
    },
    {
-    "id": "e132",
+    "id": "e136",
     "source": "skill-roll",
     "target": "recorded-draw",
     "label": "also uses"
    },
    {
-    "id": "e133",
+    "id": "e137",
     "source": "estimate-rule",
     "target": "resident",
     "label": "never decides for"
@@ -1782,6 +1812,13 @@ window.MAPS = {
     "explain": "What one actor sees this round: the fields its senses and position allow, never the whole world."
    },
    {
+    "id": "offer",
+    "label": "Voluntary exchange offer",
+    "kind": "Concept",
+    "dashed": true,
+    "explain": "Q96 design contract (planned, not implemented): a server-sealed run-continuation record binding a proposer, respondent, exact terms, rule fingerprint and lifecycle state. The respondent owns acceptance or refusal; acceptance authorizes only those terms and settlement still requires a feasible atomic Engine transition. A message or reusable ruling is not consent."
+   },
+   {
     "id": "people-world",
     "label": "People world",
     "kind": "Concept",
@@ -1877,7 +1914,7 @@ window.MAPS = {
     "label": "Plain-words stopping point",
     "kind": "Concept",
     "dashed": true,
-    "explain": "Plan ai-judge J5 (planned, not implemented): a stopping point the person writes in plain words ('stop once the team has agreed a budget'), assessed by the judge after each round that changed something, as one more condition of the run stop setting."
+    "explain": "Plan ai-judge J5 (planned, not implemented): a stopping point the person writes in plain words ('stop once the team has agreed a budget'), assessed by the judge after every completed round; skipping requires proof that the complete dependency set is unchanged, unavailable for unrestricted natural-language conditions, as one more condition of the run stop setting."
    },
    {
     "id": "support",
@@ -2563,6 +2600,12 @@ window.MAPS = {
     "id": "Q95-ruling-rule",
     "source": "Q95",
     "target": "ruling-rule",
+    "label": "bears on"
+   },
+   {
+    "id": "Q96-offer",
+    "source": "Q96",
+    "target": "offer",
     "label": "bears on"
    },
    {

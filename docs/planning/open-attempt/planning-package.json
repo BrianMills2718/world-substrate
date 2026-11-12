@@ -10,18 +10,42 @@
       "path": "docs/planning/checks.txt",
       "results": [
         {
-          "name": "durable documents (arc42)",
-          "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
+          "name": "trace reads",
+          "command": "python3 scripts/check_trace_reads.py --root evidence",
+          "exit_status": 0,
+          "counts": {
+            "runs": 47,
+            "problems": 0
+          }
+        },
+        {
+          "name": "durable documents (legacy arc42 checker)",
+          "command": "python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
           "exit_status": 1,
           "counts": {
-            "findings": 16
+            "findings": 8,
+            "legacy_format_mismatches": 8,
+            "stale_rule_reviews": 0
           },
           "tracked_by": "Q77",
-          "note": "8 arc42 and goal-field findings in docs/architecture/arc42.md and 8 STALE system-model rules whose owner files changed after review; the same 16 on origin/main d89a446 (md_file_cap's durable column reports 16 for both refs), none added by this change."
+          "note": "Source-grounded review of four owner rules at fd877da reconciles profile/approval behavior and narrows budget/durability claims. Eight legacy exact-heading/label findings remain, exit 1. docs/model/trace.yaml explicitly retains unverified downstream aggregate spending and storage-failure durability limits; review freshness is not behavioral completion."
+        },
+        {
+          "name": "wiki and Markdown cap",
+          "command": "python3 /home/brian/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
+          "exit_status": 1,
+          "counts": {
+            "md_files": 183,
+            "cap": 183,
+            "unreachable": 0,
+            "durable_findings": 8
+          },
+          "tracked_by": "Q77",
+          "note": "Navigation/cap receipt: 183/183 and 0 unreachable. Subsequent durable-check rerun has 8 legacy findings, 0 stale reviews; combined command has not been rerun after trace review. Exit remains 1; no full compliance claim."
         },
         {
           "name": "project navigation",
-          "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .",
+          "command": "python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .",
           "exit_status": 0,
           "counts": {
             "findings": 0
@@ -29,50 +53,60 @@
         },
         {
           "name": "repository format",
-          "command": "python3 $HOME/code2/workspace/scripts/repo_format.py .",
+          "command": "python3 /home/brian/code2/workspace/scripts/repo_format.py .",
           "exit_status": 0,
           "counts": {
             "compliant": 1,
             "of": 1
-          }
-        },
-        {
-          "name": "trace reads",
-          "command": "python3 scripts/check_trace_reads.py --root evidence",
-          "exit_status": 0,
-          "counts": {
-            "runs": 38,
-            "problems": 0
-          }
-        },
-        {
-          "name": "project check (tests, system model, docs)",
-          "command": "/home/brian/.local/bin/uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with pytest-xdist --with gdm-concordia==2.4.0 python scripts/check_project.py",
-          "note": "counts from its line 'Neutral runtime tests: N passed, M skipped' (pytest-xdist)",
-          "exit_status": 0,
-          "counts": {
-            "tests_run": 891,
-            "failed": 0,
-            "skipped": 2
-          }
-        },
-        {
-          "name": "wiki and Markdown cap",
-          "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
-          "exit_status": 1,
-          "counts": {
-            "md_files": 162,
-            "cap": "exception",
-            "unreachable": 28,
-            "not_linked": 10,
-            "more_than_two_links_deep": 18,
-            "durable_findings": 16
           },
-          "tracked_by": "Q77",
-          "note": "Run with --ref HEAD: without it the script checks the default branch, not this change. All 28 unreachable documents are also unreachable on origin/main d89a446 (29 there; docs/planning/ai-judge/cold-review.md is reachable here): 13 older documents, the 5 J0 trace reads (now linked from docs/catalog.md, still more than two links deep), and 10 files under openspec/changes/archive/ from 2026-11-10 (md_file_cap does not read .doc-reachability-ignore)."
+          "note": "Rerun after Makefile documents the actual variable-expanded lockstep check command. Static format check only; not full Lockstep conformance."
+        },
+        {
+          "name": "semantic spectrum",
+          "command": "python /home/brian/code2/company-planning/plugins/company-planning/skills/planning-compliance/scripts/spectrum_check.py --repo . docs/planning/planning-package.json",
+          "exit_status": 0,
+          "counts": {
+            "passed": 9,
+            "failed": 0,
+            "project_terms": 80,
+            "planning_terms": 13
+          },
+          "note": "Rerun after adding theory-only voluntary exchange offer: 156 names, 96 questions, all 9 rules pass."
+        },
+        {
+          "name": "Lockstep source provenance",
+          "command": "uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep check sources",
+          "exit_status": 0,
+          "counts": {
+            "brian": 16,
+            "inferred": 83,
+            "other": 48,
+            "missing": 0
+          }
+        },
+        {
+          "name": "planning routes",
+          "command": "python /home/brian/code2/company-planning/plugins/company-planning/scripts/validate_planning_path.py docs/plans/<plan>.path-decision.json --json (each of ai_judge, declared_laws, estimate_rules, open_attempt)",
+          "exit_status": 0,
+          "counts": {
+            "records": 4,
+            "passed": 4,
+            "failed": 0
+          }
+        },
+        {
+          "name": "project make check",
+          "command": "make check",
+          "exit_status": 0,
+          "counts": {
+            "passed": 938,
+            "skipped": 2,
+            "subtests_passed": 225,
+            "specs_passed": 13
+          },
+          "note": "Coordinator executed on current normative-readiness working tree, 2026-11-12; pytest reported 61.71 seconds. Includes planning/source subset; does not claim the separate full Lockstep conformance target passes."
         }
-      ],
-      "basis": "Shared repository check snapshot from the repository package, not a new run or plan acceptance. Refresh all package check records together after the current normative audit."
+      ]
     },
     "open_questions": {
       "status": "present",
@@ -233,6 +267,86 @@
         "mechanisms",
         "test-run",
         "scene-replay"
+      ],
+      "stops": {
+        "searched": [
+          "docs/plans/open_attempt.md",
+          "docs/plans/declared_laws.md",
+          "docs/plans/ai_judge.md",
+          "Current normative-readiness conversation, 2026-11-12"
+        ],
+        "found": [
+          {
+            "said_on": "2026-11-12",
+            "words": "before we move to implementaiotn my instinct is that we should make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved",
+            "source": "Brian, current normative-readiness conversation, 2026-11-12; recorded here verbatim",
+            "applies_to": "New simulator feature implementation while normative review remains unfinished; documentation reconciliation is authorized.",
+            "status": "holds"
+          }
+        ]
+      },
+      "cost_basis": {
+        "steps": [
+          {
+            "step": "world-builder-attempt-interpreter (retained fixture workload only)",
+            "calls_per_run": 12,
+            "cost_per_run_usd": 0.0015984,
+            "basis": "measured",
+            "evidence": "evidence/open-attempt/s2-airfield/llm-calls.jsonl: sum recorded cost for task=world-builder-attempt-interpreter, 12 calls across this artifact. Historical workload only, not a forecast or general run bound."
+          },
+          {
+            "step": "world-builder-concordia-resident (retained fixture workload only)",
+            "calls_per_run": 36,
+            "cost_per_run_usd": 0.0067542,
+            "basis": "measured",
+            "evidence": "evidence/open-attempt/s2-airfield/llm-calls.jsonl: sum recorded cost for task=world-builder-concordia-resident, 36 calls across this artifact. Historical workload only, not a forecast or general run bound."
+          },
+          {
+            "step": "world-builder-world-kind (retained fixture workload only)",
+            "calls_per_run": 1,
+            "cost_per_run_usd": 5.93e-05,
+            "basis": "measured",
+            "evidence": "evidence/open-attempt/s2-airfield/llm-calls.jsonl: sum recorded cost for task=world-builder-world-kind, 1 calls across this artifact. Historical workload only, not a forecast or general run bound."
+          },
+          {
+            "step": "world-substrate-mechanic-authoring (retained fixture workload only)",
+            "calls_per_run": 6,
+            "cost_per_run_usd": 0.02542215,
+            "basis": "measured",
+            "evidence": "evidence/open-attempt/s2-airfield/llm-calls.jsonl: sum recorded cost for task=world-substrate-mechanic-authoring, 6 calls across this artifact. Historical workload only, not a forecast or general run bound."
+          },
+          {
+            "step": "world-substrate-run-readout (retained fixture workload only)",
+            "calls_per_run": 1,
+            "cost_per_run_usd": 0.0003068,
+            "basis": "measured",
+            "evidence": "evidence/open-attempt/s2-airfield/llm-calls.jsonl: sum recorded cost for task=world-substrate-run-readout, 1 calls across this artifact. Historical workload only, not a forecast or general run bound."
+          },
+          {
+            "step": "world-substrate-world-authoring (retained fixture workload only)",
+            "calls_per_run": 2,
+            "cost_per_run_usd": 0.00313795,
+            "basis": "measured",
+            "evidence": "evidence/open-attempt/s2-airfield/llm-calls.jsonl: sum recorded cost for task=world-substrate-world-authoring, 2 calls across this artifact. Historical workload only, not a forecast or general run bound."
+          }
+        ],
+        "cheapest_design": "Use recorded commands and deterministic replay without model calls for structural checks. Authoring creates checkable artifacts in the existing harness; actors and interpretation retain their current single-call boundaries. A new comparison needs a named decision that argument and retained evidence cannot settle. Fixture costs establish neither semantic-review benefit nor future workload cost."
+      },
+      "plain_baseline": {
+        "kind": "planned",
+        "answer_path": "Attempt interpretation: free expression to typed command.",
+        "when": "Only if a named decision survives argument and retained evidence review; no run authorized by this metadata repair.",
+        "cases": [
+          "Valid transfer rule omitting the other person's consent",
+          "Quantity-dependent purchase with a single literal price"
+        ]
+      },
+      "stage_effects": [
+        {
+          "stage": "Attempt interpretation before Engine.submit",
+          "gap": "Valid but semantically incorrect commands/rules can pass structural validation; added semantic-review value is not established by these fixtures.",
+          "status": "untested"
+        }
       ]
     },
     "review_page": {
@@ -245,6 +359,14 @@
       "path": "docs/planning/open-attempt/cold-review.md",
       "verdict": "pass",
       "reviewed_revision": "4ff4c274a7a97508fc004c24f2cce6bdae412136"
+    },
+    "investigation": {
+      "status": "present",
+      "path": "docs/planning/investigation.json"
+    },
+    "acceptance": {
+      "status": "present",
+      "path": "docs/planning/open-attempt/acceptance-criteria.json"
     }
   },
   "note": "Plan-specific package linked from its owning plan. Shares repository checks, question ledger, domain model and semantic spectrum with docs/planning/planning-package.json. Its acceptance, plan and cold-review remain scoped to this plan; old review verdicts do not certify current edits.",
@@ -287,5 +409,8 @@
       "tests/test_first_fill.py"
     ]
   },
-  "spectrum_basis": "Repository-scoped evidence shared by plan packages: the World Builder is an existing deployed product, while individual plan slices remain built/not-built as their acceptance records state. The domain taxonomy is a flat, typed classification by implementation authority (Substrate, Family, PerWorld, Reference, Theory), not a claim of a deeper inheritance hierarchy. No digital-twin or validated predictive-simulation rung is asserted."
+  "spectrum_basis": "Repository-scoped evidence shared by plan packages: the World Builder is an existing deployed product, while individual plan slices remain built/not-built as their acceptance records state. The domain taxonomy is a flat, typed classification by implementation authority (Substrate, Family, PerWorld, Reference, Theory), not a claim of a deeper inheritance hierarchy. No digital-twin or validated predictive-simulation rung is asserted.",
+  "full_method": true,
+  "route": "durable_solo",
+  "route_decision": "docs/plans/open_attempt.path-decision.json"
 }

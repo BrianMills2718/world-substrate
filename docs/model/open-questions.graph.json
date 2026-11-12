@@ -463,6 +463,13 @@
    "explain": "What one actor sees this round: the fields its senses and position allow, never the whole world."
   },
   {
+   "id": "offer",
+   "label": "Voluntary exchange offer",
+   "kind": "Concept",
+   "dashed": true,
+   "explain": "Q96 design contract (planned, not implemented): a server-sealed run-continuation record binding a proposer, respondent, exact terms, rule fingerprint and lifecycle state. The respondent owns acceptance or refusal; acceptance authorizes only those terms and settlement still requires a feasible atomic Engine transition. A message or reusable ruling is not consent."
+  },
+  {
    "id": "people-world",
    "label": "People world",
    "kind": "Concept",
@@ -558,7 +565,7 @@
    "label": "Plain-words stopping point",
    "kind": "Concept",
    "dashed": true,
-   "explain": "Plan ai-judge J5 (planned, not implemented): a stopping point the person writes in plain words ('stop once the team has agreed a budget'), assessed by the judge after each round that changed something, as one more condition of the run stop setting."
+   "explain": "Plan ai-judge J5 (planned, not implemented): a stopping point the person writes in plain words ('stop once the team has agreed a budget'), assessed by the judge after every completed round; skipping requires proof that the complete dependency set is unchanged, unavailable for unrestricted natural-language conditions, as one more condition of the run stop setting."
   },
   {
    "id": "support",
@@ -1244,6 +1251,12 @@
    "id": "Q95-ruling-rule",
    "source": "Q95",
    "target": "ruling-rule",
+   "label": "bears on"
+  },
+  {
+   "id": "Q96-offer",
+   "source": "Q96",
+   "target": "offer",
    "label": "bears on"
   },
   {

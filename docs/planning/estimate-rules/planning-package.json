@@ -1,424 +1,473 @@
 {
- "schema_version": "1.0",
- "record_type": "planning_package",
- "repository": "BrianMills2718/world-substrate",
- "subject_revision": "590530c76df58133e497f6bb26e6985300f2e8bd",
- "request": "Brian 2026-11-10 \"im not saying jsut the judge uses jev. i can see there being a way where we have certain types of rules/contstatins that progagte base don jev\", then \"i approve\" to planning it now in parallel with the AI judge build; the plan docs/plans/estimate_rules.md names this file on its 'Planning package:' line",
- "parts": {
-  "checks": {
-   "status": "present",
-   "path": "docs/planning/checks.txt",
-   "results": [
-    {
-     "name": "durable documents (arc42)",
-     "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
-     "exit_status": 1,
-     "counts": {
-      "findings": 16
-     },
-     "tracked_by": "Q77",
-     "note": "8 arc42 and goal-field findings in docs/architecture/arc42.md and 8 STALE system-model rules whose owner files changed after review; the same 16 on origin/main d89a446 (md_file_cap's durable column reports 16 for both refs), none added by this change."
+  "schema_version": "1.0",
+  "record_type": "planning_package",
+  "repository": "BrianMills2718/world-substrate",
+  "subject_revision": "590530c76df58133e497f6bb26e6985300f2e8bd",
+  "request": "Brian 2026-11-10 \"im not saying jsut the judge uses jev. i can see there being a way where we have certain types of rules/contstatins that progagte base don jev\", then \"i approve\" to planning it now in parallel with the AI judge build; the plan docs/plans/estimate_rules.md names this file on its 'Planning package:' line",
+  "parts": {
+    "checks": {
+      "status": "present",
+      "path": "docs/planning/checks.txt",
+      "results": [
+        {
+          "name": "trace reads",
+          "command": "python3 scripts/check_trace_reads.py --root evidence",
+          "exit_status": 0,
+          "counts": {
+            "runs": 47,
+            "problems": 0
+          }
+        },
+        {
+          "name": "durable documents (legacy arc42 checker)",
+          "command": "python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
+          "exit_status": 1,
+          "counts": {
+            "findings": 8,
+            "legacy_format_mismatches": 8,
+            "stale_rule_reviews": 0
+          },
+          "tracked_by": "Q77",
+          "note": "Source-grounded review of four owner rules at fd877da reconciles profile/approval behavior and narrows budget/durability claims. Eight legacy exact-heading/label findings remain, exit 1. docs/model/trace.yaml explicitly retains unverified downstream aggregate spending and storage-failure durability limits; review freshness is not behavioral completion."
+        },
+        {
+          "name": "wiki and Markdown cap",
+          "command": "python3 /home/brian/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
+          "exit_status": 1,
+          "counts": {
+            "md_files": 183,
+            "cap": 183,
+            "unreachable": 0,
+            "durable_findings": 8
+          },
+          "tracked_by": "Q77",
+          "note": "Navigation/cap receipt: 183/183 and 0 unreachable. Subsequent durable-check rerun has 8 legacy findings, 0 stale reviews; combined command has not been rerun after trace review. Exit remains 1; no full compliance claim."
+        },
+        {
+          "name": "project navigation",
+          "command": "python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .",
+          "exit_status": 0,
+          "counts": {
+            "findings": 0
+          }
+        },
+        {
+          "name": "repository format",
+          "command": "python3 /home/brian/code2/workspace/scripts/repo_format.py .",
+          "exit_status": 0,
+          "counts": {
+            "compliant": 1,
+            "of": 1
+          },
+          "note": "Rerun after Makefile documents the actual variable-expanded lockstep check command. Static format check only; not full Lockstep conformance."
+        },
+        {
+          "name": "semantic spectrum",
+          "command": "python /home/brian/code2/company-planning/plugins/company-planning/skills/planning-compliance/scripts/spectrum_check.py --repo . docs/planning/planning-package.json",
+          "exit_status": 0,
+          "counts": {
+            "passed": 9,
+            "failed": 0,
+            "project_terms": 80,
+            "planning_terms": 13
+          },
+          "note": "Rerun after adding theory-only voluntary exchange offer: 156 names, 96 questions, all 9 rules pass."
+        },
+        {
+          "name": "Lockstep source provenance",
+          "command": "uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep check sources",
+          "exit_status": 0,
+          "counts": {
+            "brian": 16,
+            "inferred": 83,
+            "other": 48,
+            "missing": 0
+          }
+        },
+        {
+          "name": "planning routes",
+          "command": "python /home/brian/code2/company-planning/plugins/company-planning/scripts/validate_planning_path.py docs/plans/<plan>.path-decision.json --json (each of ai_judge, declared_laws, estimate_rules, open_attempt)",
+          "exit_status": 0,
+          "counts": {
+            "records": 4,
+            "passed": 4,
+            "failed": 0
+          }
+        },
+        {
+          "name": "project make check",
+          "command": "make check",
+          "exit_status": 0,
+          "counts": {
+            "passed": 938,
+            "skipped": 2,
+            "subtests_passed": 225,
+            "specs_passed": 13
+          },
+          "note": "Coordinator executed on current normative-readiness working tree, 2026-11-12; pytest reported 61.71 seconds. Includes planning/source subset; does not claim the separate full Lockstep conformance target passes."
+        }
+      ]
     },
-    {
-     "name": "project navigation",
-     "command": "python3 $HOME/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .",
-     "exit_status": 0,
-     "counts": {
-      "findings": 0
-     }
+    "open_questions": {
+      "status": "present",
+      "path": "docs/planning/open-questions.json"
     },
-    {
-     "name": "repository format",
-     "command": "python3 $HOME/code2/workspace/scripts/repo_format.py .",
-     "exit_status": 0,
-     "counts": {
-      "compliant": 1,
-      "of": 1
-     }
+    "system_model": {
+      "status": "present",
+      "path": "docs/model/ODD.md",
+      "executes_typed_rules": true,
+      "basis": "src/world_substrate/engine.py:597",
+      "metamodel": {
+        "path": "docs/model/metamodel.graph.json",
+        "glossary": "docs/model/METAMODEL.md",
+        "maps_onto": {
+          "repository": "BrianMills2718/scientific-hypergraph",
+          "revision": "7b0638fe0aef41c772bb181996516f98be479597",
+          "mapping": "docs/model/metamodel-mapping.json"
+        }
+      }
     },
-    {
-     "name": "trace reads",
-     "command": "python3 scripts/check_trace_reads.py --root evidence",
-     "exit_status": 0,
-     "counts": {
-      "runs": 38,
-      "problems": 0
-     }
+    "domain_model": {
+      "status": "present",
+      "path": "docs/model/domain.graph.json",
+      "glossary": "docs/model/DOMAIN.md",
+      "implemented": {
+        "world": "src/world_substrate/model.py:424",
+        "engine": "src/world_substrate/engine.py:222",
+        "event": "src/world_substrate/engine.py:572",
+        "move": "src/world_substrate/action_authoring.py:50",
+        "process": "src/world_substrate/engine.py:1095",
+        "compiler": "src/world_substrate/action_authoring.py:440",
+        "policy": "src/world_substrate/policy.py:50",
+        "sense": "src/world_substrate/semantic.py:15",
+        "profile": "src/world_substrate/profile.py:249",
+        "write-scope": "src/world_substrate/engine.py:136",
+        "causal-trace": "src/world_substrate/engine.py:572",
+        "world-kind": "scripts/world_builder_service.py:121",
+        "builder": "scripts/world_builder_service.py",
+        "approval": "scripts/world_builder_service.py:426",
+        "fingerprint": "scripts/world_builder_service.py:389",
+        "information": "src/world_substrate/information.py:57",
+        "run-loop": "scripts/run_authored_world.py:700",
+        "contention": "scripts/run_authored_world.py:850",
+        "resident": "scripts/concordia_residents.py:44",
+        "task": "scripts/attempts.py:17",
+        "notice": "scripts/attempts.py:234",
+        "build": "scripts/world_builder_service.py:1635",
+        "rules-retry": "scripts/world_builder_service.py:110",
+        "test-run": "scripts/world_builder_service.py:1844",
+        "run-log": "scripts/world_builder_service.py:542",
+        "readout": "scripts/run_readout.py:113",
+        "scene-replay": "scripts/render_scene_replay.py:449",
+        "share": "scripts/world_builder_service.py:638",
+        "budget": "scripts/world_builder_service.py:57",
+        "people-world": "scripts/people_world.py:474",
+        "communicate": "spikes/any-scenario-2026-10/compile_spec.py:56",
+        "moment": "spikes/any-scenario-2026-10/compile_spec.py:48",
+        "work-cycle": "spikes/any-scenario-2026-10/compile_spec.py:517",
+        "group-decision": "spikes/any-scenario-2026-10/compile_spec.py:86",
+        "concern": "spikes/any-scenario-2026-10/compile_spec.py:70",
+        "support": "spikes/any-scenario-2026-10/compile_spec.py:66",
+        "remedy": "spikes/any-scenario-2026-10/compile_spec.py:332",
+        "agenda": "spikes/any-scenario-2026-10/compile_spec.py:101",
+        "rollout": "spikes/any-scenario-2026-10/compile_spec.py:436",
+        "review": "spikes/any-scenario-2026-10/compile_spec.py:442",
+        "person": "spikes/any-scenario-2026-10/scenario_spec.py:41",
+        "gen-rules": "scripts/people_world.py:251",
+        "waltzman-ref": "reference_worlds/waltzman/components.py:11",
+        "affordance": "src/world_substrate/engine.py:395",
+        "check": "src/world_substrate/rules.py:48",
+        "attempt": "src/world_substrate/attempt.py:221",
+        "attempt-reading": "src/world_substrate/attempt.py:92",
+        "unmatched-attempt": "src/world_substrate/attempt.py:34",
+        "observation": "src/world_substrate/engine.py:278",
+        "place-way": "scripts/generate_world_bundle.py:96",
+        "projection": "src/world_substrate/projection.py:44",
+        "causal-parent": "src/world_substrate/rules.py:383",
+        "exchange": "src/world_substrate/exchange.py:68",
+        "mechanisms": "src/world_substrate/mechanisms/__init__.py:3",
+        "kitchen": "reference_worlds/kitchen/mechanics.py",
+        "mechanic": "src/world_substrate/action_authoring.py:515",
+        "entity-component": "src/world_substrate/model.py:247",
+        "knock-on-now": "src/world_substrate/engine.py:964",
+        "world-law": "scripts/scaffold_world.py:45",
+        "law-check": "src/world_substrate/laws.py:36",
+        "resource": "scripts/scaffold_world.py:45",
+        "world-design": "scripts/generate_world_bundle.py:53",
+        "rules-review": "scripts/review_rules.py:75",
+        "run-stop": "scripts/run_stop.py:65",
+        "consequence-report": "scripts/consequence_report.py:67",
+        "judge-ruling": "scripts/judge.py:288",
+        "ruling-rule": "scripts/rulings.py:91",
+        "midrun-setting": "scripts/rulings.py:47"
+      },
+      "spectrum": "docs/model/semantic-spectrum.json"
     },
-    {
-     "name": "project check (tests, system model, docs)",
-     "command": "/home/brian/.local/bin/uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with pytest-xdist --with gdm-concordia==2.4.0 python scripts/check_project.py",
-     "note": "counts from its line 'Neutral runtime tests: N passed, M skipped' (pytest-xdist)",
-     "exit_status": 0,
-     "counts": {
-      "tests_run": 891,
-      "failed": 0,
-      "skipped": 2
-     }
+    "diagrams": {
+      "status": "present",
+      "items": [
+        {
+          "path": "docs/model/ODD.md",
+          "question": "Where does the planned estimator sit among World Substrate's containers, and what does it talk to? (ODD section 3 container view, drawn on this page with the estimator added)"
+        },
+        {
+          "path": "docs/model/domain.graph.json",
+          "question": "Which ideas does the plan rely on, which four are new and only in documents, and how do they relate to the substrate code?"
+        },
+        {
+          "path": "docs/model/open-questions.graph.json",
+          "question": "Which concepts carry this plan's open questions (Q63, Q82-Q86, Q88 and the shared Q33), and whose call is each? (The map shows open questions only; resolved Q87 and Q89 are in the questions table.)"
+        }
+      ]
     },
-    {
-     "name": "wiki and Markdown cap",
-     "command": "python3 $HOME/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
-     "exit_status": 1,
-     "counts": {
-      "md_files": 162,
-      "cap": "exception",
-      "unreachable": 28,
-      "not_linked": 10,
-      "more_than_two_links_deep": 18,
-      "durable_findings": 16
-     },
-     "tracked_by": "Q77",
-     "note": "Run with --ref HEAD: without it the script checks the default branch, not this change. All 28 unreachable documents are also unreachable on origin/main d89a446 (29 there; docs/planning/ai-judge/cold-review.md is reachable here): 13 older documents, the 5 J0 trace reads (now linked from docs/catalog.md, still more than two links deep), and 10 files under openspec/changes/archive/ from 2026-11-10 (md_file_cap does not read .doc-reachability-ignore)."
+    "plan": {
+      "status": "present",
+      "path": "docs/plans/estimate_rules.md",
+      "relies_on": [
+        "estimate-rule",
+        "estimator",
+        "recorded-estimate",
+        "recorded-draw",
+        "skill-roll",
+        "run-seed",
+        "process",
+        "move",
+        "check",
+        "knock-on-now",
+        "causal-trace",
+        "event",
+        "engine",
+        "compiler",
+        "write-scope",
+        "profile",
+        "resident",
+        "information",
+        "run-log",
+        "share",
+        "gen-rules",
+        "build",
+        "stopping-point",
+        "fingerprint",
+        "attempt",
+        "observation",
+        "rules-review",
+        "test-run",
+        "run-loop",
+        "budget",
+        "scene-replay"
+      ],
+      "cost_basis": {
+        "steps": [
+          {
+            "step": "Jev blade estimates only: illustrative 30-day component, excluding crossings and retries",
+            "cost_per_run_usd": 0.00084,
+            "calls_per_run": 30,
+            "basis": "guess",
+            "evidence": "llm-cost estimate --task feedback-collector.triage --model jev (2026-11-10): 14,222 calls, $0.3963 in all, $0.0000279 per call, median 656 input and 78 output tokens; the probe evidence/jev/maintenance-estimator-probe-v0.json measured $0.000027 per call (5 calls, trace world-substrate/jev/probe-eb6d836e64). The model registry has no Jev token price; cost is provider-reported. Illustrative blade-only component: 30 calls x historical $0.0000279/call = $0.000837 (rounded $0.00084), before retries. This is not a measured sawmill run or total estimate workload. Total estimate requests are blade cache misses + crossing/A7 cache misses + retries; count the chosen fixture before execution.",
+            "estimate_method": "Computed from a historical measured per-call average; transfer to this new workload is a guess. The native computed-cost schema supports token pricing only, and Jev bills provider-reported cost."
+          },
+          {
+            "step": "Concordia residents (existing call, E1 live run: A1 needs Mara's own move and reason)",
+            "cost_per_run_usd": 0.045,
+            "calls_per_run": 240,
+            "basis": "computed",
+            "computation": {
+              "calls": 240,
+              "input_tokens_per_call": 1256,
+              "input_usd_per_mtok": 0.1,
+              "cached_share": 0,
+              "cached_usd_per_mtok": 0.1,
+              "output_tokens_per_call": 124,
+              "output_usd_per_mtok": 0.5
+            },
+            "evidence": "Calls: two people over 30 days at 4 resident calls per person per day = 240. Tokens: mean per call in evidence/open-attempt/s2-airfield/llm-calls.jsonl (saved airfield run: one person, 9 rounds, 36 resident and 12 interpreter calls, 1 readout call, all openrouter/openai/gpt-6-luna, 0 cached tokens; recorded per-call costs $0.000188, $0.000133 and $0.000307 match the arithmetic). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing. With Waltzman-sized prompts (evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl: residents 2,761 input and 223 output tokens, $0.000388 per call; interpreter 3,231 and 242, $0.000444) the residents cost $0.093 and the interpreter $0.035, before additional crossing estimates, retries and workload variation. The E1 cap is $0.13; it limits spending and does not guarantee completion (docs/plans/estimate_rules.md, LLM call boundary and cost)."
+          },
+          {
+            "step": "attempt interpreter (existing call, E1 live run)",
+            "cost_per_run_usd": 0.0107,
+            "calls_per_run": 80,
+            "basis": "computed",
+            "computation": {
+              "calls": 80,
+              "input_tokens_per_call": 993,
+              "input_usd_per_mtok": 0.1,
+              "cached_share": 0,
+              "cached_usd_per_mtok": 0.1,
+              "output_tokens_per_call": 68,
+              "output_usd_per_mtok": 0.5
+            },
+            "evidence": "Calls: two people over 30 days at 1.33 interpreter calls per person per day (12 per 9 person-rounds) = 80. Tokens: mean per call in evidence/open-attempt/s2-airfield/llm-calls.jsonl (saved airfield run: one person, 9 rounds, 36 resident and 12 interpreter calls, 1 readout call, all openrouter/openai/gpt-6-luna, 0 cached tokens; recorded per-call costs $0.000188, $0.000133 and $0.000307 match the arithmetic). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing. Residents, interpreter, readout and Jev together: about $0.057 per run, an illustrative subtotal about $0.06 for two people over 30 days before extra crossing estimates, retries and workload variation."
+          },
+          {
+            "step": "run readout (existing call, E1 live run, once)",
+            "cost_per_run_usd": 0.0003,
+            "calls_per_run": 1,
+            "basis": "computed",
+            "computation": {
+              "calls": 1,
+              "input_tokens_per_call": 1523,
+              "input_usd_per_mtok": 0.1,
+              "cached_share": 0,
+              "cached_usd_per_mtok": 0.1,
+              "output_tokens_per_call": 309,
+              "output_usd_per_mtok": 0.5
+            },
+            "evidence": "Tokens: the readout call in evidence/open-attempt/s2-airfield/llm-calls.jsonl (saved airfield run: one person, 9 rounds, 36 resident and 12 interpreter calls, 1 readout call, all openrouter/openai/gpt-6-luna, 0 cached tokens; recorded per-call costs $0.000188, $0.000133 and $0.000307 match the arithmetic). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing."
+          },
+          {
+            "step": "plain-version comparison, gpt-6-luna variant (E1, once)",
+            "cost_per_run_usd": 0.0013,
+            "calls_per_run": 10,
+            "basis": "computed",
+            "computation": {
+              "calls": 10,
+              "input_tokens_per_call": 800,
+              "input_usd_per_mtok": 0.1,
+              "cached_share": 0,
+              "cached_usd_per_mtok": 0.1,
+              "output_tokens_per_call": 100,
+              "output_usd_per_mtok": 0.5
+            },
+            "evidence": "Tokens: about 800 input (the question, the two declared fields and instructions; guess from the Jev probe's 645-token prompt) and 100 output. Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing (openrouter, checked 2026-11-05). 10 cases (docs/plans/estimate_rules.md, Plain baseline)."
+          },
+          {
+            "step": "plain-version comparison, Jev variants (E1, once: declared reads and whole world)",
+            "cost_per_run_usd": 0.0031,
+            "calls_per_run": 20,
+            "basis": "guess",
+            "evidence": "10 declared-reads calls at the measured $0.0000279 = $0.00028; 10 whole-world calls guessed at up to 10 times the tokens, so up to $0.000279 each = $0.0028; together up to $0.0031 (docs/plans/estimate_rules.md, LLM call boundary and cost). Replaced by the measured llm-cost total after E1."
+          },
+          {
+            "step": "plain-version comparison, declared-bands variant (d) (E1, once: the rules writer writes literal chances by days since service from the sawmill's description; no Jev call)",
+            "cost_per_run_usd": 0.0021,
+            "calls_per_run": 1,
+            "basis": "measured",
+            "evidence": "llm-cost estimate --task world-substrate-mechanic-authoring (2026-11-10): 68 calls, median $0.0021 per call. The comparison in all is up to $0.0065 (docs/plans/estimate_rules.md, LLM call boundary and cost)."
+          },
+          {
+            "step": "rules writer (existing call, E2: also writes estimate rules)",
+            "cost_per_run_usd": 0.0021,
+            "calls_per_run": 1,
+            "basis": "measured",
+            "evidence": "llm-cost estimate --task world-substrate-mechanic-authoring (2026-11-10): 68 calls, median $0.0021 per call, median 11,551 input and 1,574 output tokens, 0% cached. Estimate rules add a few lines to its output; no new call."
+          }
+        ],
+        "cheapest_design": "Cheapest design that still does the job. Two designs cost nothing per run. (1) A chance formula written into the rule by the rules writer (p = 0.03 x days since service): the rule language has no arithmetic between two values (docs/plans/ai_judge.md Decided 3), so it would need a language change of its own. (2) Declared bands: the rule's ordinary checks choose among literal chances the rules writer writes (sawmill: under 5 days since service 0.05, 5 to 9 days 0.2, 10 or more 0.4), drawn against the same run seed; no arithmetic, no estimator, no Jev call, and a literal chance is the path the rule's {use: value} fallback already takes, so E1 gets bands with no new code. Against bands: every number is the rules writer's guess fixed at build time, the facts count only at the band edges, the numbers multiply with the facts (3 facts in 3 bands each is 27 chances to write and check), and Brian asked for rules that propagate based on Jev. That is an argument about fit, not proof, so E1 measures it as variant (d) of the plain-version comparison (one rules-writer call, measured median $0.0021): agreement within 0.1 on at least 8 of 10 cases is diagnostic only. E2 may prefer bands only after applicability, dependency, threshold and intervention analysis supports that approximation (Q88); agreement does not establish interchangeability or correctness. The illustrative blade-only estimate component costs about $0.00084 for 30 calls using the historical per-call average, excluding crossings and retries; this is not a whole-run bound. The per-run cache keys resolved model, estimator/prompt version, question, type/options and read values, reads only the declared fields, and needs no language arithmetic. Chosen: Jev with the per-run cache, with declared bands as the cheaper rival measured in E1 (inferred by agent, 2026-11-10). Historical provider latency is a candidate constraint, not a demonstrated bottleneck for this workload (measured, ~/projects/data/llm_observability.db, 2026-11-10): successful Jev calls averaged 0.43 s (99th percentile 2.8 s), but 6.6% of calls failed, provider errors after 0.89 s and network errors after 20.2 s on average. With a 5 s timeout per try and one retry (plan Decided 7), an estimate takes about 0.933 x 0.43 + 0.037 x (0.89 + 0.43) + 0.029 x (5 + 0.43) = 0.61 s on average (computed) and at most 10 s before its fallback, about 18 s for 30 sequential blade-estimate calls, excluding crossing calls and other work; without the timeout about 1.05 s, about 32 s for those 30 calls (Q85). For the judge's stopping point, a Jev chance question would cost about 1/50 of the judge's $0.0016 per check; that option is recorded for the judge plan's J5 (Q86), not taken here."
+      },
+      "plain_baseline": {
+        "kind": "planned",
+        "answer_path": "Jev's estimate of a chance (later a pick or an amount) from the world's facts, used by an estimate rule",
+        "when": "E1, before the live sawmill run: the same model (Jev) given the whole world state instead of the declared fields, side by side with Jev given the declared fields, gpt-6-luna given the declared fields, and (d) declared bands the rules writer writes from the sawmill's description with no Jev call, on 10 cases; no Jev call is made for planning (Brian's brief, 2026-11-10)",
+        "cases": [
+          "blade, 0 days since service, load 14",
+          "blade, 3 days since service, load 14",
+          "blade, 6 days since service, load 14",
+          "blade, 9 days since service, load 14",
+          "blade, 12 days since service, load 14",
+          "blade, 0 days since service after a failure, load 0",
+          "blade, 3 days since service, load 4",
+          "blade, 6 days since service, load 4",
+          "blade, 9 days since service, load 4",
+          "blade, 12 days since service, load 4"
+        ]
+      },
+      "stage_effects": [
+        {
+          "stage": "declared reads: Jev shown only the fields the rule declares, not the whole world (E1)",
+          "gap": "the plain version (whole world) could let unrelated facts or a resident's words move the chance, and makes the cache key the whole world, so unrelated world changes invalidate reuse; whether declared reads change Jev's answer is untested until E1's comparison (Q83)",
+          "status": "untested"
+        },
+        {
+          "stage": "per-run cache: resolved model, estimator/prompt version, question/type/options and read values (E1)",
+          "gap": "not an answer-quality stage: it removes repeat calls with identical inputs; its effect on cost and time is measured in E1",
+          "status": "untested"
+        },
+        {
+          "stage": "draw against the estimate instead of using the estimate as the outcome (E1)",
+          "gap": "used directly, a probability becomes a truth claim (the retired Jev note's anti-pattern, 'P(fire)=0.81 -> fire=true'), so a world fails every day above a threshold and never below it; shown by argument, untested on a run until E1",
+          "status": "untested"
+        }
+      ],
+      "stops": {
+        "searched": [
+          "brian-positions (~/code/inquiry-graph/tools/brian_positions.py \"jev estimate probability rule\" --top 10, 2026-11-10): Jev use cases and 'really heavy use of jev throguhout aes' (2026-09-20), no stop",
+          "git log -i --grep=jev on origin/main 43663e9: 69cc0b6 (exploration note), 95060c7, 9cefeee, 0dcbcd6 (note retired into Q63); no stop",
+          "docs/decisions/005-native-waltzman-delivery.md:86 (Jev off the critical path for that release): a release-scope consequence, not a stop on estimate rules",
+          "docs/plans/ai_judge.md and docs/plans/open_attempt.md Decisions"
+        ],
+        "found": [
+          {
+            "said_on": "2026-11-12",
+            "words": "before we move to implementaiotn my instinct is that we should make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved",
+            "source": "Brian, current normative-readiness conversation, 2026-11-12; recorded here verbatim",
+            "applies_to": "New simulator feature implementation while normative review remains unfinished; documentation reconciliation is authorized.",
+            "status": "holds"
+          }
+        ]
+      }
+    },
+    "acceptance": {
+      "status": "present",
+      "path": "docs/planning/estimate-rules/acceptance-criteria.json"
+    },
+    "review_page": {
+      "status": "present",
+      "path": "proposals/estimate-rules/review-page/index.html",
+      "url": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/estimate-rules/review-page/"
+    },
+    "cold_review": {
+      "status": "present",
+      "path": "docs/planning/estimate-rules/cold-review.md",
+      "verdict": "pass",
+      "reviewed_revision": "8fff8596d96fecabecfe86c69ff1e057966054eb"
+    },
+    "investigation": {
+      "status": "present",
+      "path": "docs/planning/investigation.json"
     }
-   ],
-   "basis": "Shared repository check snapshot from the repository package, not a new run or plan acceptance. Refresh all package check records together after the current normative audit."
   },
-  "open_questions": {
-   "status": "present",
-   "path": "docs/planning/open-questions.json"
+  "note": "Plan-specific package linked from its owning plan. Shares repository checks, question ledger, domain model and semantic spectrum with docs/planning/planning-package.json. Its acceptance, plan and cold-review remain scoped to this plan; old review verdicts do not certify current edits.",
+  "initiative": {
+    "id": "world-substrate",
+    "role": "home"
   },
-  "system_model": {
-   "status": "present",
-   "path": "docs/model/ODD.md",
-   "executes_typed_rules": true,
-   "basis": "src/world_substrate/engine.py:597",
-   "metamodel": {
-    "path": "docs/model/metamodel.graph.json",
-    "glossary": "docs/model/METAMODEL.md",
-    "maps_onto": {
-     "repository": "BrianMills2718/scientific-hypergraph",
-     "revision": "7b0638fe0aef41c772bb181996516f98be479597",
-     "mapping": "docs/model/metamodel-mapping.json"
-    }
-   }
-  },
-  "domain_model": {
-   "status": "present",
-   "path": "docs/model/domain.graph.json",
-   "glossary": "docs/model/DOMAIN.md",
-   "implemented": {
-    "world": "src/world_substrate/model.py:424",
-    "engine": "src/world_substrate/engine.py:222",
-    "event": "src/world_substrate/engine.py:572",
-    "move": "src/world_substrate/action_authoring.py:50",
-    "process": "src/world_substrate/engine.py:1095",
-    "compiler": "src/world_substrate/action_authoring.py:440",
-    "policy": "src/world_substrate/policy.py:50",
-    "sense": "src/world_substrate/semantic.py:15",
-    "profile": "src/world_substrate/profile.py:249",
-    "write-scope": "src/world_substrate/engine.py:136",
-    "causal-trace": "src/world_substrate/engine.py:572",
-    "world-kind": "scripts/world_builder_service.py:121",
-    "builder": "scripts/world_builder_service.py",
-    "approval": "scripts/world_builder_service.py:426",
-    "fingerprint": "scripts/world_builder_service.py:389",
-    "information": "src/world_substrate/information.py:57",
-    "run-loop": "scripts/run_authored_world.py:700",
-    "contention": "scripts/run_authored_world.py:850",
-    "resident": "scripts/concordia_residents.py:44",
-    "task": "scripts/attempts.py:17",
-    "notice": "scripts/attempts.py:234",
-    "build": "scripts/world_builder_service.py:1635",
-    "rules-retry": "scripts/world_builder_service.py:110",
-    "test-run": "scripts/world_builder_service.py:1844",
-    "run-log": "scripts/world_builder_service.py:542",
-    "readout": "scripts/run_readout.py:113",
-    "scene-replay": "scripts/render_scene_replay.py:449",
-    "share": "scripts/world_builder_service.py:638",
-    "budget": "scripts/world_builder_service.py:57",
-    "people-world": "scripts/people_world.py:474",
-    "communicate": "spikes/any-scenario-2026-10/compile_spec.py:56",
-    "moment": "spikes/any-scenario-2026-10/compile_spec.py:48",
-    "work-cycle": "spikes/any-scenario-2026-10/compile_spec.py:517",
-    "group-decision": "spikes/any-scenario-2026-10/compile_spec.py:86",
-    "concern": "spikes/any-scenario-2026-10/compile_spec.py:70",
-    "support": "spikes/any-scenario-2026-10/compile_spec.py:66",
-    "remedy": "spikes/any-scenario-2026-10/compile_spec.py:332",
-    "agenda": "spikes/any-scenario-2026-10/compile_spec.py:101",
-    "rollout": "spikes/any-scenario-2026-10/compile_spec.py:436",
-    "review": "spikes/any-scenario-2026-10/compile_spec.py:442",
-    "person": "spikes/any-scenario-2026-10/scenario_spec.py:41",
-    "gen-rules": "scripts/people_world.py:251",
-    "waltzman-ref": "reference_worlds/waltzman/components.py:11",
-    "affordance": "src/world_substrate/engine.py:395",
-    "check": "src/world_substrate/rules.py:48",
-    "attempt": "src/world_substrate/attempt.py:221",
-    "attempt-reading": "src/world_substrate/attempt.py:92",
-    "unmatched-attempt": "src/world_substrate/attempt.py:34",
-    "observation": "src/world_substrate/engine.py:278",
-    "place-way": "scripts/generate_world_bundle.py:96",
-    "projection": "src/world_substrate/projection.py:44",
-    "causal-parent": "src/world_substrate/rules.py:383",
-    "exchange": "src/world_substrate/exchange.py:68",
-    "mechanisms": "src/world_substrate/mechanisms/__init__.py:3",
-    "kitchen": "reference_worlds/kitchen/mechanics.py",
-    "mechanic": "src/world_substrate/action_authoring.py:515",
-    "entity-component": "src/world_substrate/model.py:247",
-    "knock-on-now": "src/world_substrate/engine.py:964",
-    "world-law": "scripts/scaffold_world.py:45",
-    "law-check": "src/world_substrate/laws.py:36",
-    "resource": "scripts/scaffold_world.py:45",
-    "world-design": "scripts/generate_world_bundle.py:53",
-    "rules-review": "scripts/review_rules.py:75",
-    "run-stop": "scripts/run_stop.py:65",
-    "consequence-report": "scripts/consequence_report.py:67",
-    "judge-ruling": "scripts/judge.py:288",
-    "ruling-rule": "scripts/rulings.py:91",
-    "midrun-setting": "scripts/rulings.py:47"
-   },
-   "spectrum": "docs/model/semantic-spectrum.json"
-  },
-  "diagrams": {
-   "status": "present",
-   "items": [
-    {
-     "path": "docs/model/ODD.md",
-     "question": "Where does the planned estimator sit among World Substrate's containers, and what does it talk to? (ODD section 3 container view, drawn on this page with the estimator added)"
-    },
-    {
-     "path": "docs/model/domain.graph.json",
-     "question": "Which ideas does the plan rely on, which four are new and only in documents, and how do they relate to the substrate code?"
-    },
-    {
-     "path": "docs/model/open-questions.graph.json",
-     "question": "Which concepts carry this plan's open questions (Q63, Q82-Q86, Q88 and the shared Q33), and whose call is each? (The map shows open questions only; resolved Q87 and Q89 are in the questions table.)"
-    }
-   ]
-  },
-  "plan": {
-   "status": "present",
-   "path": "docs/plans/estimate_rules.md",
-   "relies_on": [
-    "estimate-rule",
-    "estimator",
-    "recorded-estimate",
-    "recorded-draw",
-    "skill-roll",
-    "run-seed",
-    "process",
-    "move",
-    "check",
-    "knock-on-now",
-    "causal-trace",
-    "event",
-    "engine",
-    "compiler",
-    "write-scope",
-    "profile",
-    "resident",
-    "information",
-    "run-log",
-    "share",
-    "gen-rules",
-    "build",
-    "stopping-point",
-    "fingerprint",
-    "attempt",
-    "observation",
-    "rules-review",
-    "test-run",
-    "run-loop",
-    "budget",
-    "scene-replay"
-   ],
-   "cost_basis": {
-    "steps": [
-     {
-      "step": "Jev blade estimates only: illustrative 30-day component, excluding crossings and retries",
-      "cost_per_run_usd": 0.00084,
-      "calls_per_run": 30,
-      "basis": "guess",
-      "evidence": "llm-cost estimate --task feedback-collector.triage --model jev (2026-11-10): 14,222 calls, $0.3963 in all, $0.0000279 per call, median 656 input and 78 output tokens; the probe evidence/jev/maintenance-estimator-probe-v0.json measured $0.000027 per call (5 calls, trace world-substrate/jev/probe-eb6d836e64). The model registry has no Jev token price; cost is provider-reported. Illustrative blade-only component: 30 calls x historical $0.0000279/call = $0.000837 (rounded $0.00084), before retries. This is not a measured sawmill run or total estimate workload. Total estimate requests are blade cache misses + crossing/A7 cache misses + retries; count the chosen fixture before execution.",
-      "estimate_method": "Computed from a historical measured per-call average; transfer to this new workload is a guess. The native computed-cost schema supports token pricing only, and Jev bills provider-reported cost."
-     },
-     {
-      "step": "Concordia residents (existing call, E1 live run: A1 needs Mara's own move and reason)",
-      "cost_per_run_usd": 0.045,
-      "calls_per_run": 240,
-      "basis": "computed",
-      "computation": {
-       "calls": 240,
-       "input_tokens_per_call": 1256,
-       "input_usd_per_mtok": 0.1,
-       "cached_share": 0,
-       "cached_usd_per_mtok": 0.1,
-       "output_tokens_per_call": 124,
-       "output_usd_per_mtok": 0.5
-      },
-      "evidence": "Calls: two people over 30 days at 4 resident calls per person per day = 240. Tokens: mean per call in evidence/open-attempt/s2-airfield/llm-calls.jsonl (saved airfield run: one person, 9 rounds, 36 resident and 12 interpreter calls, 1 readout call, all openrouter/openai/gpt-6-luna, 0 cached tokens; recorded per-call costs $0.000188, $0.000133 and $0.000307 match the arithmetic). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing. With Waltzman-sized prompts (evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl: residents 2,761 input and 223 output tokens, $0.000388 per call; interpreter 3,231 and 242, $0.000444) the residents cost $0.093 and the interpreter $0.035, before additional crossing estimates, retries and workload variation. The E1 cap is $0.13; it limits spending and does not guarantee completion (docs/plans/estimate_rules.md, LLM call boundary and cost)."
-     },
-     {
-      "step": "attempt interpreter (existing call, E1 live run)",
-      "cost_per_run_usd": 0.0107,
-      "calls_per_run": 80,
-      "basis": "computed",
-      "computation": {
-       "calls": 80,
-       "input_tokens_per_call": 993,
-       "input_usd_per_mtok": 0.1,
-       "cached_share": 0,
-       "cached_usd_per_mtok": 0.1,
-       "output_tokens_per_call": 68,
-       "output_usd_per_mtok": 0.5
-      },
-      "evidence": "Calls: two people over 30 days at 1.33 interpreter calls per person per day (12 per 9 person-rounds) = 80. Tokens: mean per call in evidence/open-attempt/s2-airfield/llm-calls.jsonl (saved airfield run: one person, 9 rounds, 36 resident and 12 interpreter calls, 1 readout call, all openrouter/openai/gpt-6-luna, 0 cached tokens; recorded per-call costs $0.000188, $0.000133 and $0.000307 match the arithmetic). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing. Residents, interpreter, readout and Jev together: about $0.057 per run, an illustrative subtotal about $0.06 for two people over 30 days before extra crossing estimates, retries and workload variation."
-     },
-     {
-      "step": "run readout (existing call, E1 live run, once)",
-      "cost_per_run_usd": 0.0003,
-      "calls_per_run": 1,
-      "basis": "computed",
-      "computation": {
-       "calls": 1,
-       "input_tokens_per_call": 1523,
-       "input_usd_per_mtok": 0.1,
-       "cached_share": 0,
-       "cached_usd_per_mtok": 0.1,
-       "output_tokens_per_call": 309,
-       "output_usd_per_mtok": 0.5
-      },
-      "evidence": "Tokens: the readout call in evidence/open-attempt/s2-airfield/llm-calls.jsonl (saved airfield run: one person, 9 rounds, 36 resident and 12 interpreter calls, 1 readout call, all openrouter/openai/gpt-6-luna, 0 cached tokens; recorded per-call costs $0.000188, $0.000133 and $0.000307 match the arithmetic). Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing."
-     },
-     {
-      "step": "plain-version comparison, gpt-6-luna variant (E1, once)",
-      "cost_per_run_usd": 0.0013,
-      "calls_per_run": 10,
-      "basis": "computed",
-      "computation": {
-       "calls": 10,
-       "input_tokens_per_call": 800,
-       "input_usd_per_mtok": 0.1,
-       "cached_share": 0,
-       "cached_usd_per_mtok": 0.1,
-       "output_tokens_per_call": 100,
-       "output_usd_per_mtok": 0.5
-      },
-      "evidence": "Tokens: about 800 input (the question, the two declared fields and instructions; guess from the Jev probe's 645-token prompt) and 100 output. Price: openrouter/openai/gpt-6-luna $0.10/M input, $0.50/M output, ~/code/llm_client/llm_client/data/default_model_registry.json forecast_pricing (openrouter, checked 2026-11-05). 10 cases (docs/plans/estimate_rules.md, Plain baseline)."
-     },
-     {
-      "step": "plain-version comparison, Jev variants (E1, once: declared reads and whole world)",
-      "cost_per_run_usd": 0.0031,
-      "calls_per_run": 20,
-      "basis": "guess",
-      "evidence": "10 declared-reads calls at the measured $0.0000279 = $0.00028; 10 whole-world calls guessed at up to 10 times the tokens, so up to $0.000279 each = $0.0028; together up to $0.0031 (docs/plans/estimate_rules.md, LLM call boundary and cost). Replaced by the measured llm-cost total after E1."
-     },
-     {
-      "step": "plain-version comparison, declared-bands variant (d) (E1, once: the rules writer writes literal chances by days since service from the sawmill's description; no Jev call)",
-      "cost_per_run_usd": 0.0021,
-      "calls_per_run": 1,
-      "basis": "measured",
-      "evidence": "llm-cost estimate --task world-substrate-mechanic-authoring (2026-11-10): 68 calls, median $0.0021 per call. The comparison in all is up to $0.0065 (docs/plans/estimate_rules.md, LLM call boundary and cost)."
-     },
-     {
-      "step": "rules writer (existing call, E2: also writes estimate rules)",
-      "cost_per_run_usd": 0.0021,
-      "calls_per_run": 1,
-      "basis": "measured",
-      "evidence": "llm-cost estimate --task world-substrate-mechanic-authoring (2026-11-10): 68 calls, median $0.0021 per call, median 11,551 input and 1,574 output tokens, 0% cached. Estimate rules add a few lines to its output; no new call."
-     }
+  "runs_in_production": true,
+  "spectrum_rungs": {
+    "name": "README.md:1",
+    "controlled_vocabulary": "docs/model/semantic-spectrum.json",
+    "glossary": [
+      "docs/model/DOMAIN.md",
+      "docs/model/modeling-choices.md"
     ],
-    "cheapest_design": "Cheapest design that still does the job. Two designs cost nothing per run. (1) A chance formula written into the rule by the rules writer (p = 0.03 x days since service): the rule language has no arithmetic between two values (docs/plans/ai_judge.md Decided 3), so it would need a language change of its own. (2) Declared bands: the rule's ordinary checks choose among literal chances the rules writer writes (sawmill: under 5 days since service 0.05, 5 to 9 days 0.2, 10 or more 0.4), drawn against the same run seed; no arithmetic, no estimator, no Jev call, and a literal chance is the path the rule's {use: value} fallback already takes, so E1 gets bands with no new code. Against bands: every number is the rules writer's guess fixed at build time, the facts count only at the band edges, the numbers multiply with the facts (3 facts in 3 bands each is 27 chances to write and check), and Brian asked for rules that propagate based on Jev. That is an argument about fit, not proof, so E1 measures it as variant (d) of the plain-version comparison (one rules-writer call, measured median $0.0021): agreement within 0.1 on at least 8 of 10 cases is diagnostic only. E2 may prefer bands only after applicability, dependency, threshold and intervention analysis supports that approximation (Q88); agreement does not establish interchangeability or correctness. The illustrative blade-only estimate component costs about $0.00084 for 30 calls using the historical per-call average, excluding crossings and retries; this is not a whole-run bound. The per-run cache keys resolved model, estimator/prompt version, question, type/options and read values, reads only the declared fields, and needs no language arithmetic. Chosen: Jev with the per-run cache, with declared bands as the cheaper rival measured in E1 (inferred by agent, 2026-11-10). Historical provider latency is a candidate constraint, not a demonstrated bottleneck for this workload (measured, ~/projects/data/llm_observability.db, 2026-11-10): successful Jev calls averaged 0.43 s (99th percentile 2.8 s), but 6.6% of calls failed, provider errors after 0.89 s and network errors after 20.2 s on average. With a 5 s timeout per try and one retry (plan Decided 7), an estimate takes about 0.933 x 0.43 + 0.037 x (0.89 + 0.43) + 0.029 x (5 + 0.43) = 0.61 s on average (computed) and at most 10 s before its fallback, about 18 s for 30 sequential blade-estimate calls, excluding crossing calls and other work; without the timeout about 1.05 s, about 32 s for those 30 calls (Q85). For the judge's stopping point, a Jev chance question would cost about 1/50 of the judge's $0.0016 per check; that option is recorded for the judge plan's J5 (Q86), not taken here."
-   },
-   "plain_baseline": {
-    "kind": "planned",
-    "answer_path": "Jev's estimate of a chance (later a pick or an amount) from the world's facts, used by an estimate rule",
-    "when": "E1, before the live sawmill run: the same model (Jev) given the whole world state instead of the declared fields, side by side with Jev given the declared fields, gpt-6-luna given the declared fields, and (d) declared bands the rules writer writes from the sawmill's description with no Jev call, on 10 cases; no Jev call is made for planning (Brian's brief, 2026-11-10)",
-    "cases": [
-     "blade, 0 days since service, load 14",
-     "blade, 3 days since service, load 14",
-     "blade, 6 days since service, load 14",
-     "blade, 9 days since service, load 14",
-     "blade, 12 days since service, load 14",
-     "blade, 0 days since service after a failure, load 0",
-     "blade, 3 days since service, load 4",
-     "blade, 6 days since service, load 4",
-     "blade, 9 days since service, load 4",
-     "blade, 12 days since service, load 4"
+    "thesaurus": "docs/model/semantic-spectrum.json",
+    "informal_taxonomy": "docs/model/semantic-spectrum.json",
+    "formal_taxonomy": "docs/model/domain.graph.json",
+    "domain_model": "docs/model/domain.graph.json",
+    "schema": [
+      "schemas/world-authoring-bundle-v0.schema.json",
+      "src/world_substrate/model.py"
+    ],
+    "rules": [
+      "docs/model/trace.yaml",
+      "src/world_substrate/rules.py"
+    ],
+    "instances": "reference_worlds/waltzman/coordination-lab-v0.json",
+    "architecture_views": [
+      "docs/architecture/arc42.md",
+      "docs/architecture/model.c4"
+    ],
+    "behavior_models": "docs/model/ODD.md",
+    "interface_contracts": [
+      "openspec/specs/transition-engine/spec.md",
+      "openspec/specs/world-authoring-bundle/spec.md"
+    ],
+    "executable_specifications": [
+      "tests/test_action_envelopes.py",
+      "tests/test_first_fill.py"
     ]
-   },
-   "stage_effects": [
-    {
-     "stage": "declared reads: Jev shown only the fields the rule declares, not the whole world (E1)",
-     "gap": "the plain version (whole world) could let unrelated facts or a resident's words move the chance, and makes the cache key the whole world, so unrelated world changes invalidate reuse; whether declared reads change Jev's answer is untested until E1's comparison (Q83)",
-     "status": "untested"
-    },
-    {
-     "stage": "per-run cache: resolved model, estimator/prompt version, question/type/options and read values (E1)",
-     "gap": "not an answer-quality stage: it removes repeat calls with identical inputs; its effect on cost and time is measured in E1",
-     "status": "untested"
-    },
-    {
-     "stage": "draw against the estimate instead of using the estimate as the outcome (E1)",
-     "gap": "used directly, a probability becomes a truth claim (the retired Jev note's anti-pattern, 'P(fire)=0.81 -> fire=true'), so a world fails every day above a threshold and never below it; shown by argument, untested on a run until E1",
-     "status": "untested"
-    }
-   ],
-   "stops": {
-    "searched": [
-     "brian-positions (~/code/inquiry-graph/tools/brian_positions.py \"jev estimate probability rule\" --top 10, 2026-11-10): Jev use cases and 'really heavy use of jev throguhout aes' (2026-09-20), no stop",
-     "git log -i --grep=jev on origin/main 43663e9: 69cc0b6 (exploration note), 95060c7, 9cefeee, 0dcbcd6 (note retired into Q63); no stop",
-     "docs/decisions/005-native-waltzman-delivery.md:86 (Jev off the critical path for that release): a release-scope consequence, not a stop on estimate rules",
-     "docs/plans/ai_judge.md and docs/plans/open_attempt.md Decisions"
-    ],
-    "found": []
-   }
   },
-  "acceptance": {
-   "status": "present",
-   "path": "docs/planning/estimate-rules/acceptance-criteria.json"
-  },
-  "review_page": {
-   "status": "present",
-   "path": "proposals/estimate-rules/review-page/index.html",
-   "url": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/estimate-rules/review-page/"
-  },
-  "cold_review": {
-   "status": "present",
-   "path": "docs/planning/estimate-rules/cold-review.md",
-   "verdict": "pass",
-   "reviewed_revision": "8fff8596d96fecabecfe86c69ff1e057966054eb"
-  }
- },
- "note": "Plan-specific package linked from its owning plan. Shares repository checks, question ledger, domain model and semantic spectrum with docs/planning/planning-package.json. Its acceptance, plan and cold-review remain scoped to this plan; old review verdicts do not certify current edits.",
- "initiative": {
-  "id": "world-substrate",
-  "role": "home"
- },
- "runs_in_production": true,
- "spectrum_rungs": {
-  "name": "README.md:1",
-  "controlled_vocabulary": "docs/model/semantic-spectrum.json",
-  "glossary": [
-   "docs/model/DOMAIN.md",
-   "docs/model/modeling-choices.md"
-  ],
-  "thesaurus": "docs/model/semantic-spectrum.json",
-  "informal_taxonomy": "docs/model/semantic-spectrum.json",
-  "formal_taxonomy": "docs/model/domain.graph.json",
-  "domain_model": "docs/model/domain.graph.json",
-  "schema": [
-   "schemas/world-authoring-bundle-v0.schema.json",
-   "src/world_substrate/model.py"
-  ],
-  "rules": [
-   "docs/model/trace.yaml",
-   "src/world_substrate/rules.py"
-  ],
-  "instances": "reference_worlds/waltzman/coordination-lab-v0.json",
-  "architecture_views": [
-   "docs/architecture/arc42.md",
-   "docs/architecture/model.c4"
-  ],
-  "behavior_models": "docs/model/ODD.md",
-  "interface_contracts": [
-   "openspec/specs/transition-engine/spec.md",
-   "openspec/specs/world-authoring-bundle/spec.md"
-  ],
-  "executable_specifications": [
-   "tests/test_action_envelopes.py",
-   "tests/test_first_fill.py"
-  ]
- },
- "spectrum_basis": "Repository-scoped evidence shared by plan packages: the World Builder is an existing deployed product, while individual plan slices remain built/not-built as their acceptance records state. The domain taxonomy is a flat, typed classification by implementation authority (Substrate, Family, PerWorld, Reference, Theory), not a claim of a deeper inheritance hierarchy. No digital-twin or validated predictive-simulation rung is asserted."
+  "spectrum_basis": "Repository-scoped evidence shared by plan packages: the World Builder is an existing deployed product, while individual plan slices remain built/not-built as their acceptance records state. The domain taxonomy is a flat, typed classification by implementation authority (Substrate, Family, PerWorld, Reference, Theory), not a claim of a deeper inheritance hierarchy. No digital-twin or validated predictive-simulation rung is asserted.",
+  "full_method": true,
+  "route": "durable_solo",
+  "route_decision": "docs/plans/estimate_rules.path-decision.json"
 }

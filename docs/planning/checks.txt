@@ -1,3 +1,127 @@
+Current normative-readiness checks, 2026-11-12. Working tree: world-substrate-normative-readiness. These are scoped structural checks, not simulator fidelity or full compliance. Current make check result is recorded below; the older runtime-test result remains historical.
+
+== python3 scripts/check_trace_reads.py --root evidence
+RESULT runs=47 problems=0
+exit 0
+
+== python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42
+FINDING GOAL-FIELD role=goal id=Thesis file=docs/architecture/arc42.md: 'Thesis' is missing or placeholder
+FINDING GOAL-FIELD role=goal id=Thesis disproof file=docs/architecture/arc42.md: 'Thesis disproof' is missing or placeholder
+FINDING GOAL-NO-CTX-004 role=goal id=Thesis file=docs/architecture/arc42.md: the thesis does not cite AES-CTX-004 (truth lives where it is edited)
+FINDING GOAL-NO-LINEAGE role=goal id=Lineage file=docs/architecture/arc42.md: no Lineage field: name the repository this one replaces and why it was restarted, or 'none -- original'
+FINDING ARC42-HEADING role=goal id=Introduction and Goals file=docs/architecture/arc42.md: arc42 heading 'Introduction and Goals' missing
+FINDING ARC42-HEADING role=goal id=Requirements Overview file=docs/architecture/arc42.md: arc42 sub-heading 'Requirements Overview' missing (use not_applicable: <reason> under it if it does not apply)
+FINDING ARC42-HEADING role=goal id=Quality Goals file=docs/architecture/arc42.md: arc42 sub-heading 'Quality Goals' missing (use not_applicable: <reason> under it if it does not apply)
+FINDING ARC42-EXTENSION-LABEL role=goal id=North star file=docs/architecture/arc42.md: 'North star' is an AES extension and must be labelled '(AES extension)'
+FINDING STALE role=system_model id=RULE-FROZEN-PROFILE file=scripts/run_authored_world.py: owner changed in 9 commit(s) after the rule was last reviewed (096c129d0); re-read the rule and set reviewed_at
+FINDING STALE role=system_model id=RULE-APPROVAL-BEFORE-RUN file=scripts/world_builder_service.py: owner changed in 8 commit(s) after the rule was last reviewed (17673071c); re-read the rule and set reviewed_at
+FINDING STALE role=system_model id=RULE-BUDGET-FAILS-CLOSED file=scripts/world_builder_service.py: owner changed in 8 commit(s) after the rule was last reviewed (17673071c); re-read the rule and set reviewed_at
+FINDING STALE role=system_model id=RULE-DURABLE-RUN-RECORD file=scripts/world_builder_service.py: owner changed in 8 commit(s) after the rule was last reviewed (17673071c); re-read the rule and set reviewed_at
+durable-docs: mode=repo repo=/home/brian/code2/worktrees/world-substrate-normative-readiness findings=12 (ARC42-EXTENSION-LABEL=1, ARC42-HEADING=3, GOAL-FIELD=2, GOAL-NO-CTX-004=1, GOAL-NO-LINEAGE=1, STALE=4), exit 1
+exit 1
+
+== python3 /home/brian/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD
+EXCEPTION    183/183  BrianMills2718/world-substrate  -- Measured at 544c086: 183 tracked Markdown files, including required per-run TRACE_READ records and historical OpenSpec change records. Preserve that evidence; current authority remains docs/index.md and roadmap/README.md. New authored documents require a fresh justification rather than automatic growth.
+DURABLE    12  BrianMills2718/world-substrate  -- 12 durable-document findings (e.g. GOAL-FIELD role=goal id=Thesis file=docs/architecture/arc42.md: 'Thesis' is missing or placeholder; GOAL-FIELD role=goal id=Thesis disproof file=docs/architecture/arc42.md: 'Thesis disproof' is missing or placeholder)
+REPO  BrianMills2718/world-substrate  md=183  cap=exception  reach=ok(0)  layout=undeclared(0)  durable=findings(12)
+md-file-cap: 1 given repos checked, cap 100: ok=0 exception=1 over=0 not-checked=0; wiki reachability ok=1 orphans=0 no-wiki=0; layout ok=0 findings=0 undeclared=1; durable ok=0 findings=1 undeclared=0   exit 1
+exit 1
+
+== python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .
+DELEGATED wiki/index.md: workspace wiki rule; project-wiki/v1 schema not applied; reachability, cap and layout are checked by python3 ~/code/project-meta/scripts/md_file_cap.py --repo R
+REPORT ONLY: 0 finding(s); semantic truth and approval were not evaluated
+exit 0
+
+== python3 /home/brian/code2/workspace/scripts/repo_format.py .
+: missing Makefile (must mention lockstep check or code2check)
+RESULT repo-format compliant=0 of=1 exit=1
+exit 1
+
+== python /home/brian/code2/company-planning/plugins/company-planning/skills/planning-compliance/scripts/spectrum_check.py --repo . docs/planning/planning-package.json
+ok   L1 project S1   Every project term has a definition in the domain graph (79 checked)
+ok   L1 project S1b  Every node in the domain graph is a term in the project or planning layer (79 checked)
+ok   L3 project S3   Every term names a kind that exists (79 checked)
+ok   L4 project S4   Every project term connects to at least one other term (79 checked)
+ok   L2 both    P2   No other name points to two different terms (21 checked)
+ok   L2 both    P2c  No two terms have near-identical names unless an ambiguous entry separates them (154 checked)
+ok   L2 both    P2b  Each ambiguous word lists only terms that exist (5 checked)
+ok   L3 both    P3   A project file does not redefine a planning term or give one another kind (79 checked)
+ok   L5 project S5   Every open question touches only concepts that are terms (96 checked)
+spectrum_check: 9 passed, 0 failed of 9 (13 planning terms, 79 project terms); exit 0
+exit 0
+
+== uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep check sources
+RESULT sources brian=16 inferred=83 other=48 missing=0 exit=0
+exit 0
+
+== Current planning route validation
+ai_judge.path-decision.json: exit 0
+{
+  "artifact_ref": "/home/brian/code2/worktrees/world-substrate-normative-readiness/docs/plans/ai_judge.path-decision.json",
+  "classified_path": "durable_solo",
+  "disposition": "pass",
+  "errors": [],
+  "expected_sha256": null,
+  "observed_sha256": "sha256:6521a2674a38131258615516fc16a7f3ab9d4e665ce4c14abebb2e2312bfff5f",
+  "selected_path": "durable_solo",
+  "valid": true
+}
+
+declared_laws.path-decision.json: exit 0
+{
+  "artifact_ref": "/home/brian/code2/worktrees/world-substrate-normative-readiness/docs/plans/declared_laws.path-decision.json",
+  "classified_path": "reset",
+  "disposition": "pass",
+  "errors": [],
+  "expected_sha256": null,
+  "observed_sha256": "sha256:9baaf88e20a057e37c389ce834385318b6401f8338e3da20895fc869fa15e2e4",
+  "selected_path": "reset",
+  "valid": true
+}
+
+estimate_rules.path-decision.json: exit 0
+{
+  "artifact_ref": "/home/brian/code2/worktrees/world-substrate-normative-readiness/docs/plans/estimate_rules.path-decision.json",
+  "classified_path": "durable_solo",
+  "disposition": "pass",
+  "errors": [],
+  "expected_sha256": null,
+  "observed_sha256": "sha256:dc974d834c45f7c2718c0f3cc32ff66c2d37bf939863417bd46799bbd00234aa",
+  "selected_path": "durable_solo",
+  "valid": true
+}
+
+open_attempt.path-decision.json: exit 0
+{
+  "artifact_ref": "/home/brian/code2/worktrees/world-substrate-normative-readiness/docs/plans/open_attempt.path-decision.json",
+  "classified_path": "durable_solo",
+  "disposition": "pass",
+  "errors": [],
+  "expected_sha256": null,
+  "observed_sha256": "sha256:4e02f79cd86c76b9edba5a9f80d643c850c082020879f97fc5ef600e9ce9d81d",
+  "selected_path": "durable_solo",
+  "valid": true
+}
+
+== Repository format rerun after Makefile expansion comment
+python3 /home/brian/code2/workspace/scripts/repo_format.py /home/brian/code2/worktrees/world-substrate-normative-readiness
+RESULT repo-format compliant=1 of=1 exit=0
+The earlier failed static-format result above is superseded by this rerun.
+
+== make check (coordinator execution, 2026-11-12)
+exit 0; 938 passed, 2 skipped, 225 subtests passed in 61.71 seconds; 13 specs passed.
+Includes planning/source subset; separate full Lockstep target is not certified.
+
+== Semantic spectrum rerun after theory-only offer addition
+python /home/brian/code2/company-planning/plugins/company-planning/skills/planning-compliance/scripts/spectrum_check.py --repo . docs/planning/planning-package.json
+spectrum_check: 9 passed, 0 failed of 9 (13 planning terms, 80 project terms); 156 names; 96 questions; exit 0
+
+== Durable rule source review rerun (2026-11-12, reviewed fd877da)
+python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42
+findings=8 (ARC42-EXTENSION-LABEL=1, ARC42-HEADING=3, GOAL-FIELD=2, GOAL-NO-CTX-004=1, GOAL-NO-LINEAGE=1), STALE=0; exit 1
+Supersedes earlier 12-findings receipt. Read owner code and cited tests; corrected profile/approval claims, scoped budget admission evidence, and explicitly retained the unmet storage-failure durability requirement. No runtime change or new runtime test.
+
+HISTORICAL RECORD (not current verification)
 Checks run 2026-11-10 on branch plan/estimate-rules (origin/main d89a446 plus the estimate-rules planning change; subject 4b5bda9). The durable-document and wiki-cap failures are the same on origin/main d89a446 (tracked by Q77).
 
 == durable documents (arc42): python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42
@@ -45,3 +169,11 @@ exit 1
 World Substrate project check passed.
 Neutral runtime tests: 891 passed, 2 skipped, 222 subtests passed in 57.14s
 exit=0
+
+Coverage interpretation (2026-11-12): the final stored open-attempt review is covered with one disagreement on R3. Two calls demand an actual crash, although Brian asked for "probably"; A7 requires the declared 75% crash mapping and a result consistent with its recorded roll. The arithmetic settles that design question without selecting a favorable run. The final AI-judge review is covered with one disagreement on R5. Two calls overlook A5's Vik/Rosa demonstration and exact-terms acceptance while mapping it to A4. A5 explicitly requires Rosa's own response and separates acceptance from signature feasibility. All model opinions remain in coverage-trace.json; neither result certifies unbuilt behavior.
+
+Rendered-page inspection (2026-11-12): local isolated Chromium opened open-attempt and AI-judge review pages at 1440px and 390px, four HTTP200 responses. Open-attempt fits both widths; AI-judge initially overflows the mobile viewport by7px. Reading the visible content exposed stale consent/status claims; page source was reconciled rather than treating rendering as semantic verification. Final corrected-page inspection recorded separately after generation.
+
+Documentation sweep: doc_sweep.py . --since '1 day ago' reported12 candidates,0broken entry links. Current navigation/model/status were reconciled; historical audits remain dated history; OpenSpec skill references are procedure, not current implementation claims. The backup AI-judge branch retains history; the separate ws-judge-j5 working tree is another writer's unfinished work and was not modified. This owned normative branch is the candidate being finished.
+
+Review interpretation: this is a documentation reconciliation, not a claim that all open questions are closed or all simulations are valid. Later-slice design gates Q76/J4, Q83/E1 and Q84/E5 remain explicit. Q96 is designed but unbuilt. Full AES trace linking remains344 findings; eight legacy format findings remain. Source reread found logging failure and aggregate-budget limits, recorded as risks rather than erasing the underlying desired guarantees.

@@ -77,6 +77,7 @@ Each spec keeps the wording of the contract it was folded from on 2026-11-09 and
   outcome depends on a chance Jev estimates during a run, recorded and replayed without Jev. Its package
   [planning/estimate-rules/planning-package.json](planning/estimate-rules/planning-package.json) and
   [review page](../proposals/estimate-rules/review-page/index.html).
+- [Current normative investigation](planning/investigation.json): source coverage, findings and evidence limits from the November 12 review.
 - Planning package: [planning-package.json](planning/planning-package.json),
   [open questions](planning/open-questions.json) (generated from `tools/planning/questions_src.py`),
   [checks](planning/checks.txt), [cold review](planning/cold-review.md). Per plan:

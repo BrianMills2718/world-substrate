@@ -224,3 +224,23 @@ layout:
   purpose: Required behavior and scenarios for world builder page
   implements: []
   tests: []
+- path: docs/plans/declared_laws.path-decision.json
+  purpose: Current filename compatibility record preserving the declared laws planning
+    route
+  implements: []
+  tests: []
+- path: docs/plans/open_attempt.path-decision.json
+  purpose: Current filename compatibility record preserving the open attempt planning
+    route
+  implements: []
+  tests: []
+- path: docs/plans/ai_judge.path-decision.json
+  purpose: Current filename compatibility record preserving the ai judge planning
+    route
+  implements: []
+  tests: []
+- path: docs/plans/estimate_rules.path-decision.json
+  purpose: Current filename compatibility record preserving the estimate rules planning
+    route
+  implements: []
+  tests: []

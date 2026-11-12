@@ -54,7 +54,7 @@ Since 2026-10-15 pressing Create simulation on the landing page is the approval 
 
 #### REQ-OBSERVABLE-RUNS
 
-Every build and run leaves a durable record from which the person can see what happened and why: events with stable ids, mechanic-declared causal parents, and a live view rebuilt only from canonical state ([Decision 002](../decisions/002-observability-and-replay.md)).
+Required behavior: every build and run leaves a durable record from which the person can see what happened and why: events with stable ids, mechanic-declared causal parents, and a live view rebuilt only from canonical state ([Decision 002](../decisions/002-observability-and-replay.md)). Current limitation (reviewed 2026-11-12): `scripts/world_builder_service.py` catches log-write errors without failing the request, so normal-storage evidence does not establish this guarantee under storage failure (RULE-DURABLE-RUN-RECORD in `docs/model/trace.yaml`).
 Success: snapshot plus event deltas reconstruct each canonical branch exactly, and every build and run writes its record (`tests/test_waltzman_projection.py`, `tests/test_world_builder_service.py`).
 Disproof: a view showing a state the canonical event log cannot reconstruct, or a run with no durable record.
 
@@ -439,7 +439,7 @@ For fidelity, modeling methods, uncertainty and resource tradeoffs, see the
 | --- | --- |
 | Canonical state | the only material world truth; prompts, UI state, resident beliefs and analyses do not compete with it |
 | Mechanic | installed rule or process with applicability, checks, declared reads and writes, effects, limits and trace behavior |
-| Mechanic profile | the validated, frozen declaration set for one run |
+| Mechanic profile | the validated, frozen declaration set for one run invocation; continuation rebuilds the effective set including approved rulings |
 | Affordance | one currently available action instance derived from canonical state |
 | Observation | an actor-authorized projection of world state and information |
 | Authoring bundle | represented entities, components, action signatures and presentation intent; not executable law |

@@ -1,0 +1,41 @@
+{
+ "record_type": "representation_recommendation",
+ "provenance": {
+  "by": "agent",
+  "date": "2026-11-12",
+  "method": "Representation Router planning-review principles, source-bound recommendation; not a tool-generated score or visual certification",
+  "source": "docs/plans/open_attempt.md:218"
+ },
+ "question": "Can Brian see what the person tried, how it was interpreted, what the world did, and whether evidence is complete?",
+ "primary": "composite-linked-view",
+ "rationale": "One selected event links original words, reading, world result and evidence. Same-moment chains need causal order, while skill and replay require side-by-side recorded values.",
+ "compositionPlan": {
+  "primary_element": "Selected attempt with original words, interpretation and consequence",
+  "secondary_elements": [
+   "Causal sequence for reactions",
+   "Before/after state and failed requirement",
+   "Recorded skill/dice or replay provenance",
+   "Exact trace links and missing-evidence labels"
+  ],
+  "reading_order": [
+   "Attempt",
+   "Interpretation",
+   "World checks and effects",
+   "Observations",
+   "Evidence"
+  ],
+  "interaction": "Read-only shared event selection; no rerun or model call implied by inspection.",
+  "color": "Blue for selection, orange for gaps/refusals, grey for context; explicit text labels."
+ },
+ "availability": "partial: retained records and some run views exist; the complete combined inspector and S3 demonstrations are planned",
+ "alternatives": [
+  "A table alone supports comparison but loses causal sequence.",
+  "A graph alone hides exact words and values; use it only as a linked secondary view."
+ ],
+ "avoid": [
+  "A test-count badge as proof of behavior",
+  "Treating a narration as the missing trace",
+  "Marking partial fixture evidence as full generated-world success"
+ ],
+ "verification": "Recommendation only; no render or user-judgment certification performed."
+}

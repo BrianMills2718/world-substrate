@@ -3,7 +3,7 @@ schema_version: project-roadmap-front-door/v1
 role: canonical-planning
 status: active
 context_ref: ../docs/wiki/README.md
-reviewed_through: 2026-11-10
+reviewed_through: 2026-11-12
 ---
 
 # World Substrate living roadmap
@@ -18,7 +18,9 @@ reviewed_through: 2026-11-10
 The review covers current architecture, accepted decisions, four active plans, their packages and all 49
 previously open questions. Three conceptual questions are resolved (Q63, Q73, Q75); 46 remain because the
 ledger also tracks known defects, unbuilt contracts and empirical evidence. An open implementation item is
-not an undecided design principle. Do not require fabricated closure before building the evidence it needs.
+not an undecided design principle. Some later-slice design questions also remain: credential representation
+(Q76, J4), estimator dependencies (Q83, E1), and observation-estimate placement (Q84, E5). These are
+explicit gates before those slices, not claims that every design choice is settled. Do not require fabricated closure before building the evidence it needs.
 
 AES currently means Lockstep plus the feedback and policy layers. The approved one-tool design keeps
 OpenSpec, installs Lockstep from AES canonical, and retains Company Planning's substantive review workflow.
@@ -27,7 +29,7 @@ declares the normative-document/specification scope; Claude/Codex hook entries a
 configured. Runtime files are not yet covered by that layout, and this review does not claim installed git-hook
 execution merely from a configuration file. The existing global hook chain remains unchanged.
 
-`make planning-check` checks source attribution, the three acceptance files used by the four plans, and
+`make planning-check` checks source attribution, the four plan acceptance files, and
 OpenSpec; it is now part of `make check`. `make lockstep` additionally exposes the whole-tree/trace checks.
 The baseline trace check reports 344 missing requirement-to-code/test links. Its blocking configuration is
 preserved; full trace conformance is not claimed. Q77 owns the remaining compliance gap. Plan-format checks,
@@ -38,6 +40,8 @@ estimate semantics, scenario-specific skill/price assumptions and first-principl
 comparison. Remaining behavioral, performance and implementation questions retain their closure evidence in
 the [ledger](../docs/planning/open-questions.json). Checks and cold-review reports bind their own revisions;
 this paragraph does not declare universal optimality or predictive validity.
+
+The rule-source review exposed two remaining evidence risks under Q77. Budget admission reserves the remaining allowance and rejects an unreadable ledger, but this does not establish a hard aggregate cap across all downstream model calls, concurrency and late hedges ([service budget boundaries](../scripts/world_builder_service.py), [reviewed trace contract](../docs/model/trace.yaml)). Separately, `_record_response` catches log-write failures and continues the request; a successful response therefore does not guarantee a retained run record. Storage-failure durability remains unmet, and stronger spending guarantees remain unverified. Neither is closed by updating the source-review date; implementation or focused evidence must resolve them before those stronger claims are made.
 
 ## Outcome and success criteria
 
@@ -165,7 +169,9 @@ Hard constraints:
 | Hardening | queued | law fingerprint with compiler version, role-bound scopes, visible discovery overflow, recorded mechanic exceptions, locking |
 | Persistence and second-domain proof | later | saved user worlds beyond share links; proof beyond Waltzman |
 
-### Current task — preimplementation readiness review
+### Active slice
+
+Current task: preimplementation readiness review.
 
 Source: Brian, 2026-11-12: "before we move to implementaiotn ... make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved ... maybe get complaint with the new aes canonical system". Reconcile the actual current standard, authoritative documents and every question before resuming implementation. A resolved design decision is not evidence that its code works. Questions requiring implementation, calibration or scale evidence stay explicit with closure conditions; do not close them to produce a zero count.
 

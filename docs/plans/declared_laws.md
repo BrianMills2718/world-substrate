@@ -50,11 +50,11 @@ Planning package: docs/planning/declared-laws/planning-package.json
 Written by `plan_checklist.py --write`, not by hand. `--check` re-runs the validator and fails
 if any line below differs from what it says now. Unticked pending items are not passes.
 
-Manifest: `docs/planning/planning-package.json`
-Package revision: `c99cbc704c5a`
-Verdict: compliant, 2 pending
+Manifest: `docs/planning/declared-laws/planning-package.json`
+Package revision: `f83c6d8a1589`
+Verdict: not compliant, 1 pending
 
-- [ ] part investigation: pending
+- [x] part investigation: ok
 - [x] part checks: ok
 - [x] part open_questions: ok
 - [x] part system_model: ok
@@ -64,20 +64,26 @@ Verdict: compliant, 2 pending
 - [x] part acceptance: ok
 - [x] part review_page: ok
 - [x] part cold_review: ok
-- [ ] substance route follows from its path decision: failing
+- [x] substance route follows from its path decision: ok
 - [x] substance citations resolve: ok
 - [x] substance domain model has a glossary: ok
-- [ ] substance project layer checks against the planning layer: failing
+- [x] substance project layer checks against the planning layer: ok
 - [x] substance concepts point at their code: ok
 - [x] substance plan names the concepts it relies on: ok
+- [x] substance plan records the cost basis of each AI step: ok
+- [ ] substance plan compares its AI answer path with the plain version: failing
+- [ ] substance plan shows what each stage adds over the plain version: failing
+- [x] substance plan records Brian's stops on this work: ok
 - [x] substance type-level model of executable rules: ok
 - [x] substance cold review read this revision: ok
-- [ ] initiative initiative names its home: pending
-- [ ] tiers spectrum rungs 1-11 are cited: failing
-- [ ] tiers production rungs 12-14 are cited when it runs in production: failing
-- [ ] tiers thesaurus separates near-identical names (rung 4): failing
+- [x] initiative initiative names its home: ok
+- [x] tiers spectrum rungs 1-11 are cited: ok
+- [x] tiers production rungs 12-14 are cited when it runs in production: ok
+- [x] tiers thesaurus separates near-identical names (rung 4): ok
+- [ ] system_map system map names every code unit: pending
 - [x] coverage goal coverage: ok
-- [x] freshness package is current: ok
+- [x] goal_provenance goal provenance: ok
+- [ ] freshness package is current: failing
 <!-- /planning-compliance-checklist -->
 
 

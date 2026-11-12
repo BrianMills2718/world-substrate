@@ -178,14 +178,17 @@ a{color:var(--have)}
 
 <!-- package:start -->
 <h2>The planning package behind this page</h2>
-<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/declared-laws/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-11-10 on branch plan/estimate-rules (origin/main d89a446 plus the estimate-rules planning change; subject 4b5bda9). The durable-document and wiki-cap failures are the same on origin/main d89a446 (tracked by Q77)); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
+<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/declared-laws/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Current normative-readiness checks, 2026-11-12. Working tree: world-substrate-normative-readiness. These are scoped structural checks, not simulator fidelity or full compliance. Current make check result is recorded below; the older runtime-test result remains historical); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
 <div class="tablewrap"><table class="pkg"><thead><tr><th>Check</th><th>Counts</th><th>Result</th></tr></thead><tbody>
-<tr><td>durable documents (arc42)</td><td>findings 16 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
+<tr><td>trace reads</td><td>runs 47, problems 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>durable documents (legacy arc42 checker)</td><td>findings 8, legacy format mismatches 8, stale rule reviews 0 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
+<tr><td>wiki and Markdown cap</td><td>md files 183, cap 183, unreachable 0, durable findings 8 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
 <tr><td>project navigation</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>repository format</td><td>compliant 1, of 1</td><td><span class="tag have">exit 0</span></td></tr>
-<tr><td>trace reads</td><td>runs 38, problems 0</td><td><span class="tag have">exit 0</span></td></tr>
-<tr><td>project check (tests, system model, docs)</td><td>tests run 891, failed 0, skipped 2</td><td><span class="tag have">exit 0</span></td></tr>
-<tr><td>wiki and Markdown cap</td><td>md files 162, cap exception, unreachable 28, not linked 10, more than two links deep 18, durable findings 16 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
+<tr><td>semantic spectrum</td><td>passed 9, failed 0, project terms 80, planning terms 13</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>Lockstep source provenance</td><td>brian 16, inferred 83, other 48, missing 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>planning routes</td><td>records 4, passed 4, failed 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>project make check</td><td>passed 938, skipped 2, subtests passed 225, specs passed 13</td><td><span class="tag have">exit 0</span></td></tr>
 </tbody></table></div>
 <h3 class="sub">Open questions: 46 open, 50 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
@@ -243,7 +246,7 @@ a{color:var(--have)}
 <!-- package:end -->
 <!-- maps:start -->
 <h2>The maps behind the plan</h2>
-<p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 79 ideas, 134 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
+<p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 80 ideas, 138 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
 <div class="graph" id="map-domain"></div>
 <p class="mapinfo" id="map-domain-info">Click an idea to see what it is and where it lives in the code.</p>
 <p class="lede">The open-questions map: each open question beside the ideas it touches (46 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>

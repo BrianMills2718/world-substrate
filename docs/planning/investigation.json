@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0",
+  "record_type": "investigation",
+  "date": "2026-11-12",
+  "scope": "Normative readiness across five packages; existing sources and traces, no new paid run.",
+  "searched": [
+    {
+      "where": "docs",
+      "how": "Read current architecture, guide, lineage and four plan sources.",
+      "found": [
+        "docs/architecture/arc42.md",
+        "docs/model/modeling-choices.md",
+        "docs/audits/waltzman-lineage-review-2026-11-07.md",
+        "docs/plans/ai_judge.md",
+        "docs/plans/estimate_rules.md",
+        "docs/plans/declared_laws.md",
+        "docs/plans/open_attempt.md"
+      ]
+    },
+    {
+      "where": "code",
+      "how": "Inspect authority boundaries and implementation mappings.",
+      "found": [
+        "src/world_substrate/engine.py",
+        "src/world_substrate/rules.py",
+        "src/world_substrate/attempt.py"
+      ]
+    },
+    {
+      "where": "run_records",
+      "how": "Read retained J2/J3 trace-read narratives and baseline verdicts; aggregate retained call costs without executing models.",
+      "found": [
+        "evidence/ai-judge/j2/blocked-chain/TRACE_READ.md",
+        "evidence/ai-judge/j3/install-default/TRACE_READ.md",
+        "evidence/ai-judge/j3/price-times-quantity/TRACE_READ.md",
+        "evidence/ai-judge/plain-baseline/rules-check.json",
+        "evidence/open-attempt/s2-airfield/llm-calls.jsonl",
+        "evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl"
+      ]
+    },
+    {
+      "where": "issues",
+      "how": "Read local recorded issue references and dispositions, not a fresh remote inventory.",
+      "found": [
+        "docs/planning/open-questions.json",
+        "docs/plans/open_attempt.md"
+      ]
+    },
+    {
+      "where": "prior_art",
+      "how": "Reconcile retained lineage and prior-art investigation; not a fresh exhaustive literature search.",
+      "found": [
+        "docs/research/discussion-traceability.md",
+        "docs/research/flexible-simulator-prior-art-2026-10/llm-sims.md",
+        "docs/audits/waltzman-lineage-review-2026-11-07.md"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "I1",
+      "claim": "The normative guide distinguishes represented entities, mechanisms and write authority; model choice depends on the investigation and resources.",
+      "evidence": [
+        "docs/model/modeling-choices.md"
+      ],
+      "verdict": "holds"
+    },
+    {
+      "id": "I2",
+      "claim": "An installed judge rule always preserves the other person's choice.",
+      "evidence": [
+        "evidence/ai-judge/j3/install-default/TRACE_READ.md"
+      ],
+      "verdict": "fails",
+      "question_id": "Q96"
+    },
+    {
+      "id": "I3",
+      "claim": "The judge detects quantity-dependent language gaps generally; fixed 3-at-10 is insufficient evidence.",
+      "evidence": [
+        "evidence/ai-judge/j3/price-times-quantity/TRACE_READ.md"
+      ],
+      "verdict": "unknown",
+      "question_id": "Q93"
+    },
+    {
+      "id": "I4",
+      "claim": "The declaration checker rejects malformed outputs in the historical baseline; that does not establish correctness of valid rules.",
+      "evidence": [
+        "evidence/ai-judge/plain-baseline/rules-check.json",
+        "evidence/ai-judge/plain-baseline/sawmill-test-run.json"
+      ],
+      "verdict": "holds"
+    },
+    {
+      "id": "I5",
+      "claim": "J2 delivered the test report and the judge then named its fuel blocker; this fixture does not establish general wrong-rule repair.",
+      "evidence": [
+        "evidence/ai-judge/j2/blocked-chain/TRACE_READ.md"
+      ],
+      "verdict": "holds"
+    }
+  ],
+  "cost": {
+    "not_applicable": "No new simulator/evaluation run. Historical workload costs recorded per task in plan.cost_basis; audit-agent time/token billing was not collected, so this does not claim zero audit cost."
+  }
+}

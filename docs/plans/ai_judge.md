@@ -11,9 +11,9 @@ goal:
   canonical_example: "The port world in 'Canonical example' below: Vik's bribe offer reaches the judge with the
     facts and blockers the engine can compute without a rule; the judge proposes a rule that coins can
     change hands; the engine test-runs it on a copy of the world and shows the judge its net changes, every blocker and how far the chain ran; the
-    judge confirms, the rule is installed, Rosa decides whether to sign and the coins move only if she does, the
-    gate opens for the signed release
-    whoever holds it, a 100-link chain from the gate runs in one moment, and the same offer by another trader
+    judge confirms, the rule is installed, and Rosa chooses whether to accept the exact offer.
+    Coins settle only under its consent and feasibility conditions. Signing remains separately constrained;
+    the gate opens for a valid signed release whoever holds it, a 100-link chain from the gate runs in one moment, and the same offer by another trader
     later is decided by the new rule with no judge call."
   forbidden_substitutes: "a judge prompt of our own outside Concordia's game master; a judge that writes outcomes
     or decides another person's choice; a ruling used without passing the World Builder rules check; a norm
@@ -53,6 +53,49 @@ conflict_surfaces:
 # Plan: an AI judge fed by automatic propagation
 
 Planning package: docs/planning/ai-judge/planning-package.json
+
+<!-- planning-compliance-checklist:v1 -->
+## Compliance checklist
+
+Written by `plan_checklist.py --write`, not by hand. `--check` re-runs the validator and fails
+if any line below differs from what it says now. Unticked pending items are not passes.
+
+Manifest: `docs/planning/ai-judge/planning-package.json`
+Package revision: `89dc1c696e1f`
+Verdict: not compliant, 1 pending
+
+- [x] part investigation: ok
+- [x] part checks: ok
+- [x] part open_questions: ok
+- [x] part system_model: ok
+- [x] part domain_model: ok
+- [x] part diagrams: ok
+- [x] part plan: ok
+- [x] part acceptance: ok
+- [x] part review_page: ok
+- [ ] part cold_review: failing
+- [x] substance route follows from its path decision: ok
+- [x] substance citations resolve: ok
+- [x] substance domain model has a glossary: ok
+- [x] substance project layer checks against the planning layer: ok
+- [x] substance concepts point at their code: ok
+- [x] substance plan names the concepts it relies on: ok
+- [x] substance plan records the cost basis of each AI step: ok
+- [x] substance plan compares its AI answer path with the plain version: ok
+- [ ] substance plan shows what each stage adds over the plain version: failing
+- [x] substance plan records Brian's stops on this work: ok
+- [x] substance type-level model of executable rules: ok
+- [x] substance cold review read this revision: ok
+- [x] initiative initiative names its home: ok
+- [x] tiers spectrum rungs 1-11 are cited: ok
+- [x] tiers production rungs 12-14 are cited when it runs in production: ok
+- [x] tiers thesaurus separates near-identical names (rung 4): ok
+- [ ] system_map system map names every code unit: pending
+- [x] coverage goal coverage: ok
+- [x] goal_provenance goal provenance: ok
+- [ ] freshness package is current: failing
+<!-- /planning-compliance-checklist -->
+
 
 **Status:** adopted. Brian approved its direction on 2026-11-09 ("i approve", after Decided 5) and building it on
 2026-11-10 ("yes if ti si planned out and you have no quesitons for me"). J0 built 2026-11-10 (no knock-on cap;
@@ -258,6 +301,30 @@ Historical baseline, not current status. J0 removed the cap for new runs; J1–J
   own rules and fingerprint stay as approved; installed rules are sealed run state), and under "Wait for my approval"
   nothing is installed until the owner presses Approve.
 
+## Q96 design contract: a voluntary exchange requires a particular offer
+
+**Status:** design decision inferred by agent, 2026-11-12, during Brian’s requested preimplementation audit. It implements the already-approved rule that other people’s choices stay theirs. No offer lifecycle described here is built yet; Q96’s observed implementation defect stays open until the contract is implemented and checked.
+
+**Existing seams and chosen ownership.** `scripts/run_authored_world.py` currently routes requests through `reach`/resident observations and records pending attempts under `scripts/rulings.py`’s `Rulebook`. `scripts/world_builder_service.py` seals snapshots, approvals and rulings across one-round requests. A message in memory is not durable consent. Add a typed `offers` list to that same server-sealed run continuation, not to resident memory and not to the reusable rule definition. The run coordinator in `scripts/run_authored_world.py` owns offer lifecycle and routes decisions; `scripts/rulings.py` continues to own rule lifecycle. World effects remain one atomic Engine transition. The server’s continuation/share serializers and seal must carry `offers` with the snapshot and rulings; no new database, service or scheduler is needed for this bounded slice.
+
+**Scope.** This contract covers voluntary two-party exchanges under existing or judge-proposed exchange rules, including receiver-shaped and giver-shaped rules. It is not a universal prohibition on taking others’ goods: theft, dropping a gift and automatic mechanical transfers are distinct explicitly authored mechanisms, not a bypass that relabels a voluntary exchange. Multi-party agreements, escrow and exchanges requiring several independently committed actions are outside this slice. If the existing rule language cannot express all agreed settlement effects and checks in one atomic transition, refuse with a language gap; never perform a partial bargain.
+
+**Rule binding.** An exchange rule declares its voluntary-exchange role mapping: proposer/giver field, respondent field, transferred-resource fields, conditions and settlement effect scope. The compiler/checker verifies these names against the typed action and derived reads/writes; the reviewed mapping is retained with the exact rule fingerprint. Runtime guards use that mapping, not action-name keywords or the judge’s one-time `whose_choice` string. Receiver-shaped settlement can run only for the offer’s named respondent and giver; giver-shaped settlement is the proposer’s previously authorized conditional move released by the respondent’s matching acceptance. Neither shape supplies authority for substituted people or goods. A rule with ambiguous exchange roles is a language gap. Relabeling an exchange as theft to avoid these checks is a model-authoring defect, not an authorized automatic fallback.
+
+**Record and identity.** Each offer records a run/branch-local `offer_id`, origin attempt/event id, proposer, intended respondent, typed immutable settlement parameters (participants, items, quantities and every condition), a canonical terms hash, creation round, expiry round, required rule kind and eventual exact rule fingerprint, lifecycle state, and terminal event/reason. The terms must say who supplies each resource and what the other party is asked to do. An ambiguous interpretation produces a recorded refusal or request for clarification, not a partly specified executable offer. After creation, changing price, quantity, party or condition creates a new offer id; neither a model nor delayed rule approval edits the existing terms.
+
+**Creation and delivery.** A proposer’s authenticated actor attempt creates an `offered` record only after its typed terms and party identities validate. Creation reserves or moves no assets. It supplies the proposer’s conditional assent to those exact terms, not the respondent’s assent. The named respondent receives the terms and id as an observation at the existing end-of-round request-delivery seam; others receive no private offer contents. Repeating the same origin attempt is idempotent. Deliberately making another offer creates a distinct record, even when its terms match.
+
+**Response and feasibility.** Only the named respondent’s own action can reject or accept an active offer, naming its id and terms hash. The interpreter resolves their words to that offer; no inferred consent from an earlier conversation, silence, owner approval or a general rule installation is accepted. Rejection is terminal. Acceptance triggers settlement only when the exact approved rule is installed and the offer is still valid. The coordinator checks the parties, terms, expiry and state, then submits the one bound settlement action to the Engine; the Engine rechecks current resources, location and all installed blockers. A failed feasibility check is recorded as terminal `failed` with no asset change; a new attempt requires a new offer. An accepted response awaiting rule approval is retained as `accepted_pending_rule`, with no effects, and the same checks run again when that rule becomes available.
+
+**Expiry and withdrawal.** The bounded default is expiry after the respondent has had its next scheduled decision opportunity: an offer created in round r remains valid through the end of round r+1, then expires before r+2 decisions. In this round-based path that is an explicit approximation, not a general account of human agreements. Waiting for the owner to approve a rule does not extend it. The proposer may withdraw an unsettled offer through their own action; the respondent may withdraw an `accepted_pending_rule` response before settlement. Expiry/withdrawal is terminal and recorded. No automatic renewal or reassignment occurs. Outstanding offer decisions or scheduled expiry remain pending work for quiet-stop assessment; a budget or explicit round limit can still end a run, leaving the unfinished offers visible in its final record. A later authoring change may declare a different scenario-specific lifetime, but this first slice uses the stated default consistently.
+
+**Delayed approval binding.** A held rule and an offer are different records. Rule approval may install a general capability, but cannot create an offer, supply either party’s consent, revive an expired offer, or settle arbitrary attempts merely because their action kind matches. Bind a pending offer to the fingerprint of the exact checked rule whose settlement parameters and effect scope were shown with its terms. A revised rule with different effects invalidates that binding; obtaining a new offer and response is required. If approval arrives while an offer is still open and unaccepted, route it to the respondent; do not settle it. If it arrives for `accepted_pending_rule`, revalidate every term and current check before settlement. Rejection of the required rule makes the pending offer terminal `rule_rejected`.
+
+**Consumption, discovery and replay.** Every entry path to a voluntary exchange action uses the same offer guard: direct interpreted actions, discovered actions, newly installed rulings and resumed pending attempts. Discovery may expose only the named respondent’s currently valid offers for acceptance; direct submission still rechecks, so hiding a move is not the enforcement boundary. The exact terms supply the settlement fields; the resident cannot substitute another giver or amount. Prepare effects and the offer’s terminal state on the same local run-state copy: publish a sealed continuation only when the Engine has committed the whole settlement and the offer is marked `consumed` with that event id. On refusal publish no asset change and the terminal failure record. A crash before producing a continuation does not publish a partial result. Within a branch, consumed/terminal offers cannot settle again; replay of an old sealed snapshot is a replay/fork, not a second settlement in the current branch. Record creation, delivery, response, approval binding, refusal and consumption so replay uses those records without asking a model or inventing consent. Old saved runs without offers continue to replay under their recorded semantics; they are not evidence that the repaired contract holds.
+
+**Why this settles the design question.** Consent is specific to parties and immutable terms; a reusable transfer rule contains neither. Therefore changing the judge prompt or rule actor alone cannot repair Q96. A sealed per-offer lifecycle makes both the giver- and receiver-shaped bypasses checkable while preserving the original profile, existing rule installation and atomic world-effects boundaries. Implementation evidence must exercise both shapes, delayed approval, altered terms, expiry, duplicate submission and infeasible settlement before Q96 is closed.
+
 ## Requirements
 
 | Id | Requirement | Source | Check |
@@ -291,10 +358,7 @@ The question asked is "has this stopping point been reached?", handed to the gam
 resolve in its normal way, with the stopping text as the event and the world state as its context; it is a thin
 framing of Concordia's resolution step, not a judge prompt of our own (R7). Cost (computed, guessed run length): one
 call per round, 46 rounds (the Waltzman run of 2026-10-23, `evidence/waltzman-tasks-slice2/c1r24`) × (15,000 input
-tokens × $0.10/M + 150 output tokens × $0.50/M, gpt-6-luna, no cached share) = about $0.07 per run. Cheaper trigger,
-chosen (inferred by agent): ask only after a round in which a field people's moves can change actually changed
-(`scripts/run_stop.py` already fingerprints those fields each round), since an unchanged world cannot newly reach a
-stopping point; in the Waltzman run that skips the quiet rounds and costs less. A stopping point that depends on something no move changes (a clock, elapsed rounds) would never be asked under that trigger, so J5 also asks once every 6 quiet rounds as a backstop; the round limit remains the hard stop.
+tokens × $0.10/M + 150 output tokens × $0.50/M, gpt-6-luna, no cached share) = about $0.07 per run. Trigger (normative correction, 2026-11-12): assess after every completed round as R11 requires. A fingerprint of mutable material fields is insufficient: a deadline, a delivered message or a pending offer can change whether the condition holds without such a field changing. A six-quiet-round backstop can miss the requested stopping point. Skip a repeated assessment only when all dependencies of that condition are known and unchanged; unrestricted natural-language conditions provide no such dependency proof, so the default is one assessment per completed round. Budget and round limits still apply before further work. This resolves the trigger by counterexample, without a comparative run.
 
 A cheaper option for this check, a Jev chance question at about 1/50 of the cost, is recorded in [the estimate rules plan](estimate_rules.md) (Q86); the choice stays with J5.
 
@@ -329,9 +393,12 @@ results below are in the run page's own words; the record files behind each are 
   nothing changed; after Approve both settle through the rule; after Reject both are refused, naming the
   rejected ruling. In the saved run "price times quantity", a ruling the language cannot express is refused with
   "no rule could express this" and listed as a language gap.
-- **A5 (J2):** Vik's offer leads to Rosa's own choice, accept or refuse, in her words; the ruling covers only
-  whether coins can change hands, and the coins move only if she signs. In the saved run "sawmill", a ruling that
-  would move another person's goods on the buyer's move alone goes to that person as an offer instead.
+- **A5 (J2 routing; Q96 lifecycle not built):** Vik's exact offer leads to Rosa's own acceptance or refusal;
+  acceptance of an unconditional payment does not imply a signature. If signing is an explicit settlement
+  condition, the whole bargain must satisfy current constraints atomically or be refused. The Q96 lifecycle
+  above and A5 in the acceptance record require both giver- and receiver-shaped rules to bind live offer terms,
+  reject altered/stale/duplicate offers, recheck delayed approval and feasibility, and record terminal
+  consumption/failure for replay. Earlier request routing is partial evidence, not a passing lifecycle contract.
 - **A6 (J4):** in the saved run "password", Mallory phishes Alice's password, the computer logs Mallory in, the
   run page shows "norm broken: only Alice should log in", and a consequence follows only after someone who saw it
   acts. In the port, the gate opens because it read a valid code, not because of who holds it, and the cargo
@@ -357,7 +424,7 @@ traced run.
 | Slice | Change | Epistemic state | Acceptance |
 | --- | --- | --- | --- |
 | J0 | Remove the 32-reaction cap; keep once-per-pair-per-moment; each saved run records the limit it ran under and replay uses it | fully specifiable now | A1, A7 |
-| J1 | Consequence report: pass 1 (`engine.discover` for the person acting and each person the attempt names, plus the named entities' current values) and pass 2 (a proposed rule test-run on a copy of the world: its net changes, blockers, chain length and stopping point, with the full chain in the run record) | specified by design: pass 1's selection is defined, but which named people and entities an attempt yields depends on the interpreter's reading, and no run has produced a pass 1 page yet | A2 (data) |
+| J1 | Consequence report: pass 1 (`engine.discover` for the person acting and each person the attempt names, plus the named entities' current values) and pass 2 (a proposed rule test-run on a copy of the world: its net changes, blockers, chain length and stopping point, with the full chain in the run record) | J1 is built and J2 retains report-delivery evidence; which named people and entities an attempt yields still depends on the interpreter. The complete acceptance demonstration and semantic benefit are not established merely by delivery | A2 (data) |
 | J2 | Judge: turn on Concordia's `EventResolution` for unmatched attempts, given the whole world plus pass 1; it proposes a rule, reads the pass 2 report, then confirms, revises once or withdraws; choices go to the person | conditional on J1 | A2, A3, A5 |
 | J3 | Ruling to rule: install the confirmed rule (or hold it with the attempt pending, per the world's setting); refuse with "no rule could express this" and record a language gap when the rules check rejects it | built 2026-11-10, live `cab821d` 2026-11-11 (`scripts/rulings.py`; `openspec/specs/ai-judge`; open defect Q96) | A4 |
 | J4 | Credentials as facts and norms as breakable rules (Ostrom's grammar) | exploration required | A6 |
@@ -496,11 +563,17 @@ Cost per run:
   existing rules check". The model review is not a pass mark: it returns findings only, and a build goes on
   without it when it fails (`scripts/review_rules.py:1-7`). So Decided 3 does not require it; the required part
   is the free declaration check and test run. Dropping the review for judge rulings costs about $0.05 per run
-  instead of $0.54. Chosen: keep it, inferred by agent, 2026-11-09. Basis: the sawmill case (Plain baseline)
-  shows the free checks pass a valid but wrong rule, and the review is the one existing step that reads a rule
-  against the world's description; $0.49 per run is small next to a wrong rule installed for everyone. J2
-  measures it on the saved sawmill case; if the review does not flag the single price there, J2 drops it. The
-  plain version (one judge call per attempt) would save only the confirm call ($0.02 per run).
+  instead of $0.54 (worked historical workload estimate above, not a new-run forecast).
+  **Revised design decision, 2026-11-12 (agent inference):** the extra model reviewer is optional;
+  defer it from the minimum required judge path. The sawmill counterexample proves that syntactic checks
+  do not establish semantic correctness, but does not prove that another model fixes the error. Require
+  the declaration checker, scripted test and trace inspection; do not claim they establish real-world
+  validity or all intended semantics. Retain semantic-review findings as advisory where the existing
+  runtime already produces them. Changing that runtime is a later implementation slice. Reintroducing
+  a mandatory reviewer requires a named failure it corrects that the simpler artifact-checking path
+  cannot handle. No comparative run is needed to settle the present design default.
+  The judge's test-report confirmation is also unvalidated for semantic benefit; existing behavior is
+  documented, not certified as necessary by its presence.
 
 ## Plain baseline (run 2026-11-09)
 

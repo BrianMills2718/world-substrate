@@ -182,22 +182,23 @@
  ],
  "coverage": {
   "model": "openrouter/anthropic/claude-sonnet-5.5",
-  "judged_at": "2026-11-10T11:40:30-0500",
+  "judged_at": "2026-11-12T15:55:47-0500",
   "asked_by_sha256": "9e28a5a1c8da2136f1b7397a5edda5b9f28068d99155ca0610a571045017e7f5",
-  "criteria_sha256": "79d17940dd67e6c6e403de393c1c1eb173d91c7ad93fec4ffca15267bff5996b",
+  "criteria_sha256": "8a4e6404e061fd04bfd4399ca5505e5ea9d9878f723029bfa436d2ce2e91aab2",
+  "cut_context_sha256": "ea3f5b4f0918730e4f426863e32eec7ba733c424c5234f1a72759ae1714d35f2",
   "outcome_sha256": "17635968670e98e36af82265c0baee95623fcc9cdcacd50b85d3e59a98298105",
   "criteria_judged": {
-   "A1": "0b6d45e7e950f4d920c89feee71db44972cabe57eee6481c14696c84d9c1326c",
-   "A2": "ad3cec22aec722688b8db411bcb1eb27d0d9e1a8f434c026a9d291753cea817a",
-   "A3": "423f591a255e49d08fe6cf723919a6a3db700b67adb6795677d28f3e3bb00c73",
-   "A4": "d3a69f5363b90e40f2d99826bffa10fd30b0328e3785ceda8598169530ba995d",
-   "A5": "1d094728e8d8e6addef72c6854bfcf4969659aab9f31cd35f6e33da304327f9a",
+   "A1": "aeeb4361d29905bfcc4470319282fd6e58111b266c943c4b3be2436db1a104fb",
+   "A2": "2ea8641b19b6a95bfc7cddfbd034daa549322f6955f9b22064639267d8741881",
+   "A3": "af7d2853cdc3f45b15a7866869a501a8e146c848685d84fd115f98b37989ad8e",
+   "A4": "743063fada6045199bf0e863b83b38e5f3436d8885a6ded3269537853b360702",
+   "A5": "2431129680d7d2e846a6d1b6839f62c426440d70e398822d5ea312b33f224f67",
    "A6": "507d89bc5d3bc1f01b3dbb8d0d6112b7fdeea117a501947e3cf24ac957a3e0dd",
-   "A7": "da8a2e655d2c3d699fa0ffa119f240be46064cafc4ff9241d76aa28a3fd22d80"
+   "A7": "33ba0255fa18f7e50052499b91e283f92dc65c087225686b31cf6fce0c6d8a75"
   },
   "deferrals_judged": [],
-  "trace_id": "planning-compliance/goal-coverage/20261110T114024-df4c25a9-run1",
-  "cost_usd": 0.028569999999999998,
+  "trace_id": "planning-compliance/goal-coverage/20261112T155538-e25cf512-run1",
+  "cost_usd": 0.041442,
   "requirements": [
    {
     "id": "R1",
@@ -219,42 +220,48 @@
     "requirement_id": "R1",
     "covered_by": [
      "A1",
-     "A4",
-     "A7"
+     "A7",
+     "A6"
     ],
-    "coverage_reason": "A1, A4 and A7 would fail unless rules and constraints, not only the judge, use Jev estimates during the run.",
+    "coverage_reason": "A1 has a rule's outcome (blade failure) depend on Jev's chance, and A7 has a constraint's passability do so, both outside the judge, so a build where only the judge uses Jev would fail them.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "The outcome line says rules and constraints propagate based on Jev, 'not only the judge's'."
+    "outcome_reason": "The outcome line says rules and constraints propagate based on Jev 'not only the judge's', keeping this."
    },
    {
     "requirement_id": "R2",
     "covered_by": [
      "A1",
-     "A7"
+     "A4",
+     "A7",
+     "A6"
     ],
-    "coverage_reason": "A1 checks that a rule's outcome depends on a Jev-estimated chance with knock-on effects, and A7 checks that a constraint's pass or refusal depends on one; both fail otherwise.",
+    "coverage_reason": "A1 covers rules whose outcomes propagate from Jev, A7 covers constraints that do, A4 covers writing such rules, and A6 covers picks and amounts, so missing either rules or constraints would fail.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "The outcome line keeps both rules and constraints propagating based on Jev, including knock-on effects."
+    "outcome_reason": "The outcome line names 'certain types of rules and constraints' that propagate based on Jev, keeping this."
    }
   ],
   "agreement": {
-   "runs": 2,
+   "runs": 3,
+   "rule": "a gap counts only when every run finds it; a split is unsure",
    "agreed": true,
    "trace_ids": [
-    "planning-compliance/goal-coverage/20261110T114024-df4c25a9-run1",
-    "planning-compliance/goal-coverage/20261110T114024-df4c25a9-run2"
+    "planning-compliance/goal-coverage/20261112T155538-e25cf512-run1",
+    "planning-compliance/goal-coverage/20261112T155538-e25cf512-run2",
+    "planning-compliance/goal-coverage/20261112T155538-e25cf512-run3"
    ],
    "costs_usd": [
-    0.01428,
-    0.01429
+    0.013794,
+    0.013594,
+    0.014054
    ]
   },
+  "unsure": [],
   "trace": "coverage-trace.json"
  }
 }

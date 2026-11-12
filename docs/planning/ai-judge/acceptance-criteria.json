@@ -145,26 +145,37 @@
   },
   {
    "id": "A5",
-   "criterion": "Whether a bribe works is decided by the person being bribed, not by the judge or a rule.",
+   "criterion": "A voluntary exchange settles only after the named people choose its exact terms, once, under the current world constraints; installing or approving a rule cannot supply consent or revive an expired offer.",
    "grounded_in": [
-    "Decided 4 (Brian 2026-11-09: \"whether the bribe works seems like should be a deicsion made by the person being bribed\"); requirements R5, R8"
+    "Decided 4 (Brian 2026-11-09: \"whether the bribe works seems like should be a deicsion made by the person being bribed\"); requirements R5, R8.",
+    "Agent-inferred implementation contract: docs/plans/ai_judge.md, Q96 voluntary-exchange lifecycle (2026-11-12). Offer records, expiry and fingerprint binding implement the approved decision boundary; they are not additional verbatim user requests."
    ],
    "demonstration": [
-    "On the port run page (https://brianmills.dev/world-builder/?run=P0ds3rwI2r9a), open \"Every attempt\", click Vik's offer and follow it to what decided whether Rosa signs and whether the coins moved.",
-    "Open the saved ruling \"sawmill\" (`evidence/ai-judge/j2/sawmill/ruling.json`, with its TRACE_READ.md), where the sawmill offers to buy the logger's cedar logs, and follow the offer."
+    "Open the planned repaired port exchange demonstration. Select Vik's offer, read its id, giver, named respondent, exact amount/conditions, terms hash and expiry, then follow the delivered observation to Rosa's own acceptance or refusal.",
+    "Compare acceptance of an unconditional coin offer with an offer explicitly conditional on a signed release. In both, open the signature action's actual feasibility result separately from Rosa's willingness to accept.",
+    "Open both saved regression cases: the giver-shaped rule from install-default and the receiver-shaped rule from wait-approve. Follow the repaired versions: an unaccepted giver move cannot settle, and Ines cannot take Vik's coins without Vik's offer to her.",
+    "Open the altered-terms cases: the wrong respondent, substituted giver, changed amount or changed terms hash attempts to accept. Inspect each refusal and unchanged asset balances. Include an attempted direct submission, not just an absent menu item.",
+    "Open the Wait for my approval cases. Compare approval of an unaccepted offer, timely approval of accepted_pending_rule, and approval after the offer expires or is withdrawn. Inspect the rule fingerprint attached to the pending offer.",
+    "Open a case where the held rule is revised to different effects and a case where it is rejected. Read why the old offer cannot settle and its terminal state.",
+    "Open a case accepted by both people but infeasible at settlement because resources, location or another blocker changed. Inspect the failed settlement, unchanged balances and terminal failed state.",
+    "Open a successful settlement, then its duplicate acceptance/submission in the same branch. Compare the one settlement event id, consumed offer and asset balances; replay the recorded branch and inspect its recorded offer lifecycle.",
+    "Open expiry/withdrawal cases and the final run record at a budget or round stop. Confirm pending offers and terminal dispositions are visible; distinguish replay/fork of an old snapshot from a second settlement in the current branch."
    ],
-   "expected": "Rosa's own choice, accept or refuse, is shown in her words; the ruling covers only whether coins can change hands, and the coins move only if she signs. Sawmill: the offer reaches the logger as the logger's choice; no logs move on the sawmill's move alone.",
-   "failure_example": "Broken: the ruling or a rule says the bribe succeeds or fails; coins move before or without Rosa signing; a rule moves the logger's logs without the logger agreeing (what the plain version wrote, evidence/ai-judge/plain-baseline/pencil-sawmill-buys-logs.json). Working: Rosa decides, in her words, and the coins move only with her signature.",
+   "expected": "The proposer assents to immutable terms through the specific offer; only its named respondent can accept or reject it. Acceptance of coins is not itself a signature: an unconditional transfer may settle while a later signature is refused; if signing is an explicit settlement condition, the entire bargain must be expressible and feasible atomically or be refused as a blocker/language gap. Both giver- and receiver-shaped voluntary rules use the same guard. Wrong parties, altered terms, missing/expired/withdrawn offers and duplicate acceptances cannot settle. Timely accepted_pending_rule settles only after exact-rule approval and fresh feasibility checks; approval alone supplies no consent, revised effects require a new offer/response, and rejected rules terminate pending offers. Success publishes one atomic asset change with consumed offer/event id; infeasibility publishes no asset change and terminal failed state. Recorded replay preserves these decisions without model calls or invented consent. Historical runs without offer records retain their old semantics and do not certify the repaired contract.",
+   "failure_example": "Broken: the giver rule settles without acceptance; a receiver rule takes unoffered goods; a hidden discovery item is still executable by direct submission; owner approval revives an expired offer; different approved effects reuse old consent; changed amount/giver is accepted; a failed settlement leaves partial effects; duplicate acceptance settles twice; or replay invents a new response. Also broken: treating acceptance of an unconditional payment as proof Rosa signed. Working: both choices bind exact terms, all entry paths enforce the lifecycle, constraints remain authoritative, and one current-branch offer settles at most once.",
    "representation": {
-    "view": "composite-linked-view: the run page's attempt row opening the ruling and the person's choice it was routed to",
+    "view": "composite-linked-view: an offer lifecycle row linked to original terms, both actors' decisions, held-rule fingerprint/approval, settlement checks, asset changes and replay provenance; compare positive and negative cases by shared offer/event ids",
     "router_record": "docs/planning/ai-judge/router/run-page.recommendation.json"
    },
-   "entrypoint": "https://brianmills.dev/world-builder/?run=P0ds3rwI2r9a (port bribe); sawmill ruling: evidence/ai-judge/j2/sawmill/ruling.json",
-   "status": "built",
-   "status_note": "Built in J2 (PR #367, merged b8d26b5, live 2026-11-10). The links are fresh runs on the deployed build, made with the owner allowance (measured cost_usd from their run logs: port $0.0026, blocked chain $0.0027, long line $0.0153, empty purse $0.0009); the judge's wording and verdict vary from run to run (four live port runs: one found no new rule needed, one withdrew, two confirmed, both with the coin rule). The saved earlier runs with their trace reads stay in evidence/ai-judge/j2/.",
+   "entrypoint": "planned",
+   "status": "not built",
+   "status_note": "The complete Q96 offer-lifecycle contract and its human-visible demonstration are unbuilt. J2 implemented request routing, and its saved port response shows Rosa inspecting the crate rather than transferring coins; that is partial evidence only. J3 installed/held rules work, but install-default bypasses receiver choice and wait-approve allows unoffered taking. Those records remain failure evidence, not acceptance of the repaired design. This documentation revision did not run or judge new simulations.",
    "evidence": [
-    "Rosa's round 2 belief and move in evidence/ai-judge/j2/port/run-log.jsonl (she inspected the crate; the coins did not move), scripts/concordia_residents.py; routing as the request path of #326; the sawmill ruling names the logger and writes the rule as the logger's move (evidence/ai-judge/j2/sawmill/).",
-    "Plain-version failure against Decided 4: evidence/ai-judge/plain-baseline/pencil-sawmill-buys-logs.json (its ruling says the logger's choice; its rule moves the logs on the sawmill's move alone); docs/plans/ai_judge.md, Plain baseline."
+    "Design authority: docs/plans/ai_judge.md, Q96 voluntary-exchange lifecycle (2026-11-12); tools/planning/questions_src.py Q96 and Q94 remain open for implementation evidence.",
+    "Partial prior routing: evidence/ai-judge/j2/port/run-log.jsonl and TRACE_READ.md; evidence/ai-judge/j2/sawmill/ruling.json. Rosa's round 2 inspection and the logger's named choice do not prove durable offer enforcement.",
+    "Giver-shape failure: evidence/ai-judge/j3/install-default/TRACE_READ.md; receiver-shape failure: evidence/ai-judge/j3/wait-approve/TRACE_READ.md, r4-e00001 (Ines takes unoffered Vik coins).",
+    "Earlier plain-version failure: evidence/ai-judge/plain-baseline/pencil-sawmill-buys-logs.json. Rule wording names the logger's choice while effects move goods on the buyer's move.",
+    "Planned repaired cases: both shapes, wrong parties/terms, delayed/revised/rejected approval, expiry/withdrawal, infeasible settlement, duplicate consumption and replay. No retained repaired evidence exists yet."
    ]
   },
   {
@@ -245,23 +256,24 @@
  ],
  "coverage": {
   "model": "openrouter/anthropic/claude-sonnet-5.5",
-  "judged_at": "2026-11-10T00:49:45-0500",
+  "judged_at": "2026-11-12T16:05:31-0500",
   "asked_by_sha256": "bb5b142a88c2a3c3f12bac301e5932fc816d696d27c4e11fc270d8d75fdcf7a7",
-  "criteria_sha256": "3df09c363dcb69f0aac5cf36e915d0ea94c553e210b0b92b7a8f42a11ef97ebb",
+  "criteria_sha256": "eeaf41c023092c2c05ee202c8298f8ad907a7eb551ea7ed81113750cf5517194",
+  "cut_context_sha256": "0a52569c6defbbedf3af63d39c6aafe89de84c413b656835d0998b03f934f20f",
   "outcome_sha256": "04d73ee1c755825f9994c874dff8c9fb2ffe03b1e4254ee414a18839377ebe39",
   "criteria_judged": {
-   "A1": "e93f8bb2536b81d5a09658c92e399b4ccb783d535f14b302761ae896047afcd6",
-   "A2": "dc45e1e4d8a19b0f9d397ff976d418e44f5709f853a16921b77d5c83bca8fb6a",
-   "A3": "3adbeac8dfb3acd2db6aa66f5004ea1aaa8356d0cb317407d43c99ed7372d0c4",
-   "A4": "424fa2dfab88006dd8adfe62434cff7e27f7f0ee7a8d6af663faac57f6dbf90a",
-   "A5": "bae82268e1ccd810abd3460171b395dc449835f2f3accc229bc8cc5d369f67cf",
-   "A6": "2bbc3bcc47b1552e3038b8bf56722beb83d49ed964d3a7d5a8dfeabf45fa3ef1",
-   "A7": "0276ed68b1112e4c857b841c011dd1a19da18ec00ed2cf5416e646e919cbbd83",
-   "A8": "bd495c86addbdd07c09184dd8e040aa526c2984c8efdade3a04d141b2cd7d371"
+   "A1": "1d6743658c022f3bfddf14812c78ba927b3272da99f4444b749162c51c1a92e1",
+   "A2": "09424b89e4edd42546ab1d046206802b70b9ab73916815818738fad40cb1145d",
+   "A3": "3e34aa2d5239430fd648e69d48b362bb3270d28b1838709d0aaad791e3583a50",
+   "A4": "9d6de785ba82c18ab388526f3b2d8c96249630198e8bb9ca573209752eaa562e",
+   "A5": "b2ffc1cdead317e272b9741f5ad54a94d4e4de8537433dd1d21d2be9fefe601a",
+   "A6": "9705925ebf6253aaf804580727aff76d9a2150806f0fce6553cad7ffddd136bc",
+   "A7": "b9a966e47a55bcd422f072584e29a7b419b800aa347dca57bf2873623c368d47",
+   "A8": "005290feba42bf3689408f29ff346c97b115f7c0d9e66e81240699421d19bdf0"
   },
   "deferrals_judged": [],
-  "trace_id": "planning-compliance/goal-coverage/20261110T004929-2ad5f055-run1",
-  "cost_usd": 0.07749400000000001,
+  "trace_id": "planning-compliance/goal-coverage/20261112T160519-911a60a9-run1",
+  "cost_usd": 0.10511999999999999,
   "requirements": [
    {
     "id": "R1",
@@ -359,10 +371,9 @@
    {
     "requirement_id": "R1",
     "covered_by": [
-     "A1",
-     "A2"
+     "A1"
     ],
-    "coverage_reason": "A1 fails if facts lack worked-out implications and blockers (truck without fuel shows the blocker); A2 shows blockers handed to the judge.",
+    "coverage_reason": "A1 fails unless changed facts set off implications and blockers are shown, including the blocked truck case.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
@@ -372,159 +383,175 @@
    {
     "requirement_id": "R2",
     "covered_by": [
-     "A1"
+     "A1",
+     "A7"
     ],
-    "coverage_reason": "A1 requires every change to set off all knock-on effects automatically, with the fifty-chains run summary failing otherwise.",
+    "coverage_reason": "A1 requires automatic propagation of the whole chain, and A7 requires that there is no step limit on new runs.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "The engine works out every knock-on effect, however long the chain."
+    "outcome_reason": "The outcome says the engine works out every knock-on effect however long the chain."
    },
    {
     "requirement_id": "R3",
     "covered_by": [
      "A1",
-     "A7"
+     "A2"
     ],
-    "coverage_reason": "A1's saved run of 50 chains of 100 steps must finish with 5,000 steps; A7 removes the limit.",
+    "coverage_reason": "A1 runs 50 chains of 100 links and A2 checks a 5,000-step chain reaching the judge.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "Outcome names 100 links and 50 at once."
+    "outcome_reason": "The outcome names 100 links and 50 at once."
    },
    {
     "requirement_id": "R4",
     "covered_by": [
      "A2"
     ],
-    "coverage_reason": "A2 checks the judge is given the worked-out facts, blockers and test run of the proposed rule before answering.",
+    "coverage_reason": "A2 checks the judge reads the facts, blockers, net changes and test run before answering, so failing to deliver them fails it.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "Outcome says the results are delivered to an AI judge with the blockers."
+    "outcome_reason": "The outcome says results are delivered to an AI judge with the blockers."
    },
    {
     "requirement_id": "R5",
     "covered_by": [
      "A5"
     ],
-    "coverage_reason": "A5 fails if the judge or a rule decides the bribe rather than the bribed person's own choice.",
+    "coverage_reason": "A5 requires that only the named respondent chooses to accept the exact terms of an exchange, which covers the bribed person deciding.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "Outcome says the person being bribed decides whether a bribe works."
+    "outcome_reason": "The outcome says the person being bribed decides whether a bribe works."
    },
    {
     "requirement_id": "R6",
     "covered_by": [],
-    "coverage_reason": "No criterion asks for a discussion of rules versus decisions; it is a process request.",
+    "coverage_reason": "No criterion asks for a discussion of rules versus decisions, and no deferral applies.",
     "extent": "none",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "Process kind, not an outcome line item."
+    "outcome_reason": "This is a process requirement and the outcome line does not need to keep it."
    },
    {
     "requirement_id": "R7",
     "covered_by": [
      "A6"
     ],
-    "coverage_reason": "A6 fails if the gate's code reading is not kept apart from the cargo norm about signed release.",
+    "coverage_reason": "A6 requires a barcode gate that opens for any valid code to be kept apart from the cargo norm that only signed cargo should pass.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "Outcome says mechanism, credential holder and norm stay separate."
+    "outcome_reason": "The outcome keeps mechanism, credential and norm separate."
    },
    {
     "requirement_id": "R8",
     "covered_by": [
      "A6"
     ],
-    "coverage_reason": "A6's password run fails unless Mallory can log in with the phished password and the norm breach is shown.",
+    "coverage_reason": "A6 requires that a phished password works for whoever holds it and that the norm breach is recorded.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "Outcome says a password learned by social engineering works for whoever holds it."
+    "outcome_reason": "The outcome says a password learned by social engineering works for whoever holds it."
    },
    {
     "requirement_id": "R9",
     "covered_by": [
      "A6"
     ],
-    "coverage_reason": "A6 requires Ostrom's grammar of institutions with each norm and rule in its parts.",
+    "coverage_reason": "A6 requires Ostrom's grammar of institutions, with norms and rules written in its parts.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "Outcome cites Ostrom's grammar."
+    "outcome_reason": "The outcome names Ostrom's grammar."
    },
    {
     "requirement_id": "R10",
     "covered_by": [
      "A4"
     ],
-    "coverage_reason": "A4 requires the per-world setting for installing versus holding rulings, which both options are demonstrated.",
+    "coverage_reason": "A4 requires the per-world setting for installing a ruling at once or waiting for approval.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "Outcome says installed by default or held for approval by the world's setting."
+    "outcome_reason": "The outcome says rulings are installed or held by the world's setting."
    },
    {
     "requirement_id": "R11",
     "covered_by": [
      "A8"
     ],
-    "coverage_reason": "A8 builds a world with a spend limit and checks it stops with the budget message.",
+    "coverage_reason": "A8 requires a world to stop at a spending limit and says so.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "Outcome mentions spending limits."
+    "outcome_reason": "The outcome says the world has spending limits."
    },
    {
     "requirement_id": "R12",
     "covered_by": [
      "A8"
     ],
-    "coverage_reason": "A8 ticks Stop after 3 rounds and checks the run stops at round 3.",
+    "coverage_reason": "A8 requires a world to stop after a set number of rounds.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "Outcome mentions round limits."
+    "outcome_reason": "The outcome says the world has round limits."
    },
    {
     "requirement_id": "R13",
     "covered_by": [
      "A8"
     ],
-    "coverage_reason": "A8 builds a team world with a plain-words stopping point the judge assesses and checks the stop and reason.",
+    "coverage_reason": "A8 requires a plain-words stopping point that the judge assesses after each round.",
     "extent": "full",
     "missing": "",
     "deferral": 0,
     "in_outcome": true,
-    "outcome_reason": "Outcome says a stopping point in plain words that the judge assesses after each round."
+    "outcome_reason": "The outcome says the world can stop at a stopping point in plain words that the judge assesses after each round."
    }
   ],
   "agreement": {
-   "runs": 2,
-   "agreed": true,
+   "runs": 3,
+   "rule": "a gap counts only when every run finds it; a split is unsure",
+   "agreed": false,
    "trace_ids": [
-    "planning-compliance/goal-coverage/20261110T004929-2ad5f055-run1",
-    "planning-compliance/goal-coverage/20261110T004929-2ad5f055-run2"
+    "planning-compliance/goal-coverage/20261112T160519-911a60a9-run1",
+    "planning-compliance/goal-coverage/20261112T160519-911a60a9-run2",
+    "planning-compliance/goal-coverage/20261112T160519-911a60a9-run3"
    ],
    "costs_usd": [
-    0.038642,
-    0.038852
+    0.03451,
+    0.03554,
+    0.03507
    ]
   },
+  "unsure": [
+   {
+    "requirement_id": "R5",
+    "requirement": "bribe decided by person bribed",
+    "runs_with_gap": 2,
+    "runs": 3,
+    "gaps": [
+     "run 2: R5 \"bribe decided by person bribed\": only partly covered by A4; no criterion asks for A4 only shows an attempt going to the person whose choice it is; no criterion checks specifically that the bribe works only by the bribed person's decision.",
+     "run 3: R5 \"bribe decided by person bribed\": only partly covered by A4; no criterion asks for A4 does not state that the bribed person decides; the bribe is not demonstrated in it. A5 covers voluntary exchange generally, but not specifically a bribe."
+    ]
+   }
+  ],
   "trace": "coverage-trace.json"
  }
 }

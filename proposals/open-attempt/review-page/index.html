@@ -118,7 +118,7 @@ a{color:var(--have)}
 <div class="tablewrap"><table>
 <tr><th>Slice</th><th>State</th><th>What lands</th><th>Shown by</th></tr>
 <tr><td>1</td><td><b style="color:var(--have)">Built</b>, merged (pull requests 239, 242 and 247); <b style="color:var(--miss)">not done</b>: the live airfield run (2026-10-26) moved every resident each round, but the helicopter was unreachable (issue 244), so two acceptance checks wait on a scripted run on the saved airfield world, and the run page does not yet show each own-words attempt (Q26)</td><td>The rules writer makes places, ways between them and walls; then people say attempts in their own words; the interpreter; "nothing comes of it" for attempts no rule covers, listed for the rules writer</td><td>The wall example, and the list of unmatched attempts in the build record</td></tr>
-<tr><td>2</td><td><b style="color:var(--have)">Built</b>; you allowed it on 2026-10-26 (Q27, Decision 009); <b style="color:var(--miss)">not done</b>: the glass chain passes in tests, and a live generated airfield world still has to show it</td><td>Knock-on effects run to the end inside one moment, capped at 32, each firing at most once per thing</td><td>The glass example: five events in one moment, each citing what caused it</td></tr>
+<tr><td>2</td><td><b style="color:var(--have)">Built</b>; you allowed it on 2026-10-26 (Q27, Decision 009); <b style="color:var(--miss)">not done</b>: the glass chain passes in tests, and a live generated airfield world still has to show it</td><td>Knock-on effects run to the end inside one moment, each firing at most once per thing; J0 removed the extra cap for new runs</td><td>The glass example: five events in one moment, each citing what caused it</td></tr>
 <tr><td>3</td><td><b style="color:var(--miss)">Planned</b></td><td>Skill rolls, seeded and recorded, read only from recorded skill</td><td>The helicopter example, and the same words giving different dice at skill 0 and 3</td></tr>
 </table></div>
 
@@ -128,7 +128,7 @@ a{color:var(--have)}
 <tr><td>The interpreter turns "fly the helicopter" into a safe walk</td><td>It must quote the words behind each part; a test checks this exact case; the run's read-through samples ordinary attempts</td></tr>
 <tr><td>The interpreter decides what succeeds</td><td>Its answer has no place to say success or failure; only the rules refuse</td></tr>
 <tr><td>Fluent wording makes an untrained pilot land safely</td><td>The roll reads only the recorded skill; the attempt's words never reach it</td></tr>
-<tr><td>A knock-on effect feeds itself forever</td><td>Each rule fires once per thing per moment (tested), at most 32 in all; over the cap the whole moment is refused and nothing changes</td></tr>
+<tr><td>A knock-on effect feeds itself forever</td><td>Each process and thing pair fires once per moment (tested). New runs have no extra cap; pre-J0 runs replay under their recorded cap of 32.</td></tr>
 <tr><td>Replays of saved worlds change</td><td>Interpretations and dice are stored, so a replay never calls the AI or rolls again; all existing replay tests must pass</td></tr>
 </table></div>
 
@@ -173,14 +173,17 @@ a{color:var(--have)}
 <!-- types:end -->
 <!-- package:start -->
 <h2>The planning package behind this page</h2>
-<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Checks run 2026-11-10 on branch plan/estimate-rules (origin/main d89a446 plus the estimate-rules planning change; subject 4b5bda9). The durable-document and wiki-cap failures are the same on origin/main d89a446 (tracked by Q77)); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
+<p class="lede">The repository's checks, its open questions and its diagrams, from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/planning-package.json">planning-package.json</a>. Check results are from <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/checks.txt">checks.txt</a> (Current normative-readiness checks, 2026-11-12. Working tree: world-substrate-normative-readiness. These are scoped structural checks, not simulator fidelity or full compliance. Current make check result is recorded below; the older runtime-test result remains historical); orange marks a check that does not pass. Links to GitHub point at the main branch, so files this change adds open only after it merges.</p>
 <div class="tablewrap"><table class="pkg"><thead><tr><th>Check</th><th>Counts</th><th>Result</th></tr></thead><tbody>
-<tr><td>durable documents (arc42)</td><td>findings 16 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
+<tr><td>trace reads</td><td>runs 47, problems 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>durable documents (legacy arc42 checker)</td><td>findings 8, legacy format mismatches 8, stale rule reviews 0 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
+<tr><td>wiki and Markdown cap</td><td>md files 183, cap 183, unreachable 0, durable findings 8 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
 <tr><td>project navigation</td><td>findings 0</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>repository format</td><td>compliant 1, of 1</td><td><span class="tag have">exit 0</span></td></tr>
-<tr><td>trace reads</td><td>runs 38, problems 0</td><td><span class="tag have">exit 0</span></td></tr>
-<tr><td>project check (tests, system model, docs)</td><td>tests run 891, failed 0, skipped 2</td><td><span class="tag have">exit 0</span></td></tr>
-<tr><td>wiki and Markdown cap</td><td>md files 162, cap exception, unreachable 28, not linked 10, more than two links deep 18, durable findings 16 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
+<tr><td>semantic spectrum</td><td>passed 9, failed 0, project terms 80, planning terms 13</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>Lockstep source provenance</td><td>brian 16, inferred 83, other 48, missing 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>planning routes</td><td>records 4, passed 4, failed 0</td><td><span class="tag have">exit 0</span></td></tr>
+<tr><td>project make check</td><td>passed 938, skipped 2, subtests passed 225, specs passed 13</td><td><span class="tag have">exit 0</span></td></tr>
 </tbody></table></div>
 <h3 class="sub">Open questions: 46 open, 50 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
@@ -238,7 +241,7 @@ a{color:var(--have)}
 <!-- package:end -->
 <!-- maps:start -->
 <h2>The maps behind the plan</h2>
-<p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 79 ideas, 134 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
+<p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 80 ideas, 138 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
 <div class="graph" id="map-domain"></div>
 <p class="mapinfo" id="map-domain-info">Click an idea to see what it is and where it lives in the code.</p>
 <p class="lede">The open-questions map: each open question beside the ideas it touches (46 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
@@ -260,7 +263,7 @@ wall:{title:"Sam walks into the wall",setup:"Airfield office. A brick wall stand
 ["have","interpret","Move, to the hangar, through the brick wall. Words used: \"walk\", \"through the wall\", \"into the hangar\".","{kind: move, roles: {to: hangar, way: brick-wall}, quoted_span: …}"],
 ["have","check","Refused: the check \"the way is passable\" fails on the brick wall. Nothing changes.","status: refused · failed check: the way is passable (brick-wall)"],
 ["have","notice","Sam is told the move was refused and why.","observation to sam"]],
-out:"Nothing is blocked before it happens: Sam really tried, and the wall is why it failed. Before slice 1, Sam was never offered the wall at all. Slice 1 taught the rules writer to make places, ways and a wall check; a regenerated airfield world refuses this walk with \"the way is passable\" failed. One known limit: a way works in one direction only, so Sam could not walk back through a door (open question Q25)."},
+out:"Nothing is blocked before it happens: Sam really tried, and the wall is why it failed. Before slice 1, Sam was never offered the wall at all. Slice 1 taught the rules writer to make places, ways and a wall check; a regenerated airfield world refuses this walk with \"the way is passable\" failed. One known limit: a way works in one direction only, so Sam could not walk back through a door (Q25: design settled by argument; F6 implementation still pending)."},
 glass:{title:"Ana knocks the glass off the desk",setup:"A glass of water sits on the desk in the office. Lee is in the hangar next door.",stages:["decide","attempt","interpret","check","apply","react","notice"],ev:[
 ["have","attempt","\"I sweep my arm across the desk.\"","attempt"],
 ["have","interpret","Push, the glass off the desk.","{kind: push, roles: {pusher: ana, thing: glass_1}}"],

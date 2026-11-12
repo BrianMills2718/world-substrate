@@ -1,0 +1,1237 @@
+{
+  "record_type": "goal_coverage_trace",
+  "trace_id": "planning-compliance/goal-coverage/20261112T155835-df99ee83-run1",
+  "task": "planning_compliance.goal_coverage",
+  "requested_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "judged_at": "2026-11-12T15:58:40-0500",
+  "prompt_template": "plugins/company-planning/skills/planning-compliance/scripts/coverage_prompt.yaml",
+  "cut_source": "stored",
+  "calls": [
+    {
+      "trace_id": "planning-compliance/goal-coverage/20261112T155835-df99ee83-run1",
+      "model": "openrouter/anthropic/claude-sonnet-5.5",
+      "status": "valid",
+      "arguments": {
+        "model": "openrouter/anthropic/claude-sonnet-5.5",
+        "reasoning_effort": "medium",
+        "model_policy": "enforce_allowlist",
+        "task": "planning_compliance.goal_coverage",
+        "trace_id": "planning-compliance/goal-coverage/20261112T155835-df99ee83-run1",
+        "max_budget": 0.5,
+        "timeout": 300,
+        "logical_timeout": 300,
+        "fallback_models": [
+          "openrouter/openai/gpt-6-luna"
+        ]
+      },
+      "observability": "llm_client observability db (~/projects/data/llm_observability.db), by trace_id",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You check whether a set of acceptance criteria still asks for what a person asked for.\nAgents write acceptance criteria from a person's request, and they tend to rewrite it into\nsomething easier to build: a word like \"graph\" or \"across documents\" disappears and nothing\nnotices. Your job is to notice.\n\nStep 1. Split every quote under ASKED_BY into its distinct requirements: each separate thing\nthe delivered outcome must be, do or show. Split finely: \"a shared map of every store that\nstaff can filter and print\" is five requirements (a map; shared; every store; can be\nfiltered; can be printed). Keep the person's own nouns: a requirement named \"map\" stays\n\"map\", never \"list\" or \"view\". For each requirement give:\n  - id: R1, R2, ... in order;\n  - requirement: a short name in the person's own words (2 to 6 words);\n  - quote: the exact words from the quote that state it, copied character for character\n    (keep their typos and their word order); quote only ASKED_BY words, never DEFERRALS or\n    CONTEXT, which are not requirements;\n  - asked_by_index: the 1-based number of the ASKED_BY quote it comes from;\n  - kind: \"outcome\" (something the delivered thing must be or do), \"constraint\" (a rule about\n    how it is shown or built that a criterion can still check), or \"process\" (a statement\n    about how the planning work or the acceptance criteria themselves are written, which no\n    demonstration of the outcome could show). Use \"process\" only when no working interface\n    could ever demonstrate it.\nEach quote may carry a CONTEXT line: where it was said and what it answered (the message it\nreplied to, a link it pasted, the list it approved). Use CONTEXT only to resolve what the\nquote's own words point at: \"#1\", \"this\", \"it\", \"all your recommendations\". Never cut a\nrequirement from CONTEXT alone, and never quote it; every quote comes from the person's words.\n  - \"shouldnt #1 be automated?\" with CONTEXT saying #1 was \"catch up the archive\" is the\n    requirement \"#1 automated\", read as the archive catching up by itself.\n  - A quote that only approves or accepts what someone proposed (\"i approve all your\n    recommendations\", \"yes do that\") is not a requirement for an approval. When CONTEXT lists\n    what was approved, cut one requirement per approved item, each quoting the approving\n    words; when it does not, cut it once as kind \"process\".\nWhen two quotes state the same requirement, list it once and quote the clearer one.\nWhen the user message lists REQUIREMENTS ALREADY CUT, skip Step 1: those are the requirements, fixed.\nDo not split, rename, renumber or re-quote them; answer only with one mapping per listed id, using\nthose ids.\n\nStep 2. For each requirement, decide which criteria cover it. A criterion covers a\nrequirement only when its criterion, demonstration or expected result would fail if the\nrequirement were not met. A criterion that is merely compatible with the requirement, or\nthat is about something nearby, does not cover it. For example a criterion \"open the store\npage and see every store's address\" does not cover \"map\": a list of addresses passes it. List the\ncovering criterion ids, possibly none, and say why in one sentence. Then give the extent:\n\"full\" when the listed criteria together would fail for any way of not meeting the\nrequirement; \"partial\" when they check only one part or one case of it, so something that\nmisses the rest still passes (say in \"missing\" what is left unasked); \"none\" when no\ncriterion covers it.\n\nStep 3. If a requirement is covered by no criterion, check DEFERRALS. A requirement is\ndeferred only when a deferral's words, said by the person, approve leaving that requirement\nout for now. Give the deferral's number, or 0 when none applies. Never treat an agent's note,\na plan or a criterion's own wording as a deferral.\n\nStep 4. For each requirement of kind \"outcome\", say whether the OUTCOME line keeps it, in\nsubstance, and why. An outcome line that says \"staff look up any store\" does not keep\n\"map\", \"filter\" or \"print\".\n\nBe strict and literal. Judge only from the text given."
+        },
+        {
+          "role": "user",
+          "content": "ASKED_BY (the person's own words):\n\n1. Brian, 2026-10-24: <<<attempt to walk through a wall but these should not be successful>>>\n   CONTEXT: docs/plans/open_attempt.md:103, Why, in one example; exact quoted fragment.\n\n2. Brian, 2026-10-24: <<<should probably crash it>>>\n   CONTEXT: docs/plans/open_attempt.md:104, exact quoted fragment about someone who does not know how to fly a helicopter. The surrounding explanation is not presented as a verbatim quote.\n\n3. Brian, 2026-10-25: <<<yes>>>\n   CONTEXT: docs/plans/open_attempt.md:106 and docs/planning/open-attempt/planning-package.json request: approval of the short design for attempts, unmatched fallback, knock-on effects and skill rolls.\n\n\n\nREQUIREMENTS ALREADY CUT (fixed; map each id, do not cut again):\n\nR1 [outcome] \"attempt to walk through wall\", quote 1: <<<attempt to walk through a wall>>>\n\nR2 [outcome] \"such attempts not successful\", quote 1: <<<these should not be successful>>>\n\nR3 [outcome] \"unskilled helicopter flying crashes\", quote 2: <<<should probably crash it>>>\n\nR4 [process] \"approval of attempts design\", quote 3: <<<yes>>>\n\n\nOUTCOME (the agent's one-line restatement):\n<<<People can attempt actions in their own words, including walking through a wall or trying to fly without knowing how. The world records and refuses impossible attempts, completes inspectable same-moment consequences, and uses declared skill and recorded randomness for risky outcomes rather than the model's fluent wording. In the declared untrained-helicopter scenario, the roll makes a crash probable, without guaranteeing it or allowing fluent wording to supply skill. The user can inspect these distinctions and replay the full record.>>>\n\nCRITERIA:\n\n[A1] \n  criterion: I can see that interpreting an attempt identifies a move but does not decide whether it succeeds.\n  demonstration: (1) Open the planned airfield attempt inspector and select Sam's wall attempt. (2) Compare the original words, interpreted action/fields and separate world-rule result. (3) Open the interpreter contract summary linked from that row. \n  expected: The reading contains the attempted move and grounded fields, with no success/outcome field; the wall refusal appears only as the world-rule result.\n\n[A2] \n  criterion: Trying to fly the helicopter is not silently interpreted as walking somewhere.\n  demonstration: (1) Open the planned saved airfield attempt case with the words Fly the helicopter to the coast. (2) Read the original words beside the interpreted action and its quoted evidence. (3) Read the world outcome separately. \n  expected: The reading identifies the intended piloting action and quotes fly the helicopter; it never substitutes a move/walk. If the world has no such action, the limitation is explicit rather than a fabricated successful flight.\n\n[A3] \n  criterion: A person can try to walk through the wall, and the world refuses with the wall named.\n  demonstration: (1) Open the planned saved airfield wall-attempt case. (2) Select Sam's own-words attempt to walk from the office through the wall. (3) Read the failed requirement and compare Sam's place before and after. \n  expected: The attempt is recorded; the failed requirement names the wall and the blocked crossing; Sam stays on the original side and no partial effects occur.\n\n[A4] \n  criterion: An attempt with no matching rule is visible and does not silently change the world.\n  demonstration: (1) Open the retained S1 airfield record linked in evidence and read round 1's unmatched invitation (r1-e00002). (2) In the planned attempt inspector, open the same event and its unmatched-attempt list entry. (3) Compare the displayed before/after state and the reason no installed action matched. \n  expected: The original attempt and unmatched reason are visible; the S1 fallback records no changes and identical world hashes. On later judged runs, any proposed ruling is shown separately and changes require an installed rule; a later judge outcome must not be mislabeled as the original no-rule event.\n\n[A5] \n  criterion: Knocking the glass down makes it fall, break, spill and make a sound in one inspectable moment.\n  demonstration: (1) Open the planned generated airfield glass-chain case. (2) Select the push and follow its same-moment causes through fall, break, spill and sound. (3) Open the neighbour's observation for that moment. \n  expected: Fall cites push, break cites fall, and spill and sound cite break within one moment. The neighbour receives the sound through observation; the observer record is not fabricated as another physical consequence.\n\n[A6] \n  criterion: A self-triggering effect stops, and a saved run keeps the reaction limit it was recorded under.\n  demonstration: (1) Open the planned self-triggering reaction fixture in the event inspector and count occurrences for one process/entity pair in one moment. (2) Open the retained-limit fixture with 40 linked glasses under a recorded limit of 32. (3) Read its refusal and before/after state; compare with the stated policy for a new J0 run. \n  expected: The self-triggering pair fires once per moment. The legacy-limit fixture refuses the entire over-limit moment with unchanged world and a named 32-reaction limit. New J0 runs are not falsely claimed to share that cap; their once-per-pair rule remains.\n\n[A7] \n  criterion: Recorded skill and dice, rather than expert-sounding words, make the untrained helicopter attempt probably crash under the scenario’s declared crash-on-fail rule.\n  demonstration: (1) Open the planned paired skill fixtures with identical helicopter-attempt text and explicitly declared piloting levels 0 and 3. (2) Read each skill value, dice pool, recorded seed/draws, selected outcome and its consequences. (3) Inspect the declared crash-on-fail mapping and its calculated failure chance: 27 of 36 equally likely two-die outcomes at level 0, versus 27 of 216 equally likely three-die outcomes at level 3. This is model arithmetic, not an empirical crash-rate estimate. (4) Open a replay and confirm it uses the recorded roll. \n  expected: Under this plan's declared scale, level 0 rolls two dice and keeps the lower; level 3 rolls three and keeps the highest. The attempt wording is absent from roll inputs. Random outcomes need not differ on every pair; the demonstrated distinction is the pool and recorded mechanism, not a guaranteed novice crash. The helicopter fixture explicitly maps fail to crash consequences. With independent fair d6, level 0 fails with probability 1-(3/6)^2 = 75%, versus (3/6)^3 = 12.5% at level 3. Thus a novice crash is probable in this stated model, while any single recorded result must follow its actual dice. This proves the declared distribution by arithmetic; no repeated-run comparison is required.\n\n[A8] \n  criterion: I can replay a saved world without silently changing its outcomes or calling models again.\n  demonstration: (1) Open the planned original-versus-replay view for retained fill, greenhouse, Castaway and malformed/unsupported-attempt cases. (2) Compare event outcomes and final visible state, then open the execution-source summary. (3) For S3, repeat with a recorded skill-roll case. \n  expected: Each replay reproduces its retained outcomes and state; the summary identifies recorded interpretations/draws and no new model calls or rolls. S1/S2 compatibility does not stand in for the still-unbuilt S3 case.\n\n[A9] \n  criterion: I can follow the complete airfield run from each person's attempted action to the actual consequence and its evidence.\n  demonstration: (1) Open the planned full canonical airfield run and select the wall, glass and helicopter events. (2) Follow each original attempt to interpretation, checks, same-moment effects and any skill roll. (3) Open the linked complete model/tool records and round-by-round trace read, including failures and unmatched attempts. \n  expected: All stages and exposed reasoning, model/tool inputs and outputs, event ids, trace ids and dice where used are retained and linked. The reader can distinguish actor belief from world fact and see why each result occurred. Missing records are labeled missing rather than replaced by a narrative.\n\n\nDEFERRALS:\n\nnone recorded"
+        }
+      ],
+      "response_schema": {
+        "$defs": {
+          "CutMapping": {
+            "properties": {
+              "requirement_id": {
+                "description": "id of a requirement already cut",
+                "enum": [
+                  "R1",
+                  "R2",
+                  "R3",
+                  "R4"
+                ],
+                "title": "Requirement Id",
+                "type": "string"
+              },
+              "covered_by": {
+                "description": "ids of the criteria that would fail if the requirement were not met",
+                "items": {
+                  "enum": [
+                    "A1",
+                    "A2",
+                    "A3",
+                    "A4",
+                    "A5",
+                    "A6",
+                    "A7",
+                    "A8",
+                    "A9"
+                  ],
+                  "type": "string"
+                },
+                "title": "Covered By",
+                "type": "array"
+              },
+              "coverage_reason": {
+                "description": "one sentence: why these criteria cover it, or why none does",
+                "title": "Coverage Reason",
+                "type": "string"
+              },
+              "extent": {
+                "description": "full: the criteria fail for any way of missing it; partial: they check only part of it; none",
+                "enum": [
+                  "full",
+                  "partial",
+                  "none"
+                ],
+                "title": "Extent",
+                "type": "string"
+              },
+              "missing": {
+                "description": "for partial: the part no criterion asks for; empty otherwise",
+                "title": "Missing",
+                "type": "string"
+              },
+              "deferral": {
+                "description": "1-based number of the DEFERRAL that approves leaving it out, or 0",
+                "title": "Deferral",
+                "type": "integer"
+              },
+              "in_outcome": {
+                "description": "whether the OUTCOME line keeps this requirement (true for non-outcome kinds)",
+                "title": "In Outcome",
+                "type": "boolean"
+              },
+              "outcome_reason": {
+                "description": "one sentence on the outcome line",
+                "title": "Outcome Reason",
+                "type": "string"
+              }
+            },
+            "required": [
+              "requirement_id",
+              "covered_by",
+              "coverage_reason",
+              "extent",
+              "missing",
+              "deferral",
+              "in_outcome",
+              "outcome_reason"
+            ],
+            "title": "CutMapping",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "mappings": {
+            "items": {
+              "$ref": "#/$defs/CutMapping"
+            },
+            "title": "Mappings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "mappings"
+        ],
+        "title": "MappingsForCut",
+        "type": "object"
+      },
+      "answers": "mappings for the fixed cut",
+      "raw_answer": {
+        "mappings": [
+          {
+            "requirement_id": "R1",
+            "covered_by": [
+              "A3",
+              "A1",
+              "A9"
+            ],
+            "coverage_reason": "A3 fails unless a person can attempt walking through the wall in their own words and the attempt is recorded; A1 and A9 also follow that attempt.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line says people can attempt actions in their own words, including walking through a wall."
+          },
+          {
+            "requirement_id": "R2",
+            "covered_by": [
+              "A3"
+            ],
+            "coverage_reason": "A3 fails unless the wall attempt is refused, with Sam staying on the original side and no partial effects.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line says the world records and refuses impossible attempts."
+          },
+          {
+            "requirement_id": "R3",
+            "covered_by": [
+              "A7"
+            ],
+            "coverage_reason": "A7 checks the declared crash-on-fail mapping and the 75% failure chance for an untrained pilot, so a novice crash is probable in the model.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line says that in the declared untrained-helicopter scenario the roll makes a crash probable."
+          },
+          {
+            "requirement_id": "R4",
+            "covered_by": [],
+            "coverage_reason": "No criterion could show an approval of the design; it concerns how the planning work was approved, so none covers it.",
+            "extent": "none",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "This is a process requirement, so the outcome line does not need to keep it."
+          }
+        ]
+      },
+      "cost_usd": 0.015974,
+      "usage": {
+        "prompt_tokens": 5237,
+        "completion_tokens": 550,
+        "total_tokens": 5787,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "cache_creation_tokens": 0,
+          "video_tokens": 0
+        },
+        "cached_tokens": 0,
+        "cache_creation_tokens": 0,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "image_tokens": 0
+        },
+        "reasoning_tokens": 0,
+        "cost_evidence": {
+          "openrouter_cost": 0.015974,
+          "computed_cost": 0.0,
+          "generation_id": "gen-1794517115-mBq0Ca31aKjvmyhnHCAH",
+          "cost_mismatch": true
+        }
+      },
+      "raw_content": "{\"mappings\":[{\"requirement_id\":\"R1\",\"covered_by\":[\"A3\",\"A1\",\"A9\"],\"coverage_reason\":\"A3 fails unless a person can attempt walking through the wall in their own words and the attempt is recorded; A1 and A9 also follow that attempt.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line says people can attempt actions in their own words, including walking through a wall.\"},{\"requirement_id\":\"R2\",\"covered_by\":[\"A3\"],\"coverage_reason\":\"A3 fails unless the wall attempt is refused, with Sam staying on the original side and no partial effects.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line says the world records and refuses impossible attempts.\"},{\"requirement_id\":\"R3\",\"covered_by\":[\"A7\"],\"coverage_reason\":\"A7 checks the declared crash-on-fail mapping and the 75% failure chance for an untrained pilot, so a novice crash is probable in the model.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line says that in the declared untrained-helicopter scenario the roll makes a crash probable.\"},{\"requirement_id\":\"R4\",\"covered_by\":[],\"coverage_reason\":\"No criterion could show an approval of the design; it concerns how the planning work was approved, so none covers it.\",\"extent\":\"none\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"This is a process requirement, so the outcome line does not need to keep it.\"}]}",
+      "raw_response": {
+        "id": "gen-1794517115-mBq0Ca31aKjvmyhnHCAH",
+        "created": 1794517115,
+        "model": "anthropic/claude-sonnet-5.5",
+        "object": "chat.completion",
+        "system_fingerprint": null,
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "{\"mappings\":[{\"requirement_id\":\"R1\",\"covered_by\":[\"A3\",\"A1\",\"A9\"],\"coverage_reason\":\"A3 fails unless a person can attempt walking through the wall in their own words and the attempt is recorded; A1 and A9 also follow that attempt.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line says people can attempt actions in their own words, including walking through a wall.\"},{\"requirement_id\":\"R2\",\"covered_by\":[\"A3\"],\"coverage_reason\":\"A3 fails unless the wall attempt is refused, with Sam staying on the original side and no partial effects.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line says the world records and refuses impossible attempts.\"},{\"requirement_id\":\"R3\",\"covered_by\":[\"A7\"],\"coverage_reason\":\"A7 checks the declared crash-on-fail mapping and the 75% failure chance for an untrained pilot, so a novice crash is probable in the model.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line says that in the declared untrained-helicopter scenario the roll makes a crash probable.\"},{\"requirement_id\":\"R4\",\"covered_by\":[],\"coverage_reason\":\"No criterion could show an approval of the design; it concerns how the planning work was approved, so none covers it.\",\"extent\":\"none\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"This is a process requirement, so the outcome line does not need to keep it.\"}]}",
+              "role": "assistant",
+              "tool_calls": null,
+              "function_call": null,
+              "provider_specific_fields": {
+                "refusal": null,
+                "reasoning": null
+              }
+            },
+            "provider_specific_fields": {
+              "native_finish_reason": "end_turn"
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 550,
+          "prompt_tokens": 5237,
+          "total_tokens": 5787,
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "image_tokens": 0
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "video_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "cost": 0.015974,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.015974,
+            "upstream_inference_prompt_cost": 0.010474,
+            "upstream_inference_completions_cost": 0.0055
+          }
+        },
+        "provider": "Azure",
+        "service_tier": "default",
+        "openrouter_metadata": {
+          "requested": "anthropic/claude-sonnet-5.5",
+          "strategy": "direct",
+          "region": "MIA",
+          "summary": "available=3, selected=Azure",
+          "attempt": 1,
+          "is_byok": false,
+          "endpoints": {
+            "total": 10,
+            "available": [
+              {
+                "provider": "Azure",
+                "model": "anthropic/claude-sonnet-5.5-20260928",
+                "selected": true
+              },
+              {
+                "provider": "Google",
+                "model": "anthropic/claude-sonnet-5.5-20260928",
+                "selected": false
+              },
+              {
+                "provider": "Anthropic",
+                "model": "anthropic/claude-sonnet-5.5-20260928",
+                "selected": false
+              }
+            ]
+          },
+          "generation_time": 4251
+        }
+      },
+      "logical_call_id": "llmcall_19b9ba38c93a43508c8873071c6a06a6",
+      "answer": {
+        "requirements": [
+          {
+            "id": "R1",
+            "requirement": "attempt to walk through wall",
+            "quote": "attempt to walk through a wall",
+            "asked_by_index": 1,
+            "kind": "outcome"
+          },
+          {
+            "id": "R2",
+            "requirement": "such attempts not successful",
+            "quote": "these should not be successful",
+            "asked_by_index": 1,
+            "kind": "outcome"
+          },
+          {
+            "id": "R3",
+            "requirement": "unskilled helicopter flying crashes",
+            "quote": "should probably crash it",
+            "asked_by_index": 2,
+            "kind": "outcome"
+          },
+          {
+            "id": "R4",
+            "requirement": "approval of attempts design",
+            "quote": "yes",
+            "asked_by_index": 3,
+            "kind": "process"
+          }
+        ],
+        "mappings": [
+          {
+            "requirement_id": "R1",
+            "covered_by": [
+              "A3",
+              "A1",
+              "A9"
+            ],
+            "coverage_reason": "A3 fails unless a person can attempt walking through the wall in their own words and the attempt is recorded; A1 and A9 also follow that attempt.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line says people can attempt actions in their own words, including walking through a wall."
+          },
+          {
+            "requirement_id": "R2",
+            "covered_by": [
+              "A3"
+            ],
+            "coverage_reason": "A3 fails unless the wall attempt is refused, with Sam staying on the original side and no partial effects.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line says the world records and refuses impossible attempts."
+          },
+          {
+            "requirement_id": "R3",
+            "covered_by": [
+              "A7"
+            ],
+            "coverage_reason": "A7 checks the declared crash-on-fail mapping and the 75% failure chance for an untrained pilot, so a novice crash is probable in the model.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line says that in the declared untrained-helicopter scenario the roll makes a crash probable."
+          },
+          {
+            "requirement_id": "R4",
+            "covered_by": [],
+            "coverage_reason": "No criterion could show an approval of the design; it concerns how the planning work was approved, so none covers it.",
+            "extent": "none",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "This is a process requirement, so the outcome line does not need to keep it."
+          }
+        ]
+      }
+    },
+    {
+      "trace_id": "planning-compliance/goal-coverage/20261112T155835-df99ee83-run2",
+      "model": "openrouter/anthropic/claude-sonnet-5.5",
+      "status": "valid",
+      "arguments": {
+        "model": "openrouter/anthropic/claude-sonnet-5.5",
+        "reasoning_effort": "medium",
+        "model_policy": "enforce_allowlist",
+        "task": "planning_compliance.goal_coverage",
+        "trace_id": "planning-compliance/goal-coverage/20261112T155835-df99ee83-run2",
+        "max_budget": 0.5,
+        "timeout": 300,
+        "logical_timeout": 300,
+        "fallback_models": [
+          "openrouter/openai/gpt-6-luna"
+        ]
+      },
+      "observability": "llm_client observability db (~/projects/data/llm_observability.db), by trace_id",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You check whether a set of acceptance criteria still asks for what a person asked for.\nAgents write acceptance criteria from a person's request, and they tend to rewrite it into\nsomething easier to build: a word like \"graph\" or \"across documents\" disappears and nothing\nnotices. Your job is to notice.\n\nStep 1. Split every quote under ASKED_BY into its distinct requirements: each separate thing\nthe delivered outcome must be, do or show. Split finely: \"a shared map of every store that\nstaff can filter and print\" is five requirements (a map; shared; every store; can be\nfiltered; can be printed). Keep the person's own nouns: a requirement named \"map\" stays\n\"map\", never \"list\" or \"view\". For each requirement give:\n  - id: R1, R2, ... in order;\n  - requirement: a short name in the person's own words (2 to 6 words);\n  - quote: the exact words from the quote that state it, copied character for character\n    (keep their typos and their word order); quote only ASKED_BY words, never DEFERRALS or\n    CONTEXT, which are not requirements;\n  - asked_by_index: the 1-based number of the ASKED_BY quote it comes from;\n  - kind: \"outcome\" (something the delivered thing must be or do), \"constraint\" (a rule about\n    how it is shown or built that a criterion can still check), or \"process\" (a statement\n    about how the planning work or the acceptance criteria themselves are written, which no\n    demonstration of the outcome could show). Use \"process\" only when no working interface\n    could ever demonstrate it.\nEach quote may carry a CONTEXT line: where it was said and what it answered (the message it\nreplied to, a link it pasted, the list it approved). Use CONTEXT only to resolve what the\nquote's own words point at: \"#1\", \"this\", \"it\", \"all your recommendations\". Never cut a\nrequirement from CONTEXT alone, and never quote it; every quote comes from the person's words.\n  - \"shouldnt #1 be automated?\" with CONTEXT saying #1 was \"catch up the archive\" is the\n    requirement \"#1 automated\", read as the archive catching up by itself.\n  - A quote that only approves or accepts what someone proposed (\"i approve all your\n    recommendations\", \"yes do that\") is not a requirement for an approval. When CONTEXT lists\n    what was approved, cut one requirement per approved item, each quoting the approving\n    words; when it does not, cut it once as kind \"process\".\nWhen two quotes state the same requirement, list it once and quote the clearer one.\nWhen the user message lists REQUIREMENTS ALREADY CUT, skip Step 1: those are the requirements, fixed.\nDo not split, rename, renumber or re-quote them; answer only with one mapping per listed id, using\nthose ids.\n\nStep 2. For each requirement, decide which criteria cover it. A criterion covers a\nrequirement only when its criterion, demonstration or expected result would fail if the\nrequirement were not met. A criterion that is merely compatible with the requirement, or\nthat is about something nearby, does not cover it. For example a criterion \"open the store\npage and see every store's address\" does not cover \"map\": a list of addresses passes it. List the\ncovering criterion ids, possibly none, and say why in one sentence. Then give the extent:\n\"full\" when the listed criteria together would fail for any way of not meeting the\nrequirement; \"partial\" when they check only one part or one case of it, so something that\nmisses the rest still passes (say in \"missing\" what is left unasked); \"none\" when no\ncriterion covers it.\n\nStep 3. If a requirement is covered by no criterion, check DEFERRALS. A requirement is\ndeferred only when a deferral's words, said by the person, approve leaving that requirement\nout for now. Give the deferral's number, or 0 when none applies. Never treat an agent's note,\na plan or a criterion's own wording as a deferral.\n\nStep 4. For each requirement of kind \"outcome\", say whether the OUTCOME line keeps it, in\nsubstance, and why. An outcome line that says \"staff look up any store\" does not keep\n\"map\", \"filter\" or \"print\".\n\nBe strict and literal. Judge only from the text given."
+        },
+        {
+          "role": "user",
+          "content": "ASKED_BY (the person's own words):\n\n1. Brian, 2026-10-24: <<<attempt to walk through a wall but these should not be successful>>>\n   CONTEXT: docs/plans/open_attempt.md:103, Why, in one example; exact quoted fragment.\n\n2. Brian, 2026-10-24: <<<should probably crash it>>>\n   CONTEXT: docs/plans/open_attempt.md:104, exact quoted fragment about someone who does not know how to fly a helicopter. The surrounding explanation is not presented as a verbatim quote.\n\n3. Brian, 2026-10-25: <<<yes>>>\n   CONTEXT: docs/plans/open_attempt.md:106 and docs/planning/open-attempt/planning-package.json request: approval of the short design for attempts, unmatched fallback, knock-on effects and skill rolls.\n\n\n\nREQUIREMENTS ALREADY CUT (fixed; map each id, do not cut again):\n\nR1 [outcome] \"attempt to walk through wall\", quote 1: <<<attempt to walk through a wall>>>\n\nR2 [outcome] \"such attempts not successful\", quote 1: <<<these should not be successful>>>\n\nR3 [outcome] \"unskilled helicopter flying crashes\", quote 2: <<<should probably crash it>>>\n\nR4 [process] \"approval of attempts design\", quote 3: <<<yes>>>\n\n\nOUTCOME (the agent's one-line restatement):\n<<<People can attempt actions in their own words, including walking through a wall or trying to fly without knowing how. The world records and refuses impossible attempts, completes inspectable same-moment consequences, and uses declared skill and recorded randomness for risky outcomes rather than the model's fluent wording. In the declared untrained-helicopter scenario, the roll makes a crash probable, without guaranteeing it or allowing fluent wording to supply skill. The user can inspect these distinctions and replay the full record.>>>\n\nCRITERIA:\n\n[A1] \n  criterion: I can see that interpreting an attempt identifies a move but does not decide whether it succeeds.\n  demonstration: (1) Open the planned airfield attempt inspector and select Sam's wall attempt. (2) Compare the original words, interpreted action/fields and separate world-rule result. (3) Open the interpreter contract summary linked from that row. \n  expected: The reading contains the attempted move and grounded fields, with no success/outcome field; the wall refusal appears only as the world-rule result.\n\n[A2] \n  criterion: Trying to fly the helicopter is not silently interpreted as walking somewhere.\n  demonstration: (1) Open the planned saved airfield attempt case with the words Fly the helicopter to the coast. (2) Read the original words beside the interpreted action and its quoted evidence. (3) Read the world outcome separately. \n  expected: The reading identifies the intended piloting action and quotes fly the helicopter; it never substitutes a move/walk. If the world has no such action, the limitation is explicit rather than a fabricated successful flight.\n\n[A3] \n  criterion: A person can try to walk through the wall, and the world refuses with the wall named.\n  demonstration: (1) Open the planned saved airfield wall-attempt case. (2) Select Sam's own-words attempt to walk from the office through the wall. (3) Read the failed requirement and compare Sam's place before and after. \n  expected: The attempt is recorded; the failed requirement names the wall and the blocked crossing; Sam stays on the original side and no partial effects occur.\n\n[A4] \n  criterion: An attempt with no matching rule is visible and does not silently change the world.\n  demonstration: (1) Open the retained S1 airfield record linked in evidence and read round 1's unmatched invitation (r1-e00002). (2) In the planned attempt inspector, open the same event and its unmatched-attempt list entry. (3) Compare the displayed before/after state and the reason no installed action matched. \n  expected: The original attempt and unmatched reason are visible; the S1 fallback records no changes and identical world hashes. On later judged runs, any proposed ruling is shown separately and changes require an installed rule; a later judge outcome must not be mislabeled as the original no-rule event.\n\n[A5] \n  criterion: Knocking the glass down makes it fall, break, spill and make a sound in one inspectable moment.\n  demonstration: (1) Open the planned generated airfield glass-chain case. (2) Select the push and follow its same-moment causes through fall, break, spill and sound. (3) Open the neighbour's observation for that moment. \n  expected: Fall cites push, break cites fall, and spill and sound cite break within one moment. The neighbour receives the sound through observation; the observer record is not fabricated as another physical consequence.\n\n[A6] \n  criterion: A self-triggering effect stops, and a saved run keeps the reaction limit it was recorded under.\n  demonstration: (1) Open the planned self-triggering reaction fixture in the event inspector and count occurrences for one process/entity pair in one moment. (2) Open the retained-limit fixture with 40 linked glasses under a recorded limit of 32. (3) Read its refusal and before/after state; compare with the stated policy for a new J0 run. \n  expected: The self-triggering pair fires once per moment. The legacy-limit fixture refuses the entire over-limit moment with unchanged world and a named 32-reaction limit. New J0 runs are not falsely claimed to share that cap; their once-per-pair rule remains.\n\n[A7] \n  criterion: Recorded skill and dice, rather than expert-sounding words, make the untrained helicopter attempt probably crash under the scenario’s declared crash-on-fail rule.\n  demonstration: (1) Open the planned paired skill fixtures with identical helicopter-attempt text and explicitly declared piloting levels 0 and 3. (2) Read each skill value, dice pool, recorded seed/draws, selected outcome and its consequences. (3) Inspect the declared crash-on-fail mapping and its calculated failure chance: 27 of 36 equally likely two-die outcomes at level 0, versus 27 of 216 equally likely three-die outcomes at level 3. This is model arithmetic, not an empirical crash-rate estimate. (4) Open a replay and confirm it uses the recorded roll. \n  expected: Under this plan's declared scale, level 0 rolls two dice and keeps the lower; level 3 rolls three and keeps the highest. The attempt wording is absent from roll inputs. Random outcomes need not differ on every pair; the demonstrated distinction is the pool and recorded mechanism, not a guaranteed novice crash. The helicopter fixture explicitly maps fail to crash consequences. With independent fair d6, level 0 fails with probability 1-(3/6)^2 = 75%, versus (3/6)^3 = 12.5% at level 3. Thus a novice crash is probable in this stated model, while any single recorded result must follow its actual dice. This proves the declared distribution by arithmetic; no repeated-run comparison is required.\n\n[A8] \n  criterion: I can replay a saved world without silently changing its outcomes or calling models again.\n  demonstration: (1) Open the planned original-versus-replay view for retained fill, greenhouse, Castaway and malformed/unsupported-attempt cases. (2) Compare event outcomes and final visible state, then open the execution-source summary. (3) For S3, repeat with a recorded skill-roll case. \n  expected: Each replay reproduces its retained outcomes and state; the summary identifies recorded interpretations/draws and no new model calls or rolls. S1/S2 compatibility does not stand in for the still-unbuilt S3 case.\n\n[A9] \n  criterion: I can follow the complete airfield run from each person's attempted action to the actual consequence and its evidence.\n  demonstration: (1) Open the planned full canonical airfield run and select the wall, glass and helicopter events. (2) Follow each original attempt to interpretation, checks, same-moment effects and any skill roll. (3) Open the linked complete model/tool records and round-by-round trace read, including failures and unmatched attempts. \n  expected: All stages and exposed reasoning, model/tool inputs and outputs, event ids, trace ids and dice where used are retained and linked. The reader can distinguish actor belief from world fact and see why each result occurred. Missing records are labeled missing rather than replaced by a narrative.\n\n\nDEFERRALS:\n\nnone recorded"
+        }
+      ],
+      "response_schema": {
+        "$defs": {
+          "CutMapping": {
+            "properties": {
+              "requirement_id": {
+                "description": "id of a requirement already cut",
+                "enum": [
+                  "R1",
+                  "R2",
+                  "R3",
+                  "R4"
+                ],
+                "title": "Requirement Id",
+                "type": "string"
+              },
+              "covered_by": {
+                "description": "ids of the criteria that would fail if the requirement were not met",
+                "items": {
+                  "enum": [
+                    "A1",
+                    "A2",
+                    "A3",
+                    "A4",
+                    "A5",
+                    "A6",
+                    "A7",
+                    "A8",
+                    "A9"
+                  ],
+                  "type": "string"
+                },
+                "title": "Covered By",
+                "type": "array"
+              },
+              "coverage_reason": {
+                "description": "one sentence: why these criteria cover it, or why none does",
+                "title": "Coverage Reason",
+                "type": "string"
+              },
+              "extent": {
+                "description": "full: the criteria fail for any way of missing it; partial: they check only part of it; none",
+                "enum": [
+                  "full",
+                  "partial",
+                  "none"
+                ],
+                "title": "Extent",
+                "type": "string"
+              },
+              "missing": {
+                "description": "for partial: the part no criterion asks for; empty otherwise",
+                "title": "Missing",
+                "type": "string"
+              },
+              "deferral": {
+                "description": "1-based number of the DEFERRAL that approves leaving it out, or 0",
+                "title": "Deferral",
+                "type": "integer"
+              },
+              "in_outcome": {
+                "description": "whether the OUTCOME line keeps this requirement (true for non-outcome kinds)",
+                "title": "In Outcome",
+                "type": "boolean"
+              },
+              "outcome_reason": {
+                "description": "one sentence on the outcome line",
+                "title": "Outcome Reason",
+                "type": "string"
+              }
+            },
+            "required": [
+              "requirement_id",
+              "covered_by",
+              "coverage_reason",
+              "extent",
+              "missing",
+              "deferral",
+              "in_outcome",
+              "outcome_reason"
+            ],
+            "title": "CutMapping",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "mappings": {
+            "items": {
+              "$ref": "#/$defs/CutMapping"
+            },
+            "title": "Mappings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "mappings"
+        ],
+        "title": "MappingsForCut",
+        "type": "object"
+      },
+      "answers": "mappings for the fixed cut",
+      "raw_answer": {
+        "mappings": [
+          {
+            "requirement_id": "R1",
+            "covered_by": [
+              "A3",
+              "A9"
+            ],
+            "coverage_reason": "A3 requires a person's own-words attempt to walk through the wall to be recorded and shown, and A9 follows the wall attempt end to end; both would fail if the attempt could not be made.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line keeps it by saying people can attempt actions in their own words, including walking through a wall."
+          },
+          {
+            "requirement_id": "R2",
+            "covered_by": [
+              "A3",
+              "A1"
+            ],
+            "coverage_reason": "A3 fails unless the wall attempt is refused, with Sam staying on the original side and no partial effects; A1 shows the wall refusal as the world-rule result.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line says the world records and refuses impossible attempts, which keeps the requirement."
+          },
+          {
+            "requirement_id": "R3",
+            "covered_by": [
+              "A7"
+            ],
+            "coverage_reason": "A7 checks that an untrained (level 0) helicopter attempt has a declared crash-on-fail mapping and a 75% failure chance, so a crash is probable.",
+            "extent": "partial",
+            "missing": "The criteria accept a single recorded roll that does not crash, and the probable crash depends on a scenario-declared crash-on-fail rule and a skill scale the plan itself supplies; no criterion checks that an unskilled helicopter attempt in the actual run crashes.",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line keeps it in substance: in the declared untrained-helicopter scenario the roll makes a crash probable, without guaranteeing it."
+          },
+          {
+            "requirement_id": "R4",
+            "covered_by": [],
+            "coverage_reason": "No criterion could show an approval of the design; the criteria test the behaviour of the design itself, not the approval.",
+            "extent": "none",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "This is a process requirement, so the outcome line does not need to keep it."
+          }
+        ]
+      },
+      "cost_usd": 0.017534,
+      "usage": {
+        "prompt_tokens": 5237,
+        "completion_tokens": 706,
+        "total_tokens": 5943,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "cache_creation_tokens": 0,
+          "video_tokens": 0
+        },
+        "cached_tokens": 0,
+        "cache_creation_tokens": 0,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "image_tokens": 0
+        },
+        "reasoning_tokens": 0,
+        "cost_evidence": {
+          "openrouter_cost": 0.017534,
+          "computed_cost": 0.0,
+          "generation_id": "gen-1794517115-VpXUxnLZIdqw7gb4Qf6y",
+          "cost_mismatch": true
+        }
+      },
+      "raw_content": "{\"mappings\":[{\"requirement_id\":\"R1\",\"covered_by\":[\"A3\",\"A9\"],\"coverage_reason\":\"A3 requires a person's own-words attempt to walk through the wall to be recorded and shown, and A9 follows the wall attempt end to end; both would fail if the attempt could not be made.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line keeps it by saying people can attempt actions in their own words, including walking through a wall.\"},{\"requirement_id\":\"R2\",\"covered_by\":[\"A3\",\"A1\"],\"coverage_reason\":\"A3 fails unless the wall attempt is refused, with Sam staying on the original side and no partial effects; A1 shows the wall refusal as the world-rule result.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line says the world records and refuses impossible attempts, which keeps the requirement.\"},{\"requirement_id\":\"R3\",\"covered_by\":[\"A7\"],\"coverage_reason\":\"A7 checks that an untrained (level 0) helicopter attempt has a declared crash-on-fail mapping and a 75% failure chance, so a crash is probable.\",\"extent\":\"partial\",\"missing\":\"The criteria accept a single recorded roll that does not crash, and the probable crash depends on a scenario-declared crash-on-fail rule and a skill scale the plan itself supplies; no criterion checks that an unskilled helicopter attempt in the actual run crashes.\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line keeps it in substance: in the declared untrained-helicopter scenario the roll makes a crash probable, without guaranteeing it.\"},{\"requirement_id\":\"R4\",\"covered_by\":[],\"coverage_reason\":\"No criterion could show an approval of the design; the criteria test the behaviour of the design itself, not the approval.\",\"extent\":\"none\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"This is a process requirement, so the outcome line does not need to keep it.\"}]}",
+      "raw_response": {
+        "id": "gen-1794517115-VpXUxnLZIdqw7gb4Qf6y",
+        "created": 1794517115,
+        "model": "anthropic/claude-sonnet-5.5",
+        "object": "chat.completion",
+        "system_fingerprint": null,
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "{\"mappings\":[{\"requirement_id\":\"R1\",\"covered_by\":[\"A3\",\"A9\"],\"coverage_reason\":\"A3 requires a person's own-words attempt to walk through the wall to be recorded and shown, and A9 follows the wall attempt end to end; both would fail if the attempt could not be made.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line keeps it by saying people can attempt actions in their own words, including walking through a wall.\"},{\"requirement_id\":\"R2\",\"covered_by\":[\"A3\",\"A1\"],\"coverage_reason\":\"A3 fails unless the wall attempt is refused, with Sam staying on the original side and no partial effects; A1 shows the wall refusal as the world-rule result.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line says the world records and refuses impossible attempts, which keeps the requirement.\"},{\"requirement_id\":\"R3\",\"covered_by\":[\"A7\"],\"coverage_reason\":\"A7 checks that an untrained (level 0) helicopter attempt has a declared crash-on-fail mapping and a 75% failure chance, so a crash is probable.\",\"extent\":\"partial\",\"missing\":\"The criteria accept a single recorded roll that does not crash, and the probable crash depends on a scenario-declared crash-on-fail rule and a skill scale the plan itself supplies; no criterion checks that an unskilled helicopter attempt in the actual run crashes.\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line keeps it in substance: in the declared untrained-helicopter scenario the roll makes a crash probable, without guaranteeing it.\"},{\"requirement_id\":\"R4\",\"covered_by\":[],\"coverage_reason\":\"No criterion could show an approval of the design; the criteria test the behaviour of the design itself, not the approval.\",\"extent\":\"none\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"This is a process requirement, so the outcome line does not need to keep it.\"}]}",
+              "role": "assistant",
+              "tool_calls": null,
+              "function_call": null,
+              "provider_specific_fields": {
+                "refusal": null,
+                "reasoning": null
+              }
+            },
+            "provider_specific_fields": {
+              "native_finish_reason": "end_turn"
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 706,
+          "prompt_tokens": 5237,
+          "total_tokens": 5943,
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "image_tokens": 0
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "video_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "cost": 0.017534,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.017534,
+            "upstream_inference_prompt_cost": 0.010474,
+            "upstream_inference_completions_cost": 0.00706
+          }
+        },
+        "provider": "Azure",
+        "service_tier": "default",
+        "openrouter_metadata": {
+          "requested": "anthropic/claude-sonnet-5.5",
+          "strategy": "direct",
+          "region": "MIA",
+          "summary": "available=3, selected=Azure",
+          "attempt": 1,
+          "is_byok": false,
+          "endpoints": {
+            "total": 10,
+            "available": [
+              {
+                "provider": "Azure",
+                "model": "anthropic/claude-sonnet-5.5-20260928",
+                "selected": true
+              },
+              {
+                "provider": "Google",
+                "model": "anthropic/claude-sonnet-5.5-20260928",
+                "selected": false
+              },
+              {
+                "provider": "Anthropic",
+                "model": "anthropic/claude-sonnet-5.5-20260928",
+                "selected": false
+              }
+            ]
+          },
+          "generation_time": 5150
+        }
+      },
+      "logical_call_id": "llmcall_8ad34113b2e345789e58e0353a7bd81e",
+      "answer": {
+        "requirements": [
+          {
+            "id": "R1",
+            "requirement": "attempt to walk through wall",
+            "quote": "attempt to walk through a wall",
+            "asked_by_index": 1,
+            "kind": "outcome"
+          },
+          {
+            "id": "R2",
+            "requirement": "such attempts not successful",
+            "quote": "these should not be successful",
+            "asked_by_index": 1,
+            "kind": "outcome"
+          },
+          {
+            "id": "R3",
+            "requirement": "unskilled helicopter flying crashes",
+            "quote": "should probably crash it",
+            "asked_by_index": 2,
+            "kind": "outcome"
+          },
+          {
+            "id": "R4",
+            "requirement": "approval of attempts design",
+            "quote": "yes",
+            "asked_by_index": 3,
+            "kind": "process"
+          }
+        ],
+        "mappings": [
+          {
+            "requirement_id": "R1",
+            "covered_by": [
+              "A3",
+              "A9"
+            ],
+            "coverage_reason": "A3 requires a person's own-words attempt to walk through the wall to be recorded and shown, and A9 follows the wall attempt end to end; both would fail if the attempt could not be made.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line keeps it by saying people can attempt actions in their own words, including walking through a wall."
+          },
+          {
+            "requirement_id": "R2",
+            "covered_by": [
+              "A3",
+              "A1"
+            ],
+            "coverage_reason": "A3 fails unless the wall attempt is refused, with Sam staying on the original side and no partial effects; A1 shows the wall refusal as the world-rule result.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line says the world records and refuses impossible attempts, which keeps the requirement."
+          },
+          {
+            "requirement_id": "R3",
+            "covered_by": [
+              "A7"
+            ],
+            "coverage_reason": "A7 checks that an untrained (level 0) helicopter attempt has a declared crash-on-fail mapping and a 75% failure chance, so a crash is probable.",
+            "extent": "partial",
+            "missing": "The criteria accept a single recorded roll that does not crash, and the probable crash depends on a scenario-declared crash-on-fail rule and a skill scale the plan itself supplies; no criterion checks that an unskilled helicopter attempt in the actual run crashes.",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line keeps it in substance: in the declared untrained-helicopter scenario the roll makes a crash probable, without guaranteeing it."
+          },
+          {
+            "requirement_id": "R4",
+            "covered_by": [],
+            "coverage_reason": "No criterion could show an approval of the design; the criteria test the behaviour of the design itself, not the approval.",
+            "extent": "none",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "This is a process requirement, so the outcome line does not need to keep it."
+          }
+        ]
+      }
+    },
+    {
+      "trace_id": "planning-compliance/goal-coverage/20261112T155835-df99ee83-run3",
+      "model": "openrouter/anthropic/claude-sonnet-5.5",
+      "status": "valid",
+      "arguments": {
+        "model": "openrouter/anthropic/claude-sonnet-5.5",
+        "reasoning_effort": "medium",
+        "model_policy": "enforce_allowlist",
+        "task": "planning_compliance.goal_coverage",
+        "trace_id": "planning-compliance/goal-coverage/20261112T155835-df99ee83-run3",
+        "max_budget": 0.5,
+        "timeout": 300,
+        "logical_timeout": 300,
+        "fallback_models": [
+          "openrouter/openai/gpt-6-luna"
+        ]
+      },
+      "observability": "llm_client observability db (~/projects/data/llm_observability.db), by trace_id",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You check whether a set of acceptance criteria still asks for what a person asked for.\nAgents write acceptance criteria from a person's request, and they tend to rewrite it into\nsomething easier to build: a word like \"graph\" or \"across documents\" disappears and nothing\nnotices. Your job is to notice.\n\nStep 1. Split every quote under ASKED_BY into its distinct requirements: each separate thing\nthe delivered outcome must be, do or show. Split finely: \"a shared map of every store that\nstaff can filter and print\" is five requirements (a map; shared; every store; can be\nfiltered; can be printed). Keep the person's own nouns: a requirement named \"map\" stays\n\"map\", never \"list\" or \"view\". For each requirement give:\n  - id: R1, R2, ... in order;\n  - requirement: a short name in the person's own words (2 to 6 words);\n  - quote: the exact words from the quote that state it, copied character for character\n    (keep their typos and their word order); quote only ASKED_BY words, never DEFERRALS or\n    CONTEXT, which are not requirements;\n  - asked_by_index: the 1-based number of the ASKED_BY quote it comes from;\n  - kind: \"outcome\" (something the delivered thing must be or do), \"constraint\" (a rule about\n    how it is shown or built that a criterion can still check), or \"process\" (a statement\n    about how the planning work or the acceptance criteria themselves are written, which no\n    demonstration of the outcome could show). Use \"process\" only when no working interface\n    could ever demonstrate it.\nEach quote may carry a CONTEXT line: where it was said and what it answered (the message it\nreplied to, a link it pasted, the list it approved). Use CONTEXT only to resolve what the\nquote's own words point at: \"#1\", \"this\", \"it\", \"all your recommendations\". Never cut a\nrequirement from CONTEXT alone, and never quote it; every quote comes from the person's words.\n  - \"shouldnt #1 be automated?\" with CONTEXT saying #1 was \"catch up the archive\" is the\n    requirement \"#1 automated\", read as the archive catching up by itself.\n  - A quote that only approves or accepts what someone proposed (\"i approve all your\n    recommendations\", \"yes do that\") is not a requirement for an approval. When CONTEXT lists\n    what was approved, cut one requirement per approved item, each quoting the approving\n    words; when it does not, cut it once as kind \"process\".\nWhen two quotes state the same requirement, list it once and quote the clearer one.\nWhen the user message lists REQUIREMENTS ALREADY CUT, skip Step 1: those are the requirements, fixed.\nDo not split, rename, renumber or re-quote them; answer only with one mapping per listed id, using\nthose ids.\n\nStep 2. For each requirement, decide which criteria cover it. A criterion covers a\nrequirement only when its criterion, demonstration or expected result would fail if the\nrequirement were not met. A criterion that is merely compatible with the requirement, or\nthat is about something nearby, does not cover it. For example a criterion \"open the store\npage and see every store's address\" does not cover \"map\": a list of addresses passes it. List the\ncovering criterion ids, possibly none, and say why in one sentence. Then give the extent:\n\"full\" when the listed criteria together would fail for any way of not meeting the\nrequirement; \"partial\" when they check only one part or one case of it, so something that\nmisses the rest still passes (say in \"missing\" what is left unasked); \"none\" when no\ncriterion covers it.\n\nStep 3. If a requirement is covered by no criterion, check DEFERRALS. A requirement is\ndeferred only when a deferral's words, said by the person, approve leaving that requirement\nout for now. Give the deferral's number, or 0 when none applies. Never treat an agent's note,\na plan or a criterion's own wording as a deferral.\n\nStep 4. For each requirement of kind \"outcome\", say whether the OUTCOME line keeps it, in\nsubstance, and why. An outcome line that says \"staff look up any store\" does not keep\n\"map\", \"filter\" or \"print\".\n\nBe strict and literal. Judge only from the text given."
+        },
+        {
+          "role": "user",
+          "content": "ASKED_BY (the person's own words):\n\n1. Brian, 2026-10-24: <<<attempt to walk through a wall but these should not be successful>>>\n   CONTEXT: docs/plans/open_attempt.md:103, Why, in one example; exact quoted fragment.\n\n2. Brian, 2026-10-24: <<<should probably crash it>>>\n   CONTEXT: docs/plans/open_attempt.md:104, exact quoted fragment about someone who does not know how to fly a helicopter. The surrounding explanation is not presented as a verbatim quote.\n\n3. Brian, 2026-10-25: <<<yes>>>\n   CONTEXT: docs/plans/open_attempt.md:106 and docs/planning/open-attempt/planning-package.json request: approval of the short design for attempts, unmatched fallback, knock-on effects and skill rolls.\n\n\n\nREQUIREMENTS ALREADY CUT (fixed; map each id, do not cut again):\n\nR1 [outcome] \"attempt to walk through wall\", quote 1: <<<attempt to walk through a wall>>>\n\nR2 [outcome] \"such attempts not successful\", quote 1: <<<these should not be successful>>>\n\nR3 [outcome] \"unskilled helicopter flying crashes\", quote 2: <<<should probably crash it>>>\n\nR4 [process] \"approval of attempts design\", quote 3: <<<yes>>>\n\n\nOUTCOME (the agent's one-line restatement):\n<<<People can attempt actions in their own words, including walking through a wall or trying to fly without knowing how. The world records and refuses impossible attempts, completes inspectable same-moment consequences, and uses declared skill and recorded randomness for risky outcomes rather than the model's fluent wording. In the declared untrained-helicopter scenario, the roll makes a crash probable, without guaranteeing it or allowing fluent wording to supply skill. The user can inspect these distinctions and replay the full record.>>>\n\nCRITERIA:\n\n[A1] \n  criterion: I can see that interpreting an attempt identifies a move but does not decide whether it succeeds.\n  demonstration: (1) Open the planned airfield attempt inspector and select Sam's wall attempt. (2) Compare the original words, interpreted action/fields and separate world-rule result. (3) Open the interpreter contract summary linked from that row. \n  expected: The reading contains the attempted move and grounded fields, with no success/outcome field; the wall refusal appears only as the world-rule result.\n\n[A2] \n  criterion: Trying to fly the helicopter is not silently interpreted as walking somewhere.\n  demonstration: (1) Open the planned saved airfield attempt case with the words Fly the helicopter to the coast. (2) Read the original words beside the interpreted action and its quoted evidence. (3) Read the world outcome separately. \n  expected: The reading identifies the intended piloting action and quotes fly the helicopter; it never substitutes a move/walk. If the world has no such action, the limitation is explicit rather than a fabricated successful flight.\n\n[A3] \n  criterion: A person can try to walk through the wall, and the world refuses with the wall named.\n  demonstration: (1) Open the planned saved airfield wall-attempt case. (2) Select Sam's own-words attempt to walk from the office through the wall. (3) Read the failed requirement and compare Sam's place before and after. \n  expected: The attempt is recorded; the failed requirement names the wall and the blocked crossing; Sam stays on the original side and no partial effects occur.\n\n[A4] \n  criterion: An attempt with no matching rule is visible and does not silently change the world.\n  demonstration: (1) Open the retained S1 airfield record linked in evidence and read round 1's unmatched invitation (r1-e00002). (2) In the planned attempt inspector, open the same event and its unmatched-attempt list entry. (3) Compare the displayed before/after state and the reason no installed action matched. \n  expected: The original attempt and unmatched reason are visible; the S1 fallback records no changes and identical world hashes. On later judged runs, any proposed ruling is shown separately and changes require an installed rule; a later judge outcome must not be mislabeled as the original no-rule event.\n\n[A5] \n  criterion: Knocking the glass down makes it fall, break, spill and make a sound in one inspectable moment.\n  demonstration: (1) Open the planned generated airfield glass-chain case. (2) Select the push and follow its same-moment causes through fall, break, spill and sound. (3) Open the neighbour's observation for that moment. \n  expected: Fall cites push, break cites fall, and spill and sound cite break within one moment. The neighbour receives the sound through observation; the observer record is not fabricated as another physical consequence.\n\n[A6] \n  criterion: A self-triggering effect stops, and a saved run keeps the reaction limit it was recorded under.\n  demonstration: (1) Open the planned self-triggering reaction fixture in the event inspector and count occurrences for one process/entity pair in one moment. (2) Open the retained-limit fixture with 40 linked glasses under a recorded limit of 32. (3) Read its refusal and before/after state; compare with the stated policy for a new J0 run. \n  expected: The self-triggering pair fires once per moment. The legacy-limit fixture refuses the entire over-limit moment with unchanged world and a named 32-reaction limit. New J0 runs are not falsely claimed to share that cap; their once-per-pair rule remains.\n\n[A7] \n  criterion: Recorded skill and dice, rather than expert-sounding words, make the untrained helicopter attempt probably crash under the scenario’s declared crash-on-fail rule.\n  demonstration: (1) Open the planned paired skill fixtures with identical helicopter-attempt text and explicitly declared piloting levels 0 and 3. (2) Read each skill value, dice pool, recorded seed/draws, selected outcome and its consequences. (3) Inspect the declared crash-on-fail mapping and its calculated failure chance: 27 of 36 equally likely two-die outcomes at level 0, versus 27 of 216 equally likely three-die outcomes at level 3. This is model arithmetic, not an empirical crash-rate estimate. (4) Open a replay and confirm it uses the recorded roll. \n  expected: Under this plan's declared scale, level 0 rolls two dice and keeps the lower; level 3 rolls three and keeps the highest. The attempt wording is absent from roll inputs. Random outcomes need not differ on every pair; the demonstrated distinction is the pool and recorded mechanism, not a guaranteed novice crash. The helicopter fixture explicitly maps fail to crash consequences. With independent fair d6, level 0 fails with probability 1-(3/6)^2 = 75%, versus (3/6)^3 = 12.5% at level 3. Thus a novice crash is probable in this stated model, while any single recorded result must follow its actual dice. This proves the declared distribution by arithmetic; no repeated-run comparison is required.\n\n[A8] \n  criterion: I can replay a saved world without silently changing its outcomes or calling models again.\n  demonstration: (1) Open the planned original-versus-replay view for retained fill, greenhouse, Castaway and malformed/unsupported-attempt cases. (2) Compare event outcomes and final visible state, then open the execution-source summary. (3) For S3, repeat with a recorded skill-roll case. \n  expected: Each replay reproduces its retained outcomes and state; the summary identifies recorded interpretations/draws and no new model calls or rolls. S1/S2 compatibility does not stand in for the still-unbuilt S3 case.\n\n[A9] \n  criterion: I can follow the complete airfield run from each person's attempted action to the actual consequence and its evidence.\n  demonstration: (1) Open the planned full canonical airfield run and select the wall, glass and helicopter events. (2) Follow each original attempt to interpretation, checks, same-moment effects and any skill roll. (3) Open the linked complete model/tool records and round-by-round trace read, including failures and unmatched attempts. \n  expected: All stages and exposed reasoning, model/tool inputs and outputs, event ids, trace ids and dice where used are retained and linked. The reader can distinguish actor belief from world fact and see why each result occurred. Missing records are labeled missing rather than replaced by a narrative.\n\n\nDEFERRALS:\n\nnone recorded"
+        }
+      ],
+      "response_schema": {
+        "$defs": {
+          "CutMapping": {
+            "properties": {
+              "requirement_id": {
+                "description": "id of a requirement already cut",
+                "enum": [
+                  "R1",
+                  "R2",
+                  "R3",
+                  "R4"
+                ],
+                "title": "Requirement Id",
+                "type": "string"
+              },
+              "covered_by": {
+                "description": "ids of the criteria that would fail if the requirement were not met",
+                "items": {
+                  "enum": [
+                    "A1",
+                    "A2",
+                    "A3",
+                    "A4",
+                    "A5",
+                    "A6",
+                    "A7",
+                    "A8",
+                    "A9"
+                  ],
+                  "type": "string"
+                },
+                "title": "Covered By",
+                "type": "array"
+              },
+              "coverage_reason": {
+                "description": "one sentence: why these criteria cover it, or why none does",
+                "title": "Coverage Reason",
+                "type": "string"
+              },
+              "extent": {
+                "description": "full: the criteria fail for any way of missing it; partial: they check only part of it; none",
+                "enum": [
+                  "full",
+                  "partial",
+                  "none"
+                ],
+                "title": "Extent",
+                "type": "string"
+              },
+              "missing": {
+                "description": "for partial: the part no criterion asks for; empty otherwise",
+                "title": "Missing",
+                "type": "string"
+              },
+              "deferral": {
+                "description": "1-based number of the DEFERRAL that approves leaving it out, or 0",
+                "title": "Deferral",
+                "type": "integer"
+              },
+              "in_outcome": {
+                "description": "whether the OUTCOME line keeps this requirement (true for non-outcome kinds)",
+                "title": "In Outcome",
+                "type": "boolean"
+              },
+              "outcome_reason": {
+                "description": "one sentence on the outcome line",
+                "title": "Outcome Reason",
+                "type": "string"
+              }
+            },
+            "required": [
+              "requirement_id",
+              "covered_by",
+              "coverage_reason",
+              "extent",
+              "missing",
+              "deferral",
+              "in_outcome",
+              "outcome_reason"
+            ],
+            "title": "CutMapping",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "mappings": {
+            "items": {
+              "$ref": "#/$defs/CutMapping"
+            },
+            "title": "Mappings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "mappings"
+        ],
+        "title": "MappingsForCut",
+        "type": "object"
+      },
+      "answers": "mappings for the fixed cut",
+      "raw_answer": {
+        "mappings": [
+          {
+            "requirement_id": "R1",
+            "covered_by": [
+              "A3",
+              "A9"
+            ],
+            "coverage_reason": "A3 fails unless a person's own-words attempt to walk through the wall is recorded, and A9 follows the wall attempt through the run.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line keeps it by saying people can attempt actions in their own words, including walking through a wall."
+          },
+          {
+            "requirement_id": "R2",
+            "covered_by": [
+              "A3"
+            ],
+            "coverage_reason": "A3 fails if the wall attempt succeeds, because it requires a refusal naming the wall, Sam staying on the original side, and no partial effects.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line says the world records and refuses impossible attempts, which keeps the wall attempt failing."
+          },
+          {
+            "requirement_id": "R3",
+            "covered_by": [
+              "A7"
+            ],
+            "coverage_reason": "A7 checks that the declared crash-on-fail rule makes a crash probable at level 0, and A2 only checks interpretation.",
+            "extent": "partial",
+            "missing": "Nothing asks that an unskilled helicopter attempt actually produces a crash in a demonstrated run. A7 says explicitly that a guaranteed novice crash is not required and that any single recorded result follows its dice, so a run with no crash still passes.",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line keeps it, saying the roll makes a crash probable in the untrained-helicopter scenario without guaranteeing it."
+          },
+          {
+            "requirement_id": "R4",
+            "covered_by": [],
+            "coverage_reason": "No criterion tests the approval itself, and it is a process statement about the design that no working interface could demonstrate.",
+            "extent": "none",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "It is a process requirement, not an outcome, so the outcome line need not keep it."
+          }
+        ]
+      },
+      "cost_usd": 0.017164,
+      "usage": {
+        "prompt_tokens": 5237,
+        "completion_tokens": 669,
+        "total_tokens": 5906,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "cache_creation_tokens": 0,
+          "video_tokens": 0
+        },
+        "cached_tokens": 0,
+        "cache_creation_tokens": 0,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "image_tokens": 0
+        },
+        "reasoning_tokens": 0,
+        "cost_evidence": {
+          "openrouter_cost": 0.017164,
+          "computed_cost": 0.0,
+          "generation_id": "gen-1794517115-k5XyUk23lCGCT9thH4KW",
+          "cost_mismatch": true
+        }
+      },
+      "raw_content": "{\"mappings\":[{\"requirement_id\":\"R1\",\"covered_by\":[\"A3\",\"A9\"],\"coverage_reason\":\"A3 fails unless a person's own-words attempt to walk through the wall is recorded, and A9 follows the wall attempt through the run.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line keeps it by saying people can attempt actions in their own words, including walking through a wall.\"},{\"requirement_id\":\"R2\",\"covered_by\":[\"A3\"],\"coverage_reason\":\"A3 fails if the wall attempt succeeds, because it requires a refusal naming the wall, Sam staying on the original side, and no partial effects.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line says the world records and refuses impossible attempts, which keeps the wall attempt failing.\"},{\"requirement_id\":\"R3\",\"covered_by\":[\"A7\"],\"coverage_reason\":\"A7 checks that the declared crash-on-fail rule makes a crash probable at level 0, and A2 only checks interpretation.\",\"extent\":\"partial\",\"missing\":\"Nothing asks that an unskilled helicopter attempt actually produces a crash in a demonstrated run. A7 says explicitly that a guaranteed novice crash is not required and that any single recorded result follows its dice, so a run with no crash still passes.\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line keeps it, saying the roll makes a crash probable in the untrained-helicopter scenario without guaranteeing it.\"},{\"requirement_id\":\"R4\",\"covered_by\":[],\"coverage_reason\":\"No criterion tests the approval itself, and it is a process statement about the design that no working interface could demonstrate.\",\"extent\":\"none\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"It is a process requirement, not an outcome, so the outcome line need not keep it.\"}]}",
+      "raw_response": {
+        "id": "gen-1794517115-k5XyUk23lCGCT9thH4KW",
+        "created": 1794517115,
+        "model": "anthropic/claude-sonnet-5.5",
+        "object": "chat.completion",
+        "system_fingerprint": null,
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "{\"mappings\":[{\"requirement_id\":\"R1\",\"covered_by\":[\"A3\",\"A9\"],\"coverage_reason\":\"A3 fails unless a person's own-words attempt to walk through the wall is recorded, and A9 follows the wall attempt through the run.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line keeps it by saying people can attempt actions in their own words, including walking through a wall.\"},{\"requirement_id\":\"R2\",\"covered_by\":[\"A3\"],\"coverage_reason\":\"A3 fails if the wall attempt succeeds, because it requires a refusal naming the wall, Sam staying on the original side, and no partial effects.\",\"extent\":\"full\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line says the world records and refuses impossible attempts, which keeps the wall attempt failing.\"},{\"requirement_id\":\"R3\",\"covered_by\":[\"A7\"],\"coverage_reason\":\"A7 checks that the declared crash-on-fail rule makes a crash probable at level 0, and A2 only checks interpretation.\",\"extent\":\"partial\",\"missing\":\"Nothing asks that an unskilled helicopter attempt actually produces a crash in a demonstrated run. A7 says explicitly that a guaranteed novice crash is not required and that any single recorded result follows its dice, so a run with no crash still passes.\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"The outcome line keeps it, saying the roll makes a crash probable in the untrained-helicopter scenario without guaranteeing it.\"},{\"requirement_id\":\"R4\",\"covered_by\":[],\"coverage_reason\":\"No criterion tests the approval itself, and it is a process statement about the design that no working interface could demonstrate.\",\"extent\":\"none\",\"missing\":\"\",\"deferral\":0,\"in_outcome\":true,\"outcome_reason\":\"It is a process requirement, not an outcome, so the outcome line need not keep it.\"}]}",
+              "role": "assistant",
+              "tool_calls": null,
+              "function_call": null,
+              "provider_specific_fields": {
+                "refusal": null,
+                "reasoning": null
+              }
+            },
+            "provider_specific_fields": {
+              "native_finish_reason": "end_turn"
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 669,
+          "prompt_tokens": 5237,
+          "total_tokens": 5906,
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "image_tokens": 0
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "video_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "cost": 0.017164,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.017164,
+            "upstream_inference_prompt_cost": 0.010474,
+            "upstream_inference_completions_cost": 0.00669
+          }
+        },
+        "provider": "Azure",
+        "service_tier": "default",
+        "openrouter_metadata": {
+          "requested": "anthropic/claude-sonnet-5.5",
+          "strategy": "direct",
+          "region": "MIA",
+          "summary": "available=3, selected=Azure",
+          "attempt": 1,
+          "is_byok": false,
+          "endpoints": {
+            "total": 10,
+            "available": [
+              {
+                "provider": "Azure",
+                "model": "anthropic/claude-sonnet-5.5-20260928",
+                "selected": true
+              },
+              {
+                "provider": "Anthropic",
+                "model": "anthropic/claude-sonnet-5.5-20260928",
+                "selected": false
+              },
+              {
+                "provider": "Google",
+                "model": "anthropic/claude-sonnet-5.5-20260928",
+                "selected": false
+              }
+            ]
+          },
+          "generation_time": 5133
+        }
+      },
+      "logical_call_id": "llmcall_6d8ab4935cd34282a6b2c7b103d58fa5",
+      "answer": {
+        "requirements": [
+          {
+            "id": "R1",
+            "requirement": "attempt to walk through wall",
+            "quote": "attempt to walk through a wall",
+            "asked_by_index": 1,
+            "kind": "outcome"
+          },
+          {
+            "id": "R2",
+            "requirement": "such attempts not successful",
+            "quote": "these should not be successful",
+            "asked_by_index": 1,
+            "kind": "outcome"
+          },
+          {
+            "id": "R3",
+            "requirement": "unskilled helicopter flying crashes",
+            "quote": "should probably crash it",
+            "asked_by_index": 2,
+            "kind": "outcome"
+          },
+          {
+            "id": "R4",
+            "requirement": "approval of attempts design",
+            "quote": "yes",
+            "asked_by_index": 3,
+            "kind": "process"
+          }
+        ],
+        "mappings": [
+          {
+            "requirement_id": "R1",
+            "covered_by": [
+              "A3",
+              "A9"
+            ],
+            "coverage_reason": "A3 fails unless a person's own-words attempt to walk through the wall is recorded, and A9 follows the wall attempt through the run.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line keeps it by saying people can attempt actions in their own words, including walking through a wall."
+          },
+          {
+            "requirement_id": "R2",
+            "covered_by": [
+              "A3"
+            ],
+            "coverage_reason": "A3 fails if the wall attempt succeeds, because it requires a refusal naming the wall, Sam staying on the original side, and no partial effects.",
+            "extent": "full",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line says the world records and refuses impossible attempts, which keeps the wall attempt failing."
+          },
+          {
+            "requirement_id": "R3",
+            "covered_by": [
+              "A7"
+            ],
+            "coverage_reason": "A7 checks that the declared crash-on-fail rule makes a crash probable at level 0, and A2 only checks interpretation.",
+            "extent": "partial",
+            "missing": "Nothing asks that an unskilled helicopter attempt actually produces a crash in a demonstrated run. A7 says explicitly that a guaranteed novice crash is not required and that any single recorded result follows its dice, so a run with no crash still passes.",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "The outcome line keeps it, saying the roll makes a crash probable in the untrained-helicopter scenario without guaranteeing it."
+          },
+          {
+            "requirement_id": "R4",
+            "covered_by": [],
+            "coverage_reason": "No criterion tests the approval itself, and it is a process statement about the design that no working interface could demonstrate.",
+            "extent": "none",
+            "missing": "",
+            "deferral": 0,
+            "in_outcome": true,
+            "outcome_reason": "It is a process requirement, not an outcome, so the outcome line need not keep it."
+          }
+        ]
+      }
+    }
+  ],
+  "observability": "llm_client observability db (~/projects/data/llm_observability.db), by trace_id",
+  "status": "valid",
+  "model": "openrouter/anthropic/claude-sonnet-5.5",
+  "cost_usd": 0.050671999999999995,
+  "messages": [
+    {
+      "role": "system",
+      "content": "You check whether a set of acceptance criteria still asks for what a person asked for.\nAgents write acceptance criteria from a person's request, and they tend to rewrite it into\nsomething easier to build: a word like \"graph\" or \"across documents\" disappears and nothing\nnotices. Your job is to notice.\n\nStep 1. Split every quote under ASKED_BY into its distinct requirements: each separate thing\nthe delivered outcome must be, do or show. Split finely: \"a shared map of every store that\nstaff can filter and print\" is five requirements (a map; shared; every store; can be\nfiltered; can be printed). Keep the person's own nouns: a requirement named \"map\" stays\n\"map\", never \"list\" or \"view\". For each requirement give:\n  - id: R1, R2, ... in order;\n  - requirement: a short name in the person's own words (2 to 6 words);\n  - quote: the exact words from the quote that state it, copied character for character\n    (keep their typos and their word order); quote only ASKED_BY words, never DEFERRALS or\n    CONTEXT, which are not requirements;\n  - asked_by_index: the 1-based number of the ASKED_BY quote it comes from;\n  - kind: \"outcome\" (something the delivered thing must be or do), \"constraint\" (a rule about\n    how it is shown or built that a criterion can still check), or \"process\" (a statement\n    about how the planning work or the acceptance criteria themselves are written, which no\n    demonstration of the outcome could show). Use \"process\" only when no working interface\n    could ever demonstrate it.\nEach quote may carry a CONTEXT line: where it was said and what it answered (the message it\nreplied to, a link it pasted, the list it approved). Use CONTEXT only to resolve what the\nquote's own words point at: \"#1\", \"this\", \"it\", \"all your recommendations\". Never cut a\nrequirement from CONTEXT alone, and never quote it; every quote comes from the person's words.\n  - \"shouldnt #1 be automated?\" with CONTEXT saying #1 was \"catch up the archive\" is the\n    requirement \"#1 automated\", read as the archive catching up by itself.\n  - A quote that only approves or accepts what someone proposed (\"i approve all your\n    recommendations\", \"yes do that\") is not a requirement for an approval. When CONTEXT lists\n    what was approved, cut one requirement per approved item, each quoting the approving\n    words; when it does not, cut it once as kind \"process\".\nWhen two quotes state the same requirement, list it once and quote the clearer one.\nWhen the user message lists REQUIREMENTS ALREADY CUT, skip Step 1: those are the requirements, fixed.\nDo not split, rename, renumber or re-quote them; answer only with one mapping per listed id, using\nthose ids.\n\nStep 2. For each requirement, decide which criteria cover it. A criterion covers a\nrequirement only when its criterion, demonstration or expected result would fail if the\nrequirement were not met. A criterion that is merely compatible with the requirement, or\nthat is about something nearby, does not cover it. For example a criterion \"open the store\npage and see every store's address\" does not cover \"map\": a list of addresses passes it. List the\ncovering criterion ids, possibly none, and say why in one sentence. Then give the extent:\n\"full\" when the listed criteria together would fail for any way of not meeting the\nrequirement; \"partial\" when they check only one part or one case of it, so something that\nmisses the rest still passes (say in \"missing\" what is left unasked); \"none\" when no\ncriterion covers it.\n\nStep 3. If a requirement is covered by no criterion, check DEFERRALS. A requirement is\ndeferred only when a deferral's words, said by the person, approve leaving that requirement\nout for now. Give the deferral's number, or 0 when none applies. Never treat an agent's note,\na plan or a criterion's own wording as a deferral.\n\nStep 4. For each requirement of kind \"outcome\", say whether the OUTCOME line keeps it, in\nsubstance, and why. An outcome line that says \"staff look up any store\" does not keep\n\"map\", \"filter\" or \"print\".\n\nBe strict and literal. Judge only from the text given."
+    },
+    {
+      "role": "user",
+      "content": "ASKED_BY (the person's own words):\n\n1. Brian, 2026-10-24: <<<attempt to walk through a wall but these should not be successful>>>\n   CONTEXT: docs/plans/open_attempt.md:103, Why, in one example; exact quoted fragment.\n\n2. Brian, 2026-10-24: <<<should probably crash it>>>\n   CONTEXT: docs/plans/open_attempt.md:104, exact quoted fragment about someone who does not know how to fly a helicopter. The surrounding explanation is not presented as a verbatim quote.\n\n3. Brian, 2026-10-25: <<<yes>>>\n   CONTEXT: docs/plans/open_attempt.md:106 and docs/planning/open-attempt/planning-package.json request: approval of the short design for attempts, unmatched fallback, knock-on effects and skill rolls.\n\n\n\nREQUIREMENTS ALREADY CUT (fixed; map each id, do not cut again):\n\nR1 [outcome] \"attempt to walk through wall\", quote 1: <<<attempt to walk through a wall>>>\n\nR2 [outcome] \"such attempts not successful\", quote 1: <<<these should not be successful>>>\n\nR3 [outcome] \"unskilled helicopter flying crashes\", quote 2: <<<should probably crash it>>>\n\nR4 [process] \"approval of attempts design\", quote 3: <<<yes>>>\n\n\nOUTCOME (the agent's one-line restatement):\n<<<People can attempt actions in their own words, including walking through a wall or trying to fly without knowing how. The world records and refuses impossible attempts, completes inspectable same-moment consequences, and uses declared skill and recorded randomness for risky outcomes rather than the model's fluent wording. In the declared untrained-helicopter scenario, the roll makes a crash probable, without guaranteeing it or allowing fluent wording to supply skill. The user can inspect these distinctions and replay the full record.>>>\n\nCRITERIA:\n\n[A1] \n  criterion: I can see that interpreting an attempt identifies a move but does not decide whether it succeeds.\n  demonstration: (1) Open the planned airfield attempt inspector and select Sam's wall attempt. (2) Compare the original words, interpreted action/fields and separate world-rule result. (3) Open the interpreter contract summary linked from that row. \n  expected: The reading contains the attempted move and grounded fields, with no success/outcome field; the wall refusal appears only as the world-rule result.\n\n[A2] \n  criterion: Trying to fly the helicopter is not silently interpreted as walking somewhere.\n  demonstration: (1) Open the planned saved airfield attempt case with the words Fly the helicopter to the coast. (2) Read the original words beside the interpreted action and its quoted evidence. (3) Read the world outcome separately. \n  expected: The reading identifies the intended piloting action and quotes fly the helicopter; it never substitutes a move/walk. If the world has no such action, the limitation is explicit rather than a fabricated successful flight.\n\n[A3] \n  criterion: A person can try to walk through the wall, and the world refuses with the wall named.\n  demonstration: (1) Open the planned saved airfield wall-attempt case. (2) Select Sam's own-words attempt to walk from the office through the wall. (3) Read the failed requirement and compare Sam's place before and after. \n  expected: The attempt is recorded; the failed requirement names the wall and the blocked crossing; Sam stays on the original side and no partial effects occur.\n\n[A4] \n  criterion: An attempt with no matching rule is visible and does not silently change the world.\n  demonstration: (1) Open the retained S1 airfield record linked in evidence and read round 1's unmatched invitation (r1-e00002). (2) In the planned attempt inspector, open the same event and its unmatched-attempt list entry. (3) Compare the displayed before/after state and the reason no installed action matched. \n  expected: The original attempt and unmatched reason are visible; the S1 fallback records no changes and identical world hashes. On later judged runs, any proposed ruling is shown separately and changes require an installed rule; a later judge outcome must not be mislabeled as the original no-rule event.\n\n[A5] \n  criterion: Knocking the glass down makes it fall, break, spill and make a sound in one inspectable moment.\n  demonstration: (1) Open the planned generated airfield glass-chain case. (2) Select the push and follow its same-moment causes through fall, break, spill and sound. (3) Open the neighbour's observation for that moment. \n  expected: Fall cites push, break cites fall, and spill and sound cite break within one moment. The neighbour receives the sound through observation; the observer record is not fabricated as another physical consequence.\n\n[A6] \n  criterion: A self-triggering effect stops, and a saved run keeps the reaction limit it was recorded under.\n  demonstration: (1) Open the planned self-triggering reaction fixture in the event inspector and count occurrences for one process/entity pair in one moment. (2) Open the retained-limit fixture with 40 linked glasses under a recorded limit of 32. (3) Read its refusal and before/after state; compare with the stated policy for a new J0 run. \n  expected: The self-triggering pair fires once per moment. The legacy-limit fixture refuses the entire over-limit moment with unchanged world and a named 32-reaction limit. New J0 runs are not falsely claimed to share that cap; their once-per-pair rule remains.\n\n[A7] \n  criterion: Recorded skill and dice, rather than expert-sounding words, make the untrained helicopter attempt probably crash under the scenario’s declared crash-on-fail rule.\n  demonstration: (1) Open the planned paired skill fixtures with identical helicopter-attempt text and explicitly declared piloting levels 0 and 3. (2) Read each skill value, dice pool, recorded seed/draws, selected outcome and its consequences. (3) Inspect the declared crash-on-fail mapping and its calculated failure chance: 27 of 36 equally likely two-die outcomes at level 0, versus 27 of 216 equally likely three-die outcomes at level 3. This is model arithmetic, not an empirical crash-rate estimate. (4) Open a replay and confirm it uses the recorded roll. \n  expected: Under this plan's declared scale, level 0 rolls two dice and keeps the lower; level 3 rolls three and keeps the highest. The attempt wording is absent from roll inputs. Random outcomes need not differ on every pair; the demonstrated distinction is the pool and recorded mechanism, not a guaranteed novice crash. The helicopter fixture explicitly maps fail to crash consequences. With independent fair d6, level 0 fails with probability 1-(3/6)^2 = 75%, versus (3/6)^3 = 12.5% at level 3. Thus a novice crash is probable in this stated model, while any single recorded result must follow its actual dice. This proves the declared distribution by arithmetic; no repeated-run comparison is required.\n\n[A8] \n  criterion: I can replay a saved world without silently changing its outcomes or calling models again.\n  demonstration: (1) Open the planned original-versus-replay view for retained fill, greenhouse, Castaway and malformed/unsupported-attempt cases. (2) Compare event outcomes and final visible state, then open the execution-source summary. (3) For S3, repeat with a recorded skill-roll case. \n  expected: Each replay reproduces its retained outcomes and state; the summary identifies recorded interpretations/draws and no new model calls or rolls. S1/S2 compatibility does not stand in for the still-unbuilt S3 case.\n\n[A9] \n  criterion: I can follow the complete airfield run from each person's attempted action to the actual consequence and its evidence.\n  demonstration: (1) Open the planned full canonical airfield run and select the wall, glass and helicopter events. (2) Follow each original attempt to interpretation, checks, same-moment effects and any skill roll. (3) Open the linked complete model/tool records and round-by-round trace read, including failures and unmatched attempts. \n  expected: All stages and exposed reasoning, model/tool inputs and outputs, event ids, trace ids and dice where used are retained and linked. The reader can distinguish actor belief from world fact and see why each result occurred. Missing records are labeled missing rather than replaced by a narrative.\n\n\nDEFERRALS:\n\nnone recorded"
+    }
+  ],
+  "answer": {
+    "requirements": [
+      {
+        "id": "R1",
+        "requirement": "attempt to walk through wall",
+        "quote": "attempt to walk through a wall",
+        "asked_by_index": 1,
+        "kind": "outcome"
+      },
+      {
+        "id": "R2",
+        "requirement": "such attempts not successful",
+        "quote": "these should not be successful",
+        "asked_by_index": 1,
+        "kind": "outcome"
+      },
+      {
+        "id": "R3",
+        "requirement": "unskilled helicopter flying crashes",
+        "quote": "should probably crash it",
+        "asked_by_index": 2,
+        "kind": "outcome"
+      },
+      {
+        "id": "R4",
+        "requirement": "approval of attempts design",
+        "quote": "yes",
+        "asked_by_index": 3,
+        "kind": "process"
+      }
+    ],
+    "mappings": [
+      {
+        "requirement_id": "R1",
+        "covered_by": [
+          "A3",
+          "A1",
+          "A9"
+        ],
+        "coverage_reason": "A3 fails unless a person can attempt walking through the wall in their own words and the attempt is recorded; A1 and A9 also follow that attempt.",
+        "extent": "full",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "The outcome line says people can attempt actions in their own words, including walking through a wall."
+      },
+      {
+        "requirement_id": "R2",
+        "covered_by": [
+          "A3"
+        ],
+        "coverage_reason": "A3 fails unless the wall attempt is refused, with Sam staying on the original side and no partial effects.",
+        "extent": "full",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "The outcome line says the world records and refuses impossible attempts."
+      },
+      {
+        "requirement_id": "R3",
+        "covered_by": [
+          "A7"
+        ],
+        "coverage_reason": "A7 checks the declared crash-on-fail mapping and the 75% failure chance for an untrained pilot, so a novice crash is probable in the model.",
+        "extent": "full",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "The outcome line says that in the declared untrained-helicopter scenario the roll makes a crash probable."
+      },
+      {
+        "requirement_id": "R4",
+        "covered_by": [],
+        "coverage_reason": "No criterion could show an approval of the design; it concerns how the planning work was approved, so none covers it.",
+        "extent": "none",
+        "missing": "",
+        "deferral": 0,
+        "in_outcome": true,
+        "outcome_reason": "This is a process requirement, so the outcome line does not need to keep it."
+      }
+    ]
+  },
+  "agreed": false,
+  "unsure": [
+    {
+      "requirement_id": "R3",
+      "requirement": "unskilled helicopter flying crashes",
+      "runs_with_gap": 2,
+      "runs": 3,
+      "gaps": [
+        "run 2: R3 \"unskilled helicopter flying crashes\": only partly covered by A7; no criterion asks for The criteria accept a single recorded roll that does not crash, and the probable crash depends on a scenario-declared crash-on-fail rule and a skill scale the plan itself supplies; no criterion checks that an unskilled helicopter attempt in the actual run crashes.",
+        "run 3: R3 \"unskilled helicopter flying crashes\": only partly covered by A7; no criterion asks for Nothing asks that an unskilled helicopter attempt actually produces a crash in a demonstrated run. A7 says explicitly that a guaranteed novice crash is not required and that any single recorded result follows its dice, so a run with no crash still passes."
+      ]
+    }
+  ]
+}
