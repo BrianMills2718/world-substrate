@@ -1,0 +1,49 @@
+Saved-world and recorded-build free replay, 2026-11-12
+Command: batch uv run -q --no-project --python 3.12 --with pydantic --with pyyaml --with-editable /home/brian/code2/llm_client python scripts/check_saved_worlds.py --builds
+Exit:0. Saved28,whole13,notwhole15,errors0,lost0. Recorded builds using follow-record may stop at an unavailable reply; those are not passing new authoring runs.
+
+broken airfield-s1-live.json: never offered ['move', 'practice-flight']
+broken c1r18_waltzman_world.json: never offered ['deploy-early-warning-system']
+whole  cafe-s4-kept.json
+whole  cafe1-live.json
+whole  cafe2-live.json
+whole  firefighting-luna-r1.json
+whole  garden-luna-r3.json
+whole  pencil-c4-run17.json
+broken pencil-s2-2-kept.json: never offered ['assemble-pencils', 'book-pencil-shipment', 'buy-pencil', 'deliver-pencil-shipment', 'pack-pencils']
+broken pencil-s2-3-kept.json: never offered ['receive-boxes']
+whole  pencil-s2-kept.json
+broken pencil-s3-kept.json: never offered ['sell-boxes']
+broken pencil-s3p2-kept.json: never offered ['sell-pencils']
+whole  pencil-s3p3-try5.json
+whole  pencil-s3p4-kept.json
+broken pencil10-live.json: never offered ['buy-pencils', 'deliver-boxed-pencils', 'load-truck', 'make-pencils', 'pack-pencils', 'sell-pencils']
+whole  pencil12-attempt3.json
+whole  pencil12-live.json
+broken pencil13-kept.json: never offered ['mine-graphite']
+broken pencil2-live.json: never offered ['assemble-pencils', 'deliver-boxes', 'deliver-leads', 'make-leads', 'sell-pencils']
+whole  pencil3-live.json
+broken pencil4-live.json: never offered ['ship-pencil-boxes']
+broken pencil5-live.json: never offered ['assemble-pencils', 'carry-boxes', 'pack-pencils', 'sell-pencils']
+broken pencil7-live.json: never offered ['assemble-pencils', 'buy-leads', 'buy-slats', 'deliver-boxes', 'pack-pencils', 'sell-pencils']
+whole  pencil8-live.json
+broken pencil9-live.json: never offered ['sell-pencils']
+broken waltzman-s4-kept.json: never offered ['give-support']
+broken waltzman-s4w2-restore.json: never offered ['give-support', 'make-support-conditional']
+build  evidence/declared-laws/s1-pencil: no recorded reply for this world-substrate-world-authoring call (4 forced replies)
+build  evidence/declared-laws/s2-pencil: no recorded reply for this world-substrate-world-authoring call (4 forced replies)
+build  evidence/declared-laws/s2-pencil-2: never offered ['assemble-pencils', 'book-pencil-shipment', 'buy-pencil', 'deliver-pencil-shipment', 'make-leads', 'pack-pencils', 'saw-slats'] (4 forced replies)
+build  evidence/declared-laws/s2-pencil-3: never offered ['buy-pencils', 'dispatch-boxes', 'make-pencils', 'mix-leads', 'pack-pencils', 'receive-boxes', 'restock-shop', 'saw-slats'] (4 forced replies)
+build  evidence/declared-laws/s3-pencil: never offered ['sell-boxes'] (9 forced replies)
+build  evidence/declared-laws/s3-pencil-2: never offered ['sell-pencils'] (5 forced replies)
+build  evidence/declared-laws/s3-pencil-3: never offered ['sell-pencils'] (7 forced replies)
+build  evidence/declared-laws/s3-pencil-4: whole (6 forced replies)
+build  evidence/declared-laws/s4-cafe: whole (7 forced replies)
+build  evidence/declared-laws/s4-waltzman: no recorded reply for this world-substrate-world-authoring call (0 forced replies)
+build  evidence/declared-laws/s4-waltzman-2: no recorded reply for this world-substrate-world-authoring call (0 forced replies)
+build  evidence/declared-laws/s4-waltzman-3: no recorded reply for this world-substrate-world-authoring call (0 forced replies)
+build  evidence/declared-laws/s5-requests: never offered ['deliver-boxes', 'make-leads', 'make-pencils', 'pack-box', 'sell-pencil', 'send-boxes-to-truckers', 'send-leads-to-factory', 'send-pencils-to-packer'] (2 forced replies)
+build  evidence/open-attempt/s1-airfield: whole (7 forced replies)
+build  evidence/open-attempt/s1-airfield-scripted: whole (6 forced replies)
+build  evidence/open-attempt/s2-airfield: whole (8 forced replies)
+RESULT saved=28 whole=13 broken=15 errors=0 lost=0
