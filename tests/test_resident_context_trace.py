@@ -21,7 +21,8 @@ def test_resident_retains_exact_input_and_failure():
     assert act.calls[0]["context"]["provenance"] == [{"source": "report-1"}]
 
 @pytest.mark.parametrize("policy", ["llm", "resident"])
-def test_runner_uses_declaration_instead_of_omniscient_context(policy):
+@pytest.mark.parametrize("fails", [False, True])
+def test_runner_uses_declaration_instead_of_omniscient_context(policy, fails):
     import json
     from pathlib import Path
     from scripts.run_authored_world import run_world, build_engine, actor_ids
@@ -42,16 +43,28 @@ def test_runner_uses_declaration_instead_of_omniscient_context(policy):
         captured.append(kw)
         return [{"role": "user", "content": json.dumps(kw)}]
     def call(*a, **kw):
+        if fails:
+            raise RuntimeError("provider failed")
         return {"action_id": "wait", "belief": "uncertain", "expected_effect": "none", "work": "none", "reasoning": "wait"}, types.SimpleNamespace(cost=0)
     client = types.SimpleNamespace(render_prompt=render, call_llm_json_schema=call)
+    sink = {}
+    def run():
+        return run_world(bundle, causal, policy=policy, max_turns=1, actor_input_sink=sink,
+                         briefs={a: "HIDDEN raw brief" for a in actors},
+                         prior_recent=[{"actor": actors[0], "action": "HIDDEN global event"}])
     with patch.dict(sys.modules, {"llm_client": client}):
-        trace, _, _ = run_world(bundle, causal, policy=policy, max_turns=1,
-                               briefs={a: "HIDDEN raw brief" for a in actors},
-                               prior_recent=[{"actor": actors[0], "action": "HIDDEN global event"}])
+        if fails:
+            with pytest.raises(RuntimeError, match="provider failed"):
+                run()
+        else:
+            trace, _, _ = run()
+            assert trace["actor_information_mode"] == "declared-v1"
+            assert any(trace["actor_inputs"].values())
     assert captured
     assert "HIDDEN" not in json.dumps(captured)
-    assert trace["actor_information_mode"] == "declared-v1"
-    assert any(trace["actor_inputs"].values())
+    assert any(sink.values())
+    if fails:
+        assert any(call.get("error") == "RuntimeError" for calls in sink.values() for call in calls)
 
 
 def test_interpreter_does_not_autofill_hidden_singleton_or_derived_argument():

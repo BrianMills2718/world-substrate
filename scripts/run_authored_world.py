@@ -643,6 +643,7 @@ def run_world(
     causal_value: dict[str, Any],
     *,
     policy: str = "scripted",
+    actor_input_sink: dict[str, list[dict[str, Any]]] | None = None,
     model_name: str = DEFAULT_MODEL,
     max_turns: int = 12,
     max_budget: float = DEFAULT_POLICY_BUDGET,
@@ -697,7 +698,7 @@ def run_world(
     if type(turn_offset) is not int or turn_offset < 0:
         raise ValueError("turn_offset must be a nonnegative integer")
     engine.actor_information_bundle = bundle if actor_info.has_actor_boundary(bundle) else None
-    engine.actor_calls = {}
+    engine.actor_calls = actor_input_sink if actor_input_sink is not None else {}
     actors = actor_ids(engine, causal_model)
     trace_id = trace_id or f"world-builder-live-run-{uuid.uuid4().hex}"
     # Tasks that take several rounds (#128): started by a move, ended by whatever is true in a later round. A task a
@@ -716,6 +717,10 @@ def run_world(
 
         residents = Residents(actors, model=model_name, trace_id=trace_id, max_budget=max_budget,
                               memory=resident_memory, open_attempts=open_attempts)
+        # Share evidence storage with the caller before any concurrent policy call;
+        # exceptions must not discard the only assembled-input record.
+        for actor, act in getattr(residents, "acts", {}).items():
+            engine.actor_calls[actor] = act.calls
     # Open attempts (docs/plans/open_attempt.md): what each person says they try is read into one typed move against
     # the installed rules' kinds; a reading that fits none goes in as an unmatched attempt and changes nothing.
     def read_signatures() -> list[dict[str, Any]]:
