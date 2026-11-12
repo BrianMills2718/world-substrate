@@ -118,6 +118,14 @@ what the world does to them (a blade breaks, a sound carries, a sighting happens
 
 ## Decided
 
+Conceptual clarification (2026-11-12): the draw defaults below apply when an estimate represents
+modeled event variability. Answer confidence about an existing fact is not automatically an event
+probability. The ford example must distinguish persistent passability from per-crossing variation;
+repeated attempts alone cannot resample a persistent condition. See the
+[modeling guide](../model/modeling-choices.md#probability-is-a-modeling-decision).
+This qualifies inferred defaults; it does not claim implementation or calibration.
+
+
 Source for direction: Brian, 2026-11-10 (Why). The design points below are the agent's calls, inferred by agent
 on 2026-11-10 from the reading and prior art named with each; they stand as working defaults.
 
@@ -145,12 +153,14 @@ on 2026-11-10 from the reading and prior art named with each; they stand as work
      follow.
    - **On a move (a constraint on what a person can do):** the move's "otherwise" result may be `block`, which
      refuses the attempt whole and names the estimate as its blocker. Example: the log cart tries to cross the
-     ford; Jev estimates the chance the ford is passable from the last three days' rain; on "otherwise" the
-     attempt is refused, "blocked: the cart could not get across the ford (chance 0.7, roll 0.81)", nothing
-     changes, and the sawmill gets no logs from that attempt. The estimate and the draw are recorded on the
-     refused event, as every refusal is recorded today. The draw is per attempt, as a skill roll is: the chance
-     is cached per question and facts (Decided 6), but each attempt draws its own number, so a second cart on the
-     same wet day may get across. The refusal therefore describes the attempt, not the state of the day.
+     ford after its persistent depth/passability check permits an attempt. Jev estimates this cart's chance
+     of completing the crossing, conditional on the declared conditions; on "otherwise" the attempt is
+     refused, "blocked: the cart could not get across the ford (chance 0.7, roll 0.81)", nothing changes,
+     and the sawmill gets no logs from that attempt. The estimate and draw are recorded on the refusal.
+     A fresh draw represents per-crossing variability, not a new ford condition. Another cart may succeed
+     only while the persistent passability check permits crossing. A deep-water blocker cannot be bypassed
+     by a favorable draw. Independence between permitted attempts is an explicit fixture approximation;
+     shared causes must be retained whenever the investigation depends on them.
 
    **Ruled out: a check on the probability itself** ("the blade fails if Jev's chance is over 0.5"). That turns
    a probability into a truth claim, the retired note's second anti-pattern ("P(fire)=0.81 -> fire=true"), and
@@ -277,8 +287,9 @@ in `docs/planning/estimate-rules/acceptance-criteria.json` (field `evidence`).
 - **A7 (E1):** in the saved run "sawmill blade", the log cart's crossing on a wet day shows "blocked: the cart
   could not get across the ford (chance 0.7, roll 0.81)" in orange; the move changed nothing, no logs reach the
   sawmill from that attempt,
-  and opening the refusal shows the question, the rain it read and the draw. A dry day's crossing shows the
-  chance, the roll and "crossed".
+  and opening the refusal shows the per-crossing question, its declared conditions and the draw. The ford
+  must already be passable; a deep-water blocker is never bypassed by a roll. A dry day's permitted crossing
+  shows the chance, the roll and "crossed".
 - **A6 (E3):** in a world with a pick and an amount (the blade's failure mode; repair takes 1, 2 or 4 days), the
   run page shows "failure mode: chipped tooth (Jev: chipped 0.6, cracked 0.3, bent 0.1; roll 0.41)" and "repair
   takes 2 days (Jev: 1 day 0.2, 2 days 0.5, 4 days 0.3; roll 0.55)", and the repair's counter uses 2.
@@ -459,13 +470,12 @@ reads (new, only on a cache miss) -> draw (code) -> outcome effects and knock-on
   the band edges; and the numbers multiply with the facts a chance depends on (3 facts in 3 bands each is 27
   chances to write and check). Brian also asked for rules that propagate based on Jev. That is an argument about
   fit, not proof that Jev's chances are better, so E1 measures it: variant (d) of the comparison (Plain baseline)
-  has the rules writer write the sawmill's bands from its description. If the bands and Jev's chances (a) differ
-  by no more than 0.1 on at least 8 of the 10 cases, read side by side, E2's rules-writer instructions prefer
-  bands for a chance that depends on one or two facts and keep Jev for the rest (Q88). Agreement shows only
-  that the two are interchangeable for that chance, not that either is right: nothing here checks Jev against
-  real failure rates (Not in this plan). If they disagree, neither is shown better, so E2 keeps Jev only where
-  the probe (Q82) found Jev's chance following the facts; where Jev's chance is flat, it carries nothing from
-  the facts, and E2 prefers bands for that kind of chance. Jev costs under a tenth
+  has the rules writer write the sawmill's bands from its description. Agreement within 0.1 on at least
+  8 of the 10 cases is a diagnostic for those inputs only. It establishes neither interchangeability nor
+  correctness. Before preferring bands, E2 must justify their applicability, dependencies, thresholds and
+  responses to the investigation's interventions. Disagreement or a flat Jev response motivates inspection;
+  neither establishes which method is adequate. Nothing here checks Jev against real failure rates.
+  Jev costs under a tenth
   of a cent per run and needs no language arithmetic. Chosen: Jev with the per-run cache, with declared bands as
   the cheaper rival measured in E1.
 
@@ -485,12 +495,14 @@ source and the question: Jev given the whole world state rather than the two dec
 (b) Jev with the whole world, (c) gpt-6-luna with the declared reads asked for a probability, and (d) declared
 bands, literal chances the rules writer writes from the sawmill's description with no Jev call (Cheapest design).
 Read side by side: does the chance rise with days since service, do (a) and (b) differ, does (c) agree, and do
-the bands (d) match (a) closely enough to use instead (Q88). Variant (b) is kept as
+the bands (d) agree with (a) on these inputs (Q88). Agreement is diagnostic; applicability and
+intervention analysis must justify replacement. Variant (b) is kept as
 the plain-version record the workspace rule asks for, not as a design candidate: argument already rules out Jev
-reading the whole world in a rule, because the cache key would be the whole world (so nothing is reused), and
-the world can hold what A5 forbids an estimate to read. What (b) can change is the declared reads: if (b) tracks
-the facts better than (a), the rule is reading too little, and the fix is to declare more reads (and, from E2,
-a rules-check warning), never to read the whole world (Q83). No Jev call was made for planning.
+reading the whole world in a rule, because the cache key would be the whole world (so unrelated world changes invalidate reuse), and
+the world can hold what A5 forbids an estimate to read. Differences in (b) motivate inspecting dependencies
+and omitted mechanisms; they do not prove that (b) is better or that (a) reads too little. Add declared reads
+only when causal and intervention analysis justifies them, preserving the declared-read boundary (Q83).
+No Jev call was made for planning.
 
 **Probe proposed, not run:** 10 Jev calls, one for each of days 1 to 10 since service at load 14 (about
 $0.0003, measured per-call figure), would settle U1 (whether Jev's chance rises with days since service). It is
@@ -505,11 +517,15 @@ computed in LLM call boundary and cost) and $0.50 per slice, enforced by the run
 
 ## Uncertainties
 
+Review correction, 2026-11-12: the earlier cold review and coverage records are historical. Their
+small-case interchangeability conclusion is superseded by the applicability requirements below; the ford
+example now samples crossing variability conditional on persistent passability, never passability itself.
+
 - **U1 (agent, Q82):** does Jev's chance rise with the facts it reads (days since service), or is it flat or
   coarse? The probe's chance answers were coarse (0.6, 0.55). Settled by E1's first step (the 10-call probe).
 - **U2 (agent, Q83):** whether a rule's declared reads leave out facts Jev needs. Declared reads (not the whole
-  world) are settled by argument (Plain baseline); the E1 side-by-side comparison shows whether the sawmill's
-  two reads are enough.
+  world) are settled by argument (Plain baseline). Identify relevant causal dependencies and interventions
+  first; the E1 comparison can reveal sensitivity on its cases, but cannot prove that two reads are enough.
 - **U3 (agent, Q33, existing):** where the run seed lives, shared with the skill roll. Settled by argument in
   whichever of S3 and E1 lands first: drawn at run start and kept in the run record.
 - **U4 (agent, Q84):** how a chance decides whether an observation reaches a person (E5): an estimate on the
@@ -518,8 +534,9 @@ computed in LLM call boundary and cost) and $0.50 per slice, enforced by the run
   Agent technical calls); settled by E1's measured run and, if needed, a parallel ask within a moment.
 - **U6 (agent, Q86):** whether J5's stopping point should use Jev; belongs to the judge plan.
 - **U7 (agent, Q88):** whether declared bands written by the rules writer give the same chances as Jev on the
-  10 cases; settled by E1's comparison, variant (d), and it decides whether E2 prefers bands for simple chances.
-  Agreement means interchangeable, not correct; where Q82 finds Jev flat, E2 prefers bands.
+  10 cases. E1 variant (d) is diagnostic, not a replacement decision. E2 may prefer bands only after
+  applicability, dependency and intervention analysis supports that approximation; matching cases or flat
+  Jev outputs alone do not establish interchangeability or correctness.
 
 ## Needs Brian
 

@@ -41,6 +41,8 @@ Each spec keeps the wording of the contract it was folded from on 2026-11-09 and
 
 ## 3. The system as a checked model
 
+- [Modeling choices and conceptual glossary](model/modeling-choices.md): fidelity, heterogeneous methods, uncertainty, speed, cost and scale.
+
 - [System model (ODD)](model/ODD.md): entities, processes, records and C4 views of the implemented
   system; its enforced rules, owners and tests are in [trace.yaml](model/trace.yaml).
 - [Domain model](model/DOMAIN.md) and [metamodel](model/METAMODEL.md): what a world is made of, and

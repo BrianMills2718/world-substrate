@@ -431,6 +431,10 @@ Each item has an entry in [the open questions ledger](../planning/open-questions
 
 ## 12. Glossary
 
+For fidelity, modeling methods, uncertainty and resource tradeoffs, see the
+[modeling choices and conceptual glossary](../model/modeling-choices.md).
+
+
 | Term | Meaning |
 | --- | --- |
 | Canonical state | the only material world truth; prompts, UI state, resident beliefs and analyses do not compete with it |
