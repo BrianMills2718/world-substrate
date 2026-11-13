@@ -4,7 +4,7 @@
 
 Source: Brian, 2026-11-13, “yes do that”, approving the usability recommendations in docs/VISUAL_FEEDBACK.md; event-level reconstruction detail inferred from retained round-3 counterexample under that approval.
 
-A saved run SHALL open paused with its retained scenario description and visible previous/next, direct round and scrub controls. One selected event SHALL coordinate the readable event list, recorded attempt/result detail and primary world state/network. Selecting historical evidence SHALL select its historical event and reconstruct represented state through that event from retained initial entities and ordered changes, without applying later events. Reaction children and installed-rule settlements SHALL retain their own event identity. A whole-round retained picture SHALL remain available with its coarser temporal scope explicit.
+A saved run SHALL open paused with its retained scenario description and visible previous/next, direct round and scrub controls. Playback SHALL advance every retained event in recorded order within a round before advancing to the next round; reaching the final round alone SHALL NOT skip its remaining events or mark them finished. One selected event SHALL coordinate the readable event list, recorded attempt/result detail and primary world state/network. Selecting historical evidence SHALL select its historical event and reconstruct represented state through that event from retained initial entities and ordered changes, without applying later events. Reaction children and installed-rule settlements SHALL retain their own event identity. A whole-round retained picture SHALL remain available with its coarser temporal scope explicit.
 
 Actor input SHALL be matched to the selected person and exact decision round using declared retained records only. Missing data SHALL remain visibly unavailable. Supplied input SHALL NOT be presented as proof of belief. Actor-only mode SHALL hide Analyst world state, attempts, causal diagnostics and other people’s inputs. Saved playback and inspection SHALL NOT invoke a model or mutate stored records or resident memory.
 
@@ -39,3 +39,11 @@ The player SHALL be readable and operable on desktop and phone, with keyboard an
 - **WHEN** the visitor selects rounds and events at desktop and phone widths using pointer or keyboard
 - **THEN** required text is readable without overlapping scene labels or page overflow
 - **AND** temporal controls and contextual help remain usable
+
+#### Scenario: Playback preserves every event
+
+- **GIVEN** the first event of a saved recording is selected
+- **WHEN** the visitor presses Play and then Pause
+- **THEN** playback advances through the round’s actor attempts and automatic consequences in retained event order, without skipping to the next round’s first event
+- **AND** Pause holds the selected event and its world state
+- **AND** replaying from the last event returns to the recording’s first event without a model call
