@@ -430,9 +430,9 @@ window.PAGE_DATA = {
     "status": "present",
     "path": "docs/planning/cold-review.md",
     "verdict": "pass",
-    "reviewed_revision": "a6efda72357b5f983404728583b5753700da437a",
-    "package_commit": "a6efda72357b5f983404728583b5753700da437a",
-    "note": "Independent bounded whole-attempt contract review passed at a6efda7 on 2026-11-13. A4 and existing attempt-reading concept are aligned; Q36 remains open. Native replay read separately; browser/release receipts retain their own status."
+    "reviewed_revision": "49f4d5a7a8c6918e7b003468a2b1ab4c08c2d03f",
+    "package_commit": "49f4d5a7a8c6918e7b003468a2b1ab4c08c2d03f",
+    "note": "Independent scoped polarity/reference contract review passed at49f4d5a on2026-11-13. A2 displays original utterances, quoted field bindings and separate consequences. Native and browser evidence retain their own scope; Q36 general semantic accuracy remains open."
    },
    "acceptance": {
     "status": "present",

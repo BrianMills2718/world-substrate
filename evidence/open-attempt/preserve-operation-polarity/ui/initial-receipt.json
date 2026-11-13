@@ -1,0 +1,1252 @@
+{
+  "scope": "Read-only rendered presentation verification of recorded native interpreter/judge/Engine case checks. Not a new autonomous run, model evaluation, live-site or deployment claim.",
+  "root": "/home/brian/code2/worktrees/ws-intent-polarity-20261113",
+  "commit": "49f4d5a7a8c6918e7b003468a2b1ab4c08c2d03f",
+  "source_hashes": {
+    "polarity-bo.html": "6330ad64c1888cab310e5270622504e7b809b3756184e3f52e495c919fa8d344",
+    "polarity-ari.html": "2e9d7b98ae8576fd65ddcd0a3cb5847fa39fae55a587f0789887ac5568a95f18"
+  },
+  "scenarios": [
+    {
+      "name": "bo-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "first_frame_text": "Bo withholds assent: no positive assent is recorded\n\nRecorded policy input through native interpretation and installed mechanics. Other actors wait.\n\nOriginal words\nI withhold assent to activation by recording my position as not assenting.\nInterpretation\n\nNo matching installed operation. The attempt is to record a non-assenting position, but record-assent does not express that negative position and no other kind represents recording it.\n\nField\tRepresented object\tQuoted words\nNo action field binding; the attempted non-assent is not positive assent.\nConsequence\n\nBo remains not assenting. The judge proposes no new rule and no world state changes.\n\nFull case record · Evidence and limits · Original six-round run, unchanged",
+      "scene_text": "Scene replay\n\nRecorded policy input; native interpretation · $0.002\n👤\nAri\nwaited\nARI · WAIT\nRecorded-input replay.\n👤\nBo\nnot understood: record assent\nBO · UNMATCHED-ATTEMPT\nRecorded-input replay.\n👤\nMara\nwaited\nMARA · WAIT\nRecorded-input replay.\nRound 1\nari: wait · bo: unmatched-attempt · mara: wait\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (0)\nNothing changed.\nNot changed this round (12)\n↺ Replay\n←\nPause\n→",
+      "case_links": [
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r1.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-role-r1.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r3.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-withdraw-r2.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-assent-r6.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/mara-concern-r4.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/uncertain-positive.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/quoted-negative.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/foreign-authority.json"
+      ],
+      "overflow": {
+        "viewport": 1440,
+        "document": 1440,
+        "containers": [
+          {
+            "tag": "DIV",
+            "client": 1404,
+            "scroll": 1404,
+            "overflow": "auto"
+          },
+          {
+            "tag": "SECTION",
+            "client": 1440,
+            "scroll": 1503,
+            "overflow": "auto"
+          }
+        ]
+      },
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "file:///home/brian/code2/worktrees/ws-intent-polarity-20261113/proposals/open-attempt/review-page/polarity-bo.html"
+        }
+      ]
+    },
+    {
+      "name": "bo-390",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "first_frame_text": "Bo withholds assent: no positive assent is recorded\n\nRecorded policy input through native interpretation and installed mechanics. Other actors wait.\n\nOriginal words\nI withhold assent to activation by recording my position as not assenting.\nInterpretation\n\nNo matching installed operation. The attempt is to record a non-assenting position, but record-assent does not express that negative position and no other kind represents recording it.\n\nField\tRepresented object\tQuoted words\nNo action field binding; the attempted non-assent is not positive assent.\nConsequence\n\nBo remains not assenting. The judge proposes no new rule and no world state changes.\n\nFull case record · Evidence and limits · Original six-round run, unchanged",
+      "scene_text": "Scene replay\n\nRecorded policy input; native interpretation · $0.002\n👤\nAri\nwaited\nARI · WAIT\nRecorded-input replay.\n👤\nBo\nnot understood: record assent\nBO · UNMATCHED-ATTEMPT\nRecorded-input replay.\n👤\nMara\nwaited\nMARA · WAIT\nRecorded-input replay.\nRound 1\nari: wait · bo: unmatched-attempt · mara: wait\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (0)\nNothing changed.\nNot changed this round (12)\n↺ Replay\n←\nPause\n→",
+      "case_links": [
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r1.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-role-r1.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r3.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-withdraw-r2.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-assent-r6.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/mara-concern-r4.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/uncertain-positive.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/quoted-negative.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/foreign-authority.json"
+      ],
+      "overflow": {
+        "viewport": 390,
+        "document": 390,
+        "containers": [
+          {
+            "tag": "DIV",
+            "client": 354,
+            "scroll": 354,
+            "overflow": "auto"
+          },
+          {
+            "tag": "SECTION",
+            "client": 390,
+            "scroll": 1503,
+            "overflow": "auto"
+          }
+        ]
+      },
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "file:///home/brian/code2/worktrees/ws-intent-polarity-20261113/proposals/open-attempt/review-page/polarity-bo.html"
+        }
+      ]
+    },
+    {
+      "name": "ari-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "first_frame_text": "Ari repairs using the represented authority object\n\nRecorded policy input through native interpretation and installed mechanics. Other actors wait.\n\nOriginal words\nI try to perform a technical repair on the prototype pump’s technical condition.\nInterpretation\n\nrepair-condition. The attempt is to perform a technical repair on the pump’s technical condition, matching repair-condition.\n\nField\tRepresented object\tQuoted words\nauthority\ttechnical-role-ari\tI try to perform a technical repair\ncondition\tcondition-pump-activation\tprototype pump’s technical condition\nConsequence\n\nOnly the technical condition changes from failing to passing. The actor is ari; the authority object is technical-role-ari.\n\nFull case record · Evidence and limits · Original six-round run, unchanged",
+      "scene_text": "Scene replay\n\nRecorded policy input; native interpretation · $0.000\n👤\nAri\nrepair condition\nARI · REPAIR-CONDITION\nRecorded-input replay.\n👤\nBo\nwaited\nBO · WAIT\nRecorded-input replay.\n👤\nMara\nwaited\nMARA · WAIT\nRecorded-input replay.\nRound 1\nari: repair-condition · bo: wait · mara: wait\n●\nTechnical condition\n●\nTechnical authority of ari\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nTechnical condition: passing: yes (was passing: no)\nAri\nNot changed this round (11)\n↺ Replay\n←\nPause\n→",
+      "case_links": [
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r1.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-role-r1.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r3.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-withdraw-r2.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-assent-r6.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/mara-concern-r4.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/uncertain-positive.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/quoted-negative.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/foreign-authority.json"
+      ],
+      "overflow": {
+        "viewport": 1440,
+        "document": 1440,
+        "containers": [
+          {
+            "tag": "DIV",
+            "client": 1404,
+            "scroll": 1404,
+            "overflow": "auto"
+          },
+          {
+            "tag": "SECTION",
+            "client": 1440,
+            "scroll": 1503,
+            "overflow": "auto"
+          }
+        ]
+      },
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "file:///home/brian/code2/worktrees/ws-intent-polarity-20261113/proposals/open-attempt/review-page/polarity-ari.html"
+        }
+      ]
+    },
+    {
+      "name": "ari-390",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "first_frame_text": "Ari repairs using the represented authority object\n\nRecorded policy input through native interpretation and installed mechanics. Other actors wait.\n\nOriginal words\nI try to perform a technical repair on the prototype pump’s technical condition.\nInterpretation\n\nrepair-condition. The attempt is to perform a technical repair on the pump’s technical condition, matching repair-condition.\n\nField\tRepresented object\tQuoted words\nauthority\ttechnical-role-ari\tI try to perform a technical repair\ncondition\tcondition-pump-activation\tprototype pump’s technical condition\nConsequence\n\nOnly the technical condition changes from failing to passing. The actor is ari; the authority object is technical-role-ari.\n\nFull case record · Evidence and limits · Original six-round run, unchanged",
+      "scene_text": "Scene replay\n\nRecorded policy input; native interpretation · $0.000\n👤\nAri\nrepair condition\nARI · REPAIR-CONDITION\nRecorded-input replay.\n👤\nBo\nwaited\nBO · WAIT\nRecorded-input replay.\n👤\nMara\nwaited\nMARA · WAIT\nRecorded-input replay.\nRound 1\nari: repair-condition · bo: wait · mara: wait\n●\nTechnical condition\n●\nTechnical authority of ari\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nTechnical condition: passing: yes (was passing: no)\nAri\nNot changed this round (11)\n↺ Replay\n←\nPause\n→",
+      "case_links": [
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r1.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-role-r1.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r3.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-withdraw-r2.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-assent-r6.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/mara-concern-r4.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/uncertain-positive.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/quoted-negative.json",
+        "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/foreign-authority.json"
+      ],
+      "overflow": {
+        "viewport": 390,
+        "document": 390,
+        "containers": [
+          {
+            "tag": "DIV",
+            "client": 354,
+            "scroll": 354,
+            "overflow": "auto"
+          },
+          {
+            "tag": "SECTION",
+            "client": 390,
+            "scroll": 1503,
+            "overflow": "auto"
+          }
+        ]
+      },
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "file:///home/brian/code2/worktrees/ws-intent-polarity-20261113/proposals/open-attempt/review-page/polarity-ari.html"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "bo-1440 original exact",
+      "passed": true,
+      "detail": "I withhold assent to activation by recording my position as not assenting."
+    },
+    {
+      "name": "bo-1440 original in first viewport",
+      "passed": true,
+      "detail": {
+        "x": 18,
+        "y": 177.65625,
+        "width": 1404,
+        "height": 20.25
+      }
+    },
+    {
+      "name": "bo-1440 visible negative/no change",
+      "passed": true,
+      "detail": "Bo withholds assent: no positive assent is recorded\n\nRecorded policy input through native interpretation and installed mechanics. Other actors wait.\n\nOriginal words\nI withhold assent to activation by recording my position as not assenting.\nInterpretation\n\nNo matching installed operation. The attempt is to record a non-assenting position, but record-assent does not express that negative position and no other kind represents recording it.\n\nField\tRepresented object\tQuoted words\nNo action field binding; the attempted non-assent is not positive assent.\nConsequence\n\nBo remains not assenting. The judge proposes no new rule and no world state changes.\n\nFull case record · Evidence and limits · Original six-round run, unchanged"
+    },
+    {
+      "name": "bo-1440 replay consequence",
+      "passed": true,
+      "detail": "Scene replay\n\nRecorded policy input; native interpretation · $0.002\n👤\nAri\nwaited\nARI · WAIT\nRecorded-input replay.\n👤\nBo\nnot understood: record assent\nBO · UNMATCHED-ATTEMPT\nRecorded-input replay.\n👤\nMara\nwaited\nMARA · WAIT\nRecorded-input replay.\nRound 1\nari: wait · bo: unmatched-attempt · mara: wait\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (0)\nNothing changed.\nNot changed this round (12)\n↺ Replay\n←\nPause\n→"
+    },
+    {
+      "name": "bo-1440 replay keyboard traversal",
+      "passed": true,
+      "detail": [
+        "restart",
+        "prev",
+        "toggle",
+        "next"
+      ]
+    },
+    {
+      "name": "bo-1440 keyboard replay remains round one",
+      "passed": true,
+      "detail": "Round 1"
+    },
+    {
+      "name": "bo-1440 table readable contrast",
+      "passed": false,
+      "detail": {
+        "foreground": "rgb(24, 33, 38)",
+        "background": "rgb(23, 27, 29)",
+        "ratio": 1.0606320679550432
+      }
+    },
+    {
+      "name": "bo-1440 nine actual rows",
+      "passed": true,
+      "detail": 9
+    },
+    {
+      "name": "bo-1440 case membership and exact wording",
+      "passed": true,
+      "detail": {
+        "cases": [
+          "bo-negative-r1",
+          "ari-role-r1",
+          "bo-negative-r3",
+          "bo-withdraw-r2",
+          "ari-assent-r6",
+          "mara-concern-r4",
+          "uncertain-positive",
+          "quoted-negative",
+          "foreign-authority"
+        ],
+        "rows": [
+          "I withhold assent to activation by recording my position as not assenting.\tNo matching operation\n{}\tunsupported_action. No change Recorded evidence",
+          "I try to perform a technical repair on the prototype pump’s technical condition.\trepair-condition\n{\"authority\": \"technical-role-ari\", \"condition\": \"condition-pump-activation\"}\taccepted. technical_condition.passing: False → True Recorded evidence",
+          "I withhold assent to activation by recording my position as not assenting on Bo's recorded position for the prototype pump.\tNo matching operation\n{}\tunsupported_action. No change Recorded evidence",
+          "I withdraw my assent to activation from my recorded position, Bo's position on the pump activation decision.\twithdraw-assent\n{\"decision\": \"pump-activation\", \"position\": \"position-bo\"}\taccepted. actor_position.assent: True → False; validation_decision.assents: 1 → 0 Recorded evidence",
+          "I try to record my assent on the decision about activating the prototype pump.\trecord-assent\n{\"decision\": \"pump-activation\", \"position\": \"position-ari\"}\taccepted. actor_position.assent: False → True Recorded evidence",
+          "I state concerned on my recorded position for the prototype pump activation decision.\tstate-concerned\n{\"position\": \"position-mara\"}\taccepted. actor_position.stance: unexpressed → concerned Recorded evidence",
+          "I am not sure the pump is safe, but I record my assent to activation.\trecord-assent\n{\"decision\": \"pump-activation\", \"position\": \"position-bo\"}\taccepted. actor_position.assent: False → True; validation_decision.assents: 0 → 1 Recorded evidence",
+          "I send Mara a report saying 'I do not assent'.\tsend-report\n{\"recipient\": \"mara\", \"content\": \"I do not assent\"}\taccepted. report_log.entries: [] → ['{\"channel\":\"direct\",\"content\":\"I do not assent\",\"delivery_status\":\"delivered\",\"id\":\"rpt-afc536ee184fe64f\",\"lineage_status\":\"not_declared\",\"recipient_id\":\"mara\",\"source_event_id\":\"e00001\",\"source_id\":\"bo\",\"source_lineage\":null,\"source_revision\":13}'] Recorded evidence",
+          "I repair the technical condition for the prototype pump using Ari's technical authority.\trepair-condition\n{\"authority\": \"technical-role-ari\", \"condition\": \"condition-pump-activation\"}\tprecondition_failed. No change Recorded evidence"
+        ],
+        "hrefs": [
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r1.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-role-r1.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r3.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-withdraw-r2.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-assent-r6.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/mara-concern-r4.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/uncertain-positive.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/quoted-negative.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/foreign-authority.json"
+        ]
+      }
+    },
+    {
+      "name": "bo-1440 nine evidence links keyboard accessible",
+      "passed": true,
+      "detail": [
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r1.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-role-r1.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r3.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-withdraw-r2.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-assent-r6.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/mara-concern-r4.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/uncertain-positive.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/quoted-negative.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/foreign-authority.json",
+          "text": "Recorded evidence"
+        }
+      ]
+    },
+    {
+      "name": "bo-1440 focused evidence links fully visible",
+      "passed": true,
+      "detail": [
+        {
+          "x": 486.671875,
+          "y": 232.578125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 635.09375,
+          "y": 431.828125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 486.671875,
+          "y": 691.828125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 853.609375,
+          "y": 982.328125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 587.578125,
+          "y": 491.203125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 692.875,
+          "y": 710.703125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 853.609375,
+          "y": 899.828125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 242.96875,
+          "y": 705.703125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 480.640625,
+          "y": 864.453125,
+          "width": 143.359375,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "name": "bo-1440 no document horizontal overflow",
+      "passed": true,
+      "detail": {
+        "viewport": 1440,
+        "document": 1440,
+        "containers": [
+          {
+            "tag": "DIV",
+            "client": 1404,
+            "scroll": 1404,
+            "overflow": "auto"
+          },
+          {
+            "tag": "SECTION",
+            "client": 1440,
+            "scroll": 1503,
+            "overflow": "auto"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bo-1440 runtime errors absent",
+      "passed": true,
+      "detail": {
+        "page_errors": [],
+        "request_failures": [],
+        "console": []
+      }
+    },
+    {
+      "name": "bo-1440 no write requests",
+      "passed": true,
+      "detail": [
+        {
+          "method": "GET",
+          "url": "file:///home/brian/code2/worktrees/ws-intent-polarity-20261113/proposals/open-attempt/review-page/polarity-bo.html"
+        }
+      ]
+    },
+    {
+      "name": "bo-390 original exact",
+      "passed": true,
+      "detail": "I withhold assent to activation by recording my position as not assenting."
+    },
+    {
+      "name": "bo-390 original in first viewport",
+      "passed": true,
+      "detail": {
+        "x": 18,
+        "y": 226.25,
+        "width": 354,
+        "height": 40.5
+      }
+    },
+    {
+      "name": "bo-390 visible negative/no change",
+      "passed": true,
+      "detail": "Bo withholds assent: no positive assent is recorded\n\nRecorded policy input through native interpretation and installed mechanics. Other actors wait.\n\nOriginal words\nI withhold assent to activation by recording my position as not assenting.\nInterpretation\n\nNo matching installed operation. The attempt is to record a non-assenting position, but record-assent does not express that negative position and no other kind represents recording it.\n\nField\tRepresented object\tQuoted words\nNo action field binding; the attempted non-assent is not positive assent.\nConsequence\n\nBo remains not assenting. The judge proposes no new rule and no world state changes.\n\nFull case record · Evidence and limits · Original six-round run, unchanged"
+    },
+    {
+      "name": "bo-390 replay consequence",
+      "passed": true,
+      "detail": "Scene replay\n\nRecorded policy input; native interpretation · $0.002\n👤\nAri\nwaited\nARI · WAIT\nRecorded-input replay.\n👤\nBo\nnot understood: record assent\nBO · UNMATCHED-ATTEMPT\nRecorded-input replay.\n👤\nMara\nwaited\nMARA · WAIT\nRecorded-input replay.\nRound 1\nari: wait · bo: unmatched-attempt · mara: wait\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (0)\nNothing changed.\nNot changed this round (12)\n↺ Replay\n←\nPause\n→"
+    },
+    {
+      "name": "bo-390 replay keyboard traversal",
+      "passed": true,
+      "detail": [
+        "restart",
+        "prev",
+        "toggle",
+        "next"
+      ]
+    },
+    {
+      "name": "bo-390 keyboard replay remains round one",
+      "passed": true,
+      "detail": "Round 1"
+    },
+    {
+      "name": "bo-390 table readable contrast",
+      "passed": false,
+      "detail": {
+        "foreground": "rgb(24, 33, 38)",
+        "background": "rgb(23, 27, 29)",
+        "ratio": 1.0606320679550432
+      }
+    },
+    {
+      "name": "bo-390 nine actual rows",
+      "passed": true,
+      "detail": 9
+    },
+    {
+      "name": "bo-390 case membership and exact wording",
+      "passed": true,
+      "detail": {
+        "cases": [
+          "bo-negative-r1",
+          "ari-role-r1",
+          "bo-negative-r3",
+          "bo-withdraw-r2",
+          "ari-assent-r6",
+          "mara-concern-r4",
+          "uncertain-positive",
+          "quoted-negative",
+          "foreign-authority"
+        ],
+        "rows": [
+          "I withhold assent to activation by recording my position as not assenting.\tNo matching operation\n{}\tunsupported_action. No change Recorded evidence",
+          "I try to perform a technical repair on the prototype pump’s technical condition.\trepair-condition\n{\"authority\": \"technical-role-ari\", \"condition\": \"condition-pump-activation\"}\taccepted. technical_condition.passing: False → True Recorded evidence",
+          "I withhold assent to activation by recording my position as not assenting on Bo's recorded position for the prototype pump.\tNo matching operation\n{}\tunsupported_action. No change Recorded evidence",
+          "I withdraw my assent to activation from my recorded position, Bo's position on the pump activation decision.\twithdraw-assent\n{\"decision\": \"pump-activation\", \"position\": \"position-bo\"}\taccepted. actor_position.assent: True → False; validation_decision.assents: 1 → 0 Recorded evidence",
+          "I try to record my assent on the decision about activating the prototype pump.\trecord-assent\n{\"decision\": \"pump-activation\", \"position\": \"position-ari\"}\taccepted. actor_position.assent: False → True Recorded evidence",
+          "I state concerned on my recorded position for the prototype pump activation decision.\tstate-concerned\n{\"position\": \"position-mara\"}\taccepted. actor_position.stance: unexpressed → concerned Recorded evidence",
+          "I am not sure the pump is safe, but I record my assent to activation.\trecord-assent\n{\"decision\": \"pump-activation\", \"position\": \"position-bo\"}\taccepted. actor_position.assent: False → True; validation_decision.assents: 0 → 1 Recorded evidence",
+          "I send Mara a report saying 'I do not assent'.\tsend-report\n{\"recipient\": \"mara\", \"content\": \"I do not assent\"}\taccepted. report_log.entries: [] → ['{\"channel\":\"direct\",\"content\":\"I do not assent\",\"delivery_status\":\"delivered\",\"id\":\"rpt-afc536ee184fe64f\",\"lineage_status\":\"not_declared\",\"recipient_id\":\"mara\",\"source_event_id\":\"e00001\",\"source_id\":\"bo\",\"source_lineage\":null,\"source_revision\":13}'] Recorded evidence",
+          "I repair the technical condition for the prototype pump using Ari's technical authority.\trepair-condition\n{\"authority\": \"technical-role-ari\", \"condition\": \"condition-pump-activation\"}\tprecondition_failed. No change Recorded evidence"
+        ],
+        "hrefs": [
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r1.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-role-r1.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r3.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-withdraw-r2.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-assent-r6.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/mara-concern-r4.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/uncertain-positive.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/quoted-negative.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/foreign-authority.json"
+        ]
+      }
+    },
+    {
+      "name": "bo-390 nine evidence links keyboard accessible",
+      "passed": true,
+      "detail": [
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r1.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-role-r1.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r3.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-withdraw-r2.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-assent-r6.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/mara-concern-r4.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/uncertain-positive.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/quoted-negative.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/foreign-authority.json",
+          "text": "Recorded evidence"
+        }
+      ]
+    },
+    {
+      "name": "bo-390 focused evidence links fully visible",
+      "passed": false,
+      "detail": [
+        {
+          "x": 123.671875,
+          "y": 272.828125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 272.09375,
+          "y": 472.078125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 123.671875,
+          "y": 732.078125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 123.609375,
+          "y": 412.578125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": -142.421875,
+          "y": 662.453125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": -37.125,
+          "y": 412.953125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 123.609375,
+          "y": 602.078125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 122.96875,
+          "y": 770.953125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 360.640625,
+          "y": 708.703125,
+          "width": 143.359375,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "name": "bo-390 no document horizontal overflow",
+      "passed": true,
+      "detail": {
+        "viewport": 390,
+        "document": 390,
+        "containers": [
+          {
+            "tag": "DIV",
+            "client": 354,
+            "scroll": 354,
+            "overflow": "auto"
+          },
+          {
+            "tag": "SECTION",
+            "client": 390,
+            "scroll": 1503,
+            "overflow": "auto"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bo-390 runtime errors absent",
+      "passed": true,
+      "detail": {
+        "page_errors": [],
+        "request_failures": [],
+        "console": []
+      }
+    },
+    {
+      "name": "bo-390 no write requests",
+      "passed": true,
+      "detail": [
+        {
+          "method": "GET",
+          "url": "file:///home/brian/code2/worktrees/ws-intent-polarity-20261113/proposals/open-attempt/review-page/polarity-bo.html"
+        }
+      ]
+    },
+    {
+      "name": "ari-1440 original exact",
+      "passed": true,
+      "detail": "I try to perform a technical repair on the prototype pump’s technical condition."
+    },
+    {
+      "name": "ari-1440 original in first viewport",
+      "passed": true,
+      "detail": {
+        "x": 18,
+        "y": 177.65625,
+        "width": 1404,
+        "height": 20.25
+      }
+    },
+    {
+      "name": "ari-1440 authority separate from actor",
+      "passed": true,
+      "detail": [
+        "authority\ttechnical-role-ari\tI try to perform a technical repair",
+        "condition\tcondition-pump-activation\tprototype pump’s technical condition"
+      ]
+    },
+    {
+      "name": "ari-1440 condition failing to passing",
+      "passed": true,
+      "detail": "Ari repairs using the represented authority object\n\nRecorded policy input through native interpretation and installed mechanics. Other actors wait.\n\nOriginal words\nI try to perform a technical repair on the prototype pump’s technical condition.\nInterpretation\n\nrepair-condition. The attempt is to perform a technical repair on the pump’s technical condition, matching repair-condition.\n\nField\tRepresented object\tQuoted words\nauthority\ttechnical-role-ari\tI try to perform a technical repair\ncondition\tcondition-pump-activation\tprototype pump’s technical condition\nConsequence\n\nOnly the technical condition changes from failing to passing. The actor is ari; the authority object is technical-role-ari.\n\nFull case record · Evidence and limits · Original six-round run, unchanged"
+    },
+    {
+      "name": "ari-1440 replay consequence",
+      "passed": true,
+      "detail": "Scene replay\n\nRecorded policy input; native interpretation · $0.000\n👤\nAri\nrepair condition\nARI · REPAIR-CONDITION\nRecorded-input replay.\n👤\nBo\nwaited\nBO · WAIT\nRecorded-input replay.\n👤\nMara\nwaited\nMARA · WAIT\nRecorded-input replay.\nRound 1\nari: repair-condition · bo: wait · mara: wait\n●\nTechnical condition\n●\nTechnical authority of ari\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nTechnical condition: passing: yes (was passing: no)\nAri\nNot changed this round (11)\n↺ Replay\n←\nPause\n→"
+    },
+    {
+      "name": "ari-1440 replay keyboard traversal",
+      "passed": true,
+      "detail": [
+        "restart",
+        "prev",
+        "toggle",
+        "next"
+      ]
+    },
+    {
+      "name": "ari-1440 keyboard replay remains round one",
+      "passed": true,
+      "detail": "Round 1"
+    },
+    {
+      "name": "ari-1440 table readable contrast",
+      "passed": false,
+      "detail": {
+        "foreground": "rgb(24, 33, 38)",
+        "background": "rgb(23, 27, 29)",
+        "ratio": 1.0606320679550432
+      }
+    },
+    {
+      "name": "ari-1440 nine actual rows",
+      "passed": true,
+      "detail": 9
+    },
+    {
+      "name": "ari-1440 case membership and exact wording",
+      "passed": true,
+      "detail": {
+        "cases": [
+          "bo-negative-r1",
+          "ari-role-r1",
+          "bo-negative-r3",
+          "bo-withdraw-r2",
+          "ari-assent-r6",
+          "mara-concern-r4",
+          "uncertain-positive",
+          "quoted-negative",
+          "foreign-authority"
+        ],
+        "rows": [
+          "I withhold assent to activation by recording my position as not assenting.\tNo matching operation\n{}\tunsupported_action. No change Recorded evidence",
+          "I try to perform a technical repair on the prototype pump’s technical condition.\trepair-condition\n{\"authority\": \"technical-role-ari\", \"condition\": \"condition-pump-activation\"}\taccepted. technical_condition.passing: False → True Recorded evidence",
+          "I withhold assent to activation by recording my position as not assenting on Bo's recorded position for the prototype pump.\tNo matching operation\n{}\tunsupported_action. No change Recorded evidence",
+          "I withdraw my assent to activation from my recorded position, Bo's position on the pump activation decision.\twithdraw-assent\n{\"decision\": \"pump-activation\", \"position\": \"position-bo\"}\taccepted. actor_position.assent: True → False; validation_decision.assents: 1 → 0 Recorded evidence",
+          "I try to record my assent on the decision about activating the prototype pump.\trecord-assent\n{\"decision\": \"pump-activation\", \"position\": \"position-ari\"}\taccepted. actor_position.assent: False → True Recorded evidence",
+          "I state concerned on my recorded position for the prototype pump activation decision.\tstate-concerned\n{\"position\": \"position-mara\"}\taccepted. actor_position.stance: unexpressed → concerned Recorded evidence",
+          "I am not sure the pump is safe, but I record my assent to activation.\trecord-assent\n{\"decision\": \"pump-activation\", \"position\": \"position-bo\"}\taccepted. actor_position.assent: False → True; validation_decision.assents: 0 → 1 Recorded evidence",
+          "I send Mara a report saying 'I do not assent'.\tsend-report\n{\"recipient\": \"mara\", \"content\": \"I do not assent\"}\taccepted. report_log.entries: [] → ['{\"channel\":\"direct\",\"content\":\"I do not assent\",\"delivery_status\":\"delivered\",\"id\":\"rpt-afc536ee184fe64f\",\"lineage_status\":\"not_declared\",\"recipient_id\":\"mara\",\"source_event_id\":\"e00001\",\"source_id\":\"bo\",\"source_lineage\":null,\"source_revision\":13}'] Recorded evidence",
+          "I repair the technical condition for the prototype pump using Ari's technical authority.\trepair-condition\n{\"authority\": \"technical-role-ari\", \"condition\": \"condition-pump-activation\"}\tprecondition_failed. No change Recorded evidence"
+        ],
+        "hrefs": [
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r1.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-role-r1.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r3.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-withdraw-r2.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-assent-r6.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/mara-concern-r4.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/uncertain-positive.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/quoted-negative.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/foreign-authority.json"
+        ]
+      }
+    },
+    {
+      "name": "ari-1440 nine evidence links keyboard accessible",
+      "passed": true,
+      "detail": [
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r1.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-role-r1.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r3.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-withdraw-r2.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-assent-r6.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/mara-concern-r4.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/uncertain-positive.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/quoted-negative.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/foreign-authority.json",
+          "text": "Recorded evidence"
+        }
+      ]
+    },
+    {
+      "name": "ari-1440 focused evidence links fully visible",
+      "passed": true,
+      "detail": [
+        {
+          "x": 486.671875,
+          "y": 232.015625,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 635.09375,
+          "y": 431.265625,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 486.671875,
+          "y": 691.265625,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 853.609375,
+          "y": 981.765625,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 587.578125,
+          "y": 490.640625,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 692.875,
+          "y": 710.140625,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 853.609375,
+          "y": 899.265625,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 242.96875,
+          "y": 706.140625,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 480.640625,
+          "y": 864.890625,
+          "width": 143.359375,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "name": "ari-1440 no document horizontal overflow",
+      "passed": true,
+      "detail": {
+        "viewport": 1440,
+        "document": 1440,
+        "containers": [
+          {
+            "tag": "DIV",
+            "client": 1404,
+            "scroll": 1404,
+            "overflow": "auto"
+          },
+          {
+            "tag": "SECTION",
+            "client": 1440,
+            "scroll": 1503,
+            "overflow": "auto"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ari-1440 runtime errors absent",
+      "passed": true,
+      "detail": {
+        "page_errors": [],
+        "request_failures": [],
+        "console": []
+      }
+    },
+    {
+      "name": "ari-1440 no write requests",
+      "passed": true,
+      "detail": [
+        {
+          "method": "GET",
+          "url": "file:///home/brian/code2/worktrees/ws-intent-polarity-20261113/proposals/open-attempt/review-page/polarity-ari.html"
+        }
+      ]
+    },
+    {
+      "name": "ari-390 original exact",
+      "passed": true,
+      "detail": "I try to perform a technical repair on the prototype pump’s technical condition."
+    },
+    {
+      "name": "ari-390 original in first viewport",
+      "passed": true,
+      "detail": {
+        "x": 18,
+        "y": 258.640625,
+        "width": 354,
+        "height": 40.5
+      }
+    },
+    {
+      "name": "ari-390 authority separate from actor",
+      "passed": true,
+      "detail": [
+        "authority\ttechnical-role-ari\tI try to perform a technical repair",
+        "condition\tcondition-pump-activation\tprototype pump’s technical condition"
+      ]
+    },
+    {
+      "name": "ari-390 condition failing to passing",
+      "passed": true,
+      "detail": "Ari repairs using the represented authority object\n\nRecorded policy input through native interpretation and installed mechanics. Other actors wait.\n\nOriginal words\nI try to perform a technical repair on the prototype pump’s technical condition.\nInterpretation\n\nrepair-condition. The attempt is to perform a technical repair on the pump’s technical condition, matching repair-condition.\n\nField\tRepresented object\tQuoted words\nauthority\ttechnical-role-ari\tI try to perform a technical repair\ncondition\tcondition-pump-activation\tprototype pump’s technical condition\nConsequence\n\nOnly the technical condition changes from failing to passing. The actor is ari; the authority object is technical-role-ari.\n\nFull case record · Evidence and limits · Original six-round run, unchanged"
+    },
+    {
+      "name": "ari-390 replay consequence",
+      "passed": true,
+      "detail": "Scene replay\n\nRecorded policy input; native interpretation · $0.000\n👤\nAri\nrepair condition\nARI · REPAIR-CONDITION\nRecorded-input replay.\n👤\nBo\nwaited\nBO · WAIT\nRecorded-input replay.\n👤\nMara\nwaited\nMARA · WAIT\nRecorded-input replay.\nRound 1\nari: repair-condition · bo: wait · mara: wait\n●\nTechnical condition\n●\nTechnical authority of ari\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nTechnical condition: passing: yes (was passing: no)\nAri\nNot changed this round (11)\n↺ Replay\n←\nPause\n→"
+    },
+    {
+      "name": "ari-390 replay keyboard traversal",
+      "passed": true,
+      "detail": [
+        "restart",
+        "prev",
+        "toggle",
+        "next"
+      ]
+    },
+    {
+      "name": "ari-390 keyboard replay remains round one",
+      "passed": true,
+      "detail": "Round 1"
+    },
+    {
+      "name": "ari-390 table readable contrast",
+      "passed": false,
+      "detail": {
+        "foreground": "rgb(24, 33, 38)",
+        "background": "rgb(23, 27, 29)",
+        "ratio": 1.0606320679550432
+      }
+    },
+    {
+      "name": "ari-390 nine actual rows",
+      "passed": true,
+      "detail": 9
+    },
+    {
+      "name": "ari-390 case membership and exact wording",
+      "passed": true,
+      "detail": {
+        "cases": [
+          "bo-negative-r1",
+          "ari-role-r1",
+          "bo-negative-r3",
+          "bo-withdraw-r2",
+          "ari-assent-r6",
+          "mara-concern-r4",
+          "uncertain-positive",
+          "quoted-negative",
+          "foreign-authority"
+        ],
+        "rows": [
+          "I withhold assent to activation by recording my position as not assenting.\tNo matching operation\n{}\tunsupported_action. No change Recorded evidence",
+          "I try to perform a technical repair on the prototype pump’s technical condition.\trepair-condition\n{\"authority\": \"technical-role-ari\", \"condition\": \"condition-pump-activation\"}\taccepted. technical_condition.passing: False → True Recorded evidence",
+          "I withhold assent to activation by recording my position as not assenting on Bo's recorded position for the prototype pump.\tNo matching operation\n{}\tunsupported_action. No change Recorded evidence",
+          "I withdraw my assent to activation from my recorded position, Bo's position on the pump activation decision.\twithdraw-assent\n{\"decision\": \"pump-activation\", \"position\": \"position-bo\"}\taccepted. actor_position.assent: True → False; validation_decision.assents: 1 → 0 Recorded evidence",
+          "I try to record my assent on the decision about activating the prototype pump.\trecord-assent\n{\"decision\": \"pump-activation\", \"position\": \"position-ari\"}\taccepted. actor_position.assent: False → True Recorded evidence",
+          "I state concerned on my recorded position for the prototype pump activation decision.\tstate-concerned\n{\"position\": \"position-mara\"}\taccepted. actor_position.stance: unexpressed → concerned Recorded evidence",
+          "I am not sure the pump is safe, but I record my assent to activation.\trecord-assent\n{\"decision\": \"pump-activation\", \"position\": \"position-bo\"}\taccepted. actor_position.assent: False → True; validation_decision.assents: 0 → 1 Recorded evidence",
+          "I send Mara a report saying 'I do not assent'.\tsend-report\n{\"recipient\": \"mara\", \"content\": \"I do not assent\"}\taccepted. report_log.entries: [] → ['{\"channel\":\"direct\",\"content\":\"I do not assent\",\"delivery_status\":\"delivered\",\"id\":\"rpt-afc536ee184fe64f\",\"lineage_status\":\"not_declared\",\"recipient_id\":\"mara\",\"source_event_id\":\"e00001\",\"source_id\":\"bo\",\"source_lineage\":null,\"source_revision\":13}'] Recorded evidence",
+          "I repair the technical condition for the prototype pump using Ari's technical authority.\trepair-condition\n{\"authority\": \"technical-role-ari\", \"condition\": \"condition-pump-activation\"}\tprecondition_failed. No change Recorded evidence"
+        ],
+        "hrefs": [
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r1.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-role-r1.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r3.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-withdraw-r2.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-assent-r6.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/mara-concern-r4.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/uncertain-positive.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/quoted-negative.json",
+          "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/foreign-authority.json"
+        ]
+      }
+    },
+    {
+      "name": "ari-390 nine evidence links keyboard accessible",
+      "passed": true,
+      "detail": [
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r1.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-role-r1.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-negative-r3.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/bo-withdraw-r2.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/ari-assent-r6.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/mara-concern-r4.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/uncertain-positive.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/quoted-negative.json",
+          "text": "Recorded evidence"
+        },
+        {
+          "tag": "A",
+          "href": "https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/preserve-operation-polarity/foreign-authority.json",
+          "text": "Recorded evidence"
+        }
+      ]
+    },
+    {
+      "name": "ari-390 focused evidence links fully visible",
+      "passed": false,
+      "detail": [
+        {
+          "x": 123.671875,
+          "y": 272.65625,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 272.09375,
+          "y": 471.90625,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 123.671875,
+          "y": 731.90625,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 123.609375,
+          "y": 413.40625,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": -142.421875,
+          "y": 663.28125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": -37.125,
+          "y": 412.78125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 123.609375,
+          "y": 601.90625,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 122.96875,
+          "y": 770.78125,
+          "width": 143.359375,
+          "height": 18
+        },
+        {
+          "x": 360.640625,
+          "y": 708.53125,
+          "width": 143.359375,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "name": "ari-390 no document horizontal overflow",
+      "passed": true,
+      "detail": {
+        "viewport": 390,
+        "document": 390,
+        "containers": [
+          {
+            "tag": "DIV",
+            "client": 354,
+            "scroll": 354,
+            "overflow": "auto"
+          },
+          {
+            "tag": "SECTION",
+            "client": 390,
+            "scroll": 1503,
+            "overflow": "auto"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ari-390 runtime errors absent",
+      "passed": true,
+      "detail": {
+        "page_errors": [],
+        "request_failures": [],
+        "console": []
+      }
+    },
+    {
+      "name": "ari-390 no write requests",
+      "passed": true,
+      "detail": [
+        {
+          "method": "GET",
+          "url": "file:///home/brian/code2/worktrees/ws-intent-polarity-20261113/proposals/open-attempt/review-page/polarity-ari.html"
+        }
+      ]
+    }
+  ],
+  "browser": "158.0.8127.18",
+  "primary_source_summaries": {
+    "bo-negative-r1": {
+      "attempt": "I withhold assent to activation by recording my position as not assenting.",
+      "actual_kind": "none",
+      "wanted": {
+        "actor": "bo",
+        "base_revision": 0,
+        "controller": "live:resident",
+        "kind": "unmatched-attempt",
+        "attempt": "I withhold assent to activation by recording my position as not assenting.",
+        "nearest_kind": "record-assent",
+        "why": "The attempt is to record a non-assenting position, but record-assent does not express that negative position and no other kind represents recording it.",
+        "coverage": {
+          "status": "complete",
+          "action_spans": [
+            "recording my position as not assenting"
+          ],
+          "unrepresented_spans": []
+        },
+        "names": [
+          "pump-activation",
+          "position-bo"
+        ]
+      },
+      "status": "unsupported_action",
+      "changes": []
+    },
+    "ari-role-r1": {
+      "attempt": "I try to perform a technical repair on the prototype pump’s technical condition.",
+      "actual_kind": "repair-condition",
+      "wanted": {
+        "actor": "ari",
+        "base_revision": 0,
+        "controller": "live:resident",
+        "kind": "repair-condition",
+        "authority": "technical-role-ari",
+        "condition": "condition-pump-activation"
+      },
+      "status": "accepted",
+      "changes": [
+        {
+          "path": "entities.condition-pump-activation.components.technical_condition.passing",
+          "before": false,
+          "after": true
+        }
+      ]
+    }
+  },
+  "counts": {
+    "checks": 58,
+    "passed": 52,
+    "failed": 6,
+    "scenarios": 4
+  }
+}

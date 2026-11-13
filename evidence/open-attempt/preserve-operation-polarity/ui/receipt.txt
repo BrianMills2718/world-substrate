@@ -1,0 +1,31 @@
+# Recorded-input polarity pages: bounded browser receipt
+
+Scope: read-only verification of the rendered Bo and Ari review pages at desktop 1440×1000 and phone 390×844. These pages show nine individual restored-state checks of recorded policy inputs through the native interpreter, existing judge and installed Engine mechanics. This is **not a new autonomous run**, a live deployment check, or an independent grading of the model traces. No POST, provider call, model call or repository edit was made by this verifier.
+
+Run command: `uv run --no-project --with playwright python verify.py`, from a directory containing this receipt and script (the script's recorded ROOT/OUT identify the original execution environment). Isolated cached Chromium 1254 was used because the shared Playwright MCP browser reported its profile already in use. File URLs load the actual two HTML files and their embedded replay data. The JSON receipt records the source commit, each exact HTML SHA-256, browser version, per-scenario rendered text, table members, link destinations, console/network evidence and checks.
+
+Final automated result: **58 checks passed; 0 failed; exit 0; 4 viewport/page scenarios**. Table text contrast is measured at 15.43:1. Browser page errors: 0. Console errors: 0. Failed requests: 0. Non-GET/HEAD requests: 0. No external evidence links were followed; their destinations and keyboard focus were checked locally.
+
+| Criterion | Evidence | Result |
+| --- | --- | --- |
+| Exact original Bo non-assent appears in first frame | `bo-1440-first.png`, `bo-390-first.png`; exact rendered blockquote equals native `bo-negative-r1` record | PASS |
+| Bo non-assent is not converted to positive assent | Same first frames show no matching installed operation, no action-field binding, Bo remains not assenting and no world change; replay shows zero changes; retained source row contains zero changes | PASS |
+| Exact original Ari repair appears in first frame | `ari-1440-first.png`, `ari-390-first.png`; exact rendered blockquote equals native `ari-role-r1` record | PASS |
+| Authority object is separate from acting person | Ari first frames show authority field `technical-role-ari`, its quoted words, condition binding and explicit actor `ari` distinction | PASS |
+| Actual condition change is visible separately | `ari-1440-replay.png`, `ari-390-replay.png` show passing yes, previously passing no; retained source row changes only `entities.condition-pump-activation.components.technical_condition.passing` from false to true | PASS |
+| Nine actual cases, not descriptive substitutes | `bo-1440-cases.png`, `bo-390-cases.png`; all nine exact utterances and matching evidence destinations checked in both pages | PASS |
+| Replay keyboard operation and evidence access | Restart/previous/pause/next tab order and Enter replay; all nine evidence links reached by Tab in each scenario; `bo-390-last-case-focus.png` | PASS |
+| Readable case table and no phone page overflow | Contrast, link bounds, document width checks; desktop/phone case screenshots; final Reading/Rule result headers inspected with no collision | PASS |
+
+Original defects were found by inspecting rendered screenshots after content and keyboard assertions had passed. The first table inherited near-identical dark foreground/background colors (1.06:1), and the full report-log JSON widened the table enough to clip phone evidence links. `initial-receipt.json` records 52 passed / 6 failed checks (exit 6); `initial-bo-1440-cases.png` and `initial-bo-390-cases.png` preserve that state. The owning agent corrected the section colors, wrapping/layout and report-result presentation. The final JSON receipt and screenshots capture the corrected state.
+
+Known scene-card overlap on phone is outside this bounded change; `ari-390-replay.png` retains it without claiming it was repaired. No broad UI/accessibility, live GitHub-link availability, live-site, or stakeholder-comprehension claim is made.
+
+Artifact set to retain together: `receipt.txt`, `receipt.json`, `verify.py`, `bo-1440-first.png`, `bo-390-first.png`, `ari-1440-first.png`, `ari-390-first.png`, `bo-1440-cases.png`, `bo-390-cases.png`, `ari-1440-replay.png`, `ari-390-replay.png`, `bo-390-last-case-focus.png`, `initial-receipt.json`, `initial-bo-1440-cases.png`, `initial-bo-390-cases.png`. Every screenshot reference in this receipt is included in that set. The JSON's paths identify checked source files, not additional required scratch evidence.
+
+Feedback:
+
+- obs: Exact-text, keyboard and row-membership assertions passed while screenshot inspection found the new table unreadable at 1.06:1 contrast; the bounded verifier added contrast and focused-link bounds checks (`initial-receipt.json`, `initial-bo-390-cases.png`, `verify.py`).
+- obs (control): Shared Playwright MCP navigation failed because its browser profile was already in use; isolated cached Chromium completed the four scenarios (`receipt.json`).
+
+Parent provenance note: source commit identifies HEAD while presentation fixes were uncommitted; the recorded exact HTML SHA-256 values bind the final rendered files.
