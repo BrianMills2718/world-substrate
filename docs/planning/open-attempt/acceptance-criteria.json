@@ -300,9 +300,9 @@
         "view": "actor-context/analyst-context comparison with exact per-round input records",
         "router_record": "docs/planning/open-attempt/router/information-review.recommendation.json"
       },
-      "entrypoint": "https://brianmills.dev/world-builder/?run=q88DLJnu6w-l",
+      "entrypoint": "https://brianmills.dev/world-builder/?run=T-e9dYLdIi61",
       "status": "built",
-      "status_note": "Delivered and technically verified on the deployed product. Production5 at9a8cf47 retains18 fully read native calls, six exact actor inputs and sealed continuation; the recorded-state display correction is deployed at a174063. See evidence/i0-i1/deployed-integration-5/TRACE_READ.md and ui-after-3/verification.json for the live walkthrough. No human judged pass or scientific validity is claimed. New report delivery, committed stance, positive assent and activation were not chosen in these two rounds; their focused rule checks remain separate. Mara's compound dissent was narrowed to an inapplicable withdrawal and did not record concern (Q36).",
+      "status_note": "Delivered and technically verified on the deployed product. Production5 at9a8cf47 retains18 fully read native calls, six exact actor inputs and sealed continuation; the recorded-state display correction is deployed at a174063. See evidence/i0-i1/deployed-integration-5/TRACE_READ.md and ui-after-3/verification.json for the live walkthrough. No human judged pass or scientific validity is claimed. New report delivery, committed stance, positive assent and activation were not chosen in these two rounds; their focused rule checks remain separate. Mara's compound dissent was narrowed to an inapplicable withdrawal and did not record concern (Q36). Latest inspectable current-system run: T-e9dYLdIi61, six rounds, evidence/i0-i1/visible-run-20261113/TRACE_READ.md. It preserves all18 exact actor inputs and5sealed continuations, but exposes Bo non-assent being inverted into assent twice and Ari wrong authority binding. Prior scoped evidence remains retained; neither this run nor built status establishes general interpretation or consent fidelity.",
       "evidence": [
         "scripts/actor_information.py",
         "scripts/world_builder_home.html",
@@ -335,9 +335,9 @@
         "view": "linked actor inputs and chronological canonical event/state comparison",
         "router_record": "docs/planning/open-attempt/router/information-review.recommendation.json"
       },
-      "entrypoint": "https://brianmills.dev/world-builder/?run=q88DLJnu6w-l",
+      "entrypoint": "https://brianmills.dev/world-builder/?run=T-e9dYLdIi61",
       "status": "built",
-      "status_note": "Delivered and technically verified on the deployed product. Production5 at9a8cf47 retains18 fully read native calls, six exact actor inputs and sealed continuation; the recorded-state display correction is deployed at a174063. See evidence/i0-i1/deployed-integration-5/TRACE_READ.md and ui-after-3/verification.json for the live walkthrough. No human judged pass or scientific validity is claimed. New report delivery, committed stance, positive assent and activation were not chosen in these two rounds; their focused rule checks remain separate. Mara's compound dissent was narrowed to an inapplicable withdrawal and did not record concern (Q36).",
+      "status_note": "Delivered and technically verified on the deployed product. Production5 at9a8cf47 retains18 fully read native calls, six exact actor inputs and sealed continuation; the recorded-state display correction is deployed at a174063. See evidence/i0-i1/deployed-integration-5/TRACE_READ.md and ui-after-3/verification.json for the live walkthrough. No human judged pass or scientific validity is claimed. New report delivery, committed stance, positive assent and activation were not chosen in these two rounds; their focused rule checks remain separate. Mara's compound dissent was narrowed to an inapplicable withdrawal and did not record concern (Q36). Latest inspectable current-system run: T-e9dYLdIi61, six rounds, evidence/i0-i1/visible-run-20261113/TRACE_READ.md. It preserves all18 exact actor inputs and5sealed continuations, but exposes Bo non-assent being inverted into assent twice and Ari wrong authority binding. Prior scoped evidence remains retained; neither this run nor built status establishes general interpretation or consent fidelity.",
       "evidence": [
         "spikes/any-scenario-2026-10/compile_spec.py",
         "tests/test_scenario_spec.py",
