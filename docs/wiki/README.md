@@ -25,7 +25,7 @@ authority_refs:
 One page of current state. It summarizes and routes; it does not replace the
 [architecture](../architecture/arc42.md), the [capability specs](../index.md#2-what-the-code-must-do-openspec-capability-specs),
 the decisions, the code, the evidence or the [roadmap](../../roadmap/README.md). Every document is
-listed in the [documentation index](../index.md). Plan-status/navigation summary reconciled against `544c086` on 2026-11-12. The current task is the roadmap’s preimplementation readiness review; dated deployment observations below have not been rechecked by this documentation review.
+listed in the [documentation index](../index.md). Current work and delivery evidence live in the [roadmap](../../roadmap/README.md); historical observations below retain their original dates. The [product context](../../PRODUCT.md) and [saved-player design](../../DESIGN.md) guide UI work.
 
 ## What this project is
 

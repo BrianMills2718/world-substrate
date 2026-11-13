@@ -7,4 +7,4 @@ Source: Brian’s approved saved-player outcome, 2026-11-13; implementation deco
 - [x] Present readable event detail and exact-round actor input with preserved Actor privacy.
 - [x] Preserve existing advanced inspection and creation/live behavior.
 - [x] Verify the retained-data task, historical selection, keyboard and phone layout; review code and publication scope.
-- [ ] Archive the spec, run the repository check, merge, deploy and verify the public saved-run entrypoint.
+- [x] Archive the spec, run the repository check, merge, deploy and verify the public saved-run entrypoint.
