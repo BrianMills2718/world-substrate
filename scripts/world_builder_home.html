@@ -75,6 +75,53 @@ button.linkish{background:none;border:0;padding:0;color:var(--accent);text-decor
 .attempt-detail dt{font-weight:700;margin-top:10px}
 .attempt-detail dd{margin:2px 0 0;white-space:pre-wrap}
 .attempt-detail ul{margin:6px 0;padding-left:20px}
+body.saved-view main{max-width:1320px;padding-top:24px}
+body.saved-view main>h1,body.saved-view main>.lede{display:none}
+body.saved-view #stage-run{padding:24px}
+body.saved-view .live-controls{margin:16px 0 8px}
+body.saved-view #stage-run select{min-height:44px;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font:inherit}
+.saved-scenario{max-width:88ch;color:var(--muted);white-space:pre-wrap;line-height:1.55;margin:12px 0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+.saved-scenario.expanded{display:block}
+#saved-intro{margin-bottom:12px}
+#saved-setup-toggle{min-height:44px}
+.saved-navigation{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 0 20px;border-bottom:1px solid var(--line)}
+.saved-navigation button{min-height:44px;min-width:88px}
+.saved-event-picker{display:none}
+.saved-navigation input{min-height:44px;flex:1;min-width:120px;accent-color:var(--ok)}
+.saved-grid{display:grid;grid-template-columns:minmax(230px,.75fr) minmax(0,1.4fr) minmax(240px,.9fr);gap:28px;padding-top:20px;align-items:start}
+.saved-grid h3{margin:0 0 12px;font-size:18px}
+.saved-events{display:flex;flex-direction:column;gap:0;max-height:720px;overflow:auto}
+.saved-event{width:100%;text-align:left;min-height:56px;padding:12px;background:transparent;color:var(--text);border:0;border-bottom:1px solid var(--line);font:inherit;cursor:pointer;line-height:1.4}
+.saved-event strong,.saved-event span{display:block}
+.saved-event span{font-size:13px;color:var(--muted);margin-top:3px}
+.saved-event[aria-pressed=true]{background:#213342;box-shadow:inset 3px 0 var(--ok)}
+.saved-event:hover{background:#1d2a32}
+.saved-event-result{font-size:14px;color:var(--muted)}
+.saved-inspector{min-width:0;overflow-wrap:anywhere}
+.saved-inspector>.attempt-detail{margin-top:0}
+.saved-inspector .attempt-detail dt{margin-top:18px}
+.saved-inspector .attempt-detail dt:first-child{margin-top:0}
+.saved-inspector p{line-height:1.55}
+.saved-inspector details>summary{min-height:44px;cursor:pointer;padding:12px 0;color:var(--text);font-size:14px}
+.saved-state{min-width:0;overflow-wrap:anywhere}
+.saved-state details{margin:0 0 10px;border-bottom:1px solid var(--line);padding-bottom:10px}
+.saved-state summary{min-height:44px;cursor:pointer;display:list-item;color:var(--text);font-size:14px;font-weight:600;padding-top:10px}
+.saved-state dl{font-size:14px;margin:8px 0 0}
+.saved-state dt{color:var(--muted);margin-top:8px}
+.saved-state dd{margin:2px 0 0;white-space:pre-wrap}
+.saved-related{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.saved-related button{min-height:44px;font-size:14px}
+.saved-input{border-top:1px solid var(--line);margin-top:24px;padding-top:18px}
+.saved-input h4{font-size:16px;margin:0 0 8px}
+.saved-input details{margin:12px 0}
+.saved-input summary{min-height:44px;cursor:pointer;padding:10px 0;color:var(--text)}
+.saved-input p{white-space:pre-wrap;font-size:14px}
+#saved-advanced{border-top:1px solid var(--line);margin-top:28px;padding-top:16px}
+#saved-advanced>summary{font-size:15px;min-height:44px;color:var(--text);cursor:pointer}
+#saved-advanced-content{padding-top:18px}
+.saved-state-note{color:var(--muted);font-size:13px;line-height:1.45;margin:0 0 12px}
+@media(max-width:1100px){.saved-grid{grid-template-columns:minmax(220px,.8fr) minmax(0,1.4fr)}.saved-state{grid-column:1/-1}.saved-state>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}}
+@media(max-width:720px){body.saved-view main{padding:16px 12px 40px}body.saved-view #stage-run{padding:16px}.saved-grid{grid-template-columns:minmax(0,1fr);gap:18px}.saved-inspector{display:contents}.saved-grid>section:first-child{order:0}#saved-event-h{order:1;margin:0}#saved-event-detail{order:2}.saved-state{grid-column:auto;order:3}#saved-actor-input{order:4}.saved-state>div{display:block}.saved-events{display:none}.saved-event-picker{display:block}.saved-event-picker select{width:100%}.saved-navigation{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.saved-navigation input{grid-column:1/-1;width:100%;min-width:0}.saved-navigation select{width:100%;min-width:0;padding:8px!important;font-size:14px!important}.saved-navigation button{min-width:0;padding:10px 6px;font-size:14px}.saved-navigation label{display:none}.saved-scenario{font-size:14px;-webkit-line-clamp:4}.saved-event{padding:12px 8px}body.saved-view #stage-run .row{gap:8px}.saved-state-note{margin-bottom:8px}}
 .judge{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 12px;font-size:14px;overflow-wrap:anywhere}
 .judge h3{font-size:15px;margin:10px 0 4px}.judge h3:first-child{margin-top:0}
 .judge ul{margin:2px 0 6px;padding-left:18px}.judge li{margin:2px 0}
@@ -262,7 +309,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 
   <section class="panel" id="stage-run" hidden aria-labelledby="run-h">
     <h2 id="run-h">Your world is running</h2>
-        <div class="row live-controls">
+    <div id="saved-intro" hidden><p id="saved-scenario" class="saved-scenario"></p><button type="button" class="secondary small" id="saved-setup-toggle" aria-expanded="false" aria-controls="saved-scenario" title="Expand the complete original scenario description, without a generated summary.">Read full setup</button></div>
+        <div class="row live-controls" id="play-controls">
       <button class="primary" type="button" id="play-btn" title="Stop after the current round; the world waits exactly where it is until you press Play">⏸ Pause</button>
     </div>
     <p class="small muted" id="live-status" role="status"></p>
@@ -275,14 +323,31 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <section id="actor-context" hidden aria-label="Authorized actor inputs">
       <p class="small">This is the selected person's recorded input, before their choice. Viewing it does not change the simulation.</p>
       <p id="actor-context-status" role="status"></p>
+      <div class="row" id="actor-round-controls" hidden><label for="actor-round-select">Input before round</label><select id="actor-round-select" title="Inspect this person's authorized input for a recorded round. No other person's state is shown."></select></div>
       <div id="actor-context-records"></div>
     </section>
     <div id="analyst-context">
+    <section id="saved-player" hidden aria-label="Recorded simulation player">
+      <div class="saved-navigation" id="saved-navigation" aria-label="Recording navigation">
+        <button type="button" class="secondary" id="saved-round-prev" title="Select the previous recorded round. No simulation is run.">Prev</button>
+        <label for="saved-round-select">Round</label>
+        <select id="saved-round-select" aria-label="Round" title="Jump directly to a recorded round. The selected event, state and actor input stay together."></select>
+        <button type="button" class="secondary" id="saved-round-next" title="Select the next recorded round. No simulation is run.">Next</button>
+        <input id="saved-round-range" type="range" min="0" max="0" value="0" aria-label="Recorded round" title="Scrub through the recorded rounds without making a model call.">
+      </div>
+      <div class="saved-grid">
+        <section aria-labelledby="saved-events-h"><h3 id="saved-events-h">What happened</h3><p class="saved-state-note">Select an attempt or a consequence.</p><div class="saved-event-picker"><label for="saved-event-select" class="small">Event</label><select id="saved-event-select" title="Select a recorded attempt or consequence and keep its changes, state and actor input together."></select></div><div id="saved-events" class="saved-events"></div></section>
+        <section class="saved-inspector" aria-labelledby="saved-event-h"><h3 id="saved-event-h">Selected event</h3><div id="saved-event-detail" aria-live="polite"></div><section class="saved-input" id="saved-actor-input" aria-label="Information supplied to the selected actor"></section></section>
+        <section class="saved-state" aria-labelledby="saved-state-h"><h3 id="saved-state-h">World state</h3><p id="saved-state-caption" class="saved-state-note"></p><div id="saved-world-state"></div></section>
+      </div>
+    </section>
+    <details id="saved-advanced" hidden><summary title="Keep the full graph, the original recorded picture, causal history and exact provenance available for deeper inspection.">More ways to inspect this recording</summary><div id="saved-advanced-content"></div></details>
+    <div id="legacy-run-content">
     <details><summary title="Read the exact retained policy inputs and provenance across all people. This is privileged Analyst context.">Exact inputs and provenance</summary><pre id="analyst-inputs" style="white-space:pre-wrap"></pre></details>
     <div id="stuck-note"></div>
     <p class="outcome" id="outcome" data-tip="Allowed: moves that went through. Refused: moves someone tried that did not go through. Held back by the rules: people who had moves the rules did not let them try that round (counted once per person per round). By itself: changes the world made on its own."></p>
     <div class="rulings" id="rulings-panel" hidden aria-label="The judge’s rulings in this run"></div>
-    <details class="picture" open><summary title="Show or hide a picture of the places, people and moves in the round you just read">Picture</summary>
+    <details class="picture" id="picture-wrap" open><summary title="Show or hide a picture of the places, people and moves in the round you just read">Picture</summary>
     <p id="picture-note" hidden></p>
     <iframe class="replay" id="replay" title="Picture of the latest round" sandbox="allow-scripts"></iframe>
     </details>
@@ -317,6 +382,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       </div>
     </details>
     </div>
+    </div>
   </section>
 </main>
 <footer class="site">
@@ -345,6 +411,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 
   function show(stage) {
     ["describe", "working", "review", "run"].forEach((s) => { $("stage-" + s).hidden = s !== stage; });
+    document.body.classList.toggle("saved-view", stage === "run" && Boolean(live && live.replay));
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -977,6 +1044,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       // Built when opened: a moment can have thousands of steps.
       box.addEventListener("toggle", () => {
         if (!box.open || box.dataset.built) return;
+        if (live && live.replay && live.rounds[live.rounds.length - 1].turn !== turn.turn) {
+          selectSavedRound(live.recorded.findIndex((item) => item.turn === turn.turn), m.trigger); return;
+        }
         box.dataset.built = "1";
         const list = document.createElement("ol");
         const key = (ev, it) => `step-${turn.turn}-${mi}-${ev}-${it}`;
@@ -1087,15 +1157,16 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   // What one round did in a big world: who made which move, what that move used, what changed by itself. Links for moves
   // nobody made and references between things stay in the whole-world view; at 18-32 boxes they were still a tangle
   // (Brian, 2026-11-04: the Waltzman rebuild's Network was unreadable after #333 and #338).
-  function focusNetwork(graph, touched, turn) {
+  function focusNetwork(graph, touched, turn, includeAttempts = false) {
     const keep = touched.size ? touched : new Set(graph.nodes.filter((n) => n.kind === "actor").map((n) => n.id));
     const nodes = graph.nodes.filter((n) => keep.has(n.id));
     const ids = new Set(nodes.map((n) => n.id));
     const made = new Set(), used = new Set();
     Object.entries((turn && turn.actors) || {}).forEach(([actor, row]) => {
-      if (row.status !== "accepted" || !row.did) return;
-      made.add(`e:${actor}>a:${row.did.kind}`);
-      Object.entries(row.did).forEach(([k, v]) => { if (k !== "kind" && typeof v === "string") used.add(`a:${row.did.kind}>e:${v}`); });
+      const move = row.did || (includeAttempts && row.wanted);
+      if ((row.status !== "accepted" && !includeAttempts) || !move) return;
+      made.add(`e:${actor}>a:${move.kind}`);
+      Object.entries(move).forEach(([k, v]) => { if (k !== "kind" && typeof v === "string") used.add(`a:${move.kind}>e:${v}`); });
     });
     const happened = (e) => e.source.startsWith("a:") ? used.has(`${e.source}>${e.target}`)
       : e.target.startsWith("a:") ? made.has(`${e.source}>${e.target}`) : e.source.startsWith("p:");
@@ -1159,13 +1230,14 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     };
   }
   // Node ids a round touched: who acted, the move, what it used and changed, and what changed by itself.
-  function roundTouched(turn) {
+  function roundTouched(turn, includeAttempts = false) {
     const ids = new Set();
     const ent = (path) => { const m = /^entities\.([^.]+)\./.exec(path || ""); if (m) ids.add("e:" + m[1]); };
     Object.entries(turn.actors || {}).forEach(([actor, row]) => {
-      if (row.status !== "accepted") return;
+      if (row.status !== "accepted" && !includeAttempts) return;
       ids.add("e:" + actor);
-      if (row.did) { ids.add("a:" + row.did.kind); Object.entries(row.did).forEach(([k, v]) => { if (k !== "kind" && typeof v === "string") ids.add("e:" + v); }); }
+      const move = row.did || (includeAttempts && row.wanted);
+      if (move) { ids.add("a:" + move.kind); Object.entries(move).forEach(([k, v]) => { if (k !== "kind" && typeof v === "string") ids.add("e:" + v); }); }
       (row.changes || []).forEach((c) => ent(c.path));
     });
     (turn.world_changes || []).forEach((rule) => ids.add("p:" + rule));
@@ -1178,7 +1250,10 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   // Implements: living-scene/Living Scene: Inputs
   function recordedEvents(turn) {
     const seen = new Set();
-    const events = [...Object.values(turn.actors || {}), ...(turn.world_events || []), ...(turn.reactions || [])]
+    const events = [...Object.values(turn.actors || {}).flatMap((row) => {
+      const settled = (((row.judge || {}).disposition || {}).settled);
+      return settled ? [row, settled] : [row];
+    }), ...(turn.world_events || []), ...(turn.reactions || [])]
       .filter((ev) => { if (!ev.event_id) return true; if (seen.has(ev.event_id)) return false; seen.add(ev.event_id); return true; });
     // Immediate reactions interleave with actor commits, rather than happening at the end of the round.
     // Old recordings have no ids: keep their actor-then-world order and leave unnumbered rows in place.
@@ -1232,18 +1307,21 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     box.hidden = !live || !world;
     if (box.hidden || !box.open) return;
     if (!live.net) live.net = { entities: JSON.parse(JSON.stringify(world.bundle.entities)), applied: 0, shape: "" };
-    while (live.net.applied < live.rounds.length) applyRound(live.net.entities, live.rounds[live.net.applied++]);
+    if (live.replay && live.savedEntities) live.net.entities = live.savedEntities;
+    else while (live.net.applied < live.rounds.length) applyRound(live.net.entities, live.rounds[live.net.applied++]);
     const whole = worldNetwork({ ...world.bundle, entities: live.net.entities }, world.causal_model);
-    const turnNow = live.rounds[live.rounds.length - 1];
+    const turnNow = live.replay && live.savedFocusTurn ? live.savedFocusTurn : live.rounds[live.rounds.length - 1];
     // A world of dozens of boxes drawn at once is an unreadable tangle, so a big one shows what this round touched;
     // one button shows all of it (Brian, 2026-11-03: the Network was unreadable; nothing is dropped).
     const big = whole.nodes.length > NET_FOCUS_OVER;
     const focused = big && box.dataset.focus === "1";
-    const graph = focused ? focusNetwork(whole, turnNow ? roundTouched(turnNow) : new Set(), turnNow) : whole;
+    const graph = focused ? focusNetwork(whole, turnNow ? roundTouched(turnNow, live.replay) : new Set(), turnNow, live.replay) : whole;
     $("net-whole").hidden = !big;
     $("net-whole").textContent = focused ? `Show the whole world (${whole.nodes.length} boxes)` : "Show only what this round touched";
+    const selection = live.replay ? live.selectedEvent : null;
     try { await loadGraphViewer(); }
     catch (err) { $("net-caption").textContent = "The network picture could not load: " + err.message; return; }
+    if (live.replay && live.selectedEvent !== selection) return;
     const shape = JSON.stringify([graph.nodes.map((n) => n.id), graph.edges.map((e) => e.id)]);
     if (!netViewer) {
       // A highlight sent before the first layout is lost, so send the latest one again once it is drawn.
@@ -1251,8 +1329,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         onLayout: () => { if (live && live.net) netViewer.highlight(live.net.lit); } });
     } else if (shape !== live.net.shape) netViewer.update(graph);
     live.net.shape = shape;
-    const turn = live.rounds[live.rounds.length - 1];
-    const lit = turn ? [...roundTouched(turn)].filter((id) => graph.nodes.some((n) => n.id === id)) : [];
+    const turn = turnNow;
+    const lit = turn ? [...roundTouched(turn, live.replay)].filter((id) => graph.nodes.some((n) => n.id === id)) : [];
     const litSet = new Set(lit);
     graph.edges.forEach((e) => { if (litSet.has(e.source) && litSet.has(e.target)) lit.push(e.id); });
     live.net.lit = lit.length && !focused ? lit : null;
@@ -1346,10 +1424,13 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const actorMode = $("context-mode").value === "actor";
     $("analyst-inputs").textContent = JSON.stringify((live && live.actorInputs) || {}, null, 2);
     $("analyst-context").hidden = actorMode;
+    $("saved-intro").hidden = actorMode || !(live && live.replay);
     $("live-status").hidden = actorMode;
     if (actorMode) $("run-h").textContent = "Actor context";
     $("actor-context").hidden = !actorMode;
     $("context-actor").disabled = !actorMode;
+    $("context-actor").hidden = Boolean(live && live.replay && !actorMode);
+    document.querySelector('label[for="context-actor"]').hidden = Boolean(live && live.replay && !actorMode);
     const selector = $("context-actor"), previous = selector.value;
     const authorizedInputs = live && live.actorInformationMode === "declared-v1" ? live.actorInputs : {};
     const actors = Object.keys(authorizedInputs || {});
@@ -1357,7 +1438,14 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     actors.forEach((actor) => { const option = document.createElement("option"); option.value = actor; option.textContent = actor; selector.append(option); });
     if (actors.includes(previous)) selector.value = previous;
     const lastRound = live && live.rounds.length ? live.rounds[live.rounds.length - 1].turn : 0;
-    const records = actorContextRecords(authorizedInputs, selector.value).filter((record) => (record.round ?? record.turn ?? 0) <= lastRound);
+    $("actor-round-controls").hidden = !(live && live.replay && actorMode);
+    const actorRounds = $("actor-round-select"), ownRecords = actorContextRecords(authorizedInputs, selector.value);
+    actorRounds.replaceChildren();
+    [...new Set(ownRecords.map((record) => record.round ?? record.turn).filter((round) => live && live.recorded && live.recorded.some((item) => item.turn === round)))].sort((a, b) => a - b).forEach((round) => { const option = document.createElement("option"); option.value = round; option.textContent = round; actorRounds.append(option); });
+    if (![...actorRounds.options].some((option) => Number(option.value) === lastRound)) { const option = document.createElement("option"); option.value = lastRound; option.textContent = `${lastRound} — no input recorded`; option.disabled = true; actorRounds.prepend(option); }
+    actorRounds.value = lastRound; actorRounds.disabled = !ownRecords.length;
+    const records = actorContextRecords(authorizedInputs, selector.value).filter((record) => live && live.replay
+      ? (record.round ?? record.turn ?? 0) === lastRound : (record.round ?? record.turn ?? 0) <= lastRound);
     $("actor-context-status").textContent = records.length ? `${selector.value}: ${records.length} recorded input(s).` : "No authorized input recording is available for this person in this run. Older recordings remain available in Analyst view.";
     const panel = $("actor-context-records"); panel.replaceChildren();
     records.forEach((record) => {
@@ -1371,8 +1459,192 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   }
   $("context-mode").addEventListener("change", () => { if (live) renderLive(); });
   $("context-actor").addEventListener("change", renderActorContext);
+  $("actor-round-select").addEventListener("change", (event) => { if (live && live.replay) selectSavedRound(live.recorded.findIndex((turn) => turn.turn === Number(event.target.value))); });
+
+  // Implements: world-builder-page/Saved recording player. All navigation here reads retained data only.
+  function savedEventRows(turn) {
+    return recordedEvents(turn).map((event, index) => {
+      const match = Object.entries(turn.actors || {}).find(([, row]) => row === event || (((row.judge || {}).disposition || {}).settled) === event);
+      const actor = match ? match[0] : null;
+      const settlement = Boolean(match && match[1] !== event);
+      const move = event.wanted || event.did || {};
+      const action = settlement ? "installed-rule settlement" : actor ? words(move.kind || (event.attempt && event.attempt.reading && event.attempt.reading.kind) || "wait") : words(event.rule_id || "automatic consequence");
+      return { event, actor, settlement, key: event.event_id || `round-${turn.turn}-event-${index}`, title: `${actor ? labelFor(actor) : "World"} — ${action}` };
+    });
+  }
+  function savedStatus(item) {
+    if (item.event.interpretation_feedback) return "Interpretation rejected";
+    if (!item.actor) return item.event.refused ? "Automatic step refused" : "Automatic consequence";
+    return ({ accepted: "Allowed", precondition_failed: "Refused by a rule", unsupported_action: "No matching move", no_action: "Waited", pending_ruling: "Waiting for ruling", refused_ruling: "Ruling refused" })[item.event.status] || words(item.event.status || "Recorded result");
+  }
+  function savedIsFinished() {
+    if (!live.recorded.length || live.replayIndex !== live.recorded.length - 1) return !live.recorded.length;
+    const rows = savedEventRows(live.recorded[live.replayIndex]);
+    return !rows.length || (live.selectedEvent || rows[0].key) === rows[rows.length - 1].key;
+  }
+  function selectSavedRound(index, eventKey) {
+    if (!live || !live.replay || !live.recorded.length) return;
+    const focusedEvent = document.activeElement && document.activeElement.dataset.eventId;
+    live.gen++; live.playing = false;
+    live.replayIndex = Math.max(0, Math.min(live.recorded.length - 1, Number(index)));
+    live.rounds = live.recorded.slice(0, live.replayIndex + 1);
+    live.selectedEvent = eventKey || null;
+    live.finished = savedIsFinished();
+    live.net = null;
+    renderLive();
+    if (focusedEvent && eventKey) { const next = $("saved-events").querySelector(`[data-event-id="${CSS.escape(eventKey)}"]`); if (next) next.focus({ preventScroll: true }); }
+  }
+  function savedStateAt(turn, selected) {
+    const entities = JSON.parse(JSON.stringify(world.bundle.entities));
+    for (const earlier of live.recorded.slice(0, live.replayIndex)) applyRound(entities, earlier);
+    const events = recordedEvents(turn), stop = events.indexOf(selected.event);
+    applyRound(entities, { turn: turn.turn, actors: {}, world_events: events.slice(0, stop + 1) });
+    return entities;
+  }
+  function savedParagraph(parent, label, value) {
+    if (value === undefined || value === null || value === "") return;
+    const detail = document.createElement("details"), summary = document.createElement("summary"), p = document.createElement("p");
+    summary.textContent = label; summary.title = `Read the exact retained ${label.toLowerCase()} supplied before this choice.`;
+    p.textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2); detail.append(summary, p); parent.append(detail);
+  }
+  function savedActorInput(actor, turn) {
+    const box = $("saved-actor-input"); box.replaceChildren(); box.dataset.round = turn.turn; box.dataset.actor = actor || "";
+    const h = document.createElement("h4"); h.textContent = actor ? `Information supplied to ${labelFor(actor)}` : "Automatic consequence"; box.append(h);
+    const note = document.createElement("p"); note.className = "saved-state-note";
+    note.textContent = actor ? `Before the choice in round ${turn.turn}. These are supplied inputs, not proof of what the person believed.` : "No actor chose this automatic step. Select its cause to inspect the initiating person's input."; box.append(note);
+    if (!actor) return;
+    const records = live.actorInformationMode === "declared-v1" ? actorContextRecords(live.actorInputs, actor).filter((record) => (record.round ?? record.turn) === turn.turn) : [];
+    if (!records.length) { const p = document.createElement("p"); p.textContent = "No authorized input recording is available for this person and round."; box.append(p); return; }
+    records.forEach((record) => {
+      const context = record.context || {};
+      [["Situation supplied", context.world_summary], ["Profile and prior knowledge", context.brief], ["Own observed state", context.actor_state], ["Other visible information", context.visible], ["Progress supplied", context.progress], ["Remembered history supplied", record.memory], ["Recent events supplied", context.recent && context.recent.length ? context.recent : null]].forEach(([label, value]) => savedParagraph(box, label, value));
+      if ((context.actions || []).length) savedParagraph(box, "Known action forms (not guaranteed to work)", context.actions.map((action) => action.description || JSON.stringify(action)).join("\n\n"));
+      const exact = document.createElement("details"), sum = document.createElement("summary"), pre = document.createElement("pre"); sum.textContent = "Exact input and response record"; sum.title = "Read retained messages, context, memory, schema and the separately recorded response. Analyst provenance is omitted.";
+      pre.textContent = JSON.stringify(actorVisibleInput(record), null, 2); exact.append(sum, pre); box.append(exact);
+      if (record.output) savedParagraph(box, "Response after receiving these inputs", record.output);
+    });
+  }
+  function renderSavedWorld(entities, turn, selected) {
+    const box = $("saved-world-state"); box.replaceChildren(); box.dataset.round = turn.turn; box.dataset.eventId = selected.key;
+    $("saved-state-caption").textContent = `After the selected event in round ${turn.turn}. Later events in this round have not been applied.`;
+    const changed = new Set((selected.event.changes || []).map((change) => String(change.path || "").split(".")[1]));
+    Object.values(selected.event.wanted || selected.event.did || {}).forEach((value) => { if (typeof value === "string" && entities.some((entity) => entity.id === value)) changed.add(value); });
+    const visible = entities.filter((entity) => changed.has(entity.id) || entity.id === selected.actor);
+    const appendEntity = (entity, open) => {
+      const details = document.createElement("details"), summary = document.createElement("summary"), dl = document.createElement("dl");
+      details.open = open; summary.textContent = entity.label; summary.title = `Inspect ${entity.label}'s recorded state after the selected event.`; details.append(summary, dl);
+      const leaf = (path, value, label) => { const dt = document.createElement("dt"), dd = document.createElement("dd"); dt.textContent = label; dd.textContent = typeof value === "string" ? value : JSON.stringify(value); dd.dataset.statePath = `entities.${entity.id}.${path}`; dd.dataset.stateValue = JSON.stringify(value); dl.append(dt, dd); };
+      if (entity.location) leaf("location", entity.location, "Location");
+      Object.entries(entity.components || {}).forEach(([component, fields]) => Object.entries(fields || {}).forEach(([fieldName, value]) => leaf(`components.${component}.${fieldName}`, value, words(fieldName))));
+      if (!dl.children.length) { const p = document.createElement("p"); p.textContent = "No state fields recorded."; details.append(p); }
+      return details;
+    };
+    visible.forEach((entity) => box.append(appendEntity(entity, true)));
+    const more = document.createElement("details"), sum = document.createElement("summary"); sum.textContent = `All world objects (${entities.length})`; sum.title = "Inspect every retained entity after this event, including objects it did not change."; more.append(sum);
+    entities.filter((entity) => !visible.includes(entity)).forEach((entity) => more.append(appendEntity(entity, false))); box.append(more);
+  }
+  function savedChangeList(parent, event) {
+    const changes = event.changes;
+    const p = document.createElement("p"); p.textContent = Array.isArray(changes) ? changes.length ? "Recorded state changes:" : "No recorded state changes." : "State changes were not recorded for this event."; parent.append(p);
+    const ul = document.createElement("ul");
+    (changes || []).forEach((change) => { const li = document.createElement("li"), parts = String(change.path || "").split("."); const label = parts[0] === "entities" ? `${labelFor(parts[1])} · ${words(parts[parts.length - 1])}` : words(parts[parts.length - 1]); li.textContent = `${label}: ${JSON.stringify(change.before)} → ${JSON.stringify(change.after)}`; ul.append(li); }); parent.append(ul);
+  }
+  function renderSavedEvent(turn, selected, rows) {
+    const box = $("saved-event-detail"); box.replaceChildren(); box.dataset.eventId = selected.key; box.dataset.round = turn.turn;
+    $("saved-event-h").textContent = selected.title;
+    const status = document.createElement("p"); status.className = "saved-event-result"; status.textContent = savedStatus(selected); box.append(status);
+    if (selected.actor && !selected.settlement) {
+      const reasons = (selected.event.refused_because || []).map(plainCheck);
+      const summary = selected.event.interpretation_feedback || (reasons.length ? `The installed rule refused this move because: ${reasons.join("; ")}.` : selected.event.status === "accepted" ? "The installed rule accepted this interpreted move." : selected.event.status === "unsupported_action" ? "No installed move matched these words. Any later ruling is recorded separately." : savedStatus(selected));
+      const reading = (selected.event.attempt || {}).reading, dl = document.createElement("dl"); dl.className = "attempt-detail";
+      const entry = (label, text) => { const dt = document.createElement("dt"), dd = document.createElement("dd"); dt.textContent = label; dd.textContent = text; dl.append(dt, dd); return dd; };
+      entry("Original words", typeof (selected.event.attempt || {}).text === "string" ? selected.event.attempt.text : (selected.event.wanted || {}).attempt || "Not recorded for this attempt.");
+      entry("Interpretation", reading ? reading.kind ? words(reading.kind) : "No installed move matched." : "Original interpretation not recorded.");
+      const result = entry("Result", summary); savedChangeList(result, selected.event); box.append(dl);
+      if (selected.event.judge) box.append(...judgePanel(selected.event));
+    } else {
+      const p = document.createElement("p"); p.textContent = selected.settlement ? "This is the separately recorded consequence of an installed rule." : `Installed process: ${words(selected.event.rule_id || "not recorded")}.`; box.append(p);
+      if ((selected.event.refused_because || []).length) { const reason = document.createElement("p"); reason.textContent = selected.event.refused_because.map(plainCheck).join("; "); box.append(reason); }
+      savedChangeList(box, selected.event);
+      const id = document.createElement("p"); id.className = "saved-state-note"; id.textContent = `Recorded event: ${selected.event.event_id || "not recorded"}`; box.append(id);
+    }
+    const exact = document.createElement("details"), exactHeading = document.createElement("summary"), exactRecord = document.createElement("pre"); exactHeading.textContent = "Exact event, interpretation and checks"; exactHeading.title = "Read the complete retained event, grounded fields and quotes, coverage, beliefs, expected effect and rule evidence. No new inference is made."; exactRecord.textContent = JSON.stringify(selected.event, null, 2); exact.append(exactHeading, exactRecord); box.append(exact);
+    const related = document.createElement("div"); related.className = "saved-related";
+    const link = (item, prefix) => { const b = document.createElement("button"); b.type = "button"; b.className = "secondary"; b.textContent = `${prefix}: ${item.title}`; b.title = `Select recorded event ${item.key} and show its matching state and input.`; b.addEventListener("click", () => selectSavedRound(live.replayIndex, item.key)); related.append(b); };
+    (selected.event.caused_by || []).forEach((id) => { const cause = rows.find((item) => item.key === id); if (cause) link(cause, "Cause"); });
+    rows.filter((item) => (item.event.caused_by || []).includes(selected.key)).forEach((item) => link(item, "Consequence"));
+    if (selected.actor && !selected.settlement) rows.filter((item) => item.settlement && (((selected.event.judge || {}).disposition || {}).settled) === item.event).forEach((item) => link(item, "Later rule settlement"));
+    if (related.children.length) box.append(related);
+    savedActorInput(selected.actor, turn);
+  }
+  function renderSavedReplay() {
+    const actorMode = $("context-mode").value === "actor", turn = live.rounds[live.rounds.length - 1];
+    live.finished = savedIsFinished();
+    $("saved-player").hidden = false; $("saved-advanced").hidden = false;
+    if ($("legacy-run-content").parentElement !== $("saved-advanced-content")) $("saved-advanced-content").append($("legacy-run-content"));
+    $("run-h").textContent = (world.bundle.world || {}).label || "Simulation recording";
+    $("saved-scenario").textContent = world.description || (world.bundle.world || {}).summary || "No scenario description was recorded.";
+    $("saved-intro").hidden = actorMode;
+    document.querySelector('label[for="context-mode"]').textContent = "View";
+    $("context-mode").options[0].textContent = "Whole recording"; $("context-mode").options[1].textContent = "Actor inputs only";
+    if (actorMode) { $("play-controls").append($("play-btn")); $("play-controls").hidden = false; }
+    else { $("saved-navigation").prepend($("play-btn")); $("play-controls").hidden = true; }
+    $("live-status").textContent = live.playing ? "Playing the saved recording. No new decisions or model calls." : "Saved recording · paused. Choose a round or press Play.";
+    const btn = $("play-btn"); btn.textContent = live.playing ? "Pause" : live.finished ? "Replay" : "Play"; btn.disabled = !live.recorded.length;
+    setTip(btn, live.playing ? "Pause the saved recording at the current selected round." : live.finished ? "Replay the saved recording from round 1. No model is called." : "Play the next recorded rounds. No model is called.");
+    const select = $("saved-round-select");
+    if (select.options.length !== live.recorded.length) { select.replaceChildren(); live.recorded.forEach((item, index) => { const option = document.createElement("option"); option.value = index; option.textContent = `${item.turn} of ${live.recorded.length}`; select.append(option); }); }
+    select.value = live.replayIndex;
+    select.disabled = !live.recorded.length; $("saved-round-range").disabled = !live.recorded.length;
+    $("saved-round-range").max = Math.max(0, live.recorded.length - 1); $("saved-round-range").value = live.replayIndex;
+    $("saved-round-range").setAttribute("aria-valuetext", turn ? `Round ${turn.turn}, recording position ${live.replayIndex + 1} of ${live.recorded.length}` : "No recorded rounds");
+    $("saved-round-prev").disabled = live.replayIndex === 0; $("saved-round-next").disabled = live.replayIndex >= live.recorded.length - 1;
+    if (!turn) {
+      $("saved-player").dataset.round = ""; $("saved-events").textContent = "This recording contains no rounds.";
+      ["saved-event-detail", "saved-world-state", "saved-actor-input", "saved-event-select"].forEach((id) => { $(id).replaceChildren(); $(id).dataset.round = ""; $(id).dataset.eventId = ""; });
+      $("saved-event-h").textContent = "No recorded event"; $("saved-state-caption").textContent = "No event state is available.";
+      $("saved-event-select").disabled = true; renderActorContext(); return;
+    }
+    $("saved-player").dataset.round = turn.turn;
+    const rows = savedEventRows(turn), selected = rows.find((item) => item.key === live.selectedEvent) || rows[0];
+    const picker = $("saved-event-select"); picker.replaceChildren(); rows.forEach((item) => { const option = document.createElement("option"); option.value = item.key; option.textContent = `${item.title} · ${savedStatus(item)}`; picker.append(option); }); if (selected) picker.value = selected.key;
+    picker.disabled = !rows.length;
+    const events = $("saved-events"); events.replaceChildren();
+    rows.forEach((item) => { const button = document.createElement("button"), title = document.createElement("strong"), status = document.createElement("span"); button.type = "button"; button.className = "saved-event"; button.dataset.eventId = item.key; button.setAttribute("aria-pressed", String(selected === item)); button.title = `Select ${item.title} in round ${turn.turn}: ${savedStatus(item)}. Show its actual changes and supplied actor information.`; title.textContent = item.title; status.textContent = savedStatus(item); button.append(title, status); button.addEventListener("click", () => selectSavedRound(live.replayIndex, item.key)); events.append(button); });
+    if (selected) {
+      live.selectedEvent = selected.key; live.savedEntities = savedStateAt(turn, selected);
+      live.savedFocusTurn = { turn: turn.turn, actors: selected.actor ? { [selected.actor]: selected.event } : {}, reactions: selected.actor ? [] : [selected.event], world_events: [], world_changes: [] };
+      renderSavedEvent(turn, selected, rows); renderSavedWorld(live.savedEntities, turn, selected);
+    } else { $("saved-event-detail").textContent = "No event records are available for this round."; $("saved-world-state").replaceChildren(); $("saved-actor-input").replaceChildren(); }
+    // Retained legacy surfaces remain available, but their round-based picture has explicitly coarser granularity.
+    $("picture-wrap").querySelector("summary").textContent = `Original picture — end of round ${turn.turn}`;
+    $("picture-wrap").hidden = false; showPictureProblem(); tellPicture();
+    $("outcome").textContent = `Historical views for round ${turn.turn}. The original picture shows the whole round; the network shows the selected event.`;
+    const feed = $("feed"); feed.replaceChildren();
+    live.rounds.slice(-FEED_ROUNDS).reverse().forEach((recordedTurn) => {
+      const li = document.createElement("li"), b = document.createElement("button"); b.type = "button"; b.className = "secondary"; b.textContent = `Select round ${recordedTurn.turn}`; b.title = "Select this historical round and restore its matching state."; b.addEventListener("click", () => selectSavedRound(live.recorded.indexOf(recordedTurn))); li.append(b, roundSentence(recordedTurn), ...knockOnBlocks(recordedTurn));
+      const history = document.createElement("details"), heading = document.createElement("summary"); heading.textContent = `Events in round ${recordedTurn.turn}`; heading.title = "Select a recorded attempt or automatic consequence and restore its matching round and state."; history.append(heading);
+      savedEventRows(recordedTurn).forEach((item) => { const event = document.createElement("button"); event.type = "button"; event.className = "secondary"; event.dataset.eventId = item.key; event.dataset.savedHistoryEvent = "true"; event.textContent = item.title; event.title = `Select ${item.key} in historical round ${recordedTurn.turn}.`; event.addEventListener("click", () => selectSavedRound(live.recorded.indexOf(recordedTurn), item.key)); history.append(event); });
+      li.append(history); feed.append(li);
+    });
+    renderStrip([turn]); renderUnderway([turn]); renderRulings(); renderNetwork(); renderActorContext();
+    if (!actorMode) $("run-h").textContent = (world.bundle.world || {}).label || "Simulation recording";
+  }
+  $("saved-round-prev").addEventListener("click", () => selectSavedRound(live.replayIndex - 1));
+  $("saved-round-next").addEventListener("click", () => selectSavedRound(live.replayIndex + 1));
+  $("saved-round-select").addEventListener("change", (event) => selectSavedRound(event.target.value));
+  $("saved-round-range").addEventListener("input", (event) => selectSavedRound(event.target.value));
+  $("saved-event-select").addEventListener("change", (event) => selectSavedRound(live.replayIndex, event.target.value));
+  $("saved-setup-toggle").addEventListener("click", () => { const expanded = $("saved-scenario").classList.toggle("expanded"); $("saved-setup-toggle").setAttribute("aria-expanded", String(expanded)); $("saved-setup-toggle").textContent = expanded ? "Collapse setup" : "Read full setup"; });
 
   function renderLive() {
+    if (live.replay) { renderSavedReplay(); return; }
+    $("saved-player").hidden = true; $("saved-advanced").hidden = true;
+    $("saved-intro").hidden = true;
+    $("play-controls").append($("play-btn")); $("play-controls").hidden = false;
+    document.querySelector('label[for="context-mode"]').textContent = "Context view";
+    $("context-mode").options[0].textContent = "Analyst: whole run"; $("context-mode").options[1].textContent = "Actor: authorized inputs";
+    if ($("legacy-run-content").parentElement !== $("analyst-context")) $("analyst-context").append($("legacy-run-content"));
     const t = live.totals, n = live.rounds.length;
     const last = n ? live.rounds[n - 1].turn : 0;
     $("run-h").textContent = live.replay ? (live.finished ? "A shared run (end of the recording)" : "A shared run, replayed")
@@ -1454,6 +1726,21 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   async function playLoop() {
     const gen = live.gen;
     const current = () => live && live.gen === gen;
+    if (live.replay) {
+      while (current() && live.playing) {
+        await sleep(REPLAY_PAUSE_MS);
+        if (!current() || !live.playing) return;
+        const rows = savedEventRows(live.recorded[live.replayIndex]);
+        const at = rows.findIndex((item) => item.key === live.selectedEvent);
+        if (at < rows.length - 1) live.selectedEvent = rows[at + 1].key;
+        else if (live.replayIndex < live.recorded.length - 1) { live.replayIndex++; live.rounds = live.recorded.slice(0, live.replayIndex + 1); live.selectedEvent = null; }
+        else { live.playing = false; live.finished = true; renderLive(); return; }
+        live.net = null; live.finished = savedIsFinished();
+        if (live.finished) live.playing = false;
+        renderLive();
+      }
+      return;
+    }
     while (current() && live.playing) {
       if (!live.buffer.length && live.replay) {
         live.playing = false; live.finished = true;
@@ -1543,7 +1830,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   }
 
   function play() {
-    if (live && live.finished && live.replay) { startLive({ rounds: live.recorded }); return; }
+    if (live && live.finished && live.replay) { startLive({ rounds: live.recorded }); }
     if (!live || live.finished) return;
     live.gen++; live.playing = true; live.sincePlay = 0;
     live.why = live.replay ? "Replaying the recorded rounds; nothing is being decided now." : "An AI is choosing each move, so each round takes a few seconds.";
@@ -1588,7 +1875,17 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     $("replay").srcdoc = live.replay ? recordedPicture() : ""; delete $("detail").dataset.touched; $("detail").textContent = "";
     $("net-detail").textContent = "";
     show("run");
-    play();
+    if (live.replay) {
+      live.replayIndex = 0; live.rounds = live.recorded.slice(0, 1); live.buffer = [];
+      live.finished = live.recorded.length <= 1;
+      $("picture-wrap").open = false; $("network").open = false; $("saved-advanced").open = false;
+      renderLive();
+      if (world.shared && world.shared.readout) renderReadout(world.shared.readout);
+    } else {
+      $("picture-wrap").querySelector("summary").textContent = "Picture";
+      $("picture-wrap").open = true; $("network").open = true;
+      play();
+    }
   }
 
   $("build-btn").addEventListener("click", () => build());
