@@ -1,0 +1,10 @@
+{
+  "revision": "ecef00db38d3d32cf6fd4c08b5ffe5741d4aec5d",
+  "scope": "Two same-input retained interpreter replays and one explicitly varied compound attempt; no world generation or resident-policy run.",
+  "source": "evidence/i0-i1/deployed-integration-5/llm-calls.jsonl",
+  "original_call_ids": [
+    23462,
+    23455
+  ],
+  "cost_basis": "llm-cost estimate --task world-builder-attempt-interpreter: 381 successful priced calls, median $0.0002 and p90 $0.0003. Three calls worked out at median $0.0006; actual cost retained separately. Existing max_budget $0.05 cumulative trace guard retained."
+}

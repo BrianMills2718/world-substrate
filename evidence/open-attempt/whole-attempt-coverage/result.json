@@ -1,0 +1,9 @@
+{
+  "trace_roots": [
+    "world-substrate-interpreter-replay-e609d37b"
+  ],
+  "llm_calls": 3,
+  "tool_calls": 0,
+  "elapsed_s": 18.76788407999993,
+  "revision": "ecef00db38d3d32cf6fd4c08b5ffe5741d4aec5d"
+}

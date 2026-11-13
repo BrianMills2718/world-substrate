@@ -1,0 +1,9 @@
+2026-11-13 bounded correction
+uv run --no-project --python 3.12 --with pydantic --with pyyaml --with pytest --with gdm-concordia==2.4.0 python -m pytest tests/test_compound_attempt_flow.py tests/test_attempt_coverage.py tests/test_open_attempt.py tests/test_consequence_report.py tests/test_independent_rule_authority.py -q
+68 passed; exit0.
+uv run --no-project --python 3.12 --with pydantic --with pyyaml python scripts/check_saved_worlds.py
+saved28 whole13 previouslypartial15 errors0 lost0; exit0.
+python tools/planning/build.py
+five page builders completed; nodes86 edges155 questions96 open43; exit0 after repairing legacy scaffold assumption.
+Native replay: three calls, 7658tokens, provider reported $0.00097666, tools0 retries0; exit0.
+Model-free engine branches: Mara stance concerned only; compound no changes, judge_calls0; both replay hashes/event lists match,2steps; exit0.

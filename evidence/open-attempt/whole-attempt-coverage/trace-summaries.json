@@ -1,0 +1,71 @@
+{
+  "world-substrate-interpreter-replay-e609d37b": {
+    "trace_id": "world-substrate-interpreter-replay-e609d37b",
+    "llm_calls": 3,
+    "tool_calls": 0,
+    "llm_errors": 0,
+    "tool_failures": 0,
+    "total_cost": 0.00097666,
+    "total_tokens": 7658,
+    "first_timestamp": "2026-11-13T09:58:40.012367+00:00",
+    "last_timestamp": "2026-11-13T09:58:46.860862+00:00",
+    "matched_trace_ids": [
+      "world-substrate-interpreter-replay-e609d37b"
+    ],
+    "last_completed_llm_call": {
+      "kind": "llm_call",
+      "trace_id": "world-substrate-interpreter-replay-e609d37b",
+      "timestamp": "2026-11-13T09:58:46.860862+00:00",
+      "model": "openrouter/openai/gpt-6-luna",
+      "caller": "call_llm_structured",
+      "task": "world-builder-attempt-interpreter",
+      "error": null,
+      "latency_s": 3.251,
+      "finish_reason": "stop",
+      "cost": 0.00023628,
+      "total_tokens": 2472
+    },
+    "last_tool_call": null,
+    "timeline": [
+      {
+        "kind": "llm_call",
+        "trace_id": "world-substrate-interpreter-replay-e609d37b",
+        "timestamp": "2026-11-13T09:58:40.012367+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-builder-attempt-interpreter",
+        "error": null,
+        "latency_s": 5.135,
+        "finish_reason": "stop",
+        "cost": 0.000495,
+        "total_tokens": 2703
+      },
+      {
+        "kind": "llm_call",
+        "trace_id": "world-substrate-interpreter-replay-e609d37b",
+        "timestamp": "2026-11-13T09:58:43.582567+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-builder-attempt-interpreter",
+        "error": null,
+        "latency_s": 3.551,
+        "finish_reason": "stop",
+        "cost": 0.00024538,
+        "total_tokens": 2483
+      },
+      {
+        "kind": "llm_call",
+        "trace_id": "world-substrate-interpreter-replay-e609d37b",
+        "timestamp": "2026-11-13T09:58:46.860862+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-builder-attempt-interpreter",
+        "error": null,
+        "latency_s": 3.251,
+        "finish_reason": "stop",
+        "cost": 0.00023628,
+        "total_tokens": 2472
+      }
+    ]
+  }
+}
