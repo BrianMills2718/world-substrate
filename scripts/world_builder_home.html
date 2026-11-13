@@ -94,7 +94,7 @@ body.saved-view #stage-run select{min-height:44px;background:var(--bg);color:var
 .saved-event{width:100%;text-align:left;min-height:56px;padding:12px;background:transparent;color:var(--text);border:0;border-bottom:1px solid var(--line);font:inherit;cursor:pointer;line-height:1.4}
 .saved-event strong,.saved-event span{display:block}
 .saved-event span{font-size:13px;color:var(--muted);margin-top:3px}
-.saved-event[aria-pressed=true]{background:#213342;box-shadow:inset 3px 0 var(--ok)}
+.saved-event[aria-pressed=true]{background:#213342;outline:1px solid var(--ok);outline-offset:-1px}
 .saved-event:hover{background:#1d2a32}
 .saved-event-result{font-size:14px;color:var(--muted)}
 .saved-inspector{min-width:0;overflow-wrap:anywhere}
@@ -2077,7 +2077,15 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   const tipTarget = (node) => node && node.closest && node.closest("[title], [data-tip], [data-tip-for]");
   document.addEventListener("mouseover", (e) => { const el = tipTarget(e.target); clearTimeout(tipTimer); if (el) tipTimer = setTimeout(() => showTip(el), 150); else hideTip(); });
   // Typing into the box should not hide the button and example link under a bubble.
-  document.addEventListener("focusin", (e) => { const el = tipTarget(e.target); if (el && el.tagName !== "TEXTAREA") showTip(el); });
+  document.addEventListener("focusin", (e) => {
+    const el = tipTarget(e.target);
+    if (el && el.tagName !== "TEXTAREA") {
+      showTip(el);
+      // Keyboard focus may scroll a control into view; the scroll handler hides
+      // the old bubble. Restore help for the still-focused control afterwards.
+      requestAnimationFrame(() => { if (document.activeElement === el) showTip(el); });
+    }
+  });
   document.addEventListener("focusout", hideTip);
   // Scrolling moves the bubble with its control instead of hiding it.
   window.addEventListener("scroll", () => { if (!tipBubble.hidden && tipEl) showTip(tipEl); }, { passive: true });

@@ -190,12 +190,23 @@ class Run:
         await self.state(page, "entities.pump-activation.components.validation_decision.review", "completed")
         await self.actor_input(page, "ari", 3)
         self.passed(f"{width}: Ari validation event restores its own intermediate completed-review state and round3 input")
+        if width == 1440:
+            await self.open_ancestor_details(page.locator("#network"))
+            await page.locator("#network").evaluate("el=>el.open=true")
+            decision_node = page.locator('#net-graph .react-flow__node[data-id="e:pump-activation"]')
+            await expect(decision_node).to_be_visible(timeout=15000)
+            await decision_node.click()
+            await expect(page.locator("#net-detail")).to_contain_text("review: completed")
         await self.select_event(page, "r3-e00002")
         await self.state(page, "entities.pump-activation.components.validation_decision.hold", False)
         await self.state(page, "entities.pump-activation.components.validation_decision.validation", "passed")
         await self.state(page, "entities.pump-activation.components.validation_decision.review", "idle")
         child = await page.locator("#saved-event-detail").text_content()
         assert "r3-e00001" in child, child
+        if width == 1440:
+            await expect(page.locator("#net-detail")).to_contain_text("review: idle")
+            await expect(page.locator("#net-detail")).to_contain_text("validation: passed")
+            self.passed("1440: open Network inspector refreshes its selected object after historical event changes")
         self.passed(f"{width}: immediate child has its own causal parent and hold/validation/review state")
         await self.capture(page, f"{width}-validation-child")
 
@@ -314,6 +325,13 @@ class Run:
                     await context.route("**/*", self.route)
                     await self.pump(context, width)
                     await self.legacy(context, width)
+                    if self.args.live and width == 1440:
+                        response = await context.request.get(BASE + "api/share/" + PUMP)
+                        actual = await response.json()
+                        retained = json.loads((ROOT / "evidence/i0-i1/visible-run-20261113/share.json").read_text())
+                        for key in ("rounds", "actor_inputs", "world_fingerprint"):
+                            assert actual[key] == retained[key], key
+                            self.passed("live stored recording unchanged: " + key)
                     await context.close()
             finally:
                 await browser.close()

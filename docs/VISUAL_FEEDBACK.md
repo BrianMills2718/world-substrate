@@ -8,6 +8,14 @@ reviewed_through: 2026-11-13
 
 Living record of critiques of World Builder pages. Owner critiques become rules here; rules that apply beyond this project are promoted to Representation Router heuristics (named in the right-hand column).
 
+## Saved-player implementation — 2026-11-13
+
+Brian approved the review’s proposed rebuild: “yes do that”. The saved viewer now opens paused with direct round/event navigation, event-by-event playback, readable original words/interpretation/results, corresponding historical world state and exact-round actor input. Phone layout uses an event picker rather than a compressed scene. Picture, Network, causal history and exact records remain under further inspection. The existing browser stack applies the pinned Astryx layout patterns; no React migration or new model call.
+
+[Product context](../PRODUCT.md), [design](../DESIGN.md) and [required behavior](../openspec/specs/world-builder-page/spec.md#requirement-saved-recording-player) own the new route. [Evidence](../evidence/ui/saved-player-20261113/) retains test-first failures, local browser38/38 checks,31 home tests, independent code review and desktop/phone walkthrough. Review caught and repaired mutable object deltas, stale Network detail, misleading failed-check wording and offscreen history selection. Keyboard help was repaired after the full regression exposed a focus/scroll interaction. The final selected-row style adjustment preserves the tested script bytes; its final deployed HTML will be checked live.
+
+The original recording and its consent errors remain unchanged. This delivers the saved-recording player; human comprehension, broader simulation fidelity and the older complete A1–A4 demonstrations are not inferred from these checks. Release status is in the roadmap.
+
 ## Saved-run usability review — 2026-11-13
 
 Brian: “the ui is bascially unusuable”; asked whether the linked Reddit design library helps. Independent live design and mechanical/browser assessments confirm a broken primary inspection journey despite the earlier bounded inspector checks passing. This is feedback and a proposed direction, not an adopted redesign.

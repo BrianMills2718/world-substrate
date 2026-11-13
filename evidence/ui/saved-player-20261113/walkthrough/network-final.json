@@ -1,0 +1,62 @@
+[
+  {
+    "method": "GET",
+    "url": "https://brianmills.dev/world-builder/?run=T-e9dYLdIi61",
+    "navigation": true
+  },
+  {
+    "method": "GET",
+    "url": "https://brianmills.dev/world-builder/api/health",
+    "navigation": false
+  },
+  {
+    "method": "GET",
+    "url": "https://brianmills.dev/world-builder/api/share/T-e9dYLdIi61",
+    "navigation": false
+  },
+  {
+    "method": "GET",
+    "url": "https://brianmills.dev/world-builder/?run=T-e9dYLdIi61",
+    "navigation": true
+  },
+  {
+    "method": "GET",
+    "url": "https://brianmills.dev/world-builder/api/health",
+    "navigation": false
+  },
+  {
+    "method": "GET",
+    "url": "https://brianmills.dev/world-builder/api/share/T-e9dYLdIi61",
+    "navigation": false
+  },
+  {
+    "method": "GET",
+    "url": "https://brianmills.dev/world-builder/?run=T-e9dYLdIi61",
+    "navigation": true
+  },
+  {
+    "method": "GET",
+    "url": "https://brianmills.dev/world-builder/api/health",
+    "navigation": false
+  },
+  {
+    "method": "GET",
+    "url": "https://brianmills.dev/world-builder/api/share/T-e9dYLdIi61",
+    "navigation": false
+  },
+  {
+    "method": "GET",
+    "url": "https://brianmills.dev/world-builder/?run=T-e9dYLdIi61",
+    "navigation": true
+  },
+  {
+    "method": "GET",
+    "url": "https://brianmills.dev/world-builder/api/health",
+    "navigation": false
+  },
+  {
+    "method": "GET",
+    "url": "https://brianmills.dev/world-builder/api/share/T-e9dYLdIi61",
+    "navigation": false
+  }
+]

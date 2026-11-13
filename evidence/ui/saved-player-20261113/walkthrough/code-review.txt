@@ -1,0 +1,5 @@
+Independent reviewer, confirmation of two reproduced defects, 2026-11-13.
+Original object-alias result: {"recordUnchanged":false,"recordedFirstAfter":{"level":2},"earlierState":{"level":2},"laterState":{"level":2}}
+Fixed result: {"recordUnchanged":true,"recordedFirstAfter":{"level":1},"earlierState":{"level":1},"laterState":{"level":2}}
+Original Network inspector retained validation failed / hold true / review completed after selecting the child whose primary review was idle. Fixed browser result: parent failed/true/completed; child passed/false/idle. All four reproductions exited0 (initial failure commands printed contradictions; confirmation commands asserted correctness). No pageerrors or write requests. Commands ran inline and were not retained by reviewer. Root retains executable object-alias regression in tests/test_world_builder_home.py and Network regression in browser_check.py.
+Independent task walkthrough confirmed explicit failed-check wording and history jump focus/scroll at desktop and phone widths. Human comprehension is unobserved.

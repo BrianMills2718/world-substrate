@@ -1,0 +1,38 @@
+# What happened in this simulation, and what information did its actor have?
+
+**Bounded technical usability judgment: PASS after one repair batch.** The original build needed two repairs; both were confirmed in the browser after the parent changed the source. This is an agent task walkthrough, not evidence that Brian or another human understands the simulation.
+
+## Question, surface and method
+
+An unfamiliar reader opens the supplied saved recording, identifies its scenario, chooses an action and traces its effect, then returns from a later round to an earlier event and inspects that actor’s supplied information. Start: paused round 1. Completion: the event, selected round, state boundary and actor-input identity agree, and the relevant retained input text can be opened.
+
+URL: https://brianmills.dev/world-builder/?run=T-e9dYLdIi61 . Only navigation HTML was replaced with `/home/brian/code2/worktrees/ws-saved-run-player/scripts/world_builder_home.html`; actual saved-record GETs loaded normally. Every non-GET/HEAD request was blocked. No run/create action, model call, server or repository edit was performed. Isolated cached Chromium via Playwright; fresh desktop 1440×900 and phone 390×844 pages. Screenshots captured as one initial batch. Source hashes: `source-sha256.txt` and `fixed-source-sha256.txt`.
+
+## Representation choice
+
+`use-case.json` and `recommendation.json` retain the routing input/output. Router chose **composite-linked-view**, with scrub/step, selection and detail/provenance inspection. The rendered event list (phone selector), action/result detail and world state implement the appropriate basic structure. A timeline alone would emphasize order while hiding the exact words and supplied inputs needed here. A scroll-linked explainer or staged explanatory machine would impose a tour where the task needs direct selection. A graph of all objects is useful secondary depth but does not replace this primary record-inspection task.
+
+The initial title and first setup lines identify a prototype-pump activation decision involving Ari, Mara and Bo. Saved/paused status establishes that this is a recording. The setup is long and initially ellipsized, but Read full setup expands it. This is recorded honestly in router dispositions; it did not stop the bounded task.
+
+## Two observed issues, in composition repair order
+
+1. **Keep the selected detail visible after a historical jump — fixed.** In round 6, opening More ways → Events in round 1 → Bo changed the selected record correctly but left scrollY=1351 at the bottom; the selected action and its actor input heading were above the viewport. A reader had to search backward to recognize completion. The repair focuses and scrolls to the selected event heading. Follow-up showed `saved-event-h`, text `Bo — record assent`, with the detail visible at desktop scrollY=473; phone follow-up also lands on that selected detail. Evidence: `desktop-history-return.png` versus `fixed-desktop-history-return.png` and `fixed-mobile-history-return.png`. Router checks: persistent-selection-visible; details-do-not-obscure-context. Basis: interface observation; predicted newcomer confusion, not observed human behavior.
+
+2. **Distinguish failed checks from true conditions — fixed.** Ari’s initial refusal said it was refused “because” the actor owned the authority and was an authorized repairer. These were positive predicate labels presented as the reason, making the refusal read backward. Follow-up now says the required checks “did not hold” before retaining the exact labels. Evidence: `desktop-initial.png`, `fixed-desktop-initial.png`, follow-up body text. Router intent: readable mechanism and exact evidence, without hiding caveats. Basis: interface observation. No wording or rule repair was made by this reviewer.
+
+No third task blocker found; no additional polishing cycle recommended.
+
+## Task evidence and strengths
+
+- **Scenario:** Prototype Pump Validation; three people deciding whether the pump is safe to activate. Read full setup expands to the complete retained setup.
+- **Action → effect:** Selecting round-1 Bo displays original words withholding assent, interpretation `record assent`, and actual recorded changes `assent: false → true`, `assents: 0 → 1`. This discrepancy belongs to the recording; the player makes it inspectable rather than silently reconciling it. `desktop-bo-effect.png/.txt`.
+- **Person changes:** Selecting Mara changes the heading to Information supplied to Mara; her profile says she received a short failure report. Bo’s profile says he knows the public procedure. Actor input labels explicitly say these are supplied inputs, not proof of belief. `desktop-bo-inputs.txt`, `desktop-return-mara.txt`.
+- **Time changes:** Round 6 shows Ari’s assent and state validation passed/hold false. Returning to round 1 Mara shows review idle → requested and failed validation/hold true. Labels distinguish inputs before the round choice from world state after the selected event; later events in that round are excluded. This prevents accidental comparison of different people or times as though they were the same subject.
+- **Phone:** Event selector replaces desktop event list. Bo effect and round6→round1 Mara profile paths complete. Page scrollWidth equals viewport width: 390 on phone and 1440 on desktop. `mobile-initial.png`, `mobile-return-mara.txt`, `fixed-mobile-history-return.png`.
+- **Interaction:** Native buttons/selects/disclosures work; bounded keyboard check reached Round/Next and Enter advanced the round. Page-error list was empty.
+
+## Router accounting and limits
+
+`disposition.json` preserves the original 77 check dispositions (15 required, 62 advisory); `disposition-final.json` updates only the repaired selection checks. The strict router gate is **not** a blanket pass: the one-screen rule fails because the phone requires vertical scrolling, and universal tooltip timing and timed human cold-read remain unverified. Other broad catalog preferences (resizable panes, all sections rolled up, date/version first-screen display, no ellipses/middle dots) are separately recorded; they are not additional blockers to the requested task. The router applies chat/workspace assumptions too broadly to this single-record player, so those inapplicable checks are explicitly marked instead of adding product scope.
+
+Not verified: Brian’s comprehension; a timed human read; touch hardware/screen-reader operation; every keyboard control; every saved run; exact simulation semantics; complete upstream LLM trace; advanced Network/picture functionality; authoring or execution. No claim about those follows from this walkthrough. Browser contexts were closed; no review server left running. Scratch evidence must be copied into the parent’s committed evidence location before being treated as durable.

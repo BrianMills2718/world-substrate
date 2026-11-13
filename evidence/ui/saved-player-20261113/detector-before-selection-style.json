@@ -1,0 +1,44 @@
+[
+  {
+    "antipattern": "gpt-thin-border-wide-shadow",
+    "name": "Hairline border with wide shadow",
+    "description": "A hairline border paired with a wide, diffuse shadow is a recurring generated-UI signature. Commit to one — a defined edge or a soft elevation — rather than both at once.",
+    "severity": "advisory",
+    "category": "slop",
+    "file": "/home/brian/code2/worktrees/ws-saved-run-player/scripts/world_builder_home.html",
+    "line": 0,
+    "snippet": "1px border + 18px shadow blur",
+    "advisory": true
+  },
+  {
+    "antipattern": "skipped-heading",
+    "name": "Skipped heading level",
+    "description": "Heading levels should not skip (e.g. h1 then h3 with no h2). Screen readers use heading hierarchy for navigation. Skipping levels breaks the document outline.",
+    "severity": "warning",
+    "category": "quality",
+    "file": "/home/brian/code2/worktrees/ws-saved-run-player/scripts/world_builder_home.html",
+    "line": 0,
+    "snippet": "<h1> \"Simulate any small world\" followed by <h3> \"Let’s work it out together\" (missing h2)"
+  },
+  {
+    "antipattern": "side-tab",
+    "name": "Side-tab accent border",
+    "description": "Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.",
+    "severity": "warning",
+    "category": "slop",
+    "file": "/home/brian/code2/worktrees/ws-saved-run-player/scripts/world_builder_home.html",
+    "line": 0,
+    "snippet": ".saved-event[aria-pressed=true] — inset box-shadow 3px stripe (left)"
+  },
+  {
+    "antipattern": "repeating-stripes-gradient",
+    "name": "Repeating-gradient stripes",
+    "description": "Repeating-gradient stripes used as surface decoration are a recurring generated-UI signature. Reach for a deliberate texture or leave the surface plain.",
+    "severity": "advisory",
+    "category": "slop",
+    "file": "/home/brian/code2/worktrees/ws-saved-run-player/scripts/world_builder_home.html",
+    "line": 0,
+    "snippet": "repeating-gradient decorative stripes",
+    "advisory": true
+  }
+]
