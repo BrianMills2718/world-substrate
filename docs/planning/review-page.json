@@ -1,0 +1,24 @@
+{
+  "title": "World Substrate: actor information and independent concern",
+  "lead": "I0/I1 implementation is merged. Inspect what Ari, Mara and Bo actually received and which installed rules changed condition, exposure, stance, assent and hold. Complete inspected production acceptance is still pending; the old cold review does not certify these changed contracts.",
+  "what_you_do": "Read the I0/I1 acceptance entries and their evidence, then inspect the World Builder Actor/Analyst controls. The implementation is already approved; no further plan approval is requested here. Report a concrete mismatch or modeling concern.",
+  "summary": [
+    "I0 constrains both policy paths and continuation to declared actor inputs, with exact retained prompts and separate Analyst provenance.",
+    "I1 keeps reports and recipient exposure separate from technical truth, personal stance, recorded assent and institutional hold.",
+    "Legacy worlds retain their scripted/unrestricted compatibility mode. Passing checks establish specified contracts, not scientific actor fidelity or a preferred social outcome."
+  ],
+  "links": [
+    {
+      "name": "Open World Builder",
+      "href": "https://brianmills.dev/world-builder/"
+    },
+    {
+      "name": "I0/I1 acceptance and current evidence status",
+      "href": "https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-attempt/acceptance-criteria.json"
+    },
+    {
+      "name": "Retained integration failure and repair evidence",
+      "href": "https://github.com/BrianMills2718/world-substrate/tree/main/evidence/i0-i1"
+    }
+  ]
+}

@@ -981,3 +981,63 @@ Reading path: AGENTS.md -> docs/wiki/README.md -> task authority
 Planning path: README.md -> roadmap/README.md -> active slice
 Pinned source records checked: 16
 Donor checkout verification skipped (use --with-donors to enable).
+
+
+I0/I1 implementation receipts, 2026-11-12/13 (PR #379). These are implementation evidence, not a replacement cold review or a clean deployed acceptance claim.
+
+== make check (repair candidate before final replay-helper test)
+World Substrate project check passed.
+Neutral runtime tests: 1030 passed, 2 skipped, 229 subtests passed in 76.72s.
+OpenSpec: 13 passed, 0 failed.
+exit 0
+
+== ship --keep-lane (committed candidate 68eb2dd4ae01f32275c7337826ca5780dd8b22f8)
+Local make check: exit 0, approximately 73.7 seconds.
+Merged PR #379 as f4b7afab183691df0e364a624a275876bcddb9ba.
+Planning package structural validation passed; freshness warned that three specification files changed since the recorded cold review. Final cold review remains pending.
+exit 0
+
+== python -u scripts/check_saved_worlds.py --builds
+RESULT saved=28 whole=13 broken=15 errors=0 lost=0
+Every recorded build visited; stopped replays retain missing old replies or missing current privacy verdicts explicitly.
+exit 0
+
+== python scripts/check_trace_reads.py
+RESULT runs=49 problems=0
+exit 0
+
+== Targeted repair verification and publication scan
+69 tests, 4 subtests; exit 0. Independent offline real resident-loop probe: 6 assertions; exit 0.
+Publication checker: publish; 110 files scanned; 0 findings.
+These receipts and limitations are retained in evidence/i0-i1/repair-verification.txt.
+
+
+I0/I1 documentation reconciliation candidate (uncommitted; production acceptance pending)
+
+== python .../durable_docs_check.py --repo . --arc42
+First result:8findings (3prose rule identifiers missing,5owner-review stamps stale). Named the3rules in ODD and re-read exact changed compiler/freeze/approval/budget/log paths; retained aggregate-budget and storage-failure limitations.
+Final result: findings=0 (none), exit0.
+
+== python .../validate_planning_package.py --repo . --offline-coverage <manifest>
+Repository and open-attempt packages:9of10parts pass; current cold_review missing, freshness changed4plan/spec files; exit1.
+Substance:9of11ok,0failing,2pending;271filecitations/23other sources;11acceptancecriteria (9not built,2built,0judged pass).
+I0/I1 criteria added without changing asked_by/outcome or removing old criteria; coverage pending nightly, no model calls.
+This is not a compliant verdict. Restore current review metadata only after independent review of the committed package.
+
+== Shared review-page builder and Playwright rendering
+Two existing packages rebuilt,7pages each;11criteria,96questions,4diagrams,9decisions.
+28localpage checks (14pages at1440px/390px):HTTP200; both review pages contain I0/I1. Mobile hub and expanded I0 visually inspected.
+Known shared-template limit: open-questions inline SVG badges create19px horizontal overflow at390px (409px document width); hub/review pages have no horizontal overflow. No shared plugin code changed in this task.
+
+== git diff --check
+exit0
+
+Control receipt: careful hook rejected a non-gating verification command list; validator and output inspection were then run separately, preserving the actual exit1 rather than masking it with tail's exit0.
+
+After the coordinator moved the lane to the merged main history, the history-based stale checker counted rebased commit twins as changes. Verified the six owned source files have no diff between68eb2dd and f4b7afab, and moved source-review stamps to the merged f4b7afab equivalent. New semantic-review input repairs remain coordinator-owned and require their own final source/evidence check.
+
+2026-11-13 production-counterexample repair candidate
+make check: exit0,1037passed2skipped229subtests,13specs,45.45seconds; code2fa9b86 plus current documentation candidate.
+python scripts/check_trace_reads.py: exit0,runs=51 problems=0.
+durable_docs_check.py --repo . --arc42: exit0,0findings after actual source reread and reviewed_at2fa9b86 for compiler/reviewer rules.
+Production14-call failure retained and inspected; no resident or deployed acceptance pass claimed.

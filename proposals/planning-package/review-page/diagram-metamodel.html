@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What kinds of things can any world&#x27;s rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?</title><style>
+body { font: 16px/1.5 system-ui, sans-serif; margin: 0 16px; color: #1b1f24; background: #fff; }
+main { max-width: 1140px; min-width: 0; margin: 0 auto; padding: 20px 0 64px; }
+h1 { font-size: 26px; margin: 8px 0; } h2 { font-size: 21px; margin-top: 40px; border-bottom: 2px solid #0b3d6b; padding-bottom: 6px; }
+h2 .n { color: #0b3d6b; margin-right: 6px; } h2 .sub { font-weight: 400; } h3 { font-size: 17px; margin-top: 24px; }
+.wide { overflow-x: auto; max-width: 100%; } .doc, pre { overflow-x: auto; max-width: 100%; } img, svg { max-width: 100%; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
+th, td { border: 1px solid #c9ced4; padding: 6px 8px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+th { background: #eef1f4; } code { font-size: 13px; word-break: break-all; }
+.doc td:first-child { white-space: normal; }
+.tag { display: inline-block; padding: 1px 8px; border-radius: 4px; font-weight: 600; font-size: 13px; max-width: 100%; }
+:not(.wide) > table { display: block; overflow-x: auto; max-width: 100%; }
+.ok { background: #d6e6f7; color: #0b3d6b; border: 1px solid #0b3d6b; }
+.open { background: #fde3c4; color: #7a3300; border: 1px dashed #7a3300; }
+.todo { background: #e4e7eb; color: #3d4450; border: 1px solid #3d4450; }
+.star { border: 2px solid #e8892b; border-radius: 8px; padding: 8px 16px; background: #fff6ec; margin: 16px 0; }
+.sum { border: 2px solid #0b3d6b; border-radius: 8px; padding: 8px 16px; background: #eef4fb; margin: 16px 0; }
+.sum h3 { margin: 10px 0 2px; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: #0b3d6b; }
+.sum p { margin: 0 0 6px; }
+.status { font-size: 15px; margin: 10px 0; } .status b { font-size: 16px; }
+.frame { height: 520px; border: 1px solid #c9ced4; border-radius: 6px; margin: 8px 0 6px; overflow: hidden; }
+.mermaid { background: #fff; border: 1px solid #c9ced4; border-radius: 6px; padding: 10px; overflow-x: auto; }
+.mermaid svg { max-width: none !important; }
+.mermaid:focus-visible { outline: 2px solid #0b3d6b; outline-offset: 2px; }
+.doc { border: 1px solid #c9ced4; border-radius: 6px; padding: 2px 16px; margin: 8px 0 16px; }
+details { margin: 10px 0; border: 1px solid #c9ced4; border-radius: 6px; padding: 2px 12px; }
+details > summary { cursor: pointer; font-weight: 600; padding: 8px 0; }
+nav.top { font-size: 14px; line-height: 1.9; padding: 8px 0; border-bottom: 1px solid #c9ced4; }
+.note { color: #3d4450; font-size: 14px; } .smallnote { margin-top: 0; color: #7a3300; }
+.missing { color: #7a3300; } .quote { border-left: 4px solid #0b3d6b; padding-left: 12px; color: #3d4450; }
+table.ladder td:first-child { font-weight: 700; text-align: center; width: 3em; }
+.adr { border-left: 4px solid #0b3d6b; padding: 2px 12px; margin: 14px 0; } .adr h3 { margin-top: 8px; }
+.adr .who { font-size: 14px; color: #3d4450; margin: 2px 0; }
+.matrix td, .matrix th { text-align: center; padding: 4px 5px; font-size: 12px; white-space: nowrap; overflow-wrap: normal; }
+.m-yes { background: #d6e6f7; color: #0b3d6b; font-weight: 600; } .m-part { background: #fde3c4; color: #7a3300; font-weight: 600; }
+.hub { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin: 18px 0; }
+.card { border: 1px solid #c9ced4; border-radius: 8px; padding: 10px 16px; }
+.card h2 { border: 0; margin: 4px 0 6px; font-size: 18px; }
+.card ul { padding-left: 18px; margin: 6px 0; } .card li { margin: 4px 0; }
+.full { position: fixed; inset: 0; } .full .bar { height: 44px; display: flex; align-items: center; gap: 14px; padding: 0 16px 0 150px; background: #0b3d6b; color: #fff; font-size: 15px; overflow: hidden; white-space: nowrap; }
+.full .bar a { color: #fff; } .full #graph { position: absolute; top: 44px; left: 0; right: 0; bottom: 0; }
+.fulldoc .bar { position: sticky; top: 0; z-index: 2; padding-left: 16px; }
+@media (max-width: 700px) { .full .bar { padding-left: 110px; font-size: 13px; } td { min-width: 6em; } }
+</style></head><body>
+<div class="full"><div class="bar"><b>What kinds of things can any world&#x27;s rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?</b> <a href="index.html">All views</a> <a href="review.html">Review the plan</a></div><div id="graph"></div></div>
+<script type="application/json" id="page-data">{"md": {}, "graphs": {"graph": {"schema": "typed-graph/v1", "kinds": {"state": {"label": "World state", "color": "#3b6fb6", "explain": "What exists: things, their kinds and their typed fields."}, "rules": {"label": "Rules", "color": "#c26a1b", "explain": "What can change and how: action kinds, checks, effects, processes."}, "acting": {"label": "Acting", "color": "#6b7280", "explain": "How a decider's choice becomes a recorded event."}, "noticing": {"label": "Noticing", "color": "#2f8f9d", "explain": "How an actor comes to know what happened."}}, "nodes": [{"id": "world", "label": "World", "kind": "state", "explain": "The one canonical world of a run: entities, a tick, a revision and the events so far."}, {"id": "category", "label": "Category (kind of thing)", "kind": "state", "explain": "What kind of thing an entity is (person, place, door, helicopter); rules select by category."}, {"id": "entity", "label": "Entity (thing)", "kind": "state", "explain": "Any thing in the world, a person, a wall or a glass alike, with a stable id and typed components."}, {"id": "component", "label": "Component (state field)", "kind": "state", "explain": "A typed field on an entity (location, water level, passable, role); the only thing effects change. A disposition (a wall cannot be walked through) is a component value plus the checks that read it. Held in Entity.components; each component type is registered by register_component (model.py:188)."}, {"id": "place", "label": "Place", "kind": "state", "explain": "An entity of category place; every other entity's location names the place it is in."}, {"id": "way", "label": "Way between places", "kind": "state", "explain": "What lies between two places (a door, a brick wall): an entity naming both places with a passable field; moving names its way and needs it passable. Until fix F6 lands (Q25, settled by argument), a way works from its first place to its second only."}, {"id": "action-kind", "label": "Action kind (effector)", "kind": "rules", "explain": "Something an actor can try, with named participant roles, checks and effects, compiled before use (a generated DeclaredActionMechanic) or hand-written (FillRule and the other mechanisms); either way the Engine runs it through the action-rule interface."}, {"id": "rule-interface", "label": "Action and process rule interface", "kind": "rules", "explain": "What the Engine actually runs: an action rule discovers, checks and applies one action kind; a process rule says when it is due and applies; both declare read and write paths. Generated mechanics and the hand-written mechanisms library (FillRule, VesselFailureSpillProcess) both implement it."}, {"id": "registry", "label": "Rule registry", "kind": "rules", "explain": "The sole lookup surface for the action and process rules installed in one world, in a fixed order."}, {"id": "causal-parent", "label": "Hard causal parent", "kind": "acting", "explain": "An earlier event a rule declares as mechanically supporting this one (opt-in, DeclaresCausalParents); kept apart from information a person merely had in mind. S2's reactions cite their trigger this way."}, {"id": "role", "label": "Participant role", "kind": "rules", "explain": "A named slot of an action kind (actor, to, way, aircraft) and the categories that may fill it."}, {"id": "sense", "label": "Sense binding", "kind": "rules", "explain": "The meaning and participant roles Linguistic Core gives an action kind; never its effects."}, {"id": "check", "label": "Check (precondition)", "kind": "rules", "explain": "A test a move or process must pass against current state (the way is passable, the trainee can fly); a failed check refuses the move with the check named."}, {"id": "effect", "label": "Effect", "kind": "rules", "explain": "A change to one component path that runs when every check holds, inside the declared write scope."}, {"id": "write-scope", "label": "Declared write scope", "kind": "rules", "explain": "The paths a rule may change; the Engine refuses any change outside them."}, {"id": "process", "label": "Process (knock-on rule)", "kind": "rules", "explain": "A rule the world runs by itself for every matching entity whose checks hold, each round by default or at once when its timing is immediately; this is how effects propagate (plants dry out, a glass breaks)."}, {"id": "knock-on-now", "label": "Same-moment knock-on", "kind": "rules", "explain": "A process with timing immediately, run in waves inside the same moment as the move or round step that triggered it until nothing more is due; each process and thing pair fires once per moment, which ends every chain; new runs have no other cap, and a run recorded before J0 of docs/plans/ai_judge.md replays under its old cap of 32 (slice S2 of docs/plans/open_attempt.md, ODD 8.20)."}, {"id": "skill-roll", "label": "Skill roll", "kind": "rules", "dashed": true, "explain": "A seeded roll on an action kind so a move can partly succeed or fail by skill (planned slice S3). Planned, not built."}, {"id": "terminal", "label": "Terminal condition", "kind": "rules", "explain": "A state-derived stop: when its checks hold over the selected entities, the task ends one way."}, {"id": "profile", "label": "Frozen mechanic profile", "kind": "rules", "explain": "The validated rules of one world frozen under an id before any run."}, {"id": "affordance", "label": "Affordance (offered move)", "kind": "acting", "explain": "A move an actor can make now: an action kind with participants bound and its checks holding, as Engine.discover lists it."}, {"id": "decider", "label": "Decider (policy)", "kind": "acting", "explain": "What chooses an actor's next move: scripted, an AI menu chooser or a Concordia resident."}, {"id": "attempt", "label": "Attempt (free text)", "kind": "acting", "explain": "What a resident says it tries, in its own words; never executable."}, {"id": "attempt-reading", "label": "Attempt reading", "kind": "acting", "explain": "The interpreter's typed reading of an attempt: an action kind and participants, with no outcome field, a wait, or no match."}, {"id": "unmatched", "label": "Unmatched attempt", "kind": "acting", "explain": "An attempt no action kind covers; it changes nothing and is listed in the run's build record."}, {"id": "typed-action", "label": "Typed action (command)", "kind": "acting", "explain": "The envelope submitted to the Engine: actor, action kind, bound participants, base revision."}, {"id": "event", "label": "Event", "kind": "acting", "explain": "The record of one attempt or process step: status, every check and its result, the changes, the cause and an id like r14-e00012."}, {"id": "observation", "label": "Observation (sensor)", "kind": "noticing", "explain": "What one actor can see of the world now, filtered by place and by information delivery."}, {"id": "information", "label": "Information and delivery (channel)", "kind": "noticing", "explain": "An information entity and its delivery rows: who has been told what, by which channel, and when; a word said across the world reaches no one without a delivery."}], "edges": [{"id": "m1", "source": "world", "target": "entity", "label": "holds"}, {"id": "m2", "source": "entity", "target": "category", "label": "is a"}, {"id": "m3", "source": "entity", "target": "component", "label": "has"}, {"id": "m4", "source": "place", "target": "entity", "label": "is an"}, {"id": "m5", "source": "way", "target": "entity", "label": "is an"}, {"id": "m6", "source": "way", "target": "place", "label": "joins"}, {"id": "m7", "source": "action-kind", "target": "role", "label": "declares"}, {"id": "m8", "source": "sense", "target": "role", "label": "names"}, {"id": "m9", "source": "role", "target": "category", "label": "filled by"}, {"id": "m10", "source": "action-kind", "target": "check", "label": "requires"}, {"id": "m11", "source": "action-kind", "target": "effect", "label": "produces"}, {"id": "m12", "source": "process", "target": "check", "label": "requires"}, {"id": "m13", "source": "process", "target": "effect", "label": "produces"}, {"id": "m14", "source": "effect", "target": "component", "label": "changes"}, {"id": "m15", "source": "effect", "target": "write-scope", "label": "bounded by"}, {"id": "m16", "source": "rule-interface", "target": "action-kind", "label": "runs"}, {"id": "m17", "source": "rule-interface", "target": "process", "label": "runs"}, {"id": "m18", "source": "registry", "target": "rule-interface", "label": "installs"}, {"id": "m19", "source": "event", "target": "causal-parent", "label": "cites"}, {"id": "m20", "source": "knock-on-now", "target": "causal-parent", "label": "cites"}, {"id": "m21", "source": "check", "target": "component", "label": "reads"}, {"id": "m22", "source": "knock-on-now", "target": "process", "label": "is a timing of"}, {"id": "m23", "source": "skill-roll", "target": "effect", "label": "varies"}, {"id": "m24", "source": "terminal", "target": "check", "label": "requires"}, {"id": "m25", "source": "profile", "target": "action-kind", "label": "freezes"}, {"id": "m26", "source": "profile", "target": "process", "label": "freezes"}, {"id": "m27", "source": "affordance", "target": "action-kind", "label": "offers"}, {"id": "m28", "source": "decider", "target": "affordance", "label": "chooses from"}, {"id": "m29", "source": "decider", "target": "attempt", "label": "says"}, {"id": "m30", "source": "attempt", "target": "attempt-reading", "label": "read as"}, {"id": "m31", "source": "attempt", "target": "unmatched", "label": "or"}, {"id": "m32", "source": "attempt-reading", "target": "typed-action", "label": "becomes"}, {"id": "m33", "source": "decider", "target": "typed-action", "label": "submits"}, {"id": "m34", "source": "typed-action", "target": "event", "label": "recorded as"}, {"id": "m35", "source": "process", "target": "event", "label": "recorded as"}, {"id": "m36", "source": "event", "target": "component", "label": "changes"}, {"id": "m37", "source": "observation", "target": "entity", "label": "shows"}, {"id": "m38", "source": "observation", "target": "information", "label": "filtered by"}, {"id": "m39", "source": "observation", "target": "decider", "label": "feeds"}]}}, "full": true}</script>
+<script src="graph-viewer.js"></script><script src="marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+const D = JSON.parse(document.getElementById('page-data').textContent);
+function renderMd(id, item) {
+  const host = document.getElementById(id); if (!host || !window.marked) return;
+  host.innerHTML = marked.parse(item.text);
+  if (item.base) host.querySelectorAll('a[href]').forEach(a => {
+    const h = a.getAttribute('href');
+    if (!/^([a-z]+:|#|\/)/i.test(h)) a.href = new URL(h, item.base).href;
+  });
+  host.querySelectorAll('code.language-mermaid').forEach(c => {
+    const div = document.createElement('div'); div.className = 'mermaid'; div.textContent = c.textContent;
+    c.parentElement.replaceWith(div);
+  });
+}
+// Size a frame from its drawing so its words read at their real size when the width allows; when even
+// that leaves them small, say so under the drawing and point at its full page.
+function sized(el) {
+  return ({width, height}) => {
+    if (!width || !height) return;
+    const wz = Math.min(1, (el.clientWidth * 0.84) / width);
+    el.style.height = Math.round(Math.max(320, Math.min(window.innerHeight * 0.88, height * wz / 0.84))) + 'px';
+    const zoom = Math.min(1, (el.clientWidth * 0.84) / width, (el.clientHeight * 0.84) / height);
+    if (zoom < 0.7 && !el.nextElementSibling?.classList.contains('smallnote')) {
+      const note = document.createElement('p'); note.className = 'note smallnote';
+      const own = el.dataset.page ? ` or <a href="${el.dataset.page}">open it on its own page</a>` : '';
+      note.innerHTML = `Shown whole at ${Math.round(zoom * 100)}% of full size, so the words are small here. Press <b>Full page</b> (top-left of the drawing)${own} to read it.`;
+      el.after(note);
+    }
+  };
+}
+for (const [id, item] of Object.entries(D.md || {})) renderMd(id, item);
+for (const [id, g] of Object.entries(D.graphs || {})) {
+  const el = document.getElementById(id); if (!el || !window.GraphViewer) continue;
+  const v = GraphViewer.mount(el, {graph: g, onLayout: D.full ? undefined : sized(el)});
+  if (D.full && v && v.fullPage) setTimeout(() => v.fullPage(true), 300);
+}
+if (window.mermaid) {
+  mermaid.initialize({startOnLoad: false, theme: 'neutral', securityLevel: 'strict'});
+  const run = async () => {
+    await mermaid.run({querySelector: '.mermaid:not([data-processed])'});
+    document.querySelectorAll('.mermaid svg').forEach(svg => {
+      // Mermaid's responsive width shrinks labels with the whole drawing. Keep its
+      // native coordinate size instead, and let the existing container scroll.
+      const box = svg.viewBox.baseVal;
+      if (!box.width || !box.height) return;
+      svg.style.width = box.width + 'px';
+      svg.style.height = box.height + 'px';
+      const el = svg.parentElement;
+      el.tabIndex = 0;
+      el.setAttribute('role', 'region');
+      el.setAttribute('aria-label', 'Diagram. Scroll sideways to read the whole drawing.');
+      if (!el.dataset.scrollHelp) {
+        const note = document.createElement('p'); note.className = 'note';
+        note.textContent = 'Scroll sideways to read wide diagrams. With a keyboard, focus the drawing and use the arrow keys.';
+        el.before(note);
+        el.dataset.scrollHelp = 'true';
+      }
+    });
+  };
+  document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', () => { if (d.open) run(); }));
+  run();
+} else {
+  document.querySelectorAll('.mermaid').forEach(el => { el.style.whiteSpace = 'pre'; el.style.fontFamily = 'monospace'; });
+}
+</script></body></html>

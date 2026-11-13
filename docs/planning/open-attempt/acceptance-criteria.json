@@ -274,6 +274,73 @@
     "evidence/open-attempt/s1-airfield/llm-calls.jsonl",
     "scripts/check_trace_reads.py"
    ]
+  },
+  {
+   "id": "I0",
+   "criterion": "I can inspect exactly what Mara and Bo received before choosing, without private information leaking through profiles, labels, menus, errors or resumed memory.",
+   "grounded_in": [
+    "docs/plans/open_attempt.md:522",
+    "docs/model/modeling-choices.md:95",
+    "openspec/specs/information-delivery/spec.md"
+   ],
+   "demonstration": [
+    "Open the retained Ari/Mara/Bo demonstration in World Builder; select Context view → Actor: authorized inputs, then Person → mara.",
+    "Open Input before round 1 and Input before round 2; read the exact messages, context and memory. Switch Person to bo and compare only the evidence each received.",
+    "Switch to Analyst: whole run and open Exact inputs and provenance. Compare Ari's detailed evidence and the source of each actor's input with the actor views; review the linked full trace and failure evidence.",
+    "Confirm that switching views does not change the run. In an older saved world with no declared input recording, Actor view must say no authorized input recording is available."
+   ],
+   "expected": "Mara and Bo receive only their own authorized evidence, role/profile, memories and public procedure. Ari's channel C, batch V17 and 8-unit detail is absent until an authorized exposure gives it to the recipient; neither hidden entity names nor narrator statements about suppressed reports disclose it. Public hold may legitimately reveal failed validation under this stated procedure. Known attempts do not certify hidden executability, and actor-facing refusals omit privileged blockers. Round 2 contains authorized continuation history, not another actor's private memory. Analyst view can inspect exact inputs and provenance without relabeling them as actor knowledge.",
+   "failure_example": "Broken: Bo's input says he has not seen batch V17, a private report's label appears before delivery, or Ari's private detail returns through resumed history. Working: Actor view contains only that person's actual authorized inputs; Analyst context remains separately labeled.",
+   "representation": {
+    "view": "actor-context/analyst-context comparison with exact per-round input records",
+    "router_record": "docs/planning/open-attempt/router/information-review.recommendation.json"
+   },
+   "entrypoint": "https://brianmills.dev/world-builder/",
+   "status": "built",
+   "status_note": "Implementation merged in PR #379 at f4b7afab183691df0e364a624a275876bcddb9ba; focused adversarial and continuation checks pass. Complete inspected production demonstration and share URL remain pending; no judged pass is recorded.",
+   "evidence": [
+    "scripts/actor_information.py",
+    "scripts/world_builder_home.html",
+    "tests/test_actor_information.py",
+    "tests/test_resident_context_trace.py",
+    "tests/test_world_builder_service.py",
+    "evidence/i0-i1/repair-verification.txt",
+    "evidence/i0-i1/local-integration-2/TRACE_READ.md"
+   ]
+  },
+  {
+   "id": "I1",
+   "criterion": "I can distinguish actual condition, reports and exposure, personal stance, recorded assent and the activation hold without the simulator forcing agreement or treating time as repair.",
+   "grounded_in": [
+    "docs/plans/open_attempt.md:522",
+    "docs/model/modeling-choices.md:120",
+    "openspec/specs/native-coordination/spec.md",
+    "openspec/specs/causal-model-authoring/spec.md"
+   ],
+   "demonstration": [
+    "Open the same Ari/Mara/Bo demonstration in Analyst view and read each round's actual actor attempts and canonical consequences.",
+    "Select Actor view for Ari, Mara and Bo in turn. Compare their report exposure and expressed responses; return to Analyst view to inspect the separate technical condition, validation, public hold, stance and assent records.",
+    "Open See how it works and read the installed rules for send-report, repair-condition, complete-validation, record-assent and activate alongside their recorded events. A report changes exposure; a technical repair changes condition; validation reads the actual condition.",
+    "Use the linked event evidence to check that clearing the hold did not supply Mara's or Bo's assent. An unexercised branch is labeled unexercised; no rerun or chosen social ending is needed to fill the record."
+   ],
+   "expected": "Initial received reports are delivered exposures with actual source distinct from holder, or an explicitly unspecified source. A new actor-authored report records actual sender, recipient, words and event without making its claim true or forcing stance/assent; new free-text reports leave inherited lineage undeclared rather than asserting independent corroboration. A review can confirm failure. Only explicit authorized repair changes technical condition, and passing authorized revalidation clears only the hold. Activation still requires the stated actors' own recorded assents. Disagreement, ignored claims, retained support and lack of activation are legitimate outcomes, not failed social scripts.",
+   "failure_example": "Broken: receiving a warning automatically withdraws support, waiting repairs the pump, a report changes its physical condition, or passing validation automatically consents for Mara and Bo. Working: each committed change comes from its own installed rule and all these records remain separate.",
+   "representation": {
+    "view": "linked actor inputs and chronological canonical event/state comparison",
+    "router_record": "docs/planning/open-attempt/router/information-review.recommendation.json"
+   },
+   "entrypoint": "https://brianmills.dev/world-builder/",
+   "status": "built",
+   "status_note": "Independent procedure and report primitive merged in PR #379; contract/authority tests and targeted resident-loop replay pass. Production generated/resident trace and human-visible demonstration remain unverified; no particular response or ending is required and no judged pass is recorded.",
+   "evidence": [
+    "spikes/any-scenario-2026-10/compile_spec.py",
+    "tests/test_scenario_spec.py",
+    "tests/test_actor_report_delivery.py",
+    "tests/test_report_effect.py",
+    "tests/test_independent_rule_authority.py",
+    "evidence/i0-i1/repair-verification.txt",
+    "evidence/i0-i1/local-integration-2/TRACE_READ.md"
+   ]
   }
  ],
  "coverage": {
@@ -405,5 +472,10 @@
    }
   ],
   "trace": "coverage-trace.json"
+ },
+ "followup_scope": {
+  "source": "docs/plans/open_attempt.md:522; Brian approved I0/I1 implementation on 2026-11-12 after PR #378 and activated the I0/I1 goal.",
+  "outcome": "Differently informed people can interpret evidence and choose independently while installed mechanics govern technical and institutional consequences. I0/I1 are added follow-up criteria; A1-A9 and their original asked_by/outcome remain unchanged.",
+  "coverage_note": "Added entries retain the original judged requirement cut; no old requirement or criterion was removed. New criterion hashes are pending normal coverage maintenance, not represented as newly model-judged."
  }
 }

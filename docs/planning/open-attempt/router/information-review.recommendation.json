@@ -1,0 +1,39 @@
+{
+ "record_type": "representation_recommendation",
+ "provenance": {
+  "by": "agent",
+  "date": "2026-11-12",
+  "method": "Document existing I0/I1 product controls against Representation Router principles; not a visual or scientific certification",
+  "source": "docs/plans/open_attempt.md:522"
+ },
+ "question": "Can Brian distinguish what each person actually received from analyst knowledge, then trace separate report, technical and consent consequences?",
+ "primary": "linked actor/analyst context and chronological event/state comparison",
+ "rationale": "Exact input records answer what a policy received. Separate analyst events and state answer what actually changed. A graph alone cannot establish absence of private words from a prompt.",
+ "compositionPlan": {
+  "primary_element": "Selected person and per-round actual input",
+  "secondary_elements": [
+   "Exact analyst inputs/provenance",
+   "Chronological attempts and canonical event changes",
+   "Separate condition, exposure, stance, assent and hold records"
+  ],
+  "reading_order": [
+   "Person and round",
+   "Actual input and chosen attempt",
+   "Installed-rule consequence",
+   "Provenance and limits"
+  ],
+  "interaction": "Read-only Context view and Person selectors; input records expand without model calls or memory changes. A retained share replays its recorded rounds.",
+  "color": "Blue selection, orange gaps/refusals, grey context; explicit text labels."
+ },
+ "availability": "implemented product controls; complete inspected production I0/I1 demonstration remains pending",
+ "alternatives": [
+  "A global summary would mix privileged facts with actor knowledge.",
+  "A graph can supplement causal order but cannot replace exact messages and values."
+ ],
+ "avoid": [
+  "A passing test count as proof of actor knowledge",
+  "Privileged provenance shown as an actor observation",
+  "A chosen social ending as an acceptance condition"
+ ],
+ "verification": "Source and contract checks inspected; production render and human comprehension remain separate evidence."
+}

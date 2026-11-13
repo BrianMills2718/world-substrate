@@ -10,7 +10,7 @@ Read: all 14 native model calls, distinct full prompt material (identical schema
 - 23416/23417: parallel action signatures; 23416 selected (`request-evidence`, `investigate-evidence`, `ignore-claim`). 23418 declares no laws/resources.
 - 23419/23420: first rule-writing pair fails compilation. 23419 treats location as a component; repair23421 appends to actor with literal content. 23420 appends to actor; repair23422 reintroduces unknown location component. The outer harness retains the failure and retries.
 - 23423/23424: second rule-writing pair uses unconstrained subject selectors; repairs23425/23426 constrain them. 23425 selected, 23426 unused. Request-evidence only changes a work flag and explicitly does not deliver a request; that accepted bookkeeping must never be presented as communication. The independent compiled send-report remains the real communication path.
-- 23427: complete typed review rejects Bo solely because the initial public hold and failed-validation result are visible before a report/filling action. The service returns HTTP422; no residents are submitted.
+- 23427: complete typed review rejects Bo solely because the initial public hold and failed-validation result are visible before a report/filing action. The service returns HTTP422; no residents are submitted.
 
 ## Findings
 
