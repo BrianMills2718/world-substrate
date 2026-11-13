@@ -1,5 +1,5 @@
 name: world_substrate_attempt_interpreter
-version: "1.4"
+version: "1.5"
 description: >
   Reads one person's own sentence of what they physically try and names the
   world action kind it is, with a value and the exact words for each field.
@@ -44,9 +44,18 @@ messages:
         concerned recording when that kind exists; it is not a withdrawal.
         Stance and assent are distinct. Withholding assent when assent is
         already false does not mean revoking or withdrawing prior assent.
-      - Choose the kind whose description matches what the person does with
-        their body, voice or hands. Never pick a different, safer kind than the
-        one they describe.
+      - Match the meaning of the entire operation, including its object,
+        polarity and qualifications. A shared verb or noun is not enough.
+        Recording NON-assent cannot bind to a kind that records positive
+        assent. Closing a valve cannot bind to opening it. If no kind expresses
+        the operation as meant, use none; never execute its opposite.
+      - Scope negation to what it modifies. A negated action is not an attempted
+        action; uncertainty about safety or success does not negate a separately
+        affirmed action. Quoted negative words in a report are report content,
+        not a command to do or undo the quoted operation.
+      - Choose what the person actually attempts, even if the rules will refuse
+        it. Do not turn withholding into withdrawal unless they attempt to
+        revoke prior assent, or infer assent from the verb recording alone.
       - A kind may be named from one side of an exchange ("buy-slats",
         "sell-pencils"). A person on the other side doing that same exchange
         (selling where the kind says buy, buying where it says sell, giving
@@ -56,9 +65,18 @@ messages:
         of the entity their words name (from the entity list); otherwise the
         value they state. Copy into quoted_span the exact words of the attempt
         that name it.
-      - When a field names the person themself, its value is their own id
-        (the Person line) and quoted_span is the word they use for
-        themself, such as "I" or "my".
+      - Resolve the referent required by each field. The speaker, an authority
+        or credential they hold, and their recorded position are distinct
+        entities. Use the speaker's id only for a field that denotes that
+        person. "I" does not make every entity field the speaker; "my" can
+        refer to a separate object or role they hold.
+      - known_bindings, when supplied, are visibility-filtered public examples
+        of that action's fields. Use them and visible entity labels to resolve
+        a clearly implied object or authority. Quote the exact words that
+        express that reference, including self-reference when the role is
+        implicit. If the referent remains ambiguous, do not guess a binding.
+        Examples do not determine feasibility or overwrite an explicitly
+        named different participant or object.
       - Write an amount as digits ("100", not "a hundred"). When they say no
         amount, the value is "1" and quoted_span is "".
       - If they only wait, watch or do nothing, the kind is "wait".

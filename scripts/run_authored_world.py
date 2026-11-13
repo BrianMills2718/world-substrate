@@ -389,13 +389,21 @@ def _read_attempt(engine: Engine, actor: str, text: str | None, signatures: list
     # getattr: test doubles of llm_client carry only the calls they fake.
     over_budget, llm_error = (getattr(llm_client, name, ()) for name in ("LLMBudgetExceededError", "LLMError"))
     boundary = _boundary_bundle(engine)
-    labels = ({eid: row["label"] for eid, row in actor_info.actor_observation(engine, boundary, actor)["entities"].items()}
-              if boundary else {eid: entity.label for eid, entity in sorted(engine.world.entities.items())})
+    known_page = actor_info.actor_page(engine, boundary, actor) if boundary else None
+    labels = ({eid: row["label"] for eid, row in known_page["observation"]["entities"].items()}
+              if known_page else {eid: entity.label for eid, entity in sorted(engine.world.entities.items())})
     if boundary:
-        known_forms = {row["kind"]: row["description"] for row in boundary["actor_information"].get("public_actions", [])}
+        # Implements: semantic-binding/preserve-operation-and-referents
+        # Use the same visibility-filtered public forms the actor receives. Raw
+        # declarations may name a report or capability this actor cannot know.
         signatures = deepcopy(signatures)
         for signature in signatures:
-            signature["description"] = known_forms.get(signature["kind"], signature["kind"].replace("-", " "))
+            forms = [row for row in known_page["available"] if row["action"]["kind"] == signature["kind"]]
+            descriptions = list(dict.fromkeys(row["description"] for row in forms))
+            signature["description"] = "; ".join(descriptions) or signature["kind"].replace("-", " ")
+            names = {field["name"] for field in signature.get("fields", [])}
+            bindings = [{key: value for key, value in row["action"].items() if key in names} for row in forms]
+            signature["known_bindings"] = [value for i, value in enumerate(bindings) if value not in bindings[:i]]
             for field in signature.get("fields", []):
                 field.pop("only", None)  # canonical singleton cardinality is itself hidden information
                 field.pop("from", None)  # hidden canonical state cannot supply an actor's argument
