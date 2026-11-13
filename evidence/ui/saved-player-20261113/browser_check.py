@@ -101,6 +101,42 @@ class Run:
         await page.locator("body").screenshot(path=str(self.out / f"{name}.png"))
         (self.out / f"{name}.txt").write_text(await page.locator("body").inner_text())
 
+    async def playback(self, page, width: int):
+        await page.evaluate("""() => {
+          const player = document.querySelector('#saved-player');
+          window.__savedPlayerObservedRounds = [player.dataset.round];
+          window.__savedPlayerRoundObserver = new MutationObserver(() => {
+            const round = player.dataset.round;
+            const observed = window.__savedPlayerObservedRounds;
+            if (round !== observed[observed.length - 1]) observed.push(round);
+          });
+          window.__savedPlayerRoundObserver.observe(player, {attributes:true, attributeFilter:['data-round']});
+        }""")
+        await page.locator("#play-btn").click()
+        await expect(page.locator("#play-btn")).to_have_text(re.compile("Pause"))
+        # The recorded player uses a 2000ms interval. 3500ms permits one interval
+        # plus scheduling margin, while detecting an accidental duplicate first round.
+        await page.wait_for_function("window.__savedPlayerObservedRounds.length > 1", timeout=3500)
+        rounds = await page.evaluate("window.__savedPlayerObservedRounds")
+        assert rounds[:2] == ["1", "2"], rounds
+        await expect(page.locator("#saved-player")).to_have_attribute("data-round", "2")
+        await page.locator("#play-btn").click()
+        await expect(page.locator("#play-btn")).to_have_text(re.compile("Play|Replay"))
+        await page.wait_for_timeout(2300)
+        await expect(page.locator("#saved-player")).to_have_attribute("data-round", "2")
+        self.passed(f"{width}: Play advances once from round1 to round2 and Pause holds that round beyond the playback interval")
+
+        await self.select_round(page, 6)
+        await expect(page.locator("#play-btn")).to_have_text(re.compile("Replay|Watch again"))
+        await page.locator("#play-btn").click()
+        await expect(page.locator("#saved-player")).to_have_attribute("data-round", "1")
+        await expect(page.locator("#play-btn")).to_have_text(re.compile("Pause"))
+        await page.locator("#play-btn").click()
+        await page.wait_for_timeout(2300)
+        await expect(page.locator("#saved-player")).to_have_attribute("data-round", "1")
+        self.passed(f"{width}: Replay from final round returns to round1 and can immediately be paused")
+        await page.evaluate("window.__savedPlayerRoundObserver.disconnect()")
+
     async def pump(self, context, width: int):
         page = await context.new_page()
         page.set_default_timeout(self.args.timeout)
@@ -117,6 +153,7 @@ class Run:
         await expect(page.locator("#saved-player")).to_have_attribute("data-round", "1")
         self.passed(f"{width}: saved scenario is visible, all six rounds seekable, initial round stays paused")
         await self.capture(page, f"{width}-initial")
+        await self.playback(page, width)
 
         await self.select_event(page, "r1-e00002")
         detail = await page.locator("#saved-event-detail").inner_text()
