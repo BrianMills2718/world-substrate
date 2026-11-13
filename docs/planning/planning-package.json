@@ -14,9 +14,10 @@
           "command": "python3 scripts/check_trace_reads.py --root evidence",
           "exit_status": 0,
           "counts": {
-            "runs": 47,
+            "runs": 51,
             "problems": 0
-          }
+          },
+          "note": "I0/I1 retained authentic failures included; recorded in evidence/i0-i1/repair-verification.txt. Exit 0."
         },
         {
           "name": "durable documents (legacy arc42 checker)",
@@ -98,12 +99,12 @@
           "command": "make check",
           "exit_status": 0,
           "counts": {
-            "passed": 938,
+            "passed": 1037,
             "skipped": 2,
-            "subtests_passed": 225,
+            "subtests_passed": 229,
             "specs_passed": 13
           },
-          "note": "Coordinator run during modeling-contracts working-tree editing, based on 65ffed8 plus the candidate later committed as 05356af: exit 0; 938 passed, 2 skipped, 225 subtests, 126.57 seconds; 13 specs passed. This is a working-tree receipt, not an exact-commit check. ship will check the final committed candidate. Full Lockstep trace conformance remains a separate failing check."
+          "note": "2026-11-13: batch make check on committed code2fa9b86 plus this documentation candidate; exit0,1037passed2skipped229subtests,45.45seconds,13specs. Final exact committed merge gate remains ship-owned. Production acceptance remains pending; full AES conformance is separate."
         },
         {
           "name": "Lockstep requirement/scenario trace links",
@@ -117,6 +118,19 @@
           },
           "tracked_by": "Q77",
           "note": "2026-11-12: configured real source roots and linked 13 existing test functions with 15 existing=True markers covering 6 distinct scenario IDs. This is annotation coverage, not 329 demonstrated behavior defects. Proposed/unbuilt requirements remain unmapped; full AES conformance is not claimed."
+        },
+        {
+          "name": "I0/I1 saved and recorded-build compatibility",
+          "command": "python -u scripts/check_saved_worlds.py --builds (uv --no-project with installed llm_client; no live model calls)",
+          "exit_status": 0,
+          "counts": {
+            "saved": 28,
+            "whole": 13,
+            "previously_partial": 15,
+            "errors": 0,
+            "lost": 0
+          },
+          "note": "Every recorded build folder visited; unavailable old replies and integration-2 missing current privacy verdict remain stopped replays, not passes. No previously whole saved world was lost. See evidence/i0-i1/repair-verification.txt."
         }
       ]
     },
@@ -238,26 +252,47 @@
     },
     "plan": {
       "status": "present",
-      "path": "docs/plans/declared_laws.md",
+      "path": "docs/plans/open_attempt.md",
       "relies_on": [
-        "world-law",
-        "law-check",
-        "rules-review",
-        "gen-rules",
-        "test-run",
-        "build",
+        "attempt",
+        "attempt-reading",
+        "unmatched-attempt",
+        "affordance",
+        "check",
+        "move",
         "mechanic",
+        "event",
         "process",
-        "knock-on-now",
-        "engine",
+        "resident",
+        "policy",
+        "place-way",
         "entity-component",
+        "observation",
+        "knock-on-now",
+        "skill-roll",
+        "run-seed",
+        "information",
         "write-scope",
-        "rules-retry",
-        "exchange",
-        "causal-trace",
+        "profile",
+        "approval",
+        "fingerprint",
+        "budget",
+        "run-loop",
+        "task",
+        "engine",
+        "compiler",
+        "gen-rules",
+        "build",
         "run-log",
-        "world-design",
-        "resource"
+        "causal-trace",
+        "sense",
+        "causal-parent",
+        "contention",
+        "readout",
+        "share",
+        "mechanisms",
+        "test-run",
+        "scene-replay"
       ],
       "stops": {
         "searched": [
@@ -271,8 +306,18 @@
             "said_on": "2026-11-12",
             "words": "before we move to implementaiotn my instinct is that we should make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved",
             "source": "Brian, current normative-readiness conversation, 2026-11-12; recorded here verbatim",
-            "applies_to": "New simulator feature implementation while normative review remains unfinished; documentation reconciliation is authorized.",
+            "applies_to": "Simulator implementation outside the separately approved I0/I1 slices; the original documentation-first boundary is not a grant for later engine, cognition, solver or unrelated judge work.",
             "status": "holds"
+          },
+          {
+            "said_on": "2026-11-12",
+            "words": "before we move to implementaiotn my instinct is that we should make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved",
+            "source": "Brian, current normative-readiness conversation, 2026-11-12; recorded here verbatim",
+            "applies_to": "I0 complete actor-information boundary and I1 independent single-concern influence path only, including their deployment and bounded evidence within existing owner budgets.",
+            "status": "lifted",
+            "lifted_on": "2026-11-12",
+            "lifted_words": "i approve. givem e the /goal text",
+            "lifted_source": "docs/plans/open_attempt.md:522; Brian approved these two slices after PR #378 and activated the I0/I1 goal."
           }
         ]
       },
@@ -280,66 +325,52 @@
         "steps": [
           {
             "step": "world-builder-attempt-interpreter (retained fixture workload only)",
-            "calls_per_run": 97,
-            "cost_per_run_usd": 0.0430927,
+            "calls_per_run": 12,
+            "cost_per_run_usd": 0.0015984,
             "basis": "measured",
-            "evidence": "evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl: sum recorded cost for task=world-builder-attempt-interpreter, 97 calls across this artifact. Historical workload only, not a forecast or general run bound."
+            "evidence": "evidence/open-attempt/s2-airfield/llm-calls.jsonl: sum recorded cost for task=world-builder-attempt-interpreter, 12 calls across this artifact. Historical workload only, not a forecast or general run bound."
           },
           {
             "step": "world-builder-concordia-resident (retained fixture workload only)",
-            "calls_per_run": 110,
-            "cost_per_run_usd": 0.0426475,
+            "calls_per_run": 36,
+            "cost_per_run_usd": 0.0067542,
             "basis": "measured",
-            "evidence": "evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl: sum recorded cost for task=world-builder-concordia-resident, 110 calls across this artifact. Historical workload only, not a forecast or general run bound."
-          },
-          {
-            "step": "world-builder-people-laws (retained fixture workload only)",
-            "calls_per_run": 1,
-            "cost_per_run_usd": 0.000582,
-            "basis": "measured",
-            "evidence": "evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl: sum recorded cost for task=world-builder-people-laws, 1 calls across this artifact. Historical workload only, not a forecast or general run bound."
+            "evidence": "evidence/open-attempt/s2-airfield/llm-calls.jsonl: sum recorded cost for task=world-builder-concordia-resident, 36 calls across this artifact. Historical workload only, not a forecast or general run bound."
           },
           {
             "step": "world-builder-world-kind (retained fixture workload only)",
             "calls_per_run": 1,
-            "cost_per_run_usd": 4.47e-05,
+            "cost_per_run_usd": 5.93e-05,
             "basis": "measured",
-            "evidence": "evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl: sum recorded cost for task=world-builder-world-kind, 1 calls across this artifact. Historical workload only, not a forecast or general run bound."
-          },
-          {
-            "step": "world-substrate-action-signatures (retained fixture workload only)",
-            "calls_per_run": 2,
-            "cost_per_run_usd": 0.0074758,
-            "basis": "measured",
-            "evidence": "evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl: sum recorded cost for task=world-substrate-action-signatures, 2 calls across this artifact. Historical workload only, not a forecast or general run bound."
+            "evidence": "evidence/open-attempt/s2-airfield/llm-calls.jsonl: sum recorded cost for task=world-builder-world-kind, 1 calls across this artifact. Historical workload only, not a forecast or general run bound."
           },
           {
             "step": "world-substrate-mechanic-authoring (retained fixture workload only)",
-            "calls_per_run": 2,
-            "cost_per_run_usd": 0.0283596,
+            "calls_per_run": 6,
+            "cost_per_run_usd": 0.02542215,
             "basis": "measured",
-            "evidence": "evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl: sum recorded cost for task=world-substrate-mechanic-authoring, 2 calls across this artifact. Historical workload only, not a forecast or general run bound."
+            "evidence": "evidence/open-attempt/s2-airfield/llm-calls.jsonl: sum recorded cost for task=world-substrate-mechanic-authoring, 6 calls across this artifact. Historical workload only, not a forecast or general run bound."
           },
           {
-            "step": "world-substrate-rules-review (retained fixture workload only)",
+            "step": "world-substrate-run-readout (retained fixture workload only)",
             "calls_per_run": 1,
-            "cost_per_run_usd": 0.087862,
+            "cost_per_run_usd": 0.0003068,
             "basis": "measured",
-            "evidence": "evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl: sum recorded cost for task=world-substrate-rules-review, 1 calls across this artifact. Historical workload only, not a forecast or general run bound."
+            "evidence": "evidence/open-attempt/s2-airfield/llm-calls.jsonl: sum recorded cost for task=world-substrate-run-readout, 1 calls across this artifact. Historical workload only, not a forecast or general run bound."
           },
           {
-            "step": "world-substrate-scenario-spec (retained fixture workload only)",
+            "step": "world-substrate-world-authoring (retained fixture workload only)",
             "calls_per_run": 2,
-            "cost_per_run_usd": 0.01692561,
+            "cost_per_run_usd": 0.00313795,
             "basis": "measured",
-            "evidence": "evidence/declared-laws/s4-waltzman-3/llm-calls.jsonl: sum recorded cost for task=world-substrate-scenario-spec, 2 calls across this artifact. Historical workload only, not a forecast or general run bound."
+            "evidence": "evidence/open-attempt/s2-airfield/llm-calls.jsonl: sum recorded cost for task=world-substrate-world-authoring, 2 calls across this artifact. Historical workload only, not a forecast or general run bound."
           }
         ],
-        "cheapest_design": "Use recorded commands and deterministic replay without model calls for structural checks. Authoring creates checkable artifacts in the existing harness; actors and interpretation retain their current single-call boundaries. A new comparison needs a named decision that argument and retained evidence cannot settle. Fixture costs establish neither semantic-review benefit nor future workload cost."
+        "cheapest_design": "Use recorded commands and deterministic replay without model calls for structural checks. Authoring creates checkable artifacts in the existing harness; actors and interpretation retain their current single-call boundaries. A new comparison needs a named decision that argument and retained evidence cannot settle. Fixture costs establish neither semantic-review benefit nor future workload cost. I0/I1 reuses the existing semantic review call for actual initial actor contexts; no additional cognition or review stage is introduced. Free paired-input, authority and replay checks precede the minimum real generated/resident demonstration."
       },
       "plain_baseline": {
         "kind": "planned",
-        "answer_path": "Independent semantic review of rules against the description; rule/law authoring itself is checkable-artifact construction under the harness exception.",
+        "answer_path": "Attempt interpretation: free expression to typed command.",
         "when": "Only if a named decision survives argument and retained evidence review; no run authorized by this metadata repair.",
         "cases": [
           "Valid transfer rule omitting the other person's consent",
@@ -348,7 +379,7 @@
       },
       "stage_effects": [
         {
-          "stage": "Independent model review after authoring and structural checks",
+          "stage": "Attempt interpretation before Engine.submit",
           "gap": "Valid but semantically incorrect commands/rules can pass structural validation; added semantic-review value is not established by these fixtures.",
           "status": "untested"
         }
@@ -360,22 +391,23 @@
       "url": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/planning-package/review-page/"
     },
     "cold_review": {
-      "status": "present",
+      "status": "missing",
       "path": "docs/planning/cold-review.md",
       "verdict": "pass",
       "reviewed_revision": "fdca8f49e7bd9b15d44532f31a7cae0841235048",
-      "package_commit": "fdca8f49e7bd9b15d44532f31a7cae0841235048"
+      "package_commit": "fdca8f49e7bd9b15d44532f31a7cae0841235048",
+      "note": "Historical pass and report remain at the recorded revision. Current review is pending because I0/I1 changed the specification contract and active-plan acceptance; restore present only after independent review of the committed current package."
     },
     "acceptance": {
       "status": "present",
-      "path": "docs/planning/declared-laws/acceptance-criteria.json"
+      "path": "docs/planning/open-attempt/acceptance-criteria.json"
     },
     "investigation": {
       "status": "present",
       "path": "docs/planning/investigation.json"
     }
   },
-  "note": "Repository-wide package; the plan reference is a current implementation plan, while roadmap/README.md owns sequencing and the pre-implementation normative review. Open-attempt, declared-laws, AI-judge and estimate-rules each retain their own package and acceptance scope. They share domain/semantic models and the question ledger. Review verdicts refer only to their recorded revisions; this metadata reconciliation does not recertify them.",
+  "note": "Repository-wide package points to the active open-attempt I0/I1 follow-up and its acceptance criteria; roadmap/README.md remains the sequencing authority. Declared-laws, AI-judge and estimate-rules retain their own scoped packages. Shared models and checks are reused. Review verdicts refer only to their recorded revisions; this candidate metadata and implementation reconciliation does not silently recertify the cold review.",
   "initiative": {
     "id": "world-substrate",
     "role": "home"
@@ -417,6 +449,6 @@
   },
   "spectrum_basis": "Repository-scoped evidence shared by plan packages: the World Builder is an existing deployed product, while individual plan slices remain built/not-built as their acceptance records state. The domain taxonomy is a flat, typed classification by implementation authority (Substrate, Family, PerWorld, Reference, Theory), not a claim of a deeper inheritance hierarchy. No digital-twin or validated predictive-simulation rung is asserted.",
   "full_method": true,
-  "route": "reset",
-  "route_decision": "docs/plans/declared_laws.path-decision.json"
+  "route": "durable_solo",
+  "route_decision": "docs/plans/open_attempt.path-decision.json"
 }

@@ -14,9 +14,10 @@
           "command": "python3 scripts/check_trace_reads.py --root evidence",
           "exit_status": 0,
           "counts": {
-            "runs": 47,
+            "runs": 51,
             "problems": 0
-          }
+          },
+          "note": "I0/I1 retained authentic failures included; recorded in evidence/i0-i1/repair-verification.txt. Exit 0."
         },
         {
           "name": "durable documents (legacy arc42 checker)",
@@ -98,12 +99,12 @@
           "command": "make check",
           "exit_status": 0,
           "counts": {
-            "passed": 938,
+            "passed": 1037,
             "skipped": 2,
-            "subtests_passed": 225,
+            "subtests_passed": 229,
             "specs_passed": 13
           },
-          "note": "Coordinator run during modeling-contracts working-tree editing, based on 65ffed8 plus the candidate later committed as 05356af: exit 0; 938 passed, 2 skipped, 225 subtests, 126.57 seconds; 13 specs passed. This is a working-tree receipt, not an exact-commit check. ship will check the final committed candidate. Full Lockstep trace conformance remains a separate failing check."
+          "note": "2026-11-13: batch make check on committed code2fa9b86 plus this documentation candidate; exit0,1037passed2skipped229subtests,45.45seconds,13specs. Final exact committed merge gate remains ship-owned. Production acceptance remains pending; full AES conformance is separate."
         },
         {
           "name": "Lockstep requirement/scenario trace links",
@@ -117,6 +118,19 @@
           },
           "tracked_by": "Q77",
           "note": "2026-11-12: configured real source roots and linked 13 existing test functions with 15 existing=True markers covering 6 distinct scenario IDs. This is annotation coverage, not 329 demonstrated behavior defects. Proposed/unbuilt requirements remain unmapped; full AES conformance is not claimed."
+        },
+        {
+          "name": "I0/I1 saved and recorded-build compatibility",
+          "command": "python -u scripts/check_saved_worlds.py --builds (uv --no-project with installed llm_client; no live model calls)",
+          "exit_status": 0,
+          "counts": {
+            "saved": 28,
+            "whole": 13,
+            "previously_partial": 15,
+            "errors": 0,
+            "lost": 0
+          },
+          "note": "Every recorded build folder visited; unavailable old replies and integration-2 missing current privacy verdict remain stopped replays, not passes. No previously whole saved world was lost. See evidence/i0-i1/repair-verification.txt."
         }
       ]
     },
@@ -292,8 +306,18 @@
             "said_on": "2026-11-12",
             "words": "before we move to implementaiotn my instinct is that we should make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved",
             "source": "Brian, current normative-readiness conversation, 2026-11-12; recorded here verbatim",
-            "applies_to": "New simulator feature implementation while normative review remains unfinished; documentation reconciliation is authorized.",
+            "applies_to": "Simulator implementation outside the separately approved I0/I1 slices; the original documentation-first boundary is not a grant for later engine, cognition, solver or unrelated judge work.",
             "status": "holds"
+          },
+          {
+            "said_on": "2026-11-12",
+            "words": "before we move to implementaiotn my instinct is that we should make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved",
+            "source": "Brian, current normative-readiness conversation, 2026-11-12; recorded here verbatim",
+            "applies_to": "I0 complete actor-information boundary and I1 independent single-concern influence path only, including their deployment and bounded evidence within existing owner budgets.",
+            "status": "lifted",
+            "lifted_on": "2026-11-12",
+            "lifted_words": "i approve. givem e the /goal text",
+            "lifted_source": "docs/plans/open_attempt.md:522; Brian approved these two slices after PR #378 and activated the I0/I1 goal."
           }
         ]
       },
@@ -342,7 +366,7 @@
             "evidence": "evidence/open-attempt/s2-airfield/llm-calls.jsonl: sum recorded cost for task=world-substrate-world-authoring, 2 calls across this artifact. Historical workload only, not a forecast or general run bound."
           }
         ],
-        "cheapest_design": "Use recorded commands and deterministic replay without model calls for structural checks. Authoring creates checkable artifacts in the existing harness; actors and interpretation retain their current single-call boundaries. A new comparison needs a named decision that argument and retained evidence cannot settle. Fixture costs establish neither semantic-review benefit nor future workload cost."
+        "cheapest_design": "Use recorded commands and deterministic replay without model calls for structural checks. Authoring creates checkable artifacts in the existing harness; actors and interpretation retain their current single-call boundaries. A new comparison needs a named decision that argument and retained evidence cannot settle. Fixture costs establish neither semantic-review benefit nor future workload cost. I0/I1 reuses the existing semantic review call for actual initial actor contexts; no additional cognition or review stage is introduced. Free paired-input, authority and replay checks precede the minimum real generated/resident demonstration."
       },
       "plain_baseline": {
         "kind": "planned",
@@ -367,11 +391,12 @@
       "url": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/open-attempt/review-page/"
     },
     "cold_review": {
-      "status": "present",
+      "status": "missing",
       "path": "docs/planning/open-attempt/cold-review.md",
       "verdict": "pass",
       "reviewed_revision": "fdca8f49e7bd9b15d44532f31a7cae0841235048",
-      "package_commit": "fdca8f49e7bd9b15d44532f31a7cae0841235048"
+      "package_commit": "fdca8f49e7bd9b15d44532f31a7cae0841235048",
+      "note": "Historical pass and report remain at the recorded revision. Current review is pending because I0/I1 changed the specification contract and active-plan acceptance; restore present only after independent review of the committed current package."
     },
     "investigation": {
       "status": "present",
@@ -382,7 +407,7 @@
       "path": "docs/planning/open-attempt/acceptance-criteria.json"
     }
   },
-  "note": "Plan-specific package linked from its owning plan. Shares repository checks, question ledger, domain model and semantic spectrum with docs/planning/planning-package.json. Its acceptance, plan and cold-review remain scoped to this plan; old review verdicts do not certify current edits.",
+  "note": "Plan-specific package linked from its owning plan. Shares repository checks, question ledger, domain model and semantic spectrum with docs/planning/planning-package.json. Its acceptance, plan and cold-review remain scoped to this plan; old review verdicts do not certify current edits. I0/I1 implementation is merged in PR #379; acceptance entries are built but complete production inspection is still pending. This update does not refresh the cold-review verdict by assertion.",
   "initiative": {
     "id": "world-substrate",
     "role": "home"

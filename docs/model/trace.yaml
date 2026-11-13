@@ -20,7 +20,7 @@ entities:
   - id: ENT-EVENT
     what: a committed or refused transition record with stable id and causal parents (ODD 4, 8.4)
   - id: ENT-RUN-RECORD
-    what: the durable log of one build or run kept by the World Builder service, with each kept-candidate try's independent rules review (`review_findings` or `review_error`) (ODD 8.11, 8.22)
+    what: the normal-storage log of one build or run, with review findings or legacy review errors and exact ordinary/failed actor inputs; declared candidates require the additional complete privacy verdict (ODD 8.13, 8.22, 11.6)
   - id: ENT-INFORMATION-ITEM
     what: represented information with visibility per observer, kept out of causal parentage (ODD 8.14)
 
@@ -36,10 +36,10 @@ processes:
     enforces: [RULE-DERIVED-AUTHORITY]
   - id: PROC-INSTALL-AND-RUN
     what: freeze the approved profile and run residents through it (run_authored_world.py)
-    enforces: [RULE-FROZEN-PROFILE]
+    enforces: [RULE-FROZEN-PROFILE, RULE-DECLARED-ACTOR-INPUTS]
   - id: PROC-BUILDER-REQUEST
     what: serve build, generate, approve and run requests behind approval and budget gates (world_builder_service.py)
-    enforces: [RULE-APPROVAL-BEFORE-RUN, RULE-BUDGET-FAILS-CLOSED, RULE-DURABLE-RUN-RECORD]
+    enforces: [RULE-APPROVAL-BEFORE-RUN, RULE-BUDGET-FAILS-CLOSED, RULE-DURABLE-RUN-RECORD, RULE-ACTOR-INPUT-REVIEW]
   - id: PROC-LIVE-PROJECTION
     what: rebuild the live view from snapshot plus canonical event deltas (projection.py)
     enforces: [RULE-PROJECTION-FROM-CANONICAL-ONLY]
@@ -97,7 +97,7 @@ rules:
       The authority shown for review is derived by the compiler from the proposed rule, not taken from the
       model's claims; unknown effect paths and engine-owned fields are rejected before installation.
     owner: src/world_substrate/action_authoring.py
-    reviewed_at: 4878cb84ffabf9d8dfaad4472ff9c64036673aeb  # re-read 2026-11-10 (ai-judge J0, PR #362: adds near_misses, a read-only check of blocked knock-on steps; derived authority and effect-path rejection unchanged)
+    reviewed_at: f4b7afab183691df0e364a624a275876bcddb9ba  # source review I0/I1: DeclaredActionMechanic.from_dict validates selectors/signatures/checks/effects, derives reads/writes; append_report is action-only and typed, adds target read/write, and cannot author engine cause ids
     checks:
       - tests/test_action_authoring.py::test_review_exposes_derived_authority_not_model_claimed_authority
       - tests/test_action_authoring.py::test_unknown_effect_path_is_rejected_before_installation
@@ -111,7 +111,7 @@ rules:
       continuation reconstructs that effective set before freezing a new profile. The originally supplied bundle
       remains the approval identity. See openspec/specs/ai-judge/spec.md for the additional installation contract.
     owner: scripts/run_authored_world.py
-    reviewed_at: fd877da5b802ef67c9f3837525367caf8623c02f  # source review 2026-11-12: build_engine validates/installs then freezes; run_world constructs Rulebook effective rules before build_engine; structural rejection tests read, no new execution claim
+    reviewed_at: f4b7afab183691df0e364a624a275876bcddb9ba  # source review I0/I1: run_world resolves effective Rulebook then build_engine validates/installs all rules and freezes before policy construction; continuation validates world/rule identities; new actor-input sink does not change profile authority
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime
@@ -125,7 +125,7 @@ rules:
       Create simulation supplies initial approval; J3 permits checked additional rules under the chosen mode.
       This is rule approval, not the represented people's consent to an exchange (the latter remains Q96).
     owner: scripts/world_builder_service.py
-    reviewed_at: fd877da5b802ef67c9f3837525367caf8623c02f  # source review 2026-11-12: _run checks approved and compilation before calls; exact native law and continuation seal checked; J3 mode is separate from actor consent
+    reviewed_at: f4b7afab183691df0e364a624a275876bcddb9ba  # source review I0/I1: _run requires approved and compiles before policy calls, keeps exact native law, validates snapshot seal including declared actor_state and rejects unsealed/conflicting restored inputs; actor consent remains a separate modeled action
     checks:
       - tests/test_world_builder_service.py::test_run_requires_explicit_mechanic_approval
       - tests/test_world_builder_service.py::test_native_coordination_run_refuses_modified_law
@@ -142,7 +142,7 @@ rules:
       The stronger no-call-past-budget invariant requires a separate audit of downstream model-call budgets,
       concurrency and late hedges; the cited request-level tests do not establish it.
     owner: scripts/world_builder_service.py
-    reviewed_at: fd877da5b802ef67c9f3837525367caf8623c02f  # source review 2026-11-12: _requested_model, _load_budget_state, _reserve_daily_budget, _llm_budget and settlement read; tests establish admission limits, not all downstream aggregate spend
+    reviewed_at: f4b7afab183691df0e364a624a275876bcddb9ba  # source review I0/I1: _requested_model, _load_budget_state, _reserve_daily_budget, _llm_budget and settlement retain fail-closed admission; no stronger downstream aggregate-cap claim is made
     checks:
       - tests/test_world_builder_service.py::test_unapproved_model_is_refused_before_spend
       - tests/test_world_builder_service.py::test_corrupt_budget_ledger_fails_closed_before_model_call
@@ -159,7 +159,7 @@ rules:
       errors and prints them without failing the request; successful response does not guarantee a retained record.
       The cited tests cover normal storage and snapshot continuation, not failure of the log store.
     owner: scripts/world_builder_service.py
-    reviewed_at: fd877da5b802ef67c9f3837525367caf8623c02f  # source review 2026-11-12: _record_response, _result_summary, _snapshot_seal and _run continuation read; normal-storage tests read; log-write exception is swallowed, so durability is conditional
+    reviewed_at: f4b7afab183691df0e364a624a275876bcddb9ba  # source review I0/I1: _record_response retains exact failed actor inputs through shared sink and normal-storage run records; continuation seals include actor_state; log-write errors are still swallowed, so storage-failure durability remains unmet
     checks:
       - tests/test_world_builder_service.py::test_every_build_and_run_leaves_a_durable_record
       - tests/test_world_builder_service.py::test_keep_going_continues_from_the_final_snapshot
@@ -184,3 +184,56 @@ rules:
       - tests/test_living_scene_information_feedback.py::test_information_context_does_not_become_causal_parentage
     decisions:
       - docs/decisions/003-semantic-mechanical-boundary.md
+
+  - id: RULE-DECLARED-ACTOR-INPUTS
+    statement: >-
+      Worlds declaring actor_information assemble both policy paths from explicit actor grants, public setup
+      and the actor's own retained state. Private existence, undelivered reports, hidden action arguments and
+      privileged refusal details do not enter that context. Historical worlds are explicitly legacy-unrestricted.
+    verification_limit: >-
+      This is a resident-input boundary, not generic Engine read-scope enforcement or proof that a generated
+      declaration is semantically authorized. The source-grounded review gate has its own rule and limitation.
+    owner: scripts/actor_information.py
+    reviewed_at: f4b7afab183691df0e364a624a275876bcddb9ba
+    checks:
+      - tests/test_actor_information.py::test_hidden_state_labels_summary_and_action_text_cannot_change_input
+      - tests/test_actor_information.py::test_pending_message_and_its_action_identity_do_not_enter_recipient_input
+      - tests/test_actor_information.py::test_private_entity_identity_and_action_forms_are_recipient_scoped
+      - tests/test_resident_context_trace.py::test_runner_uses_declaration_instead_of_omniscient_context
+      - tests/test_world_builder_service.py::test_declared_actor_continuation_seals_all_policy_inputs
+    decisions:
+      - docs/decisions/003-semantic-mechanical-boundary.md
+  - id: RULE-ACTOR-INPUT-REVIEW
+    statement: >-
+      The existing build review inspects exact initial actor contexts against the original source. A declared
+      candidate requires a complete explicit authorized verdict for its public summary and every actor;
+      missing, malformed, rejected or unavailable review prevents delivery on both build paths.
+    verification_limit: >-
+      Typed gate tests establish that unsafe or absent verdicts are rejected, not that the model always detects
+      unauthorized disclosures. Generated verdicts and actual prompts require trace inspection.
+    owner: scripts/review_rules.py
+    reviewed_at: 2fa9b86f4bef279cfb7b6541fd38132806a1455a
+    checks:
+      - tests/test_initial_actor_knowledge.py::test_missing_malformed_or_disallowed_review_never_approves
+      - tests/test_initial_actor_knowledge.py::test_existing_review_call_reads_actual_contexts_and_rejects_narrator_negative_knowledge
+      - tests/test_world_builder_service.py::test_declared_actor_world_is_not_delivered_after_privacy_review_failure
+    decisions:
+      - docs/decisions/008-build-worlds-in-an-agent-harness.md
+  - id: RULE-INDEPENDENT-CONCERN-PROCEDURE
+    statement: >-
+      The independent_decision procedure records condition, report exposure, actor-owned stance and assent,
+      validation and institutional hold separately. Passing validation clears only the technical hold;
+      activation still requires the declared actors' own assents. Legacy scripted decisions remain explicit.
+    verification_limit: >-
+      These are declared procedural assumptions with a bounded effective repair action; they establish neither
+      scientific fidelity of the condition nor calibrated human responses or a required social ending.
+    owner: spikes/any-scenario-2026-10/compile_spec.py
+    reviewed_at: 2fa9b86f4bef279cfb7b6541fd38132806a1455a
+    checks:
+      - tests/test_scenario_spec.py::test_delivery_review_repair_and_assent_remain_distinct
+      - tests/test_scenario_spec.py::test_no_forced_support_timer_or_claim_truth_and_safe_metadata
+      - tests/test_actor_report_delivery.py::test_new_actor_report_records_exposure_without_persuasion_or_physical_effect
+      - tests/test_actor_report_delivery.py::test_initial_exposure_does_not_invent_a_sender
+      - tests/test_independent_rule_authority.py::test_proposed_rule_is_refused_for_preview_install_and_restoration
+    decisions:
+      - docs/decisions/006-governed-rules-layer-scope.md
