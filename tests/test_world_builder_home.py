@@ -461,6 +461,23 @@ class WorldNetworkTests(unittest.TestCase):
             " return [event.event_id, entities[0].components.decision.review]; }); })()")
         self.assertEqual(administrative, result)
 
+    @pytest.mark.req("world-builder-page/inspect-a-recorded-attempt-without-replay-timing")
+    def test_projection_keeps_recorded_object_values_immutable_when_seeking_back(self):
+        turn = {"turn": 1, "actors": {"sam": {"event_id": "r1-e00001", "changes": [
+            {"path": "entities.vote.components.decision.details", "before": None, "after": {"level": 1}}
+        ]}}, "world_events": [{"event_id": "r1-e00002", "changes": [
+            {"path": "entities.vote.components.decision.details.level", "before": 1, "after": 2},
+            {"path": "entities.vote.location", "before": None, "after": {"location_id": "hangar"}}
+        ]}]}
+        result = self.run_page_functions(
+            f"(() => {{ const t = {json_dumps(turn)}, original = JSON.stringify(t);"
+            " const entities = [{id:'vote', location:null, components:{decision:{details:null}}}];"
+            " applyRound(entities, t); const earlier = [{id:'vote', components:{decision:{details:null}}}];"
+            " applyRound(earlier, {actors:{sam:t.actors.sam}});"
+            " return {unchanged:JSON.stringify(t)===original, current:entities[0].components.decision.details.level,"
+            " earlier:earlier[0].components.decision.details.level, location:entities[0].location}; })()")
+        self.assertEqual(result, {"unchanged": True, "current": 2, "earlier": 1, "location": "hangar"})
+
     @pytest.mark.req("living-scene/frames-come-from-a-projection-and-a-profile", existing=True)
     def test_reaction_only_entities_and_processes_are_touched(self):
         result = self.run_page_functions(

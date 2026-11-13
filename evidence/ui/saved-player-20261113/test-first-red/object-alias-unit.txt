@@ -1,0 +1,33 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ WorldNetworkTests.test_projection_keeps_recorded_object_values_immutable_when_seeking_back _
+
+self = <test_world_builder_home.WorldNetworkTests testMethod=test_projection_keeps_recorded_object_values_immutable_when_seeking_back>
+
+    @pytest.mark.req("world-builder-page/inspect-a-recorded-attempt-without-replay-timing")
+    def test_projection_keeps_recorded_object_values_immutable_when_seeking_back(self):
+        turn = {"turn": 1, "actors": {"sam": {"event_id": "r1-e00001", "changes": [
+            {"path": "entities.vote.components.decision.details", "before": None, "after": {"level": 1}}
+        ]}}, "world_events": [{"event_id": "r1-e00002", "changes": [
+            {"path": "entities.vote.components.decision.details.level", "before": 1, "after": 2},
+            {"path": "entities.vote.location", "before": None, "after": {"location_id": "hangar"}}
+        ]}]}
+        result = self.run_page_functions(
+            f"(() => {{ const t = {json_dumps(turn)}, original = JSON.stringify(t);"
+            " const entities = [{id:'vote', location:null, components:{decision:{details:null}}}];"
+            " applyRound(entities, t); const earlier = [{id:'vote', components:{decision:{details:null}}}];"
+            " applyRound(earlier, {actors:{sam:t.actors.sam}});"
+            " return {unchanged:JSON.stringify(t)===original, current:entities[0].components.decision.details.level,"
+            " earlier:earlier[0].components.decision.details.level, location:entities[0].location}; })()")
+>       self.assertEqual(result, {"unchanged": True, "current": 2, "earlier": 1, "location": "hangar"})
+E       AssertionError: {'unchanged': False, 'current': 2, 'earlier': 2, 'locat[27 chars]ar'}} != {'unchanged': True, 'current': 2, 'earlier': 1, 'location': 'hangar'}
+E       + {'current': 2, 'earlier': 1, 'location': 'hangar', 'unchanged': True}
+E       - {'current': 2,
+E       -  'earlier': 2,
+E       -  'location': {'location_id': 'hangar'},
+E       -  'unchanged': False}
+
+tests/test_world_builder_home.py:479: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_world_builder_home.py::WorldNetworkTests::test_projection_keeps_recorded_object_values_immutable_when_seeking_back
+1 failed, 30 deselected in 0.15s
