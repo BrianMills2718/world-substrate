@@ -35,13 +35,13 @@
           "command": "python3 /home/brian/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
           "exit_status": 0,
           "counts": {
-            "md_files": 189,
-            "cap": 189,
+            "md_files": 200,
+            "cap": 200,
             "unreachable": 0,
             "durable_findings": 0,
             "stale_rule_reviews": 0
           },
-          "note": "Committed candidate5238aae:189/189,0unreachable,0durablefindings; exit0. Extra three files preserve OpenSpec adoption."
+          "note": "2026-11-13 b83e76c: md_file_cap --repo . --ref HEAD exit0;200/200, reach/layout/durable0findings. This is an approved exception preserving mandatory OpenSpec and trace-read artifacts."
         },
         {
           "name": "project navigation",
@@ -78,7 +78,7 @@
           "command": "uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep check sources",
           "exit_status": 0,
           "counts": {
-            "brian": 16,
+            "brian": 21,
             "inferred": 83,
             "other": 48,
             "missing": 0
@@ -364,26 +364,49 @@
             "cost_per_run_usd": 0.00313795,
             "basis": "measured",
             "evidence": "evidence/open-attempt/s2-airfield/llm-calls.jsonl: sum recorded cost for task=world-substrate-world-authoring, 2 calls across this artifact. Historical workload only, not a forecast or general run bound."
+          },
+          {
+            "step": "world-substrate-scenario-spec (failed production3 build workload)",
+            "calls_per_run": 2,
+            "cost_per_run_usd": 0.01130785,
+            "basis": "measured",
+            "evidence": "evidence/i0-i1/deployed-integration-3/llm-calls.jsonl: calls 23414,23415. Includes used/unused hedges; one rejected build, no residents. Historical workload only, not a forecast or general bound."
+          },
+          {
+            "step": "world-substrate-action-signatures (failed production3 build workload)",
+            "calls_per_run": 2,
+            "cost_per_run_usd": 0.0030678,
+            "basis": "measured",
+            "evidence": "evidence/i0-i1/deployed-integration-3/llm-calls.jsonl: calls 23416,23417. Includes used/unused hedges; one rejected build, no residents. Historical workload only, not a forecast or general bound."
+          },
+          {
+            "step": "world-builder-people-laws (failed production3 build workload)",
+            "calls_per_run": 1,
+            "cost_per_run_usd": 0.0004308,
+            "basis": "measured",
+            "evidence": "evidence/i0-i1/deployed-integration-3/llm-calls.jsonl: calls 23418. Includes used/unused hedges; one rejected build, no residents. Historical workload only, not a forecast or general bound."
+          },
+          {
+            "step": "world-substrate-rules-review (failed production3 build workload)",
+            "calls_per_run": 1,
+            "cost_per_run_usd": 0.048596,
+            "basis": "measured",
+            "evidence": "evidence/i0-i1/deployed-integration-3/llm-calls.jsonl: calls 23427. Includes used/unused hedges; one rejected build, no residents. Historical workload only, not a forecast or general bound."
           }
         ],
         "cheapest_design": "Use recorded commands and deterministic replay without model calls for structural checks. Authoring creates checkable artifacts in the existing harness; actors and interpretation retain their current single-call boundaries. A new comparison needs a named decision that argument and retained evidence cannot settle. Fixture costs establish neither semantic-review benefit nor future workload cost. I0/I1 reuses the existing semantic review call for actual initial actor contexts; no additional cognition or review stage is introduced. Free paired-input, authority and replay checks precede the minimum real generated/resident demonstration."
       },
       "plain_baseline": {
         "kind": "planned",
-        "answer_path": "Attempt interpretation: free expression to typed command.",
-        "when": "Only if a named decision survives argument and retained evidence review; no run authorized by this metadata repair.",
+        "answer_path": "Attempt interpretation: one model call receives the complete actor-authorized utterance, installed signatures and known entities; deterministic typed/quote checks follow. This current implementation is already the plain version.",
+        "when": "Only if a future proposal adds an AI stage to interpretation and a named decision survives argument. No comparison run is needed or authorized by this documentation repair.",
         "cases": [
-          "Valid transfer rule omitting the other person's consent",
-          "Quantity-dependent purchase with a single literal price"
-        ]
+          "An actor asks another person for evidence in their own words.",
+          "An actor attempts activation while a procedural precondition is false."
+        ],
+        "current_design_basis": "scripts/run_authored_world.py:_read_attempt and src/world_substrate/attempt.py:interpret; the existing interpreter is a single-call boundary, not a staged answer pipeline. Authoring/review creates checkable artifacts and is a separate job."
       },
-      "stage_effects": [
-        {
-          "stage": "Attempt interpretation before Engine.submit",
-          "gap": "Valid but semantically incorrect commands/rules can pass structural validation; added semantic-review value is not established by these fixtures.",
-          "status": "untested"
-        }
-      ]
+      "stage_effects": []
     },
     "review_page": {
       "status": "present",
