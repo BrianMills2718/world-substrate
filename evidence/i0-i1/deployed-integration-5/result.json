@@ -1,0 +1,14 @@
+{
+  "status": "completed",
+  "revision": "9a8cf47e42c677feac856f62436130df6d6e6018",
+  "started_utc": "2026-11-13T06:10:20.559868+00:00",
+  "trace_roots": [
+    "world-builder-live/people/6c1e29662bbb4371b4e13de34cce91c8",
+    "world-builder-live/run/1dd9780384864ac2a15e9d254aba33ed",
+    "world-builder-live/run/de13c00b52614b98b8385f25aa234d79"
+  ],
+  "llm_calls": 18,
+  "tool_calls": 0,
+  "elapsed_s": 78.08935202700013,
+  "exit_status": 0
+}

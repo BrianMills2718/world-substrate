@@ -13,6 +13,7 @@ Every document still in the repository that the [documentation index](index.md) 
 - [Production request preflight: zero model calls](../evidence/i0-i1/deployed-integration-2/TRACE_READ.md)
 - [Production build: rejected review and provenance counterexamples](../evidence/i0-i1/deployed-integration-3/TRACE_READ.md)
 - [Production two-round run: private inputs, independent assent and remaining fidelity defects](../evidence/i0-i1/deployed-integration-4/TRACE_READ.md)
+- [Production recording: authorized inputs, explicit repair and independent assent](../evidence/i0-i1/deployed-integration-5/TRACE_READ.md)
 
 ## docs/architecture
 

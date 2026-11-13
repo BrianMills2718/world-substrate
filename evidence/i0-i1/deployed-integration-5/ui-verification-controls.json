@@ -1,0 +1,47 @@
+{
+  "tooltips": [
+    {
+      "control": "context-mode",
+      "exact_text": "Analyst shows the whole run. Actor shows only the retained inputs supplied to one person."
+    },
+    {
+      "control": "context-actor",
+      "exact_text": "Choose whose exact authorized inputs to inspect. Switching views never changes their memory."
+    }
+  ],
+  "views": [
+    {
+      "viewport": [
+        1440,
+        1000
+      ],
+      "mode": "actor",
+      "overflow": false
+    },
+    {
+      "viewport": [
+        1440,
+        1000
+      ],
+      "mode": "analyst",
+      "overflow": false
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "actor",
+      "overflow": false
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "analyst",
+      "overflow": false
+    }
+  ],
+  "status": "pass"
+}
