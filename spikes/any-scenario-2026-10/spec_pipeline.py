@@ -24,6 +24,15 @@ SPEC_SYSTEM = (
     "Write public_summary using only facts explicitly shared by all actors before any delivery; never copy the omniscient description. "
     "World records declare visible_to_actor_ids for public_state; hidden_state stays private. Use stable neutral labels without private facts. "
     "Each actor's memories and profile contain only their declared knowledge, own interpretations and plausible personal tendencies. "
+    "Do not copy narrator statements of withheld information into an actor's profile: 'Bo has not received the failure report' "
+    "would itself tell Bo a failure report exists, and 'Mara was not given channel C or batch V17 detail' would reveal C and V17. "
+    "Omit such narrator-only negatives entirely; do not replace them with invented beliefs. Personality, goals, ordinary preferences "
+    "and explicitly held beliefs remain actor-facing, whether or not those beliefs are true. "
+    "For information already received at the start use initially_delivered=true, holder_id as the receiving holder, "
+    "recipient_ids including the holder, and source_id as the actual source person only when the source names one; "
+    "otherwise leave source_id null rather than inventing a sender. Apparent source is a reported attribution, not proof "
+    "of actual origin. A pending item defaults to "
+    "initially_delivered=false and must not appear in an intended recipient's brief or memories. "
     "Use independent_decision for fresh collective activation/approval scenarios involving technical validation: declare required_actor_ids, "
     "validator_ids, repairer_ids, condition_initially_passing and initial_validation. This compiles actor-owned public stance and assent, "
     "requests for review, authorized repair and actual validation, a public technical hold and activation checks. "
@@ -127,7 +136,8 @@ def action_signatures(spec: ScenarioSpecV1, bundle: dict[str, Any], coverage: di
 RESERVED_ACTION_FIELDS = {"actor", "kind", "base_revision", "controller"}
 
 COMPILED_COMPONENTS = ("information", "delivery", "moment", "support", "concern", "group_decision",
-                       "claim_provenance", "technical_condition", "validation_decision", "actor_position", "technical_role")  # written only by the compiled rules
+                       "claim_provenance", "technical_condition", "validation_decision", "actor_position", "technical_role",
+                       "report_log")  # written only by the compiled rules
 
 
 # The one compiled field a generated move may write: matters put before a group decision (compile_spec GROUP_DECISION).
@@ -301,6 +311,11 @@ def behavior_coverage(spec: ScenarioSpecV1, sigs: list[dict[str, Any]], causal: 
         row["classification"] = "coarse" if hits else "unsupported"
         if not hits:
             row["why"] = ("no rule changes " + ", ".join(sorted(wanted))) if wanted else "no rule for this behavior"
+            if spec.independent_decision:
+                # This index only maps generated signatures. Absence here cannot
+                # prove absence from compiled procedure or resident cognition.
+                row["classification"] = "unverified"
+                row["why"] = "No generated-action mapping; coverage by compiled procedure or resident choice needs source review."
     return coverage
 
 
@@ -316,7 +331,13 @@ def person_briefs(spec: ScenarioSpecV1) -> dict[str, str]:
                              ("You cannot", prof.limitations), ("You remember", p.memories)):
             if items:
                 parts.append(f"{label}: " + "; ".join(items) + ".")
-        held = [i for i in spec.information_items if i.holder_id == p.entity_id]
+        # Modern contexts expose held/received reports through the canonical
+        # information and delivery projection. Repeating the narrator's item
+        # description here can contradict initial delivery or reveal metadata
+        # the declared projection withholds. Preserve historical brief text only
+        # for legacy worlds that have no actor-information declaration.
+        held = ([i for i in spec.information_items if i.holder_id == p.entity_id]
+                if not spec.public_summary and not spec.independent_decision else [])
         if held:
             parts.append("You hold this information and may pass it on: " + " ".join(
                 f"'{i.content}' (for {', '.join(i.recipient_ids)}, via {i.channel_id})." for i in held))

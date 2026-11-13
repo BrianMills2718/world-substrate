@@ -48,3 +48,15 @@ def test_probe_refuses_a_legacy_or_forced_procedure_before_resident_calls():
     build["causal_model"]["processes"] = []
     build["bundle"]["entities"][0]["components"]["group_decision"] = {}
     assert not inspect_generated_boundary(build)["passed"]
+
+
+def test_public_export_omits_nested_credential_identifiers_without_changing_messages():
+    from scripts.probe_actor_information import public_trace_record
+    import json
+    value = {'messages': '[{"role":"user","content":"synthetic evidence"}]',
+             'call_snapshot': json.dumps({'route': {'openrouter_key_fingerprint': '...test'}}),
+             'restored_record': {'openrouter_key_fingerprint': '...test'}}
+    clean = public_trace_record(value)
+    assert clean['messages'] == value['messages']
+    assert '...test' not in json.dumps(clean)
+    assert value['restored_record']['openrouter_key_fingerprint'] == '...test'

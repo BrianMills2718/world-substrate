@@ -84,7 +84,7 @@ def pass_one(engine: Engine, actor: str, named: Iterable[str], *, people: Iterab
 
 
 # Implements: native-coordination/independent-generated-concern-procedure
-_INDEPENDENT_COMPONENTS = frozenset({"information", "delivery", "technical_condition", "validation_decision", "actor_position", "technical_role", "claim_provenance"})
+_INDEPENDENT_COMPONENTS = frozenset({"information", "delivery", "technical_condition", "validation_decision", "actor_position", "technical_role", "claim_provenance", "report_log"})
 
 
 class IndependentRuleAuthorityError(ValueError):

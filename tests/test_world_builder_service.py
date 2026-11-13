@@ -767,6 +767,28 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(payload["dry_run"]["review_error"], "RuntimeError: provider returned 502")
         self.assertNotIn("review_findings", payload["dry_run"])
 
+    @pytest.mark.req("information-delivery/withheld-facts-leak-through-a-profile")
+    def test_declared_actor_world_is_not_delivered_after_privacy_review_failure(self):
+        from scripts.review_rules import ActorInputPrivacyError
+        bundle = json.loads(json.dumps(BUNDLE))
+        bundle["actor_information"] = {"version": 1, "public_summary": "Orchard", "public_entities": [
+            {"id": e["id"], "label": e["label"], "fields": []} for e in bundle["entities"]],
+            "actors": {"ava": {"brief": "My own profile", "initial_knowledge": [], "observable_fields": []}}}
+        for path in ("things", "people"):
+            for error in (ActorInputPrivacyError("unsafe profile"), RuntimeError("review unavailable")):
+                with self.subTest(path=path, error=type(error).__name__):
+                    built = {**self._people_built(), "bundle": bundle}
+                    with patch.object(service, "_trace_cost", return_value=0.004), \
+                            patch.object(service, "generate_world_bundle", return_value=(bundle, [], FakeResult())), \
+                            patch.object(service, "generate_causal_model", return_value=(CAUSAL, FakeResult())), \
+                            patch.object(service, "prepare_people_world", return_value={}), \
+                            patch.object(service, "write_people_rules", return_value=built), \
+                            patch.object(service, "review_rules", side_effect=error) as review:
+                        status, payload = self.post("/generate-world", {"description": "One worker picks apples.", "world_def": path})
+                    self.assertGreaterEqual(status, 400, payload)
+                    self.assertNotIn("bundle", payload)
+                    self.assertEqual(review.call_count, 1)
+
     def get(self, path: str):
         try:
             with urllib.request.urlopen(self.base + path, timeout=5) as response:

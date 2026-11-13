@@ -95,6 +95,23 @@ def inspect_generated_boundary(build: dict[str, Any]) -> dict[str, Any]:
             "limitation": "Read the complete generated declarations and traces before making behavioral claims."}
 
 
+def public_trace_record(value: Any) -> Any:
+    """Remove credential identifiers, including from encoded native snapshots."""
+    if isinstance(value, dict):
+        return {key: ("[credential identifier omitted]" if key == "openrouter_key_fingerprint" else public_trace_record(item)) for key, item in value.items()}
+    if isinstance(value, list):
+        return [public_trace_record(item) for item in value]
+    if isinstance(value, str):
+        try:
+            parsed = json.loads(value)
+        except (ValueError, TypeError):
+            return value
+        if isinstance(parsed, (dict, list)):
+            clean = public_trace_record(parsed)
+            return json.dumps(clean, ensure_ascii=False) if clean != parsed else value
+    return value
+
+
 def export_traces(output: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
     """Export exact native records, including failures, using recorded trace families.
 
@@ -127,10 +144,10 @@ def export_traces(output: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
             for call in native_calls.values():
                 # Keep messages as the native JSON string for replay_build compatibility.
                 call["restored_record"] = get_call_record(call["id"])
-                handle.write(json.dumps(call, ensure_ascii=False) + "\n")
+                handle.write(json.dumps(public_trace_record(call), ensure_ascii=False) + "\n")
         with (output / "tool-calls.jsonl").open("a") as handle:
             for call in native_tools.values():
-                handle.write(json.dumps(call, ensure_ascii=False) + "\n")
+                handle.write(json.dumps(public_trace_record(call), ensure_ascii=False) + "\n")
         trace_ids = sorted(set(roots) | {row["trace_id"] for row in [*native_calls.values(), *native_tools.values()]})
         save(output / "call-lifecycle.json", {tid: get_call_lifecycle(trace_id=tid) for tid in trace_ids})
         histories = {}

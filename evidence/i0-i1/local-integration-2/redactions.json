@@ -1,0 +1,5 @@
+{
+  "redacted_field": "openrouter_key_fingerprint",
+  "reason": "Credential identifier excluded from public evidence; original native record remains in the private shared-client ledger.",
+  "model_inputs_outputs_unchanged": true
+}

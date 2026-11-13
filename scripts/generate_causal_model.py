@@ -182,7 +182,7 @@ def _mechanic_schema(action: dict[str, Any]) -> dict[str, Any]:
                     "properties": {
                         "participant": {"enum": ["actor", *entity_fields]},
                         "path": {"type": "string", "minLength": 1},
-                        "op": {"enum": ["set", "add", "subtract"]},
+                        "op": {"enum": ["set", "add", "subtract", "append_report"]},
                         "value": expr,
                     },
                     "required": ["participant", "path", "op", "value"],

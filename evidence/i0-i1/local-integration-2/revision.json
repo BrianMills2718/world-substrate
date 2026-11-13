@@ -1,0 +1,6 @@
+{
+  "scope": "Local generated-world and resident-policy integration; no prescribed social ending; not deployed evidence.",
+  "revision": "a6938b683058b1ee0648b0f5be8eac0b88b2f309",
+  "working_tree": " M .md-file-cap.yaml\n M docs/architecture/arc42.md\n M roadmap/README.md\n M scripts/people_world.py\n M scripts/replay_build.py\n M scripts/world_builder_service.py\n?? evidence/i0-i1/local-integration-1/\n?? evidence/i0-i1/local-integration-2/\n?? tests/test_people_actor_forms.py\n",
+  "started_utc": "2026-11-13T01:33:57.797164+00:00"
+}
