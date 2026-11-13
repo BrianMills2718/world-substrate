@@ -1,0 +1,81 @@
+{
+  "revision": "2d2f42b5ebe1034fd7e46a706239bcedb0b69649",
+  "llm_client_revision": "4ee0cf800587598672dfacfed99ea2954c2e01e6",
+  "source": "evidence/i0-i1/visible-run-20261113",
+  "claim": "Retained actor utterances through current real interpreter adapter, existing judge and installed mechanics. Policy choices supplied from records; not a fresh autonomous resident run.",
+  "planned_cases": [
+    {
+      "case": "bo-negative-r1",
+      "actor": "bo",
+      "attempt": "I withhold assent to activation by recording my position as not assenting.",
+      "snapshot_round": null,
+      "expected_kind": "none",
+      "source_call_id": 23481
+    },
+    {
+      "case": "ari-role-r1",
+      "actor": "ari",
+      "attempt": "I try to perform a technical repair on the prototype pump’s technical condition.",
+      "snapshot_round": null,
+      "expected_kind": "repair-condition",
+      "source_call_id": 23480
+    },
+    {
+      "case": "bo-negative-r3",
+      "actor": "bo",
+      "attempt": "I withhold assent to activation by recording my position as not assenting on Bo's recorded position for the prototype pump.",
+      "snapshot_round": 2,
+      "expected_kind": "none",
+      "source_call_id": 23493
+    },
+    {
+      "case": "bo-withdraw-r2",
+      "actor": "bo",
+      "attempt": "I withdraw my assent to activation from my recorded position, Bo's position on the pump activation decision.",
+      "snapshot_round": 1,
+      "expected_kind": "withdraw-assent",
+      "source_call_id": 23487
+    },
+    {
+      "case": "ari-assent-r6",
+      "actor": "ari",
+      "attempt": "I try to record my assent on the decision about activating the prototype pump.",
+      "snapshot_round": 5,
+      "expected_kind": "record-assent",
+      "source_call_id": 23511
+    },
+    {
+      "case": "mara-concern-r4",
+      "actor": "mara",
+      "attempt": "I state concerned on my recorded position for the prototype pump activation decision.",
+      "snapshot_round": 3,
+      "expected_kind": "state-concerned",
+      "source_call_id": 23500
+    },
+    {
+      "case": "uncertain-positive",
+      "actor": "bo",
+      "attempt": "I am not sure the pump is safe, but I record my assent to activation.",
+      "snapshot_round": 5,
+      "expected_kind": "record-assent",
+      "source_call_id": null
+    },
+    {
+      "case": "quoted-negative",
+      "actor": "bo",
+      "attempt": "I send Mara a report saying 'I do not assent'.",
+      "snapshot_round": 5,
+      "expected_kind": "send-report",
+      "source_call_id": null
+    },
+    {
+      "case": "foreign-authority",
+      "actor": "bo",
+      "attempt": "I repair the technical condition for the prototype pump using Ari's technical authority.",
+      "snapshot_round": 5,
+      "expected_kind": "repair-condition",
+      "source_call_id": null
+    }
+  ],
+  "cost_basis": "Visible-run interpreter calls measured roughly $0.00015-$0.00045 each, judge calls $0.00180-$0.00235. Nine existing one-call interpretations and up to two existing unmatched judges; no new model stage. max_budget0.05 per case and existing project gates; abort on first failed semantic case."
+}

@@ -1,0 +1,415 @@
+{
+  "world-substrate-polarity-3a0ca9c2/ari-assent-r6": {
+    "trace_id": "world-substrate-polarity-3a0ca9c2/ari-assent-r6",
+    "llm_calls": 1,
+    "tool_calls": 0,
+    "llm_errors": 0,
+    "tool_failures": 0,
+    "total_cost": 0.00030888,
+    "total_tokens": 3200,
+    "first_timestamp": "2026-11-13T18:34:32.749086+00:00",
+    "last_timestamp": "2026-11-13T18:34:32.749086+00:00",
+    "matched_trace_ids": [
+      "world-substrate-polarity-3a0ca9c2/ari-assent-r6"
+    ],
+    "last_completed_llm_call": {
+      "kind": "llm_call",
+      "trace_id": "world-substrate-polarity-3a0ca9c2/ari-assent-r6",
+      "timestamp": "2026-11-13T18:34:32.749086+00:00",
+      "model": "openrouter/openai/gpt-6-luna",
+      "caller": "call_llm_structured",
+      "task": "world-builder-attempt-interpreter",
+      "error": null,
+      "latency_s": 3.857,
+      "finish_reason": "stop",
+      "cost": 0.00030888,
+      "total_tokens": 3200
+    },
+    "last_tool_call": null,
+    "timeline": [
+      {
+        "kind": "llm_call",
+        "trace_id": "world-substrate-polarity-3a0ca9c2/ari-assent-r6",
+        "timestamp": "2026-11-13T18:34:32.749086+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-builder-attempt-interpreter",
+        "error": null,
+        "latency_s": 3.857,
+        "finish_reason": "stop",
+        "cost": 0.00030888,
+        "total_tokens": 3200
+      }
+    ]
+  },
+  "world-substrate-polarity-3a0ca9c2/ari-role-r1": {
+    "trace_id": "world-substrate-polarity-3a0ca9c2/ari-role-r1",
+    "llm_calls": 1,
+    "tool_calls": 0,
+    "llm_errors": 0,
+    "tool_failures": 0,
+    "total_cost": 0.00030638,
+    "total_tokens": 3195,
+    "first_timestamp": "2026-11-13T18:33:57.954209+00:00",
+    "last_timestamp": "2026-11-13T18:33:57.954209+00:00",
+    "matched_trace_ids": [
+      "world-substrate-polarity-3a0ca9c2/ari-role-r1"
+    ],
+    "last_completed_llm_call": {
+      "kind": "llm_call",
+      "trace_id": "world-substrate-polarity-3a0ca9c2/ari-role-r1",
+      "timestamp": "2026-11-13T18:33:57.954209+00:00",
+      "model": "openrouter/openai/gpt-6-luna",
+      "caller": "call_llm_structured",
+      "task": "world-builder-attempt-interpreter",
+      "error": null,
+      "latency_s": 3.483,
+      "finish_reason": "stop",
+      "cost": 0.00030638,
+      "total_tokens": 3195
+    },
+    "last_tool_call": null,
+    "timeline": [
+      {
+        "kind": "llm_call",
+        "trace_id": "world-substrate-polarity-3a0ca9c2/ari-role-r1",
+        "timestamp": "2026-11-13T18:33:57.954209+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-builder-attempt-interpreter",
+        "error": null,
+        "latency_s": 3.483,
+        "finish_reason": "stop",
+        "cost": 0.00030638,
+        "total_tokens": 3195
+      }
+    ]
+  },
+  "world-substrate-polarity-3a0ca9c2/bo-negative-r1": {
+    "trace_id": "world-substrate-polarity-3a0ca9c2/bo-negative-r1",
+    "llm_calls": 2,
+    "tool_calls": 0,
+    "llm_errors": 0,
+    "tool_failures": 0,
+    "total_cost": 0.002248975,
+    "total_tokens": 19247,
+    "first_timestamp": "2026-11-13T18:33:50.300189+00:00",
+    "last_timestamp": "2026-11-13T18:33:54.379272+00:00",
+    "matched_trace_ids": [
+      "world-substrate-polarity-3a0ca9c2/bo-negative-r1"
+    ],
+    "last_completed_llm_call": {
+      "kind": "llm_call",
+      "trace_id": "world-substrate-polarity-3a0ca9c2/bo-negative-r1",
+      "timestamp": "2026-11-13T18:33:54.379272+00:00",
+      "model": "openrouter/openai/gpt-6-luna",
+      "caller": "call_llm_structured",
+      "task": "world-substrate-judge",
+      "error": null,
+      "latency_s": 4.648,
+      "finish_reason": "stop",
+      "cost": 0.001790475,
+      "total_tokens": 16138
+    },
+    "last_tool_call": null,
+    "timeline": [
+      {
+        "kind": "llm_call",
+        "trace_id": "world-substrate-polarity-3a0ca9c2/bo-negative-r1",
+        "timestamp": "2026-11-13T18:33:50.300189+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-builder-attempt-interpreter",
+        "error": null,
+        "latency_s": 5.991,
+        "finish_reason": "stop",
+        "cost": 0.0004585,
+        "total_tokens": 3109
+      },
+      {
+        "kind": "llm_call",
+        "trace_id": "world-substrate-polarity-3a0ca9c2/bo-negative-r1",
+        "timestamp": "2026-11-13T18:33:54.379272+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-substrate-judge",
+        "error": null,
+        "latency_s": 4.648,
+        "finish_reason": "stop",
+        "cost": 0.001790475,
+        "total_tokens": 16138
+      }
+    ]
+  },
+  "world-substrate-polarity-3a0ca9c2/bo-negative-r3": {
+    "trace_id": "world-substrate-polarity-3a0ca9c2/bo-negative-r3",
+    "llm_calls": 2,
+    "tool_calls": 0,
+    "llm_errors": 0,
+    "tool_failures": 0,
+    "total_cost": 0.0020306400000000002,
+    "total_tokens": 19521,
+    "first_timestamp": "2026-11-13T18:34:22.706472+00:00",
+    "last_timestamp": "2026-11-13T18:34:26.384434+00:00",
+    "matched_trace_ids": [
+      "world-substrate-polarity-3a0ca9c2/bo-negative-r3"
+    ],
+    "last_completed_llm_call": {
+      "kind": "llm_call",
+      "trace_id": "world-substrate-polarity-3a0ca9c2/bo-negative-r3",
+      "timestamp": "2026-11-13T18:34:26.384434+00:00",
+      "model": "openrouter/openai/gpt-6-luna",
+      "caller": "call_llm_structured",
+      "task": "world-substrate-judge",
+      "error": null,
+      "latency_s": 4.264,
+      "finish_reason": "stop",
+      "cost": 0.00170326,
+      "total_tokens": 16288
+    },
+    "last_tool_call": null,
+    "timeline": [
+      {
+        "kind": "llm_call",
+        "trace_id": "world-substrate-polarity-3a0ca9c2/bo-negative-r3",
+        "timestamp": "2026-11-13T18:34:22.706472+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-builder-attempt-interpreter",
+        "error": null,
+        "latency_s": 24.675,
+        "finish_reason": "stop",
+        "cost": 0.00032738,
+        "total_tokens": 3233
+      },
+      {
+        "kind": "llm_call",
+        "trace_id": "world-substrate-polarity-3a0ca9c2/bo-negative-r3",
+        "timestamp": "2026-11-13T18:34:26.384434+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-substrate-judge",
+        "error": null,
+        "latency_s": 4.264,
+        "finish_reason": "stop",
+        "cost": 0.00170326,
+        "total_tokens": 16288
+      }
+    ]
+  },
+  "world-substrate-polarity-3a0ca9c2/bo-withdraw-r2": {
+    "trace_id": "world-substrate-polarity-3a0ca9c2/bo-withdraw-r2",
+    "llm_calls": 1,
+    "tool_calls": 0,
+    "llm_errors": 0,
+    "tool_failures": 0,
+    "total_cost": 0.00021098,
+    "total_tokens": 2997,
+    "first_timestamp": "2026-11-13T18:34:28.802715+00:00",
+    "last_timestamp": "2026-11-13T18:34:28.802715+00:00",
+    "matched_trace_ids": [
+      "world-substrate-polarity-3a0ca9c2/bo-withdraw-r2"
+    ],
+    "last_completed_llm_call": {
+      "kind": "llm_call",
+      "trace_id": "world-substrate-polarity-3a0ca9c2/bo-withdraw-r2",
+      "timestamp": "2026-11-13T18:34:28.802715+00:00",
+      "model": "openrouter/openai/gpt-6-luna",
+      "caller": "call_llm_structured",
+      "task": "world-builder-attempt-interpreter",
+      "error": null,
+      "latency_s": 2.326,
+      "finish_reason": "stop",
+      "cost": 0.00021098,
+      "total_tokens": 2997
+    },
+    "last_tool_call": null,
+    "timeline": [
+      {
+        "kind": "llm_call",
+        "trace_id": "world-substrate-polarity-3a0ca9c2/bo-withdraw-r2",
+        "timestamp": "2026-11-13T18:34:28.802715+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-builder-attempt-interpreter",
+        "error": null,
+        "latency_s": 2.326,
+        "finish_reason": "stop",
+        "cost": 0.00021098,
+        "total_tokens": 2997
+      }
+    ]
+  },
+  "world-substrate-polarity-3a0ca9c2/foreign-authority": {
+    "trace_id": "world-substrate-polarity-3a0ca9c2/foreign-authority",
+    "llm_calls": 1,
+    "tool_calls": 0,
+    "llm_errors": 0,
+    "tool_failures": 0,
+    "total_cost": 0.00026848,
+    "total_tokens": 3108,
+    "first_timestamp": "2026-11-13T18:34:46.057896+00:00",
+    "last_timestamp": "2026-11-13T18:34:46.057896+00:00",
+    "matched_trace_ids": [
+      "world-substrate-polarity-3a0ca9c2/foreign-authority"
+    ],
+    "last_completed_llm_call": {
+      "kind": "llm_call",
+      "trace_id": "world-substrate-polarity-3a0ca9c2/foreign-authority",
+      "timestamp": "2026-11-13T18:34:46.057896+00:00",
+      "model": "openrouter/openai/gpt-6-luna",
+      "caller": "call_llm_structured",
+      "task": "world-builder-attempt-interpreter",
+      "error": null,
+      "latency_s": 4.21,
+      "finish_reason": "stop",
+      "cost": 0.00026848,
+      "total_tokens": 3108
+    },
+    "last_tool_call": null,
+    "timeline": [
+      {
+        "kind": "llm_call",
+        "trace_id": "world-substrate-polarity-3a0ca9c2/foreign-authority",
+        "timestamp": "2026-11-13T18:34:46.057896+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-builder-attempt-interpreter",
+        "error": null,
+        "latency_s": 4.21,
+        "finish_reason": "stop",
+        "cost": 0.00026848,
+        "total_tokens": 3108
+      }
+    ]
+  },
+  "world-substrate-polarity-3a0ca9c2/mara-concern-r4": {
+    "trace_id": "world-substrate-polarity-3a0ca9c2/mara-concern-r4",
+    "llm_calls": 1,
+    "tool_calls": 0,
+    "llm_errors": 0,
+    "tool_failures": 0,
+    "total_cost": 0.00027698,
+    "total_tokens": 3205,
+    "first_timestamp": "2026-11-13T18:34:36.109274+00:00",
+    "last_timestamp": "2026-11-13T18:34:36.109274+00:00",
+    "matched_trace_ids": [
+      "world-substrate-polarity-3a0ca9c2/mara-concern-r4"
+    ],
+    "last_completed_llm_call": {
+      "kind": "llm_call",
+      "trace_id": "world-substrate-polarity-3a0ca9c2/mara-concern-r4",
+      "timestamp": "2026-11-13T18:34:36.109274+00:00",
+      "model": "openrouter/openai/gpt-6-luna",
+      "caller": "call_llm_structured",
+      "task": "world-builder-attempt-interpreter",
+      "error": null,
+      "latency_s": 3.292,
+      "finish_reason": "stop",
+      "cost": 0.00027698,
+      "total_tokens": 3205
+    },
+    "last_tool_call": null,
+    "timeline": [
+      {
+        "kind": "llm_call",
+        "trace_id": "world-substrate-polarity-3a0ca9c2/mara-concern-r4",
+        "timestamp": "2026-11-13T18:34:36.109274+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-builder-attempt-interpreter",
+        "error": null,
+        "latency_s": 3.292,
+        "finish_reason": "stop",
+        "cost": 0.00027698,
+        "total_tokens": 3205
+      }
+    ]
+  },
+  "world-substrate-polarity-3a0ca9c2/quoted-negative": {
+    "trace_id": "world-substrate-polarity-3a0ca9c2/quoted-negative",
+    "llm_calls": 1,
+    "tool_calls": 0,
+    "llm_errors": 0,
+    "tool_failures": 0,
+    "total_cost": 0.00023718,
+    "total_tokens": 3043,
+    "first_timestamp": "2026-11-13T18:34:41.764951+00:00",
+    "last_timestamp": "2026-11-13T18:34:41.764951+00:00",
+    "matched_trace_ids": [
+      "world-substrate-polarity-3a0ca9c2/quoted-negative"
+    ],
+    "last_completed_llm_call": {
+      "kind": "llm_call",
+      "trace_id": "world-substrate-polarity-3a0ca9c2/quoted-negative",
+      "timestamp": "2026-11-13T18:34:41.764951+00:00",
+      "model": "openrouter/openai/gpt-6-luna",
+      "caller": "call_llm_structured",
+      "task": "world-builder-attempt-interpreter",
+      "error": null,
+      "latency_s": 2.354,
+      "finish_reason": "stop",
+      "cost": 0.00023718,
+      "total_tokens": 3043
+    },
+    "last_tool_call": null,
+    "timeline": [
+      {
+        "kind": "llm_call",
+        "trace_id": "world-substrate-polarity-3a0ca9c2/quoted-negative",
+        "timestamp": "2026-11-13T18:34:41.764951+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-builder-attempt-interpreter",
+        "error": null,
+        "latency_s": 2.354,
+        "finish_reason": "stop",
+        "cost": 0.00023718,
+        "total_tokens": 3043
+      }
+    ]
+  },
+  "world-substrate-polarity-3a0ca9c2/uncertain-positive": {
+    "trace_id": "world-substrate-polarity-3a0ca9c2/uncertain-positive",
+    "llm_calls": 1,
+    "tool_calls": 0,
+    "llm_errors": 0,
+    "tool_failures": 0,
+    "total_cost": 0.00027818,
+    "total_tokens": 3129,
+    "first_timestamp": "2026-11-13T18:34:39.333272+00:00",
+    "last_timestamp": "2026-11-13T18:34:39.333272+00:00",
+    "matched_trace_ids": [
+      "world-substrate-polarity-3a0ca9c2/uncertain-positive"
+    ],
+    "last_completed_llm_call": {
+      "kind": "llm_call",
+      "trace_id": "world-substrate-polarity-3a0ca9c2/uncertain-positive",
+      "timestamp": "2026-11-13T18:34:39.333272+00:00",
+      "model": "openrouter/openai/gpt-6-luna",
+      "caller": "call_llm_structured",
+      "task": "world-builder-attempt-interpreter",
+      "error": null,
+      "latency_s": 3.163,
+      "finish_reason": "stop",
+      "cost": 0.00027818,
+      "total_tokens": 3129
+    },
+    "last_tool_call": null,
+    "timeline": [
+      {
+        "kind": "llm_call",
+        "trace_id": "world-substrate-polarity-3a0ca9c2/uncertain-positive",
+        "timestamp": "2026-11-13T18:34:39.333272+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-builder-attempt-interpreter",
+        "error": null,
+        "latency_s": 3.163,
+        "finish_reason": "stop",
+        "cost": 0.00027818,
+        "total_tokens": 3129
+      }
+    ]
+  }
+}

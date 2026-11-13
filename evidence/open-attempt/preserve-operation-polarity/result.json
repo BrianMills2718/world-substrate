@@ -1,0 +1,75 @@
+{
+  "revision": "2d2f42b5ebe1034fd7e46a706239bcedb0b69649",
+  "cases": [
+    {
+      "case": "bo-negative-r1",
+      "expected_kind": "none",
+      "actual_kind": "none",
+      "passed": true
+    },
+    {
+      "case": "ari-role-r1",
+      "expected_kind": "repair-condition",
+      "actual_kind": "repair-condition",
+      "passed": true
+    },
+    {
+      "case": "bo-negative-r3",
+      "expected_kind": "none",
+      "actual_kind": "none",
+      "passed": true
+    },
+    {
+      "case": "bo-withdraw-r2",
+      "expected_kind": "withdraw-assent",
+      "actual_kind": "withdraw-assent",
+      "passed": true
+    },
+    {
+      "case": "ari-assent-r6",
+      "expected_kind": "record-assent",
+      "actual_kind": "record-assent",
+      "passed": true
+    },
+    {
+      "case": "mara-concern-r4",
+      "expected_kind": "state-concerned",
+      "actual_kind": "state-concerned",
+      "passed": true
+    },
+    {
+      "case": "uncertain-positive",
+      "expected_kind": "record-assent",
+      "actual_kind": "record-assent",
+      "passed": true
+    },
+    {
+      "case": "quoted-negative",
+      "expected_kind": "send-report",
+      "actual_kind": "send-report",
+      "passed": true
+    },
+    {
+      "case": "foreign-authority",
+      "expected_kind": "repair-condition",
+      "actual_kind": "repair-condition",
+      "passed": true
+    }
+  ],
+  "failure": null,
+  "elapsed_s": 72.37769138999283,
+  "trace_roots": [
+    "world-substrate-polarity-3a0ca9c2/ari-assent-r6",
+    "world-substrate-polarity-3a0ca9c2/ari-role-r1",
+    "world-substrate-polarity-3a0ca9c2/bo-negative-r1",
+    "world-substrate-polarity-3a0ca9c2/bo-negative-r3",
+    "world-substrate-polarity-3a0ca9c2/bo-withdraw-r2",
+    "world-substrate-polarity-3a0ca9c2/foreign-authority",
+    "world-substrate-polarity-3a0ca9c2/mara-concern-r4",
+    "world-substrate-polarity-3a0ca9c2/quoted-negative",
+    "world-substrate-polarity-3a0ca9c2/uncertain-positive"
+  ],
+  "llm_calls": 11,
+  "tool_calls": 0,
+  "exit_status": 0
+}

@@ -1,0 +1,3101 @@
+{
+  "case": "bo-negative-r3",
+  "source_call_id": 23493,
+  "attempt": "I withhold assent to activation by recording my position as not assenting on Bo's recorded position for the prototype pump.",
+  "expected_kind": "none",
+  "actual_kind": "none",
+  "passed": true,
+  "row": {
+    "wanted": {
+      "actor": "bo",
+      "base_revision": 5,
+      "controller": "live:resident",
+      "kind": "unmatched-attempt",
+      "attempt": "I withhold assent to activation by recording my position as not assenting on Bo's recorded position for the prototype pump.",
+      "nearest_kind": "record-assent",
+      "why": "The attempt is to record a non-assenting position, but record-assent does not represent that negative stance, and withholding assent is not withdrawing prior assent.",
+      "coverage": {
+        "status": "complete",
+        "action_spans": [
+          "recording my position as not assenting on Bo's recorded position"
+        ],
+        "unrepresented_spans": []
+      },
+      "names": [
+        "pump-activation",
+        "position-bo",
+        "prototype-pump"
+      ]
+    },
+    "did": {
+      "actor": "bo",
+      "base_revision": 5,
+      "controller": "live:resident",
+      "kind": "unmatched-attempt",
+      "attempt": "I withhold assent to activation by recording my position as not assenting on Bo's recorded position for the prototype pump.",
+      "nearest_kind": "record-assent",
+      "why": "The attempt is to record a non-assenting position, but record-assent does not represent that negative stance, and withholding assent is not withdrawing prior assent.",
+      "coverage": {
+        "status": "complete",
+        "action_spans": [
+          "recording my position as not assenting on Bo's recorded position"
+        ],
+        "unrepresented_spans": []
+      },
+      "names": [
+        "pump-activation",
+        "position-bo",
+        "prototype-pump"
+      ]
+    },
+    "status": "unsupported_action",
+    "retried": false,
+    "said": "Recorded-input replay.",
+    "refused_because": [],
+    "lost_what_it_wanted": false,
+    "changed": false,
+    "blocked_by_rules": [],
+    "event_id": "r3-e00001",
+    "changes": [],
+    "attempt": {
+      "text": "I withhold assent to activation by recording my position as not assenting on Bo's recorded position for the prototype pump.",
+      "reading": {
+        "unmatched": true,
+        "nearest_kind": "record-assent",
+        "why": "The attempt is to record a non-assenting position, but record-assent does not represent that negative stance, and withholding assent is not withdrawing prior assent.",
+        "coverage": {
+          "status": "complete",
+          "action_spans": [
+            "recording my position as not assenting on Bo's recorded position"
+          ],
+          "unrepresented_spans": []
+        },
+        "names": [
+          "pump-activation",
+          "position-bo",
+          "prototype-pump"
+        ]
+      }
+    },
+    "consequence": {
+      "pass_one": {
+        "actor": "bo",
+        "named": [
+          "pump-activation",
+          "position-bo",
+          "prototype-pump"
+        ],
+        "moves": {
+          "bo": {
+            "available": [
+              {
+                "action_id": "8bedb3dd0a7b",
+                "action": {
+                  "actor": "bo",
+                  "kind": "record-assent",
+                  "base_revision": 5,
+                  "controller": "unselected",
+                  "decision": "pump-activation",
+                  "position": "position-bo"
+                },
+                "checks": [
+                  {
+                    "label": "Actor exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the one acting is allowed to make this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the decision named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the decision named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the position named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the position named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the actor owns this position",
+                    "ok": true,
+                    "actual": "bo",
+                    "required": "bo"
+                  },
+                  {
+                    "label": "the recorded assent changes",
+                    "ok": true,
+                    "actual": false,
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "action_id": "6864a564b7af",
+                "action": {
+                  "actor": "bo",
+                  "kind": "send-report",
+                  "base_revision": 5,
+                  "controller": "unselected",
+                  "recipient": "ari",
+                  "content": "Report content supplied by the sender."
+                },
+                "checks": [
+                  {
+                    "label": "Actor exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the one acting is allowed to make this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the recipient named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the recipient named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the sender supplies words",
+                    "ok": true,
+                    "actual": "Report content supplied by the sender.",
+                    "required": ""
+                  },
+                  {
+                    "label": "the recipient's components.report_log.entries holds a list of text records",
+                    "ok": true,
+                    "actual": "list",
+                    "required": "list of strings"
+                  },
+                  {
+                    "label": "the report content is nonempty text",
+                    "ok": true,
+                    "actual": "str",
+                    "required": "nonempty string"
+                  }
+                ]
+              },
+              {
+                "action_id": "000c01f9a5c1",
+                "action": {
+                  "actor": "bo",
+                  "kind": "send-report",
+                  "base_revision": 5,
+                  "controller": "unselected",
+                  "recipient": "bo",
+                  "content": "Report content supplied by the sender."
+                },
+                "checks": [
+                  {
+                    "label": "Actor exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the one acting is allowed to make this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the recipient named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the recipient named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the sender supplies words",
+                    "ok": true,
+                    "actual": "Report content supplied by the sender.",
+                    "required": ""
+                  },
+                  {
+                    "label": "the recipient's components.report_log.entries holds a list of text records",
+                    "ok": true,
+                    "actual": "list",
+                    "required": "list of strings"
+                  },
+                  {
+                    "label": "the report content is nonempty text",
+                    "ok": true,
+                    "actual": "str",
+                    "required": "nonempty string"
+                  }
+                ]
+              },
+              {
+                "action_id": "c9562295d4be",
+                "action": {
+                  "actor": "bo",
+                  "kind": "send-report",
+                  "base_revision": 5,
+                  "controller": "unselected",
+                  "recipient": "mara",
+                  "content": "Report content supplied by the sender."
+                },
+                "checks": [
+                  {
+                    "label": "Actor exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the one acting is allowed to make this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the recipient named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the recipient named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the sender supplies words",
+                    "ok": true,
+                    "actual": "Report content supplied by the sender.",
+                    "required": ""
+                  },
+                  {
+                    "label": "the recipient's components.report_log.entries holds a list of text records",
+                    "ok": true,
+                    "actual": "list",
+                    "required": "list of strings"
+                  },
+                  {
+                    "label": "the report content is nonempty text",
+                    "ok": true,
+                    "actual": "str",
+                    "required": "nonempty string"
+                  }
+                ]
+              },
+              {
+                "action_id": "c6e9852e4771",
+                "action": {
+                  "actor": "bo",
+                  "kind": "state-concerned",
+                  "base_revision": 5,
+                  "controller": "unselected",
+                  "position": "position-bo"
+                },
+                "checks": [
+                  {
+                    "label": "Actor exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the one acting is allowed to make this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the position named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the position named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the actor owns this position",
+                    "ok": true,
+                    "actual": "bo",
+                    "required": "bo"
+                  }
+                ]
+              },
+              {
+                "action_id": "ca3813562dac",
+                "action": {
+                  "actor": "bo",
+                  "kind": "state-supportive",
+                  "base_revision": 5,
+                  "controller": "unselected",
+                  "position": "position-bo"
+                },
+                "checks": [
+                  {
+                    "label": "Actor exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the one acting is allowed to make this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the position named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the position named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the actor owns this position",
+                    "ok": true,
+                    "actual": "bo",
+                    "required": "bo"
+                  }
+                ]
+              },
+              {
+                "action_id": "683b00383d83",
+                "action": {
+                  "actor": "bo",
+                  "kind": "state-undecided",
+                  "base_revision": 5,
+                  "controller": "unselected",
+                  "position": "position-bo"
+                },
+                "checks": [
+                  {
+                    "label": "Actor exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the one acting is allowed to make this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the position named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the position named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the actor owns this position",
+                    "ok": true,
+                    "actual": "bo",
+                    "required": "bo"
+                  }
+                ]
+              }
+            ],
+            "blocked": [
+              {
+                "action_id": "146bb6fa4c3e",
+                "action": {
+                  "actor": "bo",
+                  "kind": "activate",
+                  "base_revision": 5,
+                  "controller": "unselected",
+                  "decision": "pump-activation"
+                },
+                "checks": [
+                  {
+                    "label": "Actor exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the one acting is allowed to make this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the decision named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the decision named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "validation has passed",
+                    "ok": false,
+                    "actual": "failed",
+                    "required": "passed"
+                  },
+                  {
+                    "label": "there is no technical hold",
+                    "ok": false,
+                    "actual": true,
+                    "required": false
+                  },
+                  {
+                    "label": "every required actor recorded assent",
+                    "ok": false,
+                    "actual": 0,
+                    "required": 2
+                  },
+                  {
+                    "label": "activation has not occurred",
+                    "ok": true,
+                    "actual": false,
+                    "required": false
+                  }
+                ],
+                "reason": "validation has passed; there is no technical hold; every required actor recorded assent"
+              },
+              {
+                "action_id": "893f43ccf7e6",
+                "action": {
+                  "actor": "bo",
+                  "kind": "communicate",
+                  "base_revision": 5,
+                  "controller": "unselected",
+                  "delivery": "delivery-info-mara-short-failure-report-to-mara",
+                  "information": "info-mara-short-failure-report-to-mara",
+                  "recipient": "ari"
+                },
+                "checks": [
+                  {
+                    "label": "Actor exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the one acting is allowed to make this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the delivery named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the delivery named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the information named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the information named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the recipient named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the recipient named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "Actor is the represented information source",
+                    "ok": false,
+                    "actual": "unspecified-source-mara-short-failure-report",
+                    "required": "bo"
+                  },
+                  {
+                    "label": "Delivery names the represented information",
+                    "ok": true,
+                    "actual": "info-mara-short-failure-report-to-mara",
+                    "required": "info-mara-short-failure-report-to-mara"
+                  },
+                  {
+                    "label": "Delivery names the represented recipient",
+                    "ok": false,
+                    "actual": "mara",
+                    "required": "ari"
+                  },
+                  {
+                    "label": "Delivery channel agrees with information channel",
+                    "ok": true,
+                    "actual": "validation_report",
+                    "required": "validation_report"
+                  },
+                  {
+                    "label": "Information is not active yet",
+                    "ok": false,
+                    "actual": true,
+                    "required": false
+                  },
+                  {
+                    "label": "Delivery is pending",
+                    "ok": false,
+                    "actual": "delivered",
+                    "required": "pending"
+                  }
+                ],
+                "reason": "Actor is the represented information source; Delivery names the represented recipient; Information is not active yet; Delivery is pending"
+              },
+              {
+                "action_id": "c79698eea6e5",
+                "action": {
+                  "actor": "bo",
+                  "kind": "communicate",
+                  "base_revision": 5,
+                  "controller": "unselected",
+                  "delivery": "delivery-info-mara-short-failure-report-to-mara",
+                  "information": "info-mara-short-failure-report-to-mara",
+                  "recipient": "bo"
+                },
+                "checks": [
+                  {
+                    "label": "Actor exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the one acting is allowed to make this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the delivery named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the delivery named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the information named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the information named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the recipient named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the recipient named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "Actor is the represented information source",
+                    "ok": false,
+                    "actual": "unspecified-source-mara-short-failure-report",
+                    "required": "bo"
+                  },
+                  {
+                    "label": "Delivery names the represented information",
+                    "ok": true,
+                    "actual": "info-mara-short-failure-report-to-mara",
+                    "required": "info-mara-short-failure-report-to-mara"
+                  },
+                  {
+                    "label": "Delivery names the represented recipient",
+                    "ok": false,
+                    "actual": "mara",
+                    "required": "bo"
+                  },
+                  {
+                    "label": "Delivery channel agrees with information channel",
+                    "ok": true,
+                    "actual": "validation_report",
+                    "required": "validation_report"
+                  },
+                  {
+                    "label": "Information is not active yet",
+                    "ok": false,
+                    "actual": true,
+                    "required": false
+                  },
+                  {
+                    "label": "Delivery is pending",
+                    "ok": false,
+                    "actual": "delivered",
+                    "required": "pending"
+                  }
+                ],
+                "reason": "Actor is the represented information source; Delivery names the represented recipient; Information is not active yet; Delivery is pending"
+              },
+              {
+                "action_id": "a69dbc074ade",
+                "action": {
+                  "actor": "bo",
+                  "kind": "communicate",
+                  "base_revision": 5,
+                  "controller": "unselected",
+                  "delivery": "delivery-info-mara-short-failure-report-to-mara",
+                  "information": "info-mara-short-failure-report-to-mara",
+                  "recipient": "mara"
+                },
+                "checks": [
+                  {
+                    "label": "Actor exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the one acting is allowed to make this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the delivery named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the delivery named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the information named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the information named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the recipient named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the recipient named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "Actor is the represented information source",
+                    "ok": false,
+                    "actual": "unspecified-source-mara-short-failure-report",
+                    "required": "bo"
+                  },
+                  {
+                    "label": "Delivery names the represented information",
+                    "ok": true,
+                    "actual": "info-mara-short-failure-report-to-mara",
+                    "required": "info-mara-short-failure-report-to-mara"
+                  },
+                  {
+                    "label": "Delivery names the represented recipient",
+                    "ok": true,
+                    "actual": "mara",
+                    "required": "mara"
+                  },
+                  {
+                    "label": "Delivery channel agrees with information channel",
+                    "ok": true,
+                    "actual": "validation_report",
+                    "required": "validation_report"
+                  },
+                  {
+                    "label": "Information is not active yet",
+                    "ok": false,
+                    "actual": true,
+                    "required": false
+                  },
+                  {
+                    "label": "Delivery is pending",
+                    "ok": false,
+                    "actual": "delivered",
+                    "required": "pending"
+                  }
+                ],
+                "reason": "Actor is the represented information source; Information is not active yet; Delivery is pending"
+              },
+              {
+                "action_id": "3c469d0abe33",
+                "action": {
+                  "actor": "bo",
+                  "kind": "complete-validation",
+                  "base_revision": 5,
+                  "controller": "unselected",
+                  "authority": "technical-role-ari",
+                  "decision": "pump-activation"
+                },
+                "checks": [
+                  {
+                    "label": "Actor exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the one acting is allowed to make this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the authority named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the authority named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the decision named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the decision named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the actor owns this authority",
+                    "ok": false,
+                    "actual": "ari",
+                    "required": "bo"
+                  },
+                  {
+                    "label": "the actor is an authorized validator",
+                    "ok": true,
+                    "actual": true,
+                    "required": true
+                  }
+                ],
+                "reason": "the actor owns this authority"
+              },
+              {
+                "action_id": "94f43b94ece3",
+                "action": {
+                  "actor": "bo",
+                  "kind": "repair-condition",
+                  "base_revision": 5,
+                  "controller": "unselected",
+                  "authority": "technical-role-ari",
+                  "condition": "condition-pump-activation"
+                },
+                "checks": [
+                  {
+                    "label": "Actor exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the one acting is allowed to make this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the authority named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the authority named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the condition named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the condition named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the actor owns this authority",
+                    "ok": false,
+                    "actual": "ari",
+                    "required": "bo"
+                  },
+                  {
+                    "label": "the actor is an authorized repairer",
+                    "ok": true,
+                    "actual": true,
+                    "required": true
+                  }
+                ],
+                "reason": "the actor owns this authority"
+              },
+              {
+                "action_id": "4e7f2ffad1f7",
+                "action": {
+                  "actor": "bo",
+                  "kind": "request-review",
+                  "base_revision": 5,
+                  "controller": "unselected",
+                  "decision": "pump-activation"
+                },
+                "checks": [
+                  {
+                    "label": "Actor exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the one acting is allowed to make this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the decision named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the decision named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "a review is not already requested",
+                    "ok": false,
+                    "actual": "requested",
+                    "required": "requested"
+                  }
+                ],
+                "reason": "a review is not already requested"
+              },
+              {
+                "action_id": "a032a78c7c4a",
+                "action": {
+                  "actor": "bo",
+                  "kind": "withdraw-assent",
+                  "base_revision": 5,
+                  "controller": "unselected",
+                  "decision": "pump-activation",
+                  "position": "position-bo"
+                },
+                "checks": [
+                  {
+                    "label": "Actor exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the one acting is allowed to make this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the decision named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the decision named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the position named exists",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the position named is the right kind of thing for this move",
+                    "ok": true,
+                    "actual": null,
+                    "required": null
+                  },
+                  {
+                    "label": "the actor owns this position",
+                    "ok": true,
+                    "actual": "bo",
+                    "required": "bo"
+                  },
+                  {
+                    "label": "the recorded assent changes",
+                    "ok": false,
+                    "actual": false,
+                    "required": true
+                  }
+                ],
+                "reason": "the recorded assent changes"
+              }
+            ]
+          }
+        },
+        "values": {
+          "bo": {
+            "label": "Bo",
+            "categories": [
+              "actor",
+              "member"
+            ],
+            "location": "scenario",
+            "components": {
+              "member": {
+                "role": "Prototype pump operator",
+                "authorized": false,
+                "approved": false,
+                "aware": false
+              },
+              "report_log": {
+                "entries": []
+              }
+            }
+          },
+          "pump-activation": {
+            "label": "Whether to activate the prototype pump",
+            "categories": [
+              "validation-decision"
+            ],
+            "location": "scenario",
+            "components": {
+              "validation_decision": {
+                "validation": "failed",
+                "hold": true,
+                "review": "requested",
+                "assents": 0,
+                "active": false,
+                "condition_id": "condition-pump-activation"
+              }
+            }
+          },
+          "position-bo": {
+            "label": "Recorded position of bo",
+            "categories": [
+              "actor-position"
+            ],
+            "location": "scenario",
+            "components": {
+              "actor_position": {
+                "holder_id": "bo",
+                "assent": false,
+                "stance": "unexpressed",
+                "assent_weight": 1
+              }
+            }
+          },
+          "prototype-pump": {
+            "label": "Prototype pump",
+            "categories": [
+              "equipment",
+              "prototype-pump"
+            ],
+            "location": "scenario",
+            "components": {
+              "prototype_pump": {
+                "equipment_type": "prototype pump"
+              }
+            }
+          }
+        }
+      }
+    },
+    "judge": {
+      "by": "the world's game master (Concordia's EventResolution)",
+      "model": "openrouter/openai/gpt-6-luna",
+      "trace_id": "world-substrate-polarity-3a0ca9c2/bo-negative-r3",
+      "whose_choice": null,
+      "ruling": "Bo is already recorded as not assenting. Withholding assent makes no further change to the world, so no new constraint rule is needed.",
+      "reasoning": "The existing record-assent move would change Bo's position to assent=true, the opposite of this attempt. His current recorded position already represents withholding assent.",
+      "facts": [
+        "Bo's recorded position has actor_position.assent = false.",
+        "The activation decision has validation_decision.assents = 0 and validation_decision.active = false.",
+        "Bo's assent weight is 1."
+      ],
+      "blockers": [],
+      "world_chars": 35964,
+      "world_revision": 5,
+      "outcome": "no_rule",
+      "rule": null,
+      "tests": [],
+      "steps": [
+        {
+          "step": "propose",
+          "answer": {
+            "facts": [
+              "Bo's recorded position has actor_position.assent = false.",
+              "The activation decision has validation_decision.assents = 0 and validation_decision.active = false.",
+              "Bo's assent weight is 1."
+            ],
+            "blockers": [],
+            "whose_choice": "none",
+            "ruling": "Bo is already recorded as not assenting. Withholding assent makes no further change to the world, so no new constraint rule is needed.",
+            "proposed_rule": "",
+            "test_move": "",
+            "reasoning": "The existing record-assent move would change Bo's position to assent=true, the opposite of this attempt. His current recorded position already represents withholding assent."
+          },
+          "document_chars": 60639,
+          "consequence": "Pass 1, before any rule exists (the moves and checks open to the person trying and to each person named, and the named things' current values):\n{\n \"actor\": \"bo\",\n \"named\": [\n  \"pump-activation\",\n  \"position-bo\",\n  \"prototype-pump\"\n ],\n \"moves\": {\n  \"bo\": {\n   \"available\": [\n    {\n     \"action_id\": \"8bedb3dd0a7b\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"record-assent\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"decision\": \"pump-activation\",\n      \"position\": \"position-bo\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the actor owns this position\",\n       \"ok\": true,\n       \"actual\": \"bo\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"the recorded assent changes\",\n       \"ok\": true,\n       \"actual\": false,\n       \"required\": false\n      }\n     ]\n    },\n    {\n     \"action_id\": \"6864a564b7af\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"send-report\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"recipient\": \"ari\",\n      \"content\": \"Report content supplied by the sender.\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the sender supplies words\",\n       \"ok\": true,\n       \"actual\": \"Report content supplied by the sender.\",\n       \"required\": \"\"\n      },\n      {\n       \"label\": \"the recipient's components.report_log.entries holds a list of text records\",\n       \"ok\": true,\n       \"actual\": \"list\",\n       \"required\": \"list of strings\"\n      },\n      {\n       \"label\": \"the report content is nonempty text\",\n       \"ok\": true,\n       \"actual\": \"str\",\n       \"required\": \"nonempty string\"\n      }\n     ]\n    },\n    {\n     \"action_id\": \"000c01f9a5c1\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"send-report\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"recipient\": \"bo\",\n      \"content\": \"Report content supplied by the sender.\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the sender supplies words\",\n       \"ok\": true,\n       \"actual\": \"Report content supplied by the sender.\",\n       \"required\": \"\"\n      },\n      {\n       \"label\": \"the recipient's components.report_log.entries holds a list of text records\",\n       \"ok\": true,\n       \"actual\": \"list\",\n       \"required\": \"list of strings\"\n      },\n      {\n       \"label\": \"the report content is nonempty text\",\n       \"ok\": true,\n       \"actual\": \"str\",\n       \"required\": \"nonempty string\"\n      }\n     ]\n    },\n    {\n     \"action_id\": \"c9562295d4be\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"send-report\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"recipient\": \"mara\",\n      \"content\": \"Report content supplied by the sender.\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the sender supplies words\",\n       \"ok\": true,\n       \"actual\": \"Report content supplied by the sender.\",\n       \"required\": \"\"\n      },\n      {\n       \"label\": \"the recipient's components.report_log.entries holds a list of text records\",\n       \"ok\": true,\n       \"actual\": \"list\",\n       \"required\": \"list of strings\"\n      },\n      {\n       \"label\": \"the report content is nonempty text\",\n       \"ok\": true,\n       \"actual\": \"str\",\n       \"required\": \"nonempty string\"\n      }\n     ]\n    },\n    {\n     \"action_id\": \"c6e9852e4771\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"state-concerned\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"position\": \"position-bo\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the actor owns this position\",\n       \"ok\": true,\n       \"actual\": \"bo\",\n       \"required\": \"bo\"\n      }\n     ]\n    },\n    {\n     \"action_id\": \"ca3813562dac\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"state-supportive\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"position\": \"position-bo\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the actor owns this position\",\n       \"ok\": true,\n       \"actual\": \"bo\",\n       \"required\": \"bo\"\n      }\n     ]\n    },\n    {\n     \"action_id\": \"683b00383d83\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"state-undecided\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"position\": \"position-bo\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the actor owns this position\",\n       \"ok\": true,\n       \"actual\": \"bo\",\n       \"required\": \"bo\"\n      }\n     ]\n    }\n   ],\n   \"blocked\": [\n    {\n     \"action_id\": \"146bb6fa4c3e\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"activate\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"decision\": \"pump-activation\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"validation has passed\",\n       \"ok\": false,\n       \"actual\": \"failed\",\n       \"required\": \"passed\"\n      },\n      {\n       \"label\": \"there is no technical hold\",\n       \"ok\": false,\n       \"actual\": true,\n       \"required\": false\n      },\n      {\n       \"label\": \"every required actor recorded assent\",\n       \"ok\": false,\n       \"actual\": 0,\n       \"required\": 2\n      },\n      {\n       \"label\": \"activation has not occurred\",\n       \"ok\": true,\n       \"actual\": false,\n       \"required\": false\n      }\n     ],\n     \"reason\": \"validation has passed; there is no technical hold; every required actor recorded assent\"\n    },\n    {\n     \"action_id\": \"893f43ccf7e6\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"communicate\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"delivery\": \"delivery-info-mara-short-failure-report-to-mara\",\n      \"information\": \"info-mara-short-failure-report-to-mara\",\n      \"recipient\": \"ari\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the delivery named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the delivery named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the information named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the information named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"Actor is the represented information source\",\n       \"ok\": false,\n       \"actual\": \"unspecified-source-mara-short-failure-report\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"Delivery names the represented information\",\n       \"ok\": true,\n       \"actual\": \"info-mara-short-failure-report-to-mara\",\n       \"required\": \"info-mara-short-failure-report-to-mara\"\n      },\n      {\n       \"label\": \"Delivery names the represented recipient\",\n       \"ok\": false,\n       \"actual\": \"mara\",\n       \"required\": \"ari\"\n      },\n      {\n       \"label\": \"Delivery channel agrees with information channel\",\n       \"ok\": true,\n       \"actual\": \"validation_report\",\n       \"required\": \"validation_report\"\n      },\n      {\n       \"label\": \"Information is not active yet\",\n       \"ok\": false,\n       \"actual\": true,\n       \"required\": false\n      },\n      {\n       \"label\": \"Delivery is pending\",\n       \"ok\": false,\n       \"actual\": \"delivered\",\n       \"required\": \"pending\"\n      }\n     ],\n     \"reason\": \"Actor is the represented information source; Delivery names the represented recipient; Information is not active yet; Delivery is pending\"\n    },\n    {\n     \"action_id\": \"c79698eea6e5\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"communicate\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"delivery\": \"delivery-info-mara-short-failure-report-to-mara\",\n      \"information\": \"info-mara-short-failure-report-to-mara\",\n      \"recipient\": \"bo\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the delivery named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the delivery named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the information named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the information named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"Actor is the represented information source\",\n       \"ok\": false,\n       \"actual\": \"unspecified-source-mara-short-failure-report\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"Delivery names the represented information\",\n       \"ok\": true,\n       \"actual\": \"info-mara-short-failure-report-to-mara\",\n       \"required\": \"info-mara-short-failure-report-to-mara\"\n      },\n      {\n       \"label\": \"Delivery names the represented recipient\",\n       \"ok\": false,\n       \"actual\": \"mara\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"Delivery channel agrees with information channel\",\n       \"ok\": true,\n       \"actual\": \"validation_report\",\n       \"required\": \"validation_report\"\n      },\n      {\n       \"label\": \"Information is not active yet\",\n       \"ok\": false,\n       \"actual\": true,\n       \"required\": false\n      },\n      {\n       \"label\": \"Delivery is pending\",\n       \"ok\": false,\n       \"actual\": \"delivered\",\n       \"required\": \"pending\"\n      }\n     ],\n     \"reason\": \"Actor is the represented information source; Delivery names the represented recipient; Information is not active yet; Delivery is pending\"\n    },\n    {\n     \"action_id\": \"a69dbc074ade\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"communicate\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"delivery\": \"delivery-info-mara-short-failure-report-to-mara\",\n      \"information\": \"info-mara-short-failure-report-to-mara\",\n      \"recipient\": \"mara\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the delivery named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the delivery named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the information named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the information named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"Actor is the represented information source\",\n       \"ok\": false,\n       \"actual\": \"unspecified-source-mara-short-failure-report\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"Delivery names the represented information\",\n       \"ok\": true,\n       \"actual\": \"info-mara-short-failure-report-to-mara\",\n       \"required\": \"info-mara-short-failure-report-to-mara\"\n      },\n      {\n       \"label\": \"Delivery names the represented recipient\",\n       \"ok\": true,\n       \"actual\": \"mara\",\n       \"required\": \"mara\"\n      },\n      {\n       \"label\": \"Delivery channel agrees with information channel\",\n       \"ok\": true,\n       \"actual\": \"validation_report\",\n       \"required\": \"validation_report\"\n      },\n      {\n       \"label\": \"Information is not active yet\",\n       \"ok\": false,\n       \"actual\": true,\n       \"required\": false\n      },\n      {\n       \"label\": \"Delivery is pending\",\n       \"ok\": false,\n       \"actual\": \"delivered\",\n       \"required\": \"pending\"\n      }\n     ],\n     \"reason\": \"Actor is the represented information source; Information is not active yet; Delivery is pending\"\n    },\n    {\n     \"action_id\": \"3c469d0abe33\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"complete-validation\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"authority\": \"technical-role-ari\",\n      \"decision\": \"pump-activation\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the authority named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the authority named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the actor owns this authority\",\n       \"ok\": false,\n       \"actual\": \"ari\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"the actor is an authorized validator\",\n       \"ok\": true,\n       \"actual\": true,\n       \"required\": true\n      }\n     ],\n     \"reason\": \"the actor owns this authority\"\n    },\n    {\n     \"action_id\": \"94f43b94ece3\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"repair-condition\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"authority\": \"technical-role-ari\",\n      \"condition\": \"condition-pump-activation\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the authority named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the authority named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the condition named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the condition named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the actor owns this authority\",\n       \"ok\": false,\n       \"actual\": \"ari\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"the actor is an authorized repairer\",\n       \"ok\": true,\n       \"actual\": true,\n       \"required\": true\n      }\n     ],\n     \"reason\": \"the actor owns this authority\"\n    },\n    {\n     \"action_id\": \"4e7f2ffad1f7\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"request-review\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"decision\": \"pump-activation\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"a review is not already requested\",\n       \"ok\": false,\n       \"actual\": \"requested\",\n       \"required\": \"requested\"\n      }\n     ],\n     \"reason\": \"a review is not already requested\"\n    },\n    {\n     \"action_id\": \"a032a78c7c4a\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"withdraw-assent\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"decision\": \"pump-activation\",\n      \"position\": \"position-bo\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the actor owns this position\",\n       \"ok\": true,\n       \"actual\": \"bo\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"the recorded assent changes\",\n       \"ok\": false,\n       \"actual\": false,\n       \"required\": true\n      }\n     ],\n     \"reason\": \"the recorded assent changes\"\n    }\n   ]\n  }\n },\n \"values\": {\n  \"bo\": {\n   \"label\": \"Bo\",\n   \"categories\": [\n    \"actor\",\n    \"member\"\n   ],\n   \"location\": \"scenario\",\n   \"components\": {\n    \"member\": {\n     \"role\": \"Prototype pump operator\",\n     \"authorized\": false,\n     \"approved\": false,\n     \"aware\": false\n    },\n    \"report_log\": {\n     \"entries\": []\n    }\n   }\n  },\n  \"pump-activation\": {\n   \"label\": \"Whether to activate the prototype pump\",\n   \"categories\": [\n    \"validation-decision\"\n   ],\n   \"location\": \"scenario\",\n   \"components\": {\n    \"validation_decision\": {\n     \"validation\": \"failed\",\n     \"hold\": true,\n     \"review\": \"requested\",\n     \"assents\": 0,\n     \"active\": false,\n     \"condition_id\": \"condition-pump-activation\"\n    }\n   }\n  },\n  \"position-bo\": {\n   \"label\": \"Recorded position of bo\",\n   \"categories\": [\n    \"actor-position\"\n   ],\n   \"location\": \"scenario\",\n   \"components\": {\n    \"actor_position\": {\n     \"holder_id\": \"bo\",\n     \"assent\": false,\n     \"stance\": \"unexpressed\",\n     \"assent_weight\": 1\n    }\n   }\n  },\n  \"prototype-pump\": {\n   \"label\": \"Prototype pump\",\n   \"categories\": [\n    \"equipment\",\n    \"prototype-pump\"\n   ],\n   \"location\": \"scenario\",\n   \"components\": {\n    \"prototype_pump\": {\n     \"equipment_type\": \"prototype pump\"\n    }\n   }\n  }\n }\n}"
+        }
+      ],
+      "calls": [
+        {
+          "kind": "propose",
+          "model": "openrouter/openai/gpt-6-luna",
+          "task": "world-substrate-judge",
+          "trace_id": "world-substrate-polarity-3a0ca9c2/bo-negative-r3",
+          "cost_usd": 0.00170326
+        }
+      ],
+      "cost_usd": 0.00170326
+    },
+    "belief": "Retained-utterance check.",
+    "expects": "Inspect the actual installed consequence."
+  },
+  "replay": {
+    "ok": true,
+    "steps": 2,
+    "expected": "cb6d50501c2e928313a75d569bbfc9d2f6139401d15b909e273021c247a039c1",
+    "actual": "cb6d50501c2e928313a75d569bbfc9d2f6139401d15b909e273021c247a039c1",
+    "event_match": true
+  },
+  "trace": {
+    "schema_version": "world-substrate-contested-run/v3",
+    "world": "prototype-pump-validation",
+    "actors": [
+      "ari",
+      "bo",
+      "mara"
+    ],
+    "model": "llm-resident (Concordia) openrouter/openai/gpt-6-luna",
+    "cost_usd": 0.002031,
+    "mechanic_profile_id": "49a60fa4280781d3",
+    "reaction_limit": null,
+    "engine_events": [
+      {
+        "event_id": "r3-e00001",
+        "causal_bearer": {
+          "kind": "actor",
+          "id": "bo",
+          "controller": "live:resident"
+        },
+        "semantic_binding": null,
+        "observation": {
+          "world_id": "prototype-pump-validation-live",
+          "revision": 5,
+          "tick": 0,
+          "actor_id": "bo",
+          "entities": {
+            "ari": {
+              "entity_id": "ari",
+              "label": "Ari",
+              "category_ids": [
+                "actor",
+                "member"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "ari",
+              "last_cause_event_id": "e00005",
+              "components": {
+                "member": {
+                  "role": "Validation engineer",
+                  "authorized": false,
+                  "approved": false,
+                  "aware": false
+                },
+                "report_log": {
+                  "entries": [
+                    "{\"channel\":\"direct\",\"content\":\"I ask Ari to complete validation for the prototype pump's activation decision.\",\"delivery_status\":\"delivered\",\"id\":\"rpt-7f8ccef75544e26a\",\"lineage_status\":\"not_declared\",\"recipient_id\":\"ari\",\"source_event_id\":\"e00005\",\"source_id\":\"mara\",\"source_lineage\":null,\"source_revision\":4}"
+                  ]
+                }
+              }
+            },
+            "bo": {
+              "entity_id": "bo",
+              "label": "Bo",
+              "category_ids": [
+                "actor",
+                "member"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "bo",
+              "components": {
+                "member": {
+                  "role": "Prototype pump operator",
+                  "authorized": false,
+                  "approved": false,
+                  "aware": false
+                },
+                "report_log": {
+                  "entries": []
+                }
+              }
+            },
+            "condition-pump-activation": {
+              "entity_id": "condition-pump-activation",
+              "label": "Technical condition",
+              "category_ids": [
+                "technical-condition"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "condition-pump-activation",
+              "last_cause_event_id": "e00001",
+              "components": {
+                "technical_condition": {
+                  "passing": true
+                }
+              }
+            },
+            "historical-measurement-v17": {
+              "entity_id": "historical-measurement-v17",
+              "label": "Historical validation measurement",
+              "category_ids": [
+                "historical-measurement",
+                "historical-measurement-v17"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "historical-measurement-v17",
+              "components": {
+                "historical_measurement_v17": {
+                  "hidden_measurement_status": "past evidence, not a current-condition measurement",
+                  "hidden_validation_batch": "V17",
+                  "hidden_sensor_channel": "C",
+                  "hidden_drift_units": 8
+                }
+              }
+            },
+            "mara": {
+              "entity_id": "mara",
+              "label": "Mara",
+              "category_ids": [
+                "actor",
+                "member"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "mara",
+              "components": {
+                "member": {
+                  "role": "Coordinator",
+                  "authorized": false,
+                  "approved": false,
+                  "aware": false
+                },
+                "report_log": {
+                  "entries": []
+                }
+              }
+            },
+            "position-ari": {
+              "entity_id": "position-ari",
+              "label": "Recorded position of ari",
+              "category_ids": [
+                "actor-position"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "position-ari",
+              "components": {
+                "actor_position": {
+                  "holder_id": "ari",
+                  "assent": false,
+                  "stance": "unexpressed",
+                  "assent_weight": 0
+                }
+              }
+            },
+            "position-bo": {
+              "entity_id": "position-bo",
+              "label": "Recorded position of bo",
+              "category_ids": [
+                "actor-position"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "position-bo",
+              "last_cause_event_id": "e00003",
+              "components": {
+                "actor_position": {
+                  "holder_id": "bo",
+                  "assent": false,
+                  "stance": "unexpressed",
+                  "assent_weight": 1
+                }
+              }
+            },
+            "position-mara": {
+              "entity_id": "position-mara",
+              "label": "Recorded position of mara",
+              "category_ids": [
+                "actor-position"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "position-mara",
+              "components": {
+                "actor_position": {
+                  "holder_id": "mara",
+                  "assent": false,
+                  "stance": "unexpressed",
+                  "assent_weight": 1
+                }
+              }
+            },
+            "prototype-pump": {
+              "entity_id": "prototype-pump",
+              "label": "Prototype pump",
+              "category_ids": [
+                "equipment",
+                "prototype-pump"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "prototype-pump",
+              "components": {
+                "prototype_pump": {
+                  "equipment_type": "prototype pump"
+                }
+              }
+            },
+            "public-procedure": {
+              "entity_id": "public-procedure",
+              "label": "Public validation and activation procedure",
+              "category_ids": [
+                "procedure",
+                "public-procedure"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "public-procedure",
+              "components": {
+                "public_procedure": {
+                  "filing_validation_hold_reveals": "failed validation",
+                  "filing_validation_hold_reveals_private_test_details": false,
+                  "review_completion_repairs_equipment": false,
+                  "waiting_repairs_equipment": false
+                }
+              }
+            },
+            "pump-activation": {
+              "entity_id": "pump-activation",
+              "label": "Whether to activate the prototype pump",
+              "category_ids": [
+                "validation-decision"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "pump-activation",
+              "last_cause_event_id": "e00003",
+              "components": {
+                "validation_decision": {
+                  "validation": "failed",
+                  "hold": true,
+                  "review": "requested",
+                  "assents": 0,
+                  "active": false,
+                  "condition_id": "condition-pump-activation"
+                }
+              }
+            },
+            "technical-role-ari": {
+              "entity_id": "technical-role-ari",
+              "label": "Technical authority of ari",
+              "category_ids": [
+                "technical-role"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "technical-role-ari",
+              "components": {
+                "technical_role": {
+                  "holder_id": "ari",
+                  "validator": true,
+                  "repairer": true
+                }
+              }
+            },
+            "unspecified-source-mara-short-failure-report": {
+              "entity_id": "unspecified-source-mara-short-failure-report",
+              "label": "Unspecified report source",
+              "category_ids": [
+                "information-source"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "unspecified-source-mara-short-failure-report"
+            }
+          }
+        },
+        "tick": 0,
+        "world_revision": 5,
+        "rule_id": "unsupported.unmatched-attempt",
+        "rule_version": "0",
+        "cause": "c00001",
+        "status": "unsupported_action",
+        "checks": [
+          {
+            "label": "Base revision is current",
+            "ok": true,
+            "actual": 5,
+            "required": 5
+          },
+          {
+            "label": "Registered action rule",
+            "ok": false,
+            "actual": "unmatched-attempt",
+            "required": null
+          }
+        ],
+        "declared_read_paths": [],
+        "declared_write_paths": [],
+        "changes": [],
+        "hash_before": "cb6d50501c2e928313a75d569bbfc9d2f6139401d15b909e273021c247a039c1",
+        "hash_after": "cb6d50501c2e928313a75d569bbfc9d2f6139401d15b909e273021c247a039c1"
+      }
+    ],
+    "summary": {
+      "turns": 1,
+      "terminal_reached": false,
+      "accepted_actions": 0,
+      "world_changes": 0,
+      "active_at_end": false,
+      "idle_actors": [
+        "ari",
+        "bo",
+        "mara"
+      ],
+      "stalled_actors": [
+        "ari",
+        "bo",
+        "mara"
+      ],
+      "moves_at_end": [],
+      "never_offered": {
+        "send-report": "it was never put to anyone"
+      },
+      "unmatched_attempts": [
+        {
+          "round": 3,
+          "actor": "bo",
+          "attempt": "I withhold assent to activation by recording my position as not assenting on Bo's recorded position for the prototype pump.",
+          "nearest_kind": "record-assent",
+          "why": "The attempt is to record a non-assenting position, but record-assent does not represent that negative stance, and withholding assent is not withdrawing prior assent.",
+          "names": [
+            "pump-activation",
+            "position-bo",
+            "prototype-pump"
+          ],
+          "coverage": {
+            "status": "complete",
+            "action_spans": [
+              "recording my position as not assenting on Bo's recorded position"
+            ],
+            "unrepresented_spans": []
+          },
+          "event_id": "r3-e00001",
+          "judge": {
+            "outcome": "no_rule",
+            "whose_choice": null,
+            "ruling": "Bo is already recorded as not assenting. Withholding assent makes no further change to the world, so no new constraint rule is needed."
+          }
+        }
+      ],
+      "first_turn": 3,
+      "last_turn": 3
+    },
+    "transcript": [
+      {
+        "turn": 3,
+        "world_changes": [],
+        "world_events": [],
+        "revision_when_decided": 5,
+        "underway": [],
+        "committed_first": "ari",
+        "actors": {
+          "ari": {
+            "wanted": null,
+            "did": null,
+            "status": "no_action",
+            "retried": false,
+            "said": "Recorded-input replay.",
+            "refused_because": [],
+            "lost_what_it_wanted": false,
+            "blocked_by_rules": [],
+            "attempt": {
+              "text": "wait",
+              "reading": {
+                "kind": "wait",
+                "fields": {},
+                "quoted_spans": {},
+                "nearest_kind": "none",
+                "why": "the person waited"
+              }
+            },
+            "belief": "Retained-utterance check.",
+            "expects": "Inspect the actual installed consequence."
+          },
+          "bo": {
+            "wanted": {
+              "actor": "bo",
+              "base_revision": 5,
+              "controller": "live:resident",
+              "kind": "unmatched-attempt",
+              "attempt": "I withhold assent to activation by recording my position as not assenting on Bo's recorded position for the prototype pump.",
+              "nearest_kind": "record-assent",
+              "why": "The attempt is to record a non-assenting position, but record-assent does not represent that negative stance, and withholding assent is not withdrawing prior assent.",
+              "coverage": {
+                "status": "complete",
+                "action_spans": [
+                  "recording my position as not assenting on Bo's recorded position"
+                ],
+                "unrepresented_spans": []
+              },
+              "names": [
+                "pump-activation",
+                "position-bo",
+                "prototype-pump"
+              ]
+            },
+            "did": {
+              "actor": "bo",
+              "base_revision": 5,
+              "controller": "live:resident",
+              "kind": "unmatched-attempt",
+              "attempt": "I withhold assent to activation by recording my position as not assenting on Bo's recorded position for the prototype pump.",
+              "nearest_kind": "record-assent",
+              "why": "The attempt is to record a non-assenting position, but record-assent does not represent that negative stance, and withholding assent is not withdrawing prior assent.",
+              "coverage": {
+                "status": "complete",
+                "action_spans": [
+                  "recording my position as not assenting on Bo's recorded position"
+                ],
+                "unrepresented_spans": []
+              },
+              "names": [
+                "pump-activation",
+                "position-bo",
+                "prototype-pump"
+              ]
+            },
+            "status": "unsupported_action",
+            "retried": false,
+            "said": "Recorded-input replay.",
+            "refused_because": [],
+            "lost_what_it_wanted": false,
+            "changed": false,
+            "blocked_by_rules": [],
+            "event_id": "r3-e00001",
+            "changes": [],
+            "attempt": {
+              "text": "I withhold assent to activation by recording my position as not assenting on Bo's recorded position for the prototype pump.",
+              "reading": {
+                "unmatched": true,
+                "nearest_kind": "record-assent",
+                "why": "The attempt is to record a non-assenting position, but record-assent does not represent that negative stance, and withholding assent is not withdrawing prior assent.",
+                "coverage": {
+                  "status": "complete",
+                  "action_spans": [
+                    "recording my position as not assenting on Bo's recorded position"
+                  ],
+                  "unrepresented_spans": []
+                },
+                "names": [
+                  "pump-activation",
+                  "position-bo",
+                  "prototype-pump"
+                ]
+              }
+            },
+            "consequence": {
+              "pass_one": {
+                "actor": "bo",
+                "named": [
+                  "pump-activation",
+                  "position-bo",
+                  "prototype-pump"
+                ],
+                "moves": {
+                  "bo": {
+                    "available": [
+                      {
+                        "action_id": "8bedb3dd0a7b",
+                        "action": {
+                          "actor": "bo",
+                          "kind": "record-assent",
+                          "base_revision": 5,
+                          "controller": "unselected",
+                          "decision": "pump-activation",
+                          "position": "position-bo"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the actor owns this position",
+                            "ok": true,
+                            "actual": "bo",
+                            "required": "bo"
+                          },
+                          {
+                            "label": "the recorded assent changes",
+                            "ok": true,
+                            "actual": false,
+                            "required": false
+                          }
+                        ]
+                      },
+                      {
+                        "action_id": "6864a564b7af",
+                        "action": {
+                          "actor": "bo",
+                          "kind": "send-report",
+                          "base_revision": 5,
+                          "controller": "unselected",
+                          "recipient": "ari",
+                          "content": "Report content supplied by the sender."
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the sender supplies words",
+                            "ok": true,
+                            "actual": "Report content supplied by the sender.",
+                            "required": ""
+                          },
+                          {
+                            "label": "the recipient's components.report_log.entries holds a list of text records",
+                            "ok": true,
+                            "actual": "list",
+                            "required": "list of strings"
+                          },
+                          {
+                            "label": "the report content is nonempty text",
+                            "ok": true,
+                            "actual": "str",
+                            "required": "nonempty string"
+                          }
+                        ]
+                      },
+                      {
+                        "action_id": "000c01f9a5c1",
+                        "action": {
+                          "actor": "bo",
+                          "kind": "send-report",
+                          "base_revision": 5,
+                          "controller": "unselected",
+                          "recipient": "bo",
+                          "content": "Report content supplied by the sender."
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the sender supplies words",
+                            "ok": true,
+                            "actual": "Report content supplied by the sender.",
+                            "required": ""
+                          },
+                          {
+                            "label": "the recipient's components.report_log.entries holds a list of text records",
+                            "ok": true,
+                            "actual": "list",
+                            "required": "list of strings"
+                          },
+                          {
+                            "label": "the report content is nonempty text",
+                            "ok": true,
+                            "actual": "str",
+                            "required": "nonempty string"
+                          }
+                        ]
+                      },
+                      {
+                        "action_id": "c9562295d4be",
+                        "action": {
+                          "actor": "bo",
+                          "kind": "send-report",
+                          "base_revision": 5,
+                          "controller": "unselected",
+                          "recipient": "mara",
+                          "content": "Report content supplied by the sender."
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the sender supplies words",
+                            "ok": true,
+                            "actual": "Report content supplied by the sender.",
+                            "required": ""
+                          },
+                          {
+                            "label": "the recipient's components.report_log.entries holds a list of text records",
+                            "ok": true,
+                            "actual": "list",
+                            "required": "list of strings"
+                          },
+                          {
+                            "label": "the report content is nonempty text",
+                            "ok": true,
+                            "actual": "str",
+                            "required": "nonempty string"
+                          }
+                        ]
+                      },
+                      {
+                        "action_id": "c6e9852e4771",
+                        "action": {
+                          "actor": "bo",
+                          "kind": "state-concerned",
+                          "base_revision": 5,
+                          "controller": "unselected",
+                          "position": "position-bo"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the actor owns this position",
+                            "ok": true,
+                            "actual": "bo",
+                            "required": "bo"
+                          }
+                        ]
+                      },
+                      {
+                        "action_id": "ca3813562dac",
+                        "action": {
+                          "actor": "bo",
+                          "kind": "state-supportive",
+                          "base_revision": 5,
+                          "controller": "unselected",
+                          "position": "position-bo"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the actor owns this position",
+                            "ok": true,
+                            "actual": "bo",
+                            "required": "bo"
+                          }
+                        ]
+                      },
+                      {
+                        "action_id": "683b00383d83",
+                        "action": {
+                          "actor": "bo",
+                          "kind": "state-undecided",
+                          "base_revision": 5,
+                          "controller": "unselected",
+                          "position": "position-bo"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the actor owns this position",
+                            "ok": true,
+                            "actual": "bo",
+                            "required": "bo"
+                          }
+                        ]
+                      }
+                    ],
+                    "blocked": [
+                      {
+                        "action_id": "146bb6fa4c3e",
+                        "action": {
+                          "actor": "bo",
+                          "kind": "activate",
+                          "base_revision": 5,
+                          "controller": "unselected",
+                          "decision": "pump-activation"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "validation has passed",
+                            "ok": false,
+                            "actual": "failed",
+                            "required": "passed"
+                          },
+                          {
+                            "label": "there is no technical hold",
+                            "ok": false,
+                            "actual": true,
+                            "required": false
+                          },
+                          {
+                            "label": "every required actor recorded assent",
+                            "ok": false,
+                            "actual": 0,
+                            "required": 2
+                          },
+                          {
+                            "label": "activation has not occurred",
+                            "ok": true,
+                            "actual": false,
+                            "required": false
+                          }
+                        ],
+                        "reason": "validation has passed; there is no technical hold; every required actor recorded assent"
+                      },
+                      {
+                        "action_id": "893f43ccf7e6",
+                        "action": {
+                          "actor": "bo",
+                          "kind": "communicate",
+                          "base_revision": 5,
+                          "controller": "unselected",
+                          "delivery": "delivery-info-mara-short-failure-report-to-mara",
+                          "information": "info-mara-short-failure-report-to-mara",
+                          "recipient": "ari"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the delivery named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the delivery named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the information named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the information named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "Actor is the represented information source",
+                            "ok": false,
+                            "actual": "unspecified-source-mara-short-failure-report",
+                            "required": "bo"
+                          },
+                          {
+                            "label": "Delivery names the represented information",
+                            "ok": true,
+                            "actual": "info-mara-short-failure-report-to-mara",
+                            "required": "info-mara-short-failure-report-to-mara"
+                          },
+                          {
+                            "label": "Delivery names the represented recipient",
+                            "ok": false,
+                            "actual": "mara",
+                            "required": "ari"
+                          },
+                          {
+                            "label": "Delivery channel agrees with information channel",
+                            "ok": true,
+                            "actual": "validation_report",
+                            "required": "validation_report"
+                          },
+                          {
+                            "label": "Information is not active yet",
+                            "ok": false,
+                            "actual": true,
+                            "required": false
+                          },
+                          {
+                            "label": "Delivery is pending",
+                            "ok": false,
+                            "actual": "delivered",
+                            "required": "pending"
+                          }
+                        ],
+                        "reason": "Actor is the represented information source; Delivery names the represented recipient; Information is not active yet; Delivery is pending"
+                      },
+                      {
+                        "action_id": "c79698eea6e5",
+                        "action": {
+                          "actor": "bo",
+                          "kind": "communicate",
+                          "base_revision": 5,
+                          "controller": "unselected",
+                          "delivery": "delivery-info-mara-short-failure-report-to-mara",
+                          "information": "info-mara-short-failure-report-to-mara",
+                          "recipient": "bo"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the delivery named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the delivery named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the information named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the information named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "Actor is the represented information source",
+                            "ok": false,
+                            "actual": "unspecified-source-mara-short-failure-report",
+                            "required": "bo"
+                          },
+                          {
+                            "label": "Delivery names the represented information",
+                            "ok": true,
+                            "actual": "info-mara-short-failure-report-to-mara",
+                            "required": "info-mara-short-failure-report-to-mara"
+                          },
+                          {
+                            "label": "Delivery names the represented recipient",
+                            "ok": false,
+                            "actual": "mara",
+                            "required": "bo"
+                          },
+                          {
+                            "label": "Delivery channel agrees with information channel",
+                            "ok": true,
+                            "actual": "validation_report",
+                            "required": "validation_report"
+                          },
+                          {
+                            "label": "Information is not active yet",
+                            "ok": false,
+                            "actual": true,
+                            "required": false
+                          },
+                          {
+                            "label": "Delivery is pending",
+                            "ok": false,
+                            "actual": "delivered",
+                            "required": "pending"
+                          }
+                        ],
+                        "reason": "Actor is the represented information source; Delivery names the represented recipient; Information is not active yet; Delivery is pending"
+                      },
+                      {
+                        "action_id": "a69dbc074ade",
+                        "action": {
+                          "actor": "bo",
+                          "kind": "communicate",
+                          "base_revision": 5,
+                          "controller": "unselected",
+                          "delivery": "delivery-info-mara-short-failure-report-to-mara",
+                          "information": "info-mara-short-failure-report-to-mara",
+                          "recipient": "mara"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the delivery named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the delivery named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the information named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the information named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "Actor is the represented information source",
+                            "ok": false,
+                            "actual": "unspecified-source-mara-short-failure-report",
+                            "required": "bo"
+                          },
+                          {
+                            "label": "Delivery names the represented information",
+                            "ok": true,
+                            "actual": "info-mara-short-failure-report-to-mara",
+                            "required": "info-mara-short-failure-report-to-mara"
+                          },
+                          {
+                            "label": "Delivery names the represented recipient",
+                            "ok": true,
+                            "actual": "mara",
+                            "required": "mara"
+                          },
+                          {
+                            "label": "Delivery channel agrees with information channel",
+                            "ok": true,
+                            "actual": "validation_report",
+                            "required": "validation_report"
+                          },
+                          {
+                            "label": "Information is not active yet",
+                            "ok": false,
+                            "actual": true,
+                            "required": false
+                          },
+                          {
+                            "label": "Delivery is pending",
+                            "ok": false,
+                            "actual": "delivered",
+                            "required": "pending"
+                          }
+                        ],
+                        "reason": "Actor is the represented information source; Information is not active yet; Delivery is pending"
+                      },
+                      {
+                        "action_id": "3c469d0abe33",
+                        "action": {
+                          "actor": "bo",
+                          "kind": "complete-validation",
+                          "base_revision": 5,
+                          "controller": "unselected",
+                          "authority": "technical-role-ari",
+                          "decision": "pump-activation"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the authority named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the authority named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the actor owns this authority",
+                            "ok": false,
+                            "actual": "ari",
+                            "required": "bo"
+                          },
+                          {
+                            "label": "the actor is an authorized validator",
+                            "ok": true,
+                            "actual": true,
+                            "required": true
+                          }
+                        ],
+                        "reason": "the actor owns this authority"
+                      },
+                      {
+                        "action_id": "94f43b94ece3",
+                        "action": {
+                          "actor": "bo",
+                          "kind": "repair-condition",
+                          "base_revision": 5,
+                          "controller": "unselected",
+                          "authority": "technical-role-ari",
+                          "condition": "condition-pump-activation"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the authority named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the authority named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the condition named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the condition named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the actor owns this authority",
+                            "ok": false,
+                            "actual": "ari",
+                            "required": "bo"
+                          },
+                          {
+                            "label": "the actor is an authorized repairer",
+                            "ok": true,
+                            "actual": true,
+                            "required": true
+                          }
+                        ],
+                        "reason": "the actor owns this authority"
+                      },
+                      {
+                        "action_id": "4e7f2ffad1f7",
+                        "action": {
+                          "actor": "bo",
+                          "kind": "request-review",
+                          "base_revision": 5,
+                          "controller": "unselected",
+                          "decision": "pump-activation"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "a review is not already requested",
+                            "ok": false,
+                            "actual": "requested",
+                            "required": "requested"
+                          }
+                        ],
+                        "reason": "a review is not already requested"
+                      },
+                      {
+                        "action_id": "a032a78c7c4a",
+                        "action": {
+                          "actor": "bo",
+                          "kind": "withdraw-assent",
+                          "base_revision": 5,
+                          "controller": "unselected",
+                          "decision": "pump-activation",
+                          "position": "position-bo"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the actor owns this position",
+                            "ok": true,
+                            "actual": "bo",
+                            "required": "bo"
+                          },
+                          {
+                            "label": "the recorded assent changes",
+                            "ok": false,
+                            "actual": false,
+                            "required": true
+                          }
+                        ],
+                        "reason": "the recorded assent changes"
+                      }
+                    ]
+                  }
+                },
+                "values": {
+                  "bo": {
+                    "label": "Bo",
+                    "categories": [
+                      "actor",
+                      "member"
+                    ],
+                    "location": "scenario",
+                    "components": {
+                      "member": {
+                        "role": "Prototype pump operator",
+                        "authorized": false,
+                        "approved": false,
+                        "aware": false
+                      },
+                      "report_log": {
+                        "entries": []
+                      }
+                    }
+                  },
+                  "pump-activation": {
+                    "label": "Whether to activate the prototype pump",
+                    "categories": [
+                      "validation-decision"
+                    ],
+                    "location": "scenario",
+                    "components": {
+                      "validation_decision": {
+                        "validation": "failed",
+                        "hold": true,
+                        "review": "requested",
+                        "assents": 0,
+                        "active": false,
+                        "condition_id": "condition-pump-activation"
+                      }
+                    }
+                  },
+                  "position-bo": {
+                    "label": "Recorded position of bo",
+                    "categories": [
+                      "actor-position"
+                    ],
+                    "location": "scenario",
+                    "components": {
+                      "actor_position": {
+                        "holder_id": "bo",
+                        "assent": false,
+                        "stance": "unexpressed",
+                        "assent_weight": 1
+                      }
+                    }
+                  },
+                  "prototype-pump": {
+                    "label": "Prototype pump",
+                    "categories": [
+                      "equipment",
+                      "prototype-pump"
+                    ],
+                    "location": "scenario",
+                    "components": {
+                      "prototype_pump": {
+                        "equipment_type": "prototype pump"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "judge": {
+              "by": "the world's game master (Concordia's EventResolution)",
+              "model": "openrouter/openai/gpt-6-luna",
+              "trace_id": "world-substrate-polarity-3a0ca9c2/bo-negative-r3",
+              "whose_choice": null,
+              "ruling": "Bo is already recorded as not assenting. Withholding assent makes no further change to the world, so no new constraint rule is needed.",
+              "reasoning": "The existing record-assent move would change Bo's position to assent=true, the opposite of this attempt. His current recorded position already represents withholding assent.",
+              "facts": [
+                "Bo's recorded position has actor_position.assent = false.",
+                "The activation decision has validation_decision.assents = 0 and validation_decision.active = false.",
+                "Bo's assent weight is 1."
+              ],
+              "blockers": [],
+              "world_chars": 35964,
+              "world_revision": 5,
+              "outcome": "no_rule",
+              "rule": null,
+              "tests": [],
+              "steps": [
+                {
+                  "step": "propose",
+                  "answer": {
+                    "facts": [
+                      "Bo's recorded position has actor_position.assent = false.",
+                      "The activation decision has validation_decision.assents = 0 and validation_decision.active = false.",
+                      "Bo's assent weight is 1."
+                    ],
+                    "blockers": [],
+                    "whose_choice": "none",
+                    "ruling": "Bo is already recorded as not assenting. Withholding assent makes no further change to the world, so no new constraint rule is needed.",
+                    "proposed_rule": "",
+                    "test_move": "",
+                    "reasoning": "The existing record-assent move would change Bo's position to assent=true, the opposite of this attempt. His current recorded position already represents withholding assent."
+                  },
+                  "document_chars": 60639,
+                  "consequence": "Pass 1, before any rule exists (the moves and checks open to the person trying and to each person named, and the named things' current values):\n{\n \"actor\": \"bo\",\n \"named\": [\n  \"pump-activation\",\n  \"position-bo\",\n  \"prototype-pump\"\n ],\n \"moves\": {\n  \"bo\": {\n   \"available\": [\n    {\n     \"action_id\": \"8bedb3dd0a7b\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"record-assent\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"decision\": \"pump-activation\",\n      \"position\": \"position-bo\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the actor owns this position\",\n       \"ok\": true,\n       \"actual\": \"bo\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"the recorded assent changes\",\n       \"ok\": true,\n       \"actual\": false,\n       \"required\": false\n      }\n     ]\n    },\n    {\n     \"action_id\": \"6864a564b7af\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"send-report\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"recipient\": \"ari\",\n      \"content\": \"Report content supplied by the sender.\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the sender supplies words\",\n       \"ok\": true,\n       \"actual\": \"Report content supplied by the sender.\",\n       \"required\": \"\"\n      },\n      {\n       \"label\": \"the recipient's components.report_log.entries holds a list of text records\",\n       \"ok\": true,\n       \"actual\": \"list\",\n       \"required\": \"list of strings\"\n      },\n      {\n       \"label\": \"the report content is nonempty text\",\n       \"ok\": true,\n       \"actual\": \"str\",\n       \"required\": \"nonempty string\"\n      }\n     ]\n    },\n    {\n     \"action_id\": \"000c01f9a5c1\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"send-report\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"recipient\": \"bo\",\n      \"content\": \"Report content supplied by the sender.\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the sender supplies words\",\n       \"ok\": true,\n       \"actual\": \"Report content supplied by the sender.\",\n       \"required\": \"\"\n      },\n      {\n       \"label\": \"the recipient's components.report_log.entries holds a list of text records\",\n       \"ok\": true,\n       \"actual\": \"list\",\n       \"required\": \"list of strings\"\n      },\n      {\n       \"label\": \"the report content is nonempty text\",\n       \"ok\": true,\n       \"actual\": \"str\",\n       \"required\": \"nonempty string\"\n      }\n     ]\n    },\n    {\n     \"action_id\": \"c9562295d4be\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"send-report\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"recipient\": \"mara\",\n      \"content\": \"Report content supplied by the sender.\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the sender supplies words\",\n       \"ok\": true,\n       \"actual\": \"Report content supplied by the sender.\",\n       \"required\": \"\"\n      },\n      {\n       \"label\": \"the recipient's components.report_log.entries holds a list of text records\",\n       \"ok\": true,\n       \"actual\": \"list\",\n       \"required\": \"list of strings\"\n      },\n      {\n       \"label\": \"the report content is nonempty text\",\n       \"ok\": true,\n       \"actual\": \"str\",\n       \"required\": \"nonempty string\"\n      }\n     ]\n    },\n    {\n     \"action_id\": \"c6e9852e4771\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"state-concerned\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"position\": \"position-bo\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the actor owns this position\",\n       \"ok\": true,\n       \"actual\": \"bo\",\n       \"required\": \"bo\"\n      }\n     ]\n    },\n    {\n     \"action_id\": \"ca3813562dac\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"state-supportive\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"position\": \"position-bo\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the actor owns this position\",\n       \"ok\": true,\n       \"actual\": \"bo\",\n       \"required\": \"bo\"\n      }\n     ]\n    },\n    {\n     \"action_id\": \"683b00383d83\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"state-undecided\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"position\": \"position-bo\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the actor owns this position\",\n       \"ok\": true,\n       \"actual\": \"bo\",\n       \"required\": \"bo\"\n      }\n     ]\n    }\n   ],\n   \"blocked\": [\n    {\n     \"action_id\": \"146bb6fa4c3e\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"activate\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"decision\": \"pump-activation\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"validation has passed\",\n       \"ok\": false,\n       \"actual\": \"failed\",\n       \"required\": \"passed\"\n      },\n      {\n       \"label\": \"there is no technical hold\",\n       \"ok\": false,\n       \"actual\": true,\n       \"required\": false\n      },\n      {\n       \"label\": \"every required actor recorded assent\",\n       \"ok\": false,\n       \"actual\": 0,\n       \"required\": 2\n      },\n      {\n       \"label\": \"activation has not occurred\",\n       \"ok\": true,\n       \"actual\": false,\n       \"required\": false\n      }\n     ],\n     \"reason\": \"validation has passed; there is no technical hold; every required actor recorded assent\"\n    },\n    {\n     \"action_id\": \"893f43ccf7e6\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"communicate\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"delivery\": \"delivery-info-mara-short-failure-report-to-mara\",\n      \"information\": \"info-mara-short-failure-report-to-mara\",\n      \"recipient\": \"ari\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the delivery named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the delivery named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the information named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the information named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"Actor is the represented information source\",\n       \"ok\": false,\n       \"actual\": \"unspecified-source-mara-short-failure-report\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"Delivery names the represented information\",\n       \"ok\": true,\n       \"actual\": \"info-mara-short-failure-report-to-mara\",\n       \"required\": \"info-mara-short-failure-report-to-mara\"\n      },\n      {\n       \"label\": \"Delivery names the represented recipient\",\n       \"ok\": false,\n       \"actual\": \"mara\",\n       \"required\": \"ari\"\n      },\n      {\n       \"label\": \"Delivery channel agrees with information channel\",\n       \"ok\": true,\n       \"actual\": \"validation_report\",\n       \"required\": \"validation_report\"\n      },\n      {\n       \"label\": \"Information is not active yet\",\n       \"ok\": false,\n       \"actual\": true,\n       \"required\": false\n      },\n      {\n       \"label\": \"Delivery is pending\",\n       \"ok\": false,\n       \"actual\": \"delivered\",\n       \"required\": \"pending\"\n      }\n     ],\n     \"reason\": \"Actor is the represented information source; Delivery names the represented recipient; Information is not active yet; Delivery is pending\"\n    },\n    {\n     \"action_id\": \"c79698eea6e5\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"communicate\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"delivery\": \"delivery-info-mara-short-failure-report-to-mara\",\n      \"information\": \"info-mara-short-failure-report-to-mara\",\n      \"recipient\": \"bo\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the delivery named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the delivery named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the information named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the information named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"Actor is the represented information source\",\n       \"ok\": false,\n       \"actual\": \"unspecified-source-mara-short-failure-report\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"Delivery names the represented information\",\n       \"ok\": true,\n       \"actual\": \"info-mara-short-failure-report-to-mara\",\n       \"required\": \"info-mara-short-failure-report-to-mara\"\n      },\n      {\n       \"label\": \"Delivery names the represented recipient\",\n       \"ok\": false,\n       \"actual\": \"mara\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"Delivery channel agrees with information channel\",\n       \"ok\": true,\n       \"actual\": \"validation_report\",\n       \"required\": \"validation_report\"\n      },\n      {\n       \"label\": \"Information is not active yet\",\n       \"ok\": false,\n       \"actual\": true,\n       \"required\": false\n      },\n      {\n       \"label\": \"Delivery is pending\",\n       \"ok\": false,\n       \"actual\": \"delivered\",\n       \"required\": \"pending\"\n      }\n     ],\n     \"reason\": \"Actor is the represented information source; Delivery names the represented recipient; Information is not active yet; Delivery is pending\"\n    },\n    {\n     \"action_id\": \"a69dbc074ade\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"communicate\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"delivery\": \"delivery-info-mara-short-failure-report-to-mara\",\n      \"information\": \"info-mara-short-failure-report-to-mara\",\n      \"recipient\": \"mara\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the delivery named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the delivery named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the information named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the information named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the recipient named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"Actor is the represented information source\",\n       \"ok\": false,\n       \"actual\": \"unspecified-source-mara-short-failure-report\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"Delivery names the represented information\",\n       \"ok\": true,\n       \"actual\": \"info-mara-short-failure-report-to-mara\",\n       \"required\": \"info-mara-short-failure-report-to-mara\"\n      },\n      {\n       \"label\": \"Delivery names the represented recipient\",\n       \"ok\": true,\n       \"actual\": \"mara\",\n       \"required\": \"mara\"\n      },\n      {\n       \"label\": \"Delivery channel agrees with information channel\",\n       \"ok\": true,\n       \"actual\": \"validation_report\",\n       \"required\": \"validation_report\"\n      },\n      {\n       \"label\": \"Information is not active yet\",\n       \"ok\": false,\n       \"actual\": true,\n       \"required\": false\n      },\n      {\n       \"label\": \"Delivery is pending\",\n       \"ok\": false,\n       \"actual\": \"delivered\",\n       \"required\": \"pending\"\n      }\n     ],\n     \"reason\": \"Actor is the represented information source; Information is not active yet; Delivery is pending\"\n    },\n    {\n     \"action_id\": \"3c469d0abe33\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"complete-validation\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"authority\": \"technical-role-ari\",\n      \"decision\": \"pump-activation\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the authority named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the authority named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the actor owns this authority\",\n       \"ok\": false,\n       \"actual\": \"ari\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"the actor is an authorized validator\",\n       \"ok\": true,\n       \"actual\": true,\n       \"required\": true\n      }\n     ],\n     \"reason\": \"the actor owns this authority\"\n    },\n    {\n     \"action_id\": \"94f43b94ece3\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"repair-condition\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"authority\": \"technical-role-ari\",\n      \"condition\": \"condition-pump-activation\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the authority named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the authority named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the condition named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the condition named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the actor owns this authority\",\n       \"ok\": false,\n       \"actual\": \"ari\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"the actor is an authorized repairer\",\n       \"ok\": true,\n       \"actual\": true,\n       \"required\": true\n      }\n     ],\n     \"reason\": \"the actor owns this authority\"\n    },\n    {\n     \"action_id\": \"4e7f2ffad1f7\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"request-review\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"decision\": \"pump-activation\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"a review is not already requested\",\n       \"ok\": false,\n       \"actual\": \"requested\",\n       \"required\": \"requested\"\n      }\n     ],\n     \"reason\": \"a review is not already requested\"\n    },\n    {\n     \"action_id\": \"a032a78c7c4a\",\n     \"action\": {\n      \"actor\": \"bo\",\n      \"kind\": \"withdraw-assent\",\n      \"base_revision\": 5,\n      \"controller\": \"unselected\",\n      \"decision\": \"pump-activation\",\n      \"position\": \"position-bo\"\n     },\n     \"checks\": [\n      {\n       \"label\": \"Actor exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the one acting is allowed to make this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the decision named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named exists\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the position named is the right kind of thing for this move\",\n       \"ok\": true,\n       \"actual\": null,\n       \"required\": null\n      },\n      {\n       \"label\": \"the actor owns this position\",\n       \"ok\": true,\n       \"actual\": \"bo\",\n       \"required\": \"bo\"\n      },\n      {\n       \"label\": \"the recorded assent changes\",\n       \"ok\": false,\n       \"actual\": false,\n       \"required\": true\n      }\n     ],\n     \"reason\": \"the recorded assent changes\"\n    }\n   ]\n  }\n },\n \"values\": {\n  \"bo\": {\n   \"label\": \"Bo\",\n   \"categories\": [\n    \"actor\",\n    \"member\"\n   ],\n   \"location\": \"scenario\",\n   \"components\": {\n    \"member\": {\n     \"role\": \"Prototype pump operator\",\n     \"authorized\": false,\n     \"approved\": false,\n     \"aware\": false\n    },\n    \"report_log\": {\n     \"entries\": []\n    }\n   }\n  },\n  \"pump-activation\": {\n   \"label\": \"Whether to activate the prototype pump\",\n   \"categories\": [\n    \"validation-decision\"\n   ],\n   \"location\": \"scenario\",\n   \"components\": {\n    \"validation_decision\": {\n     \"validation\": \"failed\",\n     \"hold\": true,\n     \"review\": \"requested\",\n     \"assents\": 0,\n     \"active\": false,\n     \"condition_id\": \"condition-pump-activation\"\n    }\n   }\n  },\n  \"position-bo\": {\n   \"label\": \"Recorded position of bo\",\n   \"categories\": [\n    \"actor-position\"\n   ],\n   \"location\": \"scenario\",\n   \"components\": {\n    \"actor_position\": {\n     \"holder_id\": \"bo\",\n     \"assent\": false,\n     \"stance\": \"unexpressed\",\n     \"assent_weight\": 1\n    }\n   }\n  },\n  \"prototype-pump\": {\n   \"label\": \"Prototype pump\",\n   \"categories\": [\n    \"equipment\",\n    \"prototype-pump\"\n   ],\n   \"location\": \"scenario\",\n   \"components\": {\n    \"prototype_pump\": {\n     \"equipment_type\": \"prototype pump\"\n    }\n   }\n  }\n }\n}"
+                }
+              ],
+              "calls": [
+                {
+                  "kind": "propose",
+                  "model": "openrouter/openai/gpt-6-luna",
+                  "task": "world-substrate-judge",
+                  "trace_id": "world-substrate-polarity-3a0ca9c2/bo-negative-r3",
+                  "cost_usd": 0.00170326
+                }
+              ],
+              "cost_usd": 0.00170326
+            },
+            "belief": "Retained-utterance check.",
+            "expects": "Inspect the actual installed consequence."
+          },
+          "mara": {
+            "wanted": null,
+            "did": null,
+            "status": "no_action",
+            "retried": false,
+            "said": "Recorded-input replay.",
+            "refused_because": [],
+            "lost_what_it_wanted": false,
+            "blocked_by_rules": [],
+            "attempt": {
+              "text": "wait",
+              "reading": {
+                "kind": "wait",
+                "fields": {},
+                "quoted_spans": {},
+                "nearest_kind": "none",
+                "why": "the person waited"
+              }
+            },
+            "belief": "Retained-utterance check.",
+            "expects": "Inspect the actual installed consequence."
+          }
+        },
+        "progress": {}
+      }
+    ],
+    "final_snapshot": {
+      "schema_version": "world-substrate-snapshot/v1",
+      "world": {
+        "world_id": "prototype-pump-validation-live",
+        "revision": 5,
+        "tick": 0,
+        "entities": {
+          "ari": {
+            "entity_id": "ari",
+            "label": "Ari",
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "ari",
+            "last_cause_event_id": "e00005",
+            "components": {
+              "member": {
+                "role": "Validation engineer",
+                "authorized": false,
+                "approved": false,
+                "aware": false
+              },
+              "report_log": {
+                "entries": [
+                  "{\"channel\":\"direct\",\"content\":\"I ask Ari to complete validation for the prototype pump's activation decision.\",\"delivery_status\":\"delivered\",\"id\":\"rpt-7f8ccef75544e26a\",\"lineage_status\":\"not_declared\",\"recipient_id\":\"ari\",\"source_event_id\":\"e00005\",\"source_id\":\"mara\",\"source_lineage\":null,\"source_revision\":4}"
+                ]
+              }
+            }
+          },
+          "bo": {
+            "entity_id": "bo",
+            "label": "Bo",
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "bo",
+            "components": {
+              "member": {
+                "role": "Prototype pump operator",
+                "authorized": false,
+                "approved": false,
+                "aware": false
+              },
+              "report_log": {
+                "entries": []
+              }
+            }
+          },
+          "condition-pump-activation": {
+            "entity_id": "condition-pump-activation",
+            "label": "Technical condition",
+            "category_ids": [
+              "technical-condition"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "condition-pump-activation",
+            "last_cause_event_id": "e00001",
+            "components": {
+              "technical_condition": {
+                "passing": true
+              }
+            }
+          },
+          "delivery-info-mara-short-failure-report-to-mara": {
+            "entity_id": "delivery-info-mara-short-failure-report-to-mara",
+            "label": "Delivery to mara",
+            "category_ids": [
+              "delivery"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "delivery-info-mara-short-failure-report-to-mara",
+            "components": {
+              "delivery": {
+                "info_id": "info-mara-short-failure-report-to-mara",
+                "recipient_id": "mara",
+                "channel_id": "validation_report",
+                "status": "delivered"
+              }
+            }
+          },
+          "historical-measurement-v17": {
+            "entity_id": "historical-measurement-v17",
+            "label": "Historical validation measurement",
+            "category_ids": [
+              "historical-measurement",
+              "historical-measurement-v17"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "historical-measurement-v17",
+            "components": {
+              "historical_measurement_v17": {
+                "hidden_measurement_status": "past evidence, not a current-condition measurement",
+                "hidden_validation_batch": "V17",
+                "hidden_sensor_channel": "C",
+                "hidden_drift_units": 8
+              }
+            }
+          },
+          "info-mara-short-failure-report-to-mara": {
+            "entity_id": "info-mara-short-failure-report-to-mara",
+            "label": "Validation failed. (to mara)",
+            "category_ids": [
+              "information"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "info-mara-short-failure-report-to-mara",
+            "components": {
+              "claim_provenance": {
+                "apparent_source": "Validation report",
+                "source_lineage": "validation_result_batch_v17",
+                "hidden_origin": "[{\"key\": \"underlying_validation_batch\", \"value\": \"V17\"}, {\"key\": \"underlying_measurement_channel\", \"value\": \"C\"}, {\"key\": \"underlying_measurement_drift_units\", \"value\": 8}]"
+              },
+              "information": {
+                "content": "Validation failed.",
+                "source_id": "unspecified-source-mara-short-failure-report",
+                "channel_id": "validation_report",
+                "visibility": "direct",
+                "topic": "mara_short_failure_report",
+                "active": true
+              }
+            }
+          },
+          "mara": {
+            "entity_id": "mara",
+            "label": "Mara",
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "mara",
+            "components": {
+              "member": {
+                "role": "Coordinator",
+                "authorized": false,
+                "approved": false,
+                "aware": false
+              },
+              "report_log": {
+                "entries": []
+              }
+            }
+          },
+          "position-ari": {
+            "entity_id": "position-ari",
+            "label": "Recorded position of ari",
+            "category_ids": [
+              "actor-position"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "position-ari",
+            "components": {
+              "actor_position": {
+                "holder_id": "ari",
+                "assent": false,
+                "stance": "unexpressed",
+                "assent_weight": 0
+              }
+            }
+          },
+          "position-bo": {
+            "entity_id": "position-bo",
+            "label": "Recorded position of bo",
+            "category_ids": [
+              "actor-position"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "position-bo",
+            "last_cause_event_id": "e00003",
+            "components": {
+              "actor_position": {
+                "holder_id": "bo",
+                "assent": false,
+                "stance": "unexpressed",
+                "assent_weight": 1
+              }
+            }
+          },
+          "position-mara": {
+            "entity_id": "position-mara",
+            "label": "Recorded position of mara",
+            "category_ids": [
+              "actor-position"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "position-mara",
+            "components": {
+              "actor_position": {
+                "holder_id": "mara",
+                "assent": false,
+                "stance": "unexpressed",
+                "assent_weight": 1
+              }
+            }
+          },
+          "prototype-pump": {
+            "entity_id": "prototype-pump",
+            "label": "Prototype pump",
+            "category_ids": [
+              "equipment",
+              "prototype-pump"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "prototype-pump",
+            "components": {
+              "prototype_pump": {
+                "equipment_type": "prototype pump"
+              }
+            }
+          },
+          "public-procedure": {
+            "entity_id": "public-procedure",
+            "label": "Public validation and activation procedure",
+            "category_ids": [
+              "procedure",
+              "public-procedure"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "public-procedure",
+            "components": {
+              "public_procedure": {
+                "filing_validation_hold_reveals": "failed validation",
+                "filing_validation_hold_reveals_private_test_details": false,
+                "review_completion_repairs_equipment": false,
+                "waiting_repairs_equipment": false
+              }
+            }
+          },
+          "pump-activation": {
+            "entity_id": "pump-activation",
+            "label": "Whether to activate the prototype pump",
+            "category_ids": [
+              "validation-decision"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "pump-activation",
+            "last_cause_event_id": "e00003",
+            "components": {
+              "validation_decision": {
+                "validation": "failed",
+                "hold": true,
+                "review": "requested",
+                "assents": 0,
+                "active": false,
+                "condition_id": "condition-pump-activation"
+              }
+            }
+          },
+          "technical-role-ari": {
+            "entity_id": "technical-role-ari",
+            "label": "Technical authority of ari",
+            "category_ids": [
+              "technical-role"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "technical-role-ari",
+            "components": {
+              "technical_role": {
+                "holder_id": "ari",
+                "validator": true,
+                "repairer": true
+              }
+            }
+          },
+          "unspecified-source-mara-short-failure-report": {
+            "entity_id": "unspecified-source-mara-short-failure-report",
+            "label": "Unspecified report source",
+            "category_ids": [
+              "information-source"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "unspecified-source-mara-short-failure-report"
+          }
+        },
+        "engine_id": "world-substrate-core@1",
+        "content_id": "world-substrate-prototype-pump-validation@1",
+        "rule_versions": {
+          "coordination.action.communicate": "1",
+          "decision.action.activate": "1",
+          "decision.action.complete-validation": "1",
+          "decision.action.record-assent": "1",
+          "decision.action.repair-condition": "1",
+          "decision.action.request-review": "1",
+          "decision.action.send-report": "1",
+          "decision.action.state-concerned": "1",
+          "decision.action.state-supportive": "1",
+          "decision.action.state-undecided": "1",
+          "decision.action.withdraw-assent": "1",
+          "validation-fails": "1",
+          "validation-passes": "1"
+        }
+      }
+    },
+    "resident_memory": {
+      "ari": [
+        "Round 3. What just happened: nothing new.",
+        "Round 3: you believed: Retained-utterance check. You tried: wait. Result: not carried out."
+      ],
+      "bo": [
+        "Round 3. What just happened: nothing new.",
+        "Round 3: you believed: Retained-utterance check. You tried: I withhold assent to activation by recording my position as not assenting on Bo's recorded position for the prototype pump.. Result: not carried out."
+      ],
+      "mara": [
+        "Round 3. What just happened: nothing new.",
+        "Round 3: you believed: Retained-utterance check. You tried: wait. Result: not carried out."
+      ]
+    },
+    "actor_inputs": {},
+    "actor_information_mode": "declared-v1",
+    "judge_rulings": "create",
+    "underway": []
+  }
+}

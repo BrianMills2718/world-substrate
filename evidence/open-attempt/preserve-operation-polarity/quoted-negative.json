@@ -1,0 +1,995 @@
+{
+  "case": "quoted-negative",
+  "source_call_id": null,
+  "attempt": "I send Mara a report saying 'I do not assent'.",
+  "expected_kind": "send-report",
+  "actual_kind": "send-report",
+  "passed": true,
+  "row": {
+    "wanted": {
+      "actor": "bo",
+      "base_revision": 13,
+      "controller": "live:resident",
+      "kind": "send-report",
+      "recipient": "mara",
+      "content": "I do not assent"
+    },
+    "did": {
+      "actor": "bo",
+      "base_revision": 13,
+      "controller": "live:resident",
+      "kind": "send-report",
+      "recipient": "mara",
+      "content": "I do not assent"
+    },
+    "status": "accepted",
+    "retried": false,
+    "said": "Recorded-input replay.",
+    "refused_because": [],
+    "lost_what_it_wanted": false,
+    "changed": true,
+    "blocked_by_rules": [],
+    "event_id": "r6-e00001",
+    "changes": [
+      {
+        "path": "entities.mara.components.report_log.entries",
+        "before": [],
+        "after": [
+          "{\"channel\":\"direct\",\"content\":\"I do not assent\",\"delivery_status\":\"delivered\",\"id\":\"rpt-afc536ee184fe64f\",\"lineage_status\":\"not_declared\",\"recipient_id\":\"mara\",\"source_event_id\":\"e00001\",\"source_id\":\"bo\",\"source_lineage\":null,\"source_revision\":13}"
+        ]
+      }
+    ],
+    "attempt": {
+      "text": "I send Mara a report saying 'I do not assent'.",
+      "reading": {
+        "kind": "send-report",
+        "fields": {
+          "recipient": "mara",
+          "content": "I do not assent"
+        },
+        "quoted_spans": {
+          "recipient": "Mara",
+          "content": "'I do not assent'"
+        },
+        "nearest_kind": "send-report",
+        "why": "The attempted operation is sending Mara a report; the quoted words are report content, not a separate assent action.",
+        "coverage": {
+          "status": "complete",
+          "action_spans": [
+            "I send Mara a report saying 'I do not assent'."
+          ],
+          "unrepresented_spans": []
+        }
+      }
+    },
+    "belief": "Retained-utterance check.",
+    "expects": "Inspect the actual installed consequence."
+  },
+  "replay": {
+    "ok": true,
+    "steps": 2,
+    "expected": "a910fa65c343cf825e4c0de048a87301abeef76219bb4fac1825c576bbe49e53",
+    "actual": "a910fa65c343cf825e4c0de048a87301abeef76219bb4fac1825c576bbe49e53",
+    "event_match": true
+  },
+  "trace": {
+    "schema_version": "world-substrate-contested-run/v3",
+    "world": "prototype-pump-validation",
+    "actors": [
+      "ari",
+      "bo",
+      "mara"
+    ],
+    "model": "llm-resident (Concordia) openrouter/openai/gpt-6-luna",
+    "cost_usd": 0.000237,
+    "mechanic_profile_id": "49a60fa4280781d3",
+    "reaction_limit": null,
+    "engine_events": [
+      {
+        "event_id": "r6-e00001",
+        "causal_bearer": {
+          "kind": "actor",
+          "id": "bo",
+          "controller": "live:resident"
+        },
+        "semantic_binding": null,
+        "observation": {
+          "world_id": "prototype-pump-validation-live",
+          "revision": 13,
+          "tick": 0,
+          "actor_id": "bo",
+          "entities": {
+            "ari": {
+              "entity_id": "ari",
+              "label": "Ari",
+              "category_ids": [
+                "actor",
+                "member"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "ari",
+              "last_cause_event_id": "e00005",
+              "components": {
+                "member": {
+                  "role": "Validation engineer",
+                  "authorized": false,
+                  "approved": false,
+                  "aware": false
+                },
+                "report_log": {
+                  "entries": [
+                    "{\"channel\":\"direct\",\"content\":\"I ask Ari to complete validation for the prototype pump's activation decision.\",\"delivery_status\":\"delivered\",\"id\":\"rpt-7f8ccef75544e26a\",\"lineage_status\":\"not_declared\",\"recipient_id\":\"ari\",\"source_event_id\":\"e00005\",\"source_id\":\"mara\",\"source_lineage\":null,\"source_revision\":4}"
+                  ]
+                }
+              }
+            },
+            "bo": {
+              "entity_id": "bo",
+              "label": "Bo",
+              "category_ids": [
+                "actor",
+                "member"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "bo",
+              "components": {
+                "member": {
+                  "role": "Prototype pump operator",
+                  "authorized": false,
+                  "approved": false,
+                  "aware": false
+                },
+                "report_log": {
+                  "entries": []
+                }
+              }
+            },
+            "condition-pump-activation": {
+              "entity_id": "condition-pump-activation",
+              "label": "Technical condition",
+              "category_ids": [
+                "technical-condition"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "condition-pump-activation",
+              "last_cause_event_id": "e00001",
+              "components": {
+                "technical_condition": {
+                  "passing": true
+                }
+              }
+            },
+            "historical-measurement-v17": {
+              "entity_id": "historical-measurement-v17",
+              "label": "Historical validation measurement",
+              "category_ids": [
+                "historical-measurement",
+                "historical-measurement-v17"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "historical-measurement-v17",
+              "components": {
+                "historical_measurement_v17": {
+                  "hidden_measurement_status": "past evidence, not a current-condition measurement",
+                  "hidden_validation_batch": "V17",
+                  "hidden_sensor_channel": "C",
+                  "hidden_drift_units": 8
+                }
+              }
+            },
+            "mara": {
+              "entity_id": "mara",
+              "label": "Mara",
+              "category_ids": [
+                "actor",
+                "member"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "mara",
+              "components": {
+                "member": {
+                  "role": "Coordinator",
+                  "authorized": false,
+                  "approved": false,
+                  "aware": false
+                },
+                "report_log": {
+                  "entries": []
+                }
+              }
+            },
+            "position-ari": {
+              "entity_id": "position-ari",
+              "label": "Recorded position of ari",
+              "category_ids": [
+                "actor-position"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "position-ari",
+              "last_cause_event_id": "e00001",
+              "components": {
+                "actor_position": {
+                  "holder_id": "ari",
+                  "assent": false,
+                  "stance": "supportive",
+                  "assent_weight": 0
+                }
+              }
+            },
+            "position-bo": {
+              "entity_id": "position-bo",
+              "label": "Recorded position of bo",
+              "category_ids": [
+                "actor-position"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "position-bo",
+              "last_cause_event_id": "e00002",
+              "components": {
+                "actor_position": {
+                  "holder_id": "bo",
+                  "assent": false,
+                  "stance": "concerned",
+                  "assent_weight": 1
+                }
+              }
+            },
+            "position-mara": {
+              "entity_id": "position-mara",
+              "label": "Recorded position of mara",
+              "category_ids": [
+                "actor-position"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "position-mara",
+              "last_cause_event_id": "e00005",
+              "components": {
+                "actor_position": {
+                  "holder_id": "mara",
+                  "assent": false,
+                  "stance": "concerned",
+                  "assent_weight": 1
+                }
+              }
+            },
+            "prototype-pump": {
+              "entity_id": "prototype-pump",
+              "label": "Prototype pump",
+              "category_ids": [
+                "equipment",
+                "prototype-pump"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "prototype-pump",
+              "components": {
+                "prototype_pump": {
+                  "equipment_type": "prototype pump"
+                }
+              }
+            },
+            "public-procedure": {
+              "entity_id": "public-procedure",
+              "label": "Public validation and activation procedure",
+              "category_ids": [
+                "procedure",
+                "public-procedure"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "public-procedure",
+              "components": {
+                "public_procedure": {
+                  "filing_validation_hold_reveals": "failed validation",
+                  "filing_validation_hold_reveals_private_test_details": false,
+                  "review_completion_repairs_equipment": false,
+                  "waiting_repairs_equipment": false
+                }
+              }
+            },
+            "pump-activation": {
+              "entity_id": "pump-activation",
+              "label": "Whether to activate the prototype pump",
+              "category_ids": [
+                "validation-decision"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "pump-activation",
+              "last_cause_event_id": "e00003",
+              "components": {
+                "validation_decision": {
+                  "validation": "passed",
+                  "hold": false,
+                  "review": "requested",
+                  "assents": 0,
+                  "active": false,
+                  "condition_id": "condition-pump-activation"
+                }
+              }
+            },
+            "technical-role-ari": {
+              "entity_id": "technical-role-ari",
+              "label": "Technical authority of ari",
+              "category_ids": [
+                "technical-role"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "technical-role-ari",
+              "components": {
+                "technical_role": {
+                  "holder_id": "ari",
+                  "validator": true,
+                  "repairer": true
+                }
+              }
+            },
+            "unspecified-source-mara-short-failure-report": {
+              "entity_id": "unspecified-source-mara-short-failure-report",
+              "label": "Unspecified report source",
+              "category_ids": [
+                "information-source"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "unspecified-source-mara-short-failure-report"
+            }
+          }
+        },
+        "tick": 0,
+        "world_revision": 14,
+        "rule_id": "decision.action.send-report",
+        "rule_version": "1",
+        "cause": "c00001",
+        "status": "accepted",
+        "checks": [
+          {
+            "label": "Base revision is current",
+            "ok": true,
+            "actual": 13,
+            "required": 13
+          },
+          {
+            "label": "Actor exists",
+            "ok": true,
+            "actual": null,
+            "required": null
+          },
+          {
+            "label": "the one acting is allowed to make this move",
+            "ok": true,
+            "actual": null,
+            "required": null
+          },
+          {
+            "label": "the recipient named exists",
+            "ok": true,
+            "actual": null,
+            "required": null
+          },
+          {
+            "label": "the recipient named is the right kind of thing for this move",
+            "ok": true,
+            "actual": null,
+            "required": null
+          },
+          {
+            "label": "the sender supplies words",
+            "ok": true,
+            "actual": "I do not assent",
+            "required": ""
+          },
+          {
+            "label": "the recipient's components.report_log.entries holds a list of text records",
+            "ok": true,
+            "actual": "list",
+            "required": "list of strings"
+          },
+          {
+            "label": "the report content is nonempty text",
+            "ok": true,
+            "actual": "str",
+            "required": "nonempty string"
+          }
+        ],
+        "declared_read_paths": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<recipient>.category_ids",
+          "entities.<recipient>.components.report_log",
+          "entities.<recipient>.components.report_log.entries"
+        ],
+        "declared_write_paths": [
+          "entities.<recipient>.components.report_log.entries",
+          "entities.<recipient>.last_cause_event_id"
+        ],
+        "changes": [
+          {
+            "path": "entities.mara.components.report_log.entries",
+            "before": [],
+            "after": [
+              "{\"channel\":\"direct\",\"content\":\"I do not assent\",\"delivery_status\":\"delivered\",\"id\":\"rpt-afc536ee184fe64f\",\"lineage_status\":\"not_declared\",\"recipient_id\":\"mara\",\"source_event_id\":\"e00001\",\"source_id\":\"bo\",\"source_lineage\":null,\"source_revision\":13}"
+            ]
+          },
+          {
+            "path": "entities.mara.last_cause_event_id",
+            "before": null,
+            "after": "e00001"
+          },
+          {
+            "path": "revision",
+            "before": 13,
+            "after": 14
+          }
+        ],
+        "hash_before": "fbcc6f8c0c69c450be3d63231acdc5385552e444de27c68af93e5bff7ca902d4",
+        "hash_after": "a910fa65c343cf825e4c0de048a87301abeef76219bb4fac1825c576bbe49e53"
+      }
+    ],
+    "summary": {
+      "turns": 1,
+      "terminal_reached": false,
+      "accepted_actions": 1,
+      "world_changes": 0,
+      "active_at_end": true,
+      "idle_actors": [
+        "ari",
+        "mara"
+      ],
+      "stalled_actors": [
+        "ari",
+        "mara"
+      ],
+      "moves_at_end": [
+        "send-report"
+      ],
+      "never_offered": {
+        "send-report": "it was never put to anyone"
+      },
+      "unmatched_attempts": [],
+      "first_turn": 6,
+      "last_turn": 6
+    },
+    "transcript": [
+      {
+        "turn": 6,
+        "world_changes": [],
+        "blocked_reactions": [
+          {
+            "rule_id": "validation-passes",
+            "it": "pump-activation",
+            "after": "r6-e00001",
+            "after_rule": "decision.action.send-report",
+            "failed": [
+              {
+                "check": "validation was completed",
+                "actual": "requested",
+                "required": "completed"
+              }
+            ]
+          }
+        ],
+        "knock_on": [
+          {
+            "trigger": "r6-e00001",
+            "trigger_rule": "decision.action.send-report",
+            "steps": 0,
+            "with_cause": 0,
+            "blocked": 1
+          }
+        ],
+        "world_events": [],
+        "revision_when_decided": 13,
+        "underway": [],
+        "committed_first": "ari",
+        "actors": {
+          "ari": {
+            "wanted": null,
+            "did": null,
+            "status": "no_action",
+            "retried": false,
+            "said": "Recorded-input replay.",
+            "refused_because": [],
+            "lost_what_it_wanted": false,
+            "blocked_by_rules": [],
+            "attempt": {
+              "text": "wait",
+              "reading": {
+                "kind": "wait",
+                "fields": {},
+                "quoted_spans": {},
+                "nearest_kind": "none",
+                "why": "the person waited"
+              }
+            },
+            "belief": "Retained-utterance check.",
+            "expects": "Inspect the actual installed consequence."
+          },
+          "bo": {
+            "wanted": {
+              "actor": "bo",
+              "base_revision": 13,
+              "controller": "live:resident",
+              "kind": "send-report",
+              "recipient": "mara",
+              "content": "I do not assent"
+            },
+            "did": {
+              "actor": "bo",
+              "base_revision": 13,
+              "controller": "live:resident",
+              "kind": "send-report",
+              "recipient": "mara",
+              "content": "I do not assent"
+            },
+            "status": "accepted",
+            "retried": false,
+            "said": "Recorded-input replay.",
+            "refused_because": [],
+            "lost_what_it_wanted": false,
+            "changed": true,
+            "blocked_by_rules": [],
+            "event_id": "r6-e00001",
+            "changes": [
+              {
+                "path": "entities.mara.components.report_log.entries",
+                "before": [],
+                "after": [
+                  "{\"channel\":\"direct\",\"content\":\"I do not assent\",\"delivery_status\":\"delivered\",\"id\":\"rpt-afc536ee184fe64f\",\"lineage_status\":\"not_declared\",\"recipient_id\":\"mara\",\"source_event_id\":\"e00001\",\"source_id\":\"bo\",\"source_lineage\":null,\"source_revision\":13}"
+                ]
+              }
+            ],
+            "attempt": {
+              "text": "I send Mara a report saying 'I do not assent'.",
+              "reading": {
+                "kind": "send-report",
+                "fields": {
+                  "recipient": "mara",
+                  "content": "I do not assent"
+                },
+                "quoted_spans": {
+                  "recipient": "Mara",
+                  "content": "'I do not assent'"
+                },
+                "nearest_kind": "send-report",
+                "why": "The attempted operation is sending Mara a report; the quoted words are report content, not a separate assent action.",
+                "coverage": {
+                  "status": "complete",
+                  "action_spans": [
+                    "I send Mara a report saying 'I do not assent'."
+                  ],
+                  "unrepresented_spans": []
+                }
+              }
+            },
+            "belief": "Retained-utterance check.",
+            "expects": "Inspect the actual installed consequence."
+          },
+          "mara": {
+            "wanted": null,
+            "did": null,
+            "status": "no_action",
+            "retried": false,
+            "said": "Recorded-input replay.",
+            "refused_because": [],
+            "lost_what_it_wanted": false,
+            "blocked_by_rules": [],
+            "attempt": {
+              "text": "wait",
+              "reading": {
+                "kind": "wait",
+                "fields": {},
+                "quoted_spans": {},
+                "nearest_kind": "none",
+                "why": "the person waited"
+              }
+            },
+            "belief": "Retained-utterance check.",
+            "expects": "Inspect the actual installed consequence."
+          }
+        },
+        "progress": {}
+      }
+    ],
+    "final_snapshot": {
+      "schema_version": "world-substrate-snapshot/v1",
+      "world": {
+        "world_id": "prototype-pump-validation-live",
+        "revision": 14,
+        "tick": 0,
+        "entities": {
+          "ari": {
+            "entity_id": "ari",
+            "label": "Ari",
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "ari",
+            "last_cause_event_id": "e00005",
+            "components": {
+              "member": {
+                "role": "Validation engineer",
+                "authorized": false,
+                "approved": false,
+                "aware": false
+              },
+              "report_log": {
+                "entries": [
+                  "{\"channel\":\"direct\",\"content\":\"I ask Ari to complete validation for the prototype pump's activation decision.\",\"delivery_status\":\"delivered\",\"id\":\"rpt-7f8ccef75544e26a\",\"lineage_status\":\"not_declared\",\"recipient_id\":\"ari\",\"source_event_id\":\"e00005\",\"source_id\":\"mara\",\"source_lineage\":null,\"source_revision\":4}"
+                ]
+              }
+            }
+          },
+          "bo": {
+            "entity_id": "bo",
+            "label": "Bo",
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "bo",
+            "components": {
+              "member": {
+                "role": "Prototype pump operator",
+                "authorized": false,
+                "approved": false,
+                "aware": false
+              },
+              "report_log": {
+                "entries": []
+              }
+            }
+          },
+          "condition-pump-activation": {
+            "entity_id": "condition-pump-activation",
+            "label": "Technical condition",
+            "category_ids": [
+              "technical-condition"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "condition-pump-activation",
+            "last_cause_event_id": "e00001",
+            "components": {
+              "technical_condition": {
+                "passing": true
+              }
+            }
+          },
+          "delivery-info-mara-short-failure-report-to-mara": {
+            "entity_id": "delivery-info-mara-short-failure-report-to-mara",
+            "label": "Delivery to mara",
+            "category_ids": [
+              "delivery"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "delivery-info-mara-short-failure-report-to-mara",
+            "components": {
+              "delivery": {
+                "info_id": "info-mara-short-failure-report-to-mara",
+                "recipient_id": "mara",
+                "channel_id": "validation_report",
+                "status": "delivered"
+              }
+            }
+          },
+          "historical-measurement-v17": {
+            "entity_id": "historical-measurement-v17",
+            "label": "Historical validation measurement",
+            "category_ids": [
+              "historical-measurement",
+              "historical-measurement-v17"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "historical-measurement-v17",
+            "components": {
+              "historical_measurement_v17": {
+                "hidden_measurement_status": "past evidence, not a current-condition measurement",
+                "hidden_validation_batch": "V17",
+                "hidden_sensor_channel": "C",
+                "hidden_drift_units": 8
+              }
+            }
+          },
+          "info-mara-short-failure-report-to-mara": {
+            "entity_id": "info-mara-short-failure-report-to-mara",
+            "label": "Validation failed. (to mara)",
+            "category_ids": [
+              "information"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "info-mara-short-failure-report-to-mara",
+            "components": {
+              "claim_provenance": {
+                "apparent_source": "Validation report",
+                "source_lineage": "validation_result_batch_v17",
+                "hidden_origin": "[{\"key\": \"underlying_validation_batch\", \"value\": \"V17\"}, {\"key\": \"underlying_measurement_channel\", \"value\": \"C\"}, {\"key\": \"underlying_measurement_drift_units\", \"value\": 8}]"
+              },
+              "information": {
+                "content": "Validation failed.",
+                "source_id": "unspecified-source-mara-short-failure-report",
+                "channel_id": "validation_report",
+                "visibility": "direct",
+                "topic": "mara_short_failure_report",
+                "active": true
+              }
+            }
+          },
+          "mara": {
+            "entity_id": "mara",
+            "label": "Mara",
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "mara",
+            "last_cause_event_id": "e00001",
+            "components": {
+              "member": {
+                "role": "Coordinator",
+                "authorized": false,
+                "approved": false,
+                "aware": false
+              },
+              "report_log": {
+                "entries": [
+                  "{\"channel\":\"direct\",\"content\":\"I do not assent\",\"delivery_status\":\"delivered\",\"id\":\"rpt-afc536ee184fe64f\",\"lineage_status\":\"not_declared\",\"recipient_id\":\"mara\",\"source_event_id\":\"e00001\",\"source_id\":\"bo\",\"source_lineage\":null,\"source_revision\":13}"
+                ]
+              }
+            }
+          },
+          "position-ari": {
+            "entity_id": "position-ari",
+            "label": "Recorded position of ari",
+            "category_ids": [
+              "actor-position"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "position-ari",
+            "last_cause_event_id": "e00001",
+            "components": {
+              "actor_position": {
+                "holder_id": "ari",
+                "assent": false,
+                "stance": "supportive",
+                "assent_weight": 0
+              }
+            }
+          },
+          "position-bo": {
+            "entity_id": "position-bo",
+            "label": "Recorded position of bo",
+            "category_ids": [
+              "actor-position"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "position-bo",
+            "last_cause_event_id": "e00002",
+            "components": {
+              "actor_position": {
+                "holder_id": "bo",
+                "assent": false,
+                "stance": "concerned",
+                "assent_weight": 1
+              }
+            }
+          },
+          "position-mara": {
+            "entity_id": "position-mara",
+            "label": "Recorded position of mara",
+            "category_ids": [
+              "actor-position"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "position-mara",
+            "last_cause_event_id": "e00005",
+            "components": {
+              "actor_position": {
+                "holder_id": "mara",
+                "assent": false,
+                "stance": "concerned",
+                "assent_weight": 1
+              }
+            }
+          },
+          "prototype-pump": {
+            "entity_id": "prototype-pump",
+            "label": "Prototype pump",
+            "category_ids": [
+              "equipment",
+              "prototype-pump"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "prototype-pump",
+            "components": {
+              "prototype_pump": {
+                "equipment_type": "prototype pump"
+              }
+            }
+          },
+          "public-procedure": {
+            "entity_id": "public-procedure",
+            "label": "Public validation and activation procedure",
+            "category_ids": [
+              "procedure",
+              "public-procedure"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "public-procedure",
+            "components": {
+              "public_procedure": {
+                "filing_validation_hold_reveals": "failed validation",
+                "filing_validation_hold_reveals_private_test_details": false,
+                "review_completion_repairs_equipment": false,
+                "waiting_repairs_equipment": false
+              }
+            }
+          },
+          "pump-activation": {
+            "entity_id": "pump-activation",
+            "label": "Whether to activate the prototype pump",
+            "category_ids": [
+              "validation-decision"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "pump-activation",
+            "last_cause_event_id": "e00003",
+            "components": {
+              "validation_decision": {
+                "validation": "passed",
+                "hold": false,
+                "review": "requested",
+                "assents": 0,
+                "active": false,
+                "condition_id": "condition-pump-activation"
+              }
+            }
+          },
+          "technical-role-ari": {
+            "entity_id": "technical-role-ari",
+            "label": "Technical authority of ari",
+            "category_ids": [
+              "technical-role"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "technical-role-ari",
+            "components": {
+              "technical_role": {
+                "holder_id": "ari",
+                "validator": true,
+                "repairer": true
+              }
+            }
+          },
+          "unspecified-source-mara-short-failure-report": {
+            "entity_id": "unspecified-source-mara-short-failure-report",
+            "label": "Unspecified report source",
+            "category_ids": [
+              "information-source"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "unspecified-source-mara-short-failure-report"
+          }
+        },
+        "engine_id": "world-substrate-core@1",
+        "content_id": "world-substrate-prototype-pump-validation@1",
+        "rule_versions": {
+          "coordination.action.communicate": "1",
+          "decision.action.activate": "1",
+          "decision.action.complete-validation": "1",
+          "decision.action.record-assent": "1",
+          "decision.action.repair-condition": "1",
+          "decision.action.request-review": "1",
+          "decision.action.send-report": "1",
+          "decision.action.state-concerned": "1",
+          "decision.action.state-supportive": "1",
+          "decision.action.state-undecided": "1",
+          "decision.action.withdraw-assent": "1",
+          "validation-fails": "1",
+          "validation-passes": "1"
+        }
+      }
+    },
+    "resident_memory": {
+      "ari": [
+        "Round 6. What just happened: nothing new.",
+        "Round 6: you believed: Retained-utterance check. You tried: wait. Result: not carried out."
+      ],
+      "bo": [
+        "Round 6. What just happened: nothing new.",
+        "Round 6: you believed: Retained-utterance check. You tried: I send Mara a report saying 'I do not assent'.. Result: accepted."
+      ],
+      "mara": [
+        "Round 6. What just happened: nothing new.",
+        "Round 6: you believed: Retained-utterance check. You tried: wait. Result: not carried out."
+      ]
+    },
+    "actor_inputs": {},
+    "actor_information_mode": "declared-v1",
+    "judge_rulings": "create",
+    "underway": []
+  }
+}
