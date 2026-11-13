@@ -1,0 +1,7 @@
+{
+  "status": "preflight-failed",
+  "error": "SSH remote command shell quoting caused exit2 before password retrieval or any model request. Corrected by shlex.join of remote command.",
+  "model_calls": 0,
+  "posted_requests": 0,
+  "revision": "f4b7afab183691df0e364a624a275876bcddb9ba"
+}

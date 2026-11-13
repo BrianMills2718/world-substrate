@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/tmp/ws-prod-i0-i1.py", line 36, in <module>
+    build=run_job(request,'/generate-world',{'description':source['description'],**source['build']},report=lambda value:print(value,flush=True))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code2/worktrees/world-substrate-i0-i1/scripts/probe_actor_information.py", line 45, in run_job
+    value = request(path, {**body, "async": True})
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/ws-prod-i0-i1.py", line 32, in request
+    if status>=400: raise RuntimeError(f'{path} HTTP {status}: {value.get("error")}')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: /generate-world HTTP 403: same-origin browser request required

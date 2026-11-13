@@ -431,6 +431,10 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
             "process_id. The engine refuses any step that breaks a law. When there are no laws, this rule says "
             "nothing.",
             "Use only action participants as effect targets.",
+            "append_report is action-only: append one attributable delivery record to a named recipient participant's string_list, "
+            "using value {action_field: <string field>} for the sender's words. The target must be a declared participant other than "
+            "the actor slot. It is not a set operation, investigation flag or autonomous process. When send-report is already compiled, "
+            "use that action for reports; generated rules must not duplicate it or write its protected report_log.",
             # Airfield s2 (evidence/open-attempt/s2-airfield/): six rules answers wrote no knock-on process at all.
             "Go through the represented things and moves for consequences that follow physically at once (a "
             "spill wets what is under it, a loud change such as an engine starting is heard by people in the same "
