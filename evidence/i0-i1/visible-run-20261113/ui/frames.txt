@@ -1,0 +1,89 @@
+https://brianmills.dev/world-builder/?run=T-e9dYLdIi61
+- banner: World Builder
+- main:
+  - heading "Simulate any small world" [level=1]
+  - paragraph: Say who is involved and what they are trying to do. AI writes the rules and the simulation starts.
+  - region "A shared run (end of the recording)":
+    - heading "A shared run (end of the recording)" [level=2]
+    - button "▶ Watch again"
+    - status: "End of the shared run: 6 rounds, replayed from the recording with no AI calls."
+    - text: Context view
+    - combobox "Context view":
+      - 'option "Analyst: whole run" [selected]'
+      - 'option "Actor: authorized inputs"'
+    - text: Person
+    - combobox "Person" [disabled]:
+      - option "ari" [selected]
+      - option "bo"
+      - option "mara"
+    - group: Exact inputs and provenance
+    - paragraph: "Round 6 · so far: 12 allowed · 6 refused"
+    - group:
+      - text: Picture
+      - iframe
+    - group:
+      - text: Network chooses moves place thing move the rules allow changes by itself
+      - status: "Showing 4 of 28 boxes: who acted in round 6 and what that used or changed. Select a box to see its state now."
+      - button "Show the whole world (28 boxes)"
+      - application:
+        - img:
+          - group "Edge from e:ari to a:record-assent"
+        - img:
+          - group "Edge from a:record-assent to e:pump-activation"
+        - img:
+          - group "Edge from a:record-assent to e:position-ari"
+        - text: can decision position
+        - group: Chooses moves Ari
+        - group: Thing Whether to activate the prototype pump
+        - group: Thing Recorded position of ari
+        - group: Move record assent
+        - img
+        - button "Zoom In":
+          - img
+        - button "Zoom Out":
+          - img
+        - button "Fit View":
+          - img
+      - paragraph
+    - list "What just happened, newest round first":
+      - listitem:
+        - strong: "Round 6:"
+        - text: "Ari: record assent"
+        - group: "Knock-on effects of r6-e00001 (decision.action.record assent): 0 steps run, 0 with a cause, no refusal, 1 blocked"
+      - listitem:
+        - strong: "Round 5:"
+        - text: "Bo: state concerned"
+      - listitem:
+        - strong: "Round 4:"
+        - text: "Ari: state supportive · Bo: withdraw assent · Mara: state concerned"
+        - group: "Knock-on effects of r4-e00001 (decision.action.state supportive): 0 steps run, 0 with a cause, no refusal, 1 blocked"
+      - listitem:
+        - strong: "Round 3:"
+        - text: "Ari: complete validation · Bo: record assent · Mara: request review"
+        - group: "Knock-on effects of r3-e00001 (decision.action.complete validation): 1 step run, 1 with a cause, no refusal"
+      - listitem:
+        - strong: "Round 2:"
+        - text: "Ari: repair condition · Bo: withdraw assent"
+        - group: "Knock-on effects of r2-e00001 (decision.action.repair condition): 0 steps run, 0 with a cause, no refusal, 1 blocked"
+      - listitem:
+        - strong: "Round 1:"
+        - text: "Bo: record assent · Mara: request review"
+    - group: Why things were refused
+    - button "Edit and run again"
+    - button "See how it works"
+    - status
+    - status
+    - group: More
+- contentinfo:
+  - group: More
+about:srcdoc
+- text: 👤 Ari record assent
+- strong: ari · record-assent
+- text: "My technical repair and revalidation were accepted, so I support activation based on the current passed validation status. 👤 Bo not understood: record assent"
+- strong: bo · unmatched-attempt
+- text: "As the pump operator, I should not assent to activation without evidence that the prototype is safe. 👤 Mara not understood: complete validation"
+- strong: mara · unmatched-attempt
+- text: "I value a coordinated decision, and the conflicting report and decision record leave me without a sound basis to assent. Round 6 (6 of 6) ari: record-assent · bo: unmatched-attempt · mara: unmatched-attempt ● Whether to activate the prototype pump ● Technical condition ● Recorded position of ari ● Recorded position of mara ● Recorded position of bo ● Technical authority of ari Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited."
+- heading "Changed this round (1)" [level=3]
+- text: "Recorded position of ari: assent: yes (was assent: no) Ari"
+- group: Not changed this round (11)

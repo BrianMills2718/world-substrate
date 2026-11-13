@@ -1,0 +1,143 @@
+Network
+chooses moves
+place
+thing
+move the rules allow
+changes by itself
+
+Lit up: what round 6 used or changed. Select a box to see its state now.
+
+Show only what this round touched
+can
+decision
+position
+source id
+info id
+recipient id
+condition id
+holder id
+holder id
+holder id
+holder id
+can
+can
+can
+information
+delivery
+recipient
+recipient
+recipient
+can
+can
+can
+recipient
+recipient
+recipient
+can
+can
+position
+position
+can
+can
+can
+decision
+position
+position
+position
+can
+can
+can
+position
+position
+position
+can
+can
+can
+position
+position
+position
+can
+can
+can
+position
+position
+position
+can
+can
+can
+decision
+can
+can
+can
+decision
+authority
+can
+can
+can
+authority
+condition
+can
+can
+can
+decision
+changes
+changes
+Chooses moves
+Ari
+Chooses moves
+Mara
+Chooses moves
+Bo
+Thing
+Unspecified report source
+Thing
+Validation failed. (to mara)
+Thing
+Delivery to mara
+Thing
+Prototype pump
+Thing
+Public validation and activation procedure
+Thing
+Historical validation measurement
+Anything else in the world.
+Thing
+Whether to activate the prototype pump
+Thing
+Technical condition
+Thing
+Recorded position of ari
+Thing
+Recorded position of mara
+Thing
+Recorded position of bo
+Thing
+Technical authority of ari
+Move
+communicate
+Move
+send report
+Move
+record assent
+Move
+withdraw assent
+Move
+state supportive
+Move
+state concerned
+Move
+state undecided
+Move
+request review
+Move
+complete validation
+Move
+repair condition
+Move
+activate
+By itself
+validation fails
+By itself
+validation passes
+
+Whether to activate the prototype pump: validation: passed · hold: false · review: requested · assents: 0 · active: false · condition id: condition-pump-activation.

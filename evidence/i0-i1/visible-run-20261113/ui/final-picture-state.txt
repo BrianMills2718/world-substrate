@@ -1,0 +1,45 @@
+👤
+Ari
+record assent
+ARI · RECORD-ASSENT
+My technical repair and revalidation were accepted, so I support activation based on the current passed validation status.
+👤
+Bo
+not understood: record assent
+BO · UNMATCHED-ATTEMPT
+As the pump operator, I should not assent to activation without evidence that the prototype is safe.
+👤
+Mara
+not understood: complete validation
+MARA · UNMATCHED-ATTEMPT
+I value a coordinated decision, and the conflicting report and decision record leave me without a sound basis to assent.
+Round 6 (6 of 6)
+ari: record-assent · bo: unmatched-attempt · mara: unmatched-attempt
+●
+Whether to activate the prototype pump
+●
+Technical condition
+●
+Recorded position of ari
+●
+Recorded position of mara
+●
+Recorded position of bo
+●
+Technical authority of ari
+Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.
+Changed this round (1)
+Recorded position of ari: assent: yes (was assent: no)
+Ari
+Not changed this round (11)
+Unspecified report source
+Validation failed. (to mara)
+Delivery to mara
+Prototype pump
+Public validation and activation procedure
+Historical validation measurement
+Whether to activate the prototype pump: assents: 0 · review: requested · hold: no · validation: passed
+Technical condition: passing: yes
+Recorded position of mara: stance: concerned
+Recorded position of bo: assent: no · stance: concerned
+Technical authority of ari
