@@ -46,6 +46,8 @@ class FakeLlm:
             if "document" in kwargs:
                 return [{"role": "system", "content": f"step {kwargs['step']} for {kwargs['actor']}"},
                         {"role": "user", "content": kwargs["document"]}]
+            if "attempt" in kwargs:
+                return [{"role": "user", "content": json.dumps({"attempt": kwargs["attempt"]})}]
             return [{"role": "user", "content": "{}"}]
 
         def call_llm_json_schema(model, messages, schema, **kwargs):
@@ -56,7 +58,9 @@ class FakeLlm:
                     raise RuntimeError("provider down")
                 return self.answers[name].pop(0), types.SimpleNamespace(cost=0.01)
             if kwargs["task"] == open_attempt.TASK:
-                return self.reading, types.SimpleNamespace(cost=0.0)
+                attempt = json.loads(messages[0]["content"])["attempt"]
+                return {**self.reading, "coverage": {"status": "complete", "action_spans": [attempt],
+                                                    "unrepresented_spans": []}}, types.SimpleNamespace(cost=0.0)
             return _resident(), types.SimpleNamespace(cost=0.0)
 
         def call_llm(model, messages, **kwargs):

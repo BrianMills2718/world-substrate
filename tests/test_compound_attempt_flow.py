@@ -75,4 +75,7 @@ def test_rejected_compound_changes_nothing_and_cannot_reach_judge_or_recipient(m
     assert item['interpretation_rejection'] == ('unread' if reader_failure else 'requires_decomposition')
     if not reader_failure:
         assert item['coverage'] == row['attempt']['reading']['coverage']
+    person = runner._picture_story(bundle, trace)['rounds'][1]['people']['validator']
+    assert person['interpretation_feedback'] == row['interpretation_feedback']
+    assert person['did'] == 'needs clarification'
     assert engine.replay()['ok']

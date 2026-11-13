@@ -1621,6 +1621,7 @@ function tell(f){const r=STORY.rounds[f.turn];if(!r)return;
  let box=document.getElementById('ws-story');if(!box){box=document.createElement('div');box.id='ws-story';document.querySelector('.stage').after(box)}
  box.replaceChildren();const add=(tag,cls,text,to)=>{const e=document.createElement(tag);if(cls)e.className=cls;e.textContent=text;(to||box).append(e);return e};
  add('div','key','Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.');
+ ids.forEach(a=>{const p=r.people[a];if(p&&p.interpretation_feedback)add('div','row',nameOf(a)+': '+p.interpretation_feedback)});
  add('h3','','Changed this round ('+r.changed.length+')');
  if(!r.changed.length)add('div','row','Nothing changed.');
  r.changed.forEach(c=>{const w=add('div','row new','');add('b','',c.label+': ',w);add('span','now',c.now,w);if(c.was)add('span','',' (was '+c.was+')',w);if(c.by)add('div','by',c.by,w)});
@@ -1755,7 +1756,9 @@ def _picture_story(bundle: dict[str, Any], trace: dict[str, Any]) -> dict[str, A
                 state = "acted" if status == "accepted" else "waited" if status == "no_action" else "refused"
                 wanted = rec.get("wanted") or {}
                 unread = wanted.get("kind") == "unmatched-attempt"
-                move = wanted.get("nearest_kind") if unread else (rec.get("did" if state == "acted" else "wanted") or {}).get("kind")
+                move = (wanted.get("nearest_kind") if wanted.get("nearest_kind") != open_attempt.NONE else None) if unread else (rec.get("did" if state == "acted" else "wanted") or {}).get("kind")
+                if rec.get("interpretation_feedback"):
+                    move = None  # an incomplete reading must not advertise a selected prefix
                 more = ["Changed: " + "; ".join(mine) + "."] if mine else []
                 if rec.get("interpretation_feedback"):
                     more.insert(0, f"It tried: “{wanted.get('attempt', '')}” {rec['interpretation_feedback']}")
@@ -1765,6 +1768,7 @@ def _picture_story(bundle: dict[str, Any], trace: dict[str, Any]) -> dict[str, A
                 elif state == "refused":
                     more.insert(0, "Refused. It needed, and did not have: " + "; ".join(map(str, rec.get("refused_because") or [_words(status)])) + ".")
                 people[actor] = {"state": state, "more": more,
+                                 **({"interpretation_feedback": rec["interpretation_feedback"]} if rec.get("interpretation_feedback") else {}),
                                  "did": _words(move) if state == "acted" else "waited" if state == "waited" else ("needs clarification" if rec.get("interpretation_feedback") else "not understood" if unread else "refused") + (": " + _words(move) if move else "")}
         changed = []
         for eid in who:

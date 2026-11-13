@@ -42,13 +42,17 @@ class RoundsLlm(FakeLlm):
         inner, render = fake.call_llm_json_schema, fake.render_prompt
 
         def render_prompt(path, **kwargs):
-            if "actor_id" in kwargs:
-                return [{"role": "user", "content": json.dumps({"actor": kwargs["actor_id"]})}]
+            if "actor_id" in kwargs and "attempt" in kwargs:
+                return [{"role": "user", "content": json.dumps({"actor": kwargs["actor_id"],
+                                                                  "attempt": kwargs["attempt"]})}]
             return render(path, **kwargs)
 
         def call_llm_json_schema(model, messages, schema, **kwargs):
             if kwargs["task"] == open_attempt.TASK:
-                return self.readings[json.loads(messages[0]["content"])["actor"]], __import__("types").SimpleNamespace(cost=0.0)
+                sent = json.loads(messages[0]["content"])
+                reading = {**self.readings[sent["actor"]], "coverage": {
+                    "status": "complete", "action_spans": [sent["attempt"]], "unrepresented_spans": []}}
+                return reading, __import__("types").SimpleNamespace(cost=0.0)
             return inner(model, messages, schema, **kwargs)
 
         fake.render_prompt, fake.call_llm_json_schema = render_prompt, call_llm_json_schema
