@@ -1,0 +1,72 @@
+ship: fetch company-planning: exit status 0 (0.7 s)
+ship: archive the validator folder from company-planning origin/main: exit status 0 (0.1 s)
+ship: unpack the validator folder: exit status 0 (0.0 s)
+ship: planning package: exit status 0 (0.3 s)
+scope: the manifest sets full_method (first commit 2026-08-31): dated requirements apply
+route: durable_solo
+ok   investigation: present (5 places searched, 5 findings: 3 holds, 1 fails, 1 unknown; cost not applicable)
+ok   checks: present (11 results, 1 found problems)
+ok   open_questions: present (96 questions, 43 open, 53 resolved)
+ok   system_model: present
+ok   domain_model: present (86 concepts, 155 relations)
+ok   diagrams: present (4 diagrams)
+ok   plan: present
+ok   acceptance: present (11 criteria: 9 not built, 2 built, 0 judged pass, 0 judged fail)
+ok   review_page: present (https://hive.brianmills.dev/plans/world-substrate/main/proposals/planning-package/review-page/)
+ok   cold_review: present (verdict pass)
+10 of 10 parts ok, 0 failing
+ok   substance: route follows from its path decision (route durable_solo)
+ok   substance: citations resolve (271 file citations checked, 23 other sources)
+ok   substance: domain model has a glossary (docs/model/DOMAIN.md)
+ok   substance: project layer checks against the planning layer (8 rules, 13 planning terms, 86 project terms)
+ok   substance: concepts point at their code (74 implemented, 12 dashed)
+ok   substance: plan names the concepts it relies on (45 concepts)
+ok   substance: plan records the cost basis of each AI step (10 AI steps: 10 measured, 0 computed)
+WAIT substance: plan compares its AI answer path with the plain version (planned: 2 cases, answer path: Attempt interpretation: one model call receives the complete actor-authorized utterance, installed signatures and known entities; deterministic typed/quote checks follow. This current implementation is already the plain version.)
+ok   substance: plan shows what each stage adds over the plain version (no stages: the plan is the plain version)
+ok   substance: plan records Brian's stops on this work (searched 4 ways; 2 stops found: 1 hold, 1 lifted)
+       - stop holds: Brian, 2026-11-12, "before we move to implementaiotn my instinct is that we should make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved" (Brian, current normative-readiness conversation, 2026-11-12; recorded here verbatim); applies to Simulator implementation outside the separately approved I0/I1 slices; the original documentation-first boundary is not a grant for later engine, cognition, solver or unrelated judge work.
+ok   substance: type-level model of executable rules (29 types, 29 mapped onto BrianMills2718/scientific-hypergraph@7b0638fe0aef)
+ok   substance: cold review read this revision (reviewed a6efda72357b)
+11 of 12 substance checks ok, 0 failing, 1 pending
+ok   initiative: initiative names its home (world-substrate: this repository is the home of a one-repository initiative)
+ok   tiers: spectrum rungs 1-11 are cited (11 rungs cited)
+ok   tiers: production rungs 12-14 are cited when it runs in production (runs in production; rungs cited)
+ok   tiers: thesaurus separates near-identical names (rung 4) (175 names compared)
+WAIT system_map: system map names every code unit (system_model.units is absent; no diagram item has kind system_map; required from 2026-11-17)
+4 of 5 initiative, spectrum-tier and system-map checks ok, 0 failing, 1 pending
+WAIT coverage: outcome and criteria against Brian's asked_by (4 requirements of Brian's words: 3 covered, 0 deferred, 1 about the planning process; stored judgment by openrouter/anthropic/claude-sonnet-5.5 at 2026-11-12T15:58:40-0500; criteria edited or added: A4, I0, I1; re-judged nightly)
+       R1 [outcome] "attempt to walk through wall" -> A3, A1, A9
+       R2 [outcome] "such attempts not successful" -> A3
+       R3 [outcome] "unskilled helicopter flying crashes" -> A7; UNSURE: 2 of 3 runs found a gap
+       R4 [process] "approval of attempts design" -> about the planning process: met by the validator and cold review, not a criterion
+ok   goal provenance: every goal part names its source (required from now (the manifest sets full_method (first commit 2026-08-31))) (0 goal pages: 0 parts, 0 sourced, 0 agent judgment, 0 unsourced, 0 unverified quotes, 0 stale vs requirements, 0 without the actor/job form)
+ok   freshness: reviewed at a6efda72357b, 0 plan files changed since (code commits never count)
+Verdict: compliant (plain-version comparison is planned (Only if a future proposal adds an AI stage to interpretation and a named decision survives argument. No comparison run is needed or authorized by this documentation repair.); 1 initiative, spectrum-tier and system-map checks pending until 2026-11-17; goal coverage re-judged nightly)
+ship: read merge settings: exit status 0 (0.4 s)
+ship: read protection of main (exit 1 with a 404 means none): exit status 0 (0.4 s)
+ship: environment `uv sync --all-extras`: exit status 0 (0.0 s)
+ship: check `make check` on 15b21c19: exit status 0 (37.9 s)
+  ℹ [INFO] requirements[13]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ℹ [INFO] requirements[14]: Requirement text is very long (>500 characters). Consider breaking it down.
+  ⚠ [WARNING] requirements[0]: Requirement "Opens on a landing page" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[1]: Requirement "Natural-language building" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[2]: Requirement "A failed build says what to try" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[3]: Requirement "Unrepresentable parts are listed" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[4]: Requirement "Refusals are shown per person per round" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[5]: Requirement "Rule checks read as plain English" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[6]: Requirement "Surprise world and clarifying dialogue" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[7]: Requirement "Worlds are continuous, not only tasks" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[8]: Requirement "Owner budget override" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[9]: Requirement "Every control has a tooltip" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[10]: Requirement "Secondary pages link home" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[11]: Requirement "Never red against green" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+  ⚠ [WARNING] requirements[12]: Requirement "One box and one Create simulation button" should contain SHALL or MUST (RFC 2119 best practice for English specs)
+ship: push: exit status 0 (2.9 s)
+ship: find open pull request: exit status 0 (0.4 s)
+ship: open pull request: exit status 0 (2.1 s)
+ship: merge #384 (rebase): exit status 0 (4.2 s)
+ship: read back #384: exit status 0 (0.5 s)
+ship: merged #384 as b3823f60b378450279ac3d096db5ee27117fa873; exit status 0
+ship: sweep finished lanes: exit status 0 (2.6 s)
+ship: kept this lane (--keep-lane); the periodic sweep removes it once idle
