@@ -298,7 +298,7 @@
    "id": "attempt-reading",
    "label": "Attempt reading",
    "kind": "Concept",
-   "explain": "The interpreter's typed reading of the whole attempt: one operation kind and quoted field rows, or wait; fresh readings include a quoted coverage assessment. Invalid/incomplete/unread assessments are interpretation rejections with safe clarification and no partial action, judge or request delivery. Complete unsupported operations remain missing-rule cases; historical absent assessments remain unassessed. Coverage is model evidence, not proof of semantic truth."
+   "explain": "The interpreter's typed reading of the whole attempt: one operation kind and quoted field rows, or wait; fresh readings include a quoted coverage assessment. Invalid/incomplete/unread assessments are interpretation rejections with safe clarification and no partial action, judge or request delivery. Complete unsupported operations remain missing-rule cases; historical absent assessments remain unassessed. Public example bindings aid person/object reference resolution without hidden fillers; full operation meaning includes polarity. Coverage is model evidence, not proof of semantic truth."
   },
   {
    "id": "build",
