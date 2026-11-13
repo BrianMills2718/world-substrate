@@ -298,7 +298,7 @@ class WorldNetworkTests(unittest.TestCase):
             self.skipTest("node is not installed")
         page = HOME.read_text()
         parts = []
-        for name in ("worldNetwork", "roundTouched", "applyRound", "focusNetwork"):
+        for name in ("worldNetwork", "roundTouched", "recordedEvents", "applyRound", "focusNetwork"):
             match = re.search(rf"^  function {name}\(.*?^  \}}$", page, re.S | re.M)
             self.assertIsNotNone(match, f"the page needs one {name}")
             parts.append(match.group(0))
@@ -390,6 +390,50 @@ class WorldNetworkTests(unittest.TestCase):
         self.assertEqual(out["queue"], 2)
         self.assertEqual(out["lit"], ["a:move", "e:brick-wall", "e:hangar", "e:sam", "e:training-requests", "p:recurring-training-requests"])
         self.assertNotIn("e:mechanic", out["lit"])
+
+    @pytest.mark.req("living-scene/frames-come-from-a-projection-and-a-profile", existing=True)
+    def test_saved_pump_rounds_project_the_canonical_state_including_reactions(self):
+        import json
+        evidence = HOME.parents[1] / "evidence/i0-i1/deployed-integration-5"
+        build = json.loads((evidence / "build.json").read_text())
+        rounds = [json.loads((evidence / f"round-{n}.json").read_text())["trace"] for n in (1, 2)]
+        result = self.run_page_functions(
+            f"(() => {{ const entities = {json_dumps(build['bundle']['entities'])};"
+            f" const traces = {json_dumps(rounds)}; return traces.map(t => {{"
+            " t.transcript.forEach(r => applyRound(entities, r));"
+            " return { components: JSON.parse(JSON.stringify(Object.fromEntries(entities.map(e => [e.id, e.components || {}])))),"
+            " touched: [...roundTouched(t.transcript[0])] }; }); })()")
+        for trace, projected in zip(rounds, result):
+            canonical = trace["final_snapshot"]["world"]["entities"]
+            self.assertEqual(projected["components"], {eid: e.get("components", {}) for eid, e in canonical.items()})
+        self.assertIn("e:activate-prototype-pump", result[1]["touched"])
+        self.assertIn("p:validation-passes", result[1]["touched"])
+
+    @pytest.mark.req("living-scene/frames-come-from-a-projection-and-a-profile", existing=True)
+    def test_reaction_is_between_its_parent_and_later_actor_and_duplicate_is_applied_once(self):
+        from tests.test_scene_replay import projection_order_round
+        turn = projection_order_round()
+        result = self.run_page_functions(
+            f"(() => {{ const t = {json_dumps(turn)}; const entities = [{{id:'vote', components:{{decision:{{review:'requested', marker:'off'}}}}}}];"
+            " applyRound(entities, t); return {state: entities[0].components.decision, ids: recordedEvents(t).map(e=>e.event_id)}; })()")
+        self.assertEqual(result["state"], {"review": "reopened", "marker": "settled"})
+        self.assertEqual(result["ids"], [f"r3-e{n:05d}" for n in range(9, 14)])
+
+    @pytest.mark.req("living-scene/frames-come-from-a-projection-and-a-profile", existing=True)
+    def test_recordings_without_event_ids_keep_actor_then_world_order(self):
+        turn = {"actors": {"a": {"changes": [{"path": "entities.vote.components.decision.review", "after": "completed"}]}},
+                "world_events": [{"changes": [{"path": "entities.vote.components.decision.review", "after": "archived"}]}]}
+        result = self.run_page_functions(
+            f"(() => {{ const entities = [{{id:'vote', components:{{decision:{{review:'requested'}}}}}}];"
+            f" applyRound(entities, {json_dumps(turn)}); return entities[0].components.decision.review; }})()")
+        self.assertEqual(result, "archived")
+
+    @pytest.mark.req("living-scene/frames-come-from-a-projection-and-a-profile", existing=True)
+    def test_reaction_only_entities_and_processes_are_touched(self):
+        result = self.run_page_functions(
+            "[...roundTouched({reactions:[{rule_id:'open-gate', changes:["
+            "{path:'entities.gate.components.access.open', before:false, after:true}]}]})].sort()")
+        self.assertEqual(result, ["e:gate", "p:open-gate"])
 
 
 def json_dumps(value) -> str:
