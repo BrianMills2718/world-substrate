@@ -1,4 +1,4 @@
-limit: 212
+limit: 217
 reason: 'Measured at 544c086: 183 tracked Markdown files, including required per-run
   TRACE_READ records and historical OpenSpec change records. Preserve that evidence;
   current authority remains docs/index.md and roadmap/README.md. New authored documents
@@ -18,6 +18,9 @@ reason: 'Measured at 544c086: 183 tracked Markdown files, including required per
 # One additional required Impeccable critique snapshot preserves Brian’s 2026-11-13
 # unusability correction and independent evidence; it is linked from the existing
 # feedback log and creates no new planning authority.
+# Five required records for the approved saved-player slice: PRODUCT.md and
+# DESIGN.md consolidate UI context; OpenSpec proposal/tasks/spec preserve
+# adoption separately from implementation evidence. No parallel roadmap.
 unlinked_ok:
 - path: openspec/changes/archive/
   reason: Historical change proposals and deltas; current required behavior is openspec/specs/,

@@ -9,7 +9,7 @@ surfaces:
     lifecycle: canonical
     source_path: scripts/world_builder_home.html
     url: https://brianmills.dev/world-builder/
-    tests: scripts/e2e/world_builder_e2e.mjs (includes the tooltip check the workspace tooltip policy cites)
+    tests: scripts/e2e/world_builder_e2e.mjs (includes the tooltip check the workspace tooltip policy cites); evidence/ui/saved-player-20261113/browser_check.py
     purpose: Define a represented world, request a constrained model proposal for its mechanics, review compiler-derived authority, approve, then launch a fresh scripted or model-selected run and inspect it.
   - id: waltzman-stakeholder-demo
     name: Waltzman stakeholder demo
