@@ -1,0 +1,754 @@
+{
+  "availability": {
+    "status": "available",
+    "present": [],
+    "missing": [],
+    "note": null
+  },
+  "primary": {
+    "representation": "master-detail",
+    "interaction": [
+      "details-on-demand",
+      "search-focus",
+      "provenance-inspector"
+    ],
+    "implementation": {
+      "renderer": "native-web",
+      "layout": null,
+      "notes": [
+        "supports application-ui (+7)",
+        "low-dependency baseline (+3)"
+      ],
+      "playbook": {
+        "id": "responsive-application-composition",
+        "buildSteps": [
+          "establish-primary-task-and-panel-hierarchy",
+          "design-target-width-breakpoints",
+          "use-minmax-and-content-aware-sizing",
+          "keep-details-from-obscuring-primary-context",
+          "test-empty-normal-and-max-content",
+          "verify-keyboard-and-focus-order",
+          "run-render-quality-gate"
+        ],
+        "avoid": [
+          "fixed-desktop-panel-widths",
+          "page-level-horizontal-scroll",
+          "secondary-panels-dominating-primary-task"
+        ]
+      }
+    }
+  },
+  "alternatives": [
+    "answer-receipt-card",
+    "composite-linked-view",
+    "argument-page"
+  ],
+  "alternativesDetailed": [
+    {
+      "representation": "answer-receipt-card",
+      "relationshipToPrimary": "unclassified",
+      "reason": "No substitute/complement relation is recorded for this pair yet."
+    },
+    {
+      "representation": "composite-linked-view",
+      "relationshipToPrimary": "substitute",
+      "reason": "Use the composite only when several complementary operations are first-class; otherwise a simpler collection plus inspector is cheaper.",
+      "source": "reviewed"
+    },
+    {
+      "representation": "argument-page",
+      "relationshipToPrimary": "unclassified",
+      "reason": "No substitute/complement relation is recorded for this pair yet."
+    }
+  ],
+  "avoid": [
+    {
+      "pattern": "schema-explorer",
+      "reason": "weak fit: scores 24 against 36 for master-detail; does not support task select; poor fit for low density (-4)",
+      "kind": "weak-fit"
+    },
+    {
+      "pattern": "data-table",
+      "reason": "weak fit: scores 26 against 36 for master-detail; does not support task select",
+      "kind": "weak-fit"
+    },
+    {
+      "pattern": "decision-table",
+      "reason": "weak fit: scores 27 against 36 for master-detail; does not support task select",
+      "kind": "weak-fit"
+    }
+  ],
+  "rationale": [
+    "structure: list, document (+10)",
+    "intent: inspect (+3)",
+    "task: lookup, select, inspect (+12)",
+    "interaction: exploratory (+2)",
+    "dynamics: interactive (+3)",
+    "density: low (+2)",
+    "supports provenance (+2)",
+    "strong accessibility fit (+1)",
+    "strong mobile fit (+1)"
+  ],
+  "assumptions": [],
+  "interfacePatterns": [
+    {
+      "id": "primary-detail-inspector",
+      "title": "Stable overview with detail inspector",
+      "family": "progressive-disclosure",
+      "score": 22,
+      "reason": "supports select, inspect; serves inspect, understand; fits list, document; fits application",
+      "apply": [
+        "Persist selection",
+        "Lead with the decision-relevant summary",
+        "Step down to evidence and source",
+        "Keep close and keyboard navigation explicit"
+      ],
+      "avoid": [
+        "Opening a new page for every detail",
+        "Showing internal IDs before human-readable meaning",
+        "Relying on hover"
+      ],
+      "implementationHints": [
+        "details-on-demand",
+        "linked-highlighting",
+        "provenance-inspector"
+      ],
+      "sources": [
+        {
+          "name": "PatternFly primary-detail",
+          "url": "https://www.patternfly.org/patterns/primary-detail/design-guidelines/",
+          "role": "behavior-reference"
+        },
+        {
+          "name": "Carbon disclosure patterns",
+          "url": "https://carbondesignsystem.com/patterns/overview/",
+          "role": "behavior-reference"
+        }
+      ]
+    },
+    {
+      "id": "architecture-context-to-component",
+      "title": "Architecture from context to components",
+      "family": "architecture",
+      "score": 16,
+      "reason": "supports select, inspect; serves inspect, understand; fits application",
+      "apply": [
+        "Show current and proposed elements distinctly",
+        "Name boundary ownership",
+        "Label arrows by their exact relationship",
+        "Expose contracts and material omissions in the inspector"
+      ],
+      "avoid": [
+        "One diagram containing every abstraction level",
+        "Unlabeled arrows",
+        "Boxes with no owner or contract meaning"
+      ],
+      "implementationHints": [
+        "c4-inspired-levels",
+        "boundary-node-types",
+        "typed-edges",
+        "details-on-demand"
+      ],
+      "sources": [
+        {
+          "name": "C4 model",
+          "url": "https://c4model.com/",
+          "role": "architecture-view-reference"
+        },
+        {
+          "name": "Structurizr DSL",
+          "url": "https://docs.structurizr.com/dsl",
+          "role": "text-model-reference"
+        }
+      ]
+    },
+    {
+      "id": "completion-receipt",
+      "title": "Completion receipt and next step",
+      "family": "completion",
+      "score": 15,
+      "reason": "supports inspect; serves understand; fits list, document; fits application",
+      "apply": [
+        "State the completed outcome",
+        "Give the exact evidence identity",
+        "Explain what happens next",
+        "Keep limitations adjacent"
+      ],
+      "avoid": [
+        "Celebratory status without evidence",
+        "Calling a supporting artifact the user outcome",
+        "Adding a feedback survey as the default next step"
+      ],
+      "implementationHints": [
+        "receipt-card",
+        "evidence-link",
+        "next-action"
+      ],
+      "sources": [
+        {
+          "name": "GOV.UK confirmation pages",
+          "url": "https://design-system.service.gov.uk/patterns/confirmation-pages/",
+          "role": "behavior-reference"
+        }
+      ]
+    },
+    {
+      "id": "honest-unavailable-state",
+      "title": "Honest unavailable state",
+      "family": "failure",
+      "score": 15,
+      "reason": "supports inspect; serves understand; fits list, document; fits application",
+      "apply": [
+        "Name the missing source or contract",
+        "Preserve the unavailable control",
+        "Give the resume event",
+        "Do not substitute stale data silently"
+      ],
+      "avoid": [
+        "Blank panels",
+        "Fabricated placeholders that look live",
+        "Removing unavailable views from navigation"
+      ],
+      "implementationHints": [
+        "unavailable-state",
+        "diagnostic",
+        "resume-event"
+      ],
+      "sources": [
+        {
+          "name": "Carbon empty states",
+          "url": "https://carbondesignsystem.com/patterns/empty-states-pattern/",
+          "role": "behavior-reference"
+        },
+        {
+          "name": "GOV.UK service unavailable",
+          "url": "https://design-system.service.gov.uk/patterns/service-unavailable-pages/",
+          "role": "behavior-reference"
+        }
+      ]
+    },
+    {
+      "id": "review-before-completion",
+      "title": "Review before completion",
+      "family": "review",
+      "score": 15,
+      "reason": "supports inspect; serves inspect; fits list, document; fits application",
+      "apply": [
+        "Show what changed",
+        "Bind evidence to the exact revision",
+        "Separate pass evidence from limitations",
+        "Offer approve and request-changes dispositions"
+      ],
+      "avoid": [
+        "Equating green tests with human acceptance",
+        "Making the reviewer reconstruct the change from raw files",
+        "Hiding non-claims"
+      ],
+      "implementationHints": [
+        "diff-summary",
+        "evidence-links",
+        "disposition-controls",
+        "details-on-demand"
+      ],
+      "sources": [
+        {
+          "name": "GitHub pull request reviews",
+          "url": "https://docs.github.com/en/pull-requests/reference/pull-request-reviews",
+          "role": "interaction-model"
+        },
+        {
+          "name": "GOV.UK check answers",
+          "url": "https://design-system.service.gov.uk/patterns/check-answers/",
+          "role": "behavior-reference"
+        }
+      ]
+    }
+  ],
+  "quality": {
+    "method": "application-layout-quality",
+    "compositionMethod": "one-page-composition-quality",
+    "workflow": [
+      "layout-at-target-widths",
+      "measure-control-and-text-bounds",
+      "check-scroll-containment",
+      "check-focus-order",
+      "check-empty-and-max-content",
+      "human-composition-review",
+      "capture-visual-regression",
+      "state-the-title-and-the-one-question-first",
+      "sketch-the-whole-on-one-page-before-any-section",
+      "match-each-part-to-its-job",
+      "let-structure-emerge-from-the-content",
+      "give-the-whole-room-to-breathe",
+      "check-the-sixty-second-read-with-a-cold-reader",
+      "date-and-version-the-page"
+    ],
+    "hardChecks": [
+      "no-control-overlap",
+      "no-page-level-horizontal-overflow",
+      "keyboard-reachable-controls",
+      "persistent-selection-visible",
+      "title-states-what-this-is-and-for-whom",
+      "whole-design-visible-on-one-screen-at-the-target-viewport",
+      "cold-reader-gets-the-mechanism-in-sixty-seconds",
+      "form-matches-job-lists-scan-tables-compare-flows-transition-maps-connect",
+      "relationships-drawn-not-implied-by-adjacency-or-links",
+      "same-object-same-mark-across-every-view",
+      "every-object-reveals-more-on-click-nothing-is-a-dead-end"
+    ],
+    "softChecks": [
+      "balanced-panel-sizing",
+      "clear-primary-action",
+      "details-do-not-obscure-context",
+      "first-frame-legibility",
+      "one-primary-drawing-with-callouts-not-parallel-columns-of-text",
+      "overlapping-views-merged-into-one-view-with-forms-not-thinned",
+      "structural-devices-encode-information-not-decoration",
+      "no-generated-defaults-cream-serif-card-kit-caps-labels-middle-dots",
+      "each-concept-drawn-in-a-shape-that-mirrors-its-behaviour",
+      "white-space-separates-groups-and-carries-hierarchy",
+      "size-and-weight-follow-importance",
+      "structure-earned-by-content-not-imposed-taxonomy",
+      "page-carries-its-date-and-version",
+      "a-person-would-pin-it-on-a-wall",
+      "each-element-encodes-its-answer-visually-text-only-where-no-visual-form-fits",
+      "each-drawing-shows-relations-a-list-cannot-linear-sequences-are-lists",
+      "one-element-dominates-by-size-weight-or-contrast",
+      "reading-order-is-obvious-without-instructions",
+      "gap-between-groups-larger-than-gap-within",
+      "enclosure-nesting-at-most-two-levels",
+      "elements-share-a-small-set-of-edges",
+      "same-role-same-treatment-everywhere",
+      "every-mark-carries-information",
+      "context-quiet-subject-loud",
+      "every-encoding-explained-on-the-same-screen",
+      "one-highlighted-state-not-several",
+      "object-count-within-density-budget-or-aggregated",
+      "every-named-element-opens-its-subject-on-click-or-tap",
+      "no-ellipsis-or-clipped-text-in-rendered-page",
+      "hovering-or-focusing-every-control-in-a-real-browser-shows-a-styled-tooltip-within-200ms-and-tap-works-on-phones",
+      "phone-and-laptop-each-have-a-layout-that-uses-their-width",
+      "every-view-stays-listed-in-sight-while-others-are-open-and-views-open-from-it-or-the-agent",
+      "sources-listed-beside-views-and-picking-one-highlights-what-rests-on-it",
+      "every-pane-resizable-by-drag-and-keyboard-and-one-inspector-holds-click-details",
+      "every-section-rolls-up-and-its-header-names-the-current-selection-and-the-controls-fit-one-pass",
+      "chat-suggestions-are-chips-below-the-input-and-ask-in-one-click",
+      "picking-an-item-lights-its-counterparts-in-every-open-view-and-can-be-cleared",
+      "agent-adds-to-the-readers-choices-unless-asked-to-replace-verified-with-live-asks",
+      "a-changed-default-is-visible-to-a-returning-reader",
+      "checks-measure-painted-geometry-after-fonts-load-at-each-supported-viewport",
+      "transient-explanations-are-at-most-five-short-points",
+      "every-navigation-item-has-content-and-stays-or-shows-its-way-back",
+      "groups-the-page-filters-by-have-one-view-relating-them-with-unlinked-groups-named",
+      "every-standard-code-labels-a-pure-view-and-custom-views-say-so",
+      "non-specialist-front-door-is-a-question-with-views-delivered-and-catalog-secondary",
+      "every-representation-switch-is-labelled-and-visible-on-arrival-and-each-name-has-one-destination",
+      "no-superseded-version-shown-beside-its-replacement-and-alternatives-are-one-view-with-a-switch",
+      "embedded-tool-has-no-label-clashing-with-host-full-area-and-honest-status",
+      "chat-led-page-has-conversation-plus-view-panel-and-a-non-empty-first-screen",
+      "every-page-renders-the-shared-anatomy-with-body-content-only-inside-block-containers"
+    ],
+    "usabilityChecks": [
+      "headline-and-picture-alone-convey-the-point-since-that-is-all-most-people-read",
+      "no-block-of-prose-longer-than-the-drawing-it-explains",
+      "reader-can-point-to-where-any-one-fact-lives"
+    ],
+    "repairOrder": [
+      "reflow-layout",
+      "allocate-minmax-space",
+      "wrap-or-truncate-secondary-text",
+      "move-detail-to-drawer-or-inspector",
+      "rewrite-the-title-as-the-one-question",
+      "move-the-whole-onto-one-screen-before-polishing-any-part",
+      "replace-prose-columns-with-one-drawing-plus-callouts",
+      "cut-imposed-sections-until-content-asks-for-them",
+      "unify-marks-across-views",
+      "add-reveal-on-click-for-every-dead-end",
+      "never-fix-by-hiding-source-or-caveat-truth"
+    ],
+    "notApplicable": [
+      {
+        "id": "attributed-claims-traced-to-source-no-invented-items",
+        "because": "quote-source-claims-no-invented-symmetry applies when presentation / review / a view presents a person's stated position, framing or decision"
+      },
+      {
+        "id": "argument-pages-follow-the-speakers-order-and-keep-their-reasons",
+        "because": "follow-the-presenters-argument-order applies when presentation / guided / a guided page or tour presents a specific person's argument, proposal or design"
+      },
+      {
+        "id": "drawing-laid-out-by-engine-with-content-and-optional-motion-layers",
+        "because": "auto-layout-then-enrich applies when graph / diagram / a node-and-link drawing of parts, actors or flows"
+      },
+      {
+        "id": "space-and-time-shown-together-when-the-subject-changes-over-time",
+        "because": "space-and-time-together applies when over-time / planning / operational"
+      }
+    ]
+  },
+  "compositionPlan": {
+    "title": "What information did this person receive?",
+    "question": "Inspect retained inputs supplied to one actor before the selected round without mistaking world truth or generated analysis for that actor knowledge.",
+    "audience": "Brian or a newcomer inspecting a saved small-world simulation",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "primary": {
+      "representation": "master-detail",
+      "form": "list-detail",
+      "carries": [
+        "actor receives input record"
+      ]
+    },
+    "secondary": [
+      {
+        "id": "legend",
+        "job": "explain every encoding on the same screen"
+      },
+      {
+        "id": "status-line",
+        "job": "source, revision, freshness, and what is missing"
+      },
+      {
+        "id": "detail-panel",
+        "job": "what opens when an object is selected"
+      }
+    ],
+    "readingOrder": [
+      "title",
+      "primary",
+      "legend",
+      "status-line",
+      "detail-panel"
+    ],
+    "groups": [],
+    "hierarchy": {
+      "levels": [
+        "title",
+        "primary",
+        "secondary",
+        "detail"
+      ],
+      "typeSizes": 3
+    },
+    "marks": {
+      "actor": {
+        "role": "list row",
+        "encoding": {
+          "colour": "blue",
+          "shape": "rounded box"
+        },
+        "labelled": true
+      },
+      "input record": {
+        "role": "section of the detail pane",
+        "encoding": {
+          "colour": "orange",
+          "shape": "rounded box"
+        },
+        "labelled": true
+      }
+    },
+    "links": [
+      {
+        "relationship": "actor receives input record",
+        "drawnAs": "link inside the detail pane to the related item",
+        "from": "actor",
+        "to": "input record"
+      }
+    ],
+    "emphasis": {
+      "channel": "one highlight colour",
+      "state": "selected"
+    },
+    "densityBudget": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "maxObjects": 12,
+      "minMarginPx": 24,
+      "perViewport": [
+        {
+          "viewport": {
+            "width": 1440,
+            "height": 1000
+          },
+          "maxObjects": 40
+        },
+        {
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "maxObjects": 12
+        }
+      ],
+      "items": 3,
+      "withinBudget": true,
+      "ifOver": "aggregate, filter, or reveal on demand; do not shrink"
+    },
+    "revealOnClick": {
+      "actor": [
+        "its links: actor receives input record -> input record",
+        "its own actor fields",
+        "its source and when it was recorded"
+      ],
+      "input record": [
+        "its links: actor actor receives input record -> this",
+        "its own input record fields",
+        "its source and when it was recorded"
+      ]
+    },
+    "designGaps": [],
+    "coldReadTarget": "After a minute a newcomer can say what the page answers: Inspect retained inputs supplied to one actor before the selected round without mistaking world truth or generated analysis for that actor knowledge.",
+    "heuristics": [
+      "one-question-title",
+      "whole-on-one-screen",
+      "single-focal-point",
+      "hierarchy-by-size-and-weight",
+      "reading-order-follows-layout",
+      "proximity-groups",
+      "similarity-means-sameness",
+      "enclosure-and-common-region",
+      "alignment-creates-structure",
+      "repetition-builds-language",
+      "white-space-carries-hierarchy",
+      "data-ink-and-chartjunk",
+      "layering-and-separation",
+      "overview-zoom-detail",
+      "recognition-over-recall",
+      "visibility-of-status",
+      "preattentive-pop-out",
+      "form-matches-job",
+      "relationships-drawn",
+      "merge-overlapping-views",
+      "structure-encodes-information",
+      "avoid-generated-defaults",
+      "shape-mirrors-behaviour",
+      "one-drawing-with-callouts",
+      "structure-earned-not-imposed",
+      "sixty-second-cold-read",
+      "density-budget",
+      "picture-before-prose",
+      "diagram-earns-its-space",
+      "every-mark-opens-its-subject",
+      "no-truncated-text",
+      "every-label-explains-itself",
+      "layout-fits-the-device",
+      "choose-views-dont-pile-them",
+      "sources-are-a-lens",
+      "workspace-panes-resize",
+      "sections-roll-up-to-a-summary",
+      "chat-suggestions-below-input",
+      "linked-highlighting-across-views",
+      "agent-changes-add-to-the-readers-choices",
+      "new-defaults-reach-returning-readers",
+      "verify-what-paints",
+      "short-points-not-paragraphs",
+      "navigation-holds-only-live-views",
+      "relate-the-groups-the-page-is-built-on",
+      "standard-views-are-what-they-say",
+      "question-first-for-non-specialists",
+      "controls-visible-where-the-reader-arrives",
+      "show-the-better-version-not-both",
+      "embedded-tools-fit-their-host",
+      "chat-led-pages-use-conversation-plus-view-panel",
+      "one-page-anatomy-per-site"
+    ],
+    "sketchInstructions": [
+      "Put one short title at the top that states what this page answers and for whom.",
+      "Everything important is visible at once; no scrolling implied.",
+      "One main drawing occupies most of the area; other elements are visibly smaller and lighter.",
+      "Use at most three type sizes; headings heavier than body; important boxes larger.",
+      "Entry point top-left; the thing to do next bottom-right; if the order differs, number the parts.",
+      "Related items touch or nearly touch; unrelated items have clear gaps between them.",
+      "Every object of one kind is drawn the same way in every picture of the set.",
+      "Draw at most one level of boxes-around-groups; use white space for the rest.",
+      "Left edges of text and boxes line up on a few shared vertical lines.",
+      "Reuse one card style, one label style, and one legend position across the set.",
+      "Leave generous empty space around the main drawing and between groups.",
+      "No decorative borders, shadows, icons, or gridlines that carry no meaning.",
+      "Draw context in light grey and the subject in black.",
+      "The first view is the whole; a detail panel shows what opens when something is selected.",
+      "Any colour or badge used has its meaning shown right there.",
+      "A small status line shows source and date.",
+      "Exactly one kind of thing is highlighted; everything else is grey scale.",
+      "Draw each part in the form that fits its job: list, table, flow, or map.",
+      "Connections are lines or containment, not just items placed near each other.",
+      "If a second view would redraw the same parts, make it a form of the first view instead.",
+      "Only draw a border, number or label where it tells the reader something; never number things that are not a sequence.",
+      "Before drawing, ask whether this page would look the same for an unrelated subject; if so, change the defaults.",
+      "Give each concept the shape of its behaviour; do not draw equal boxes for things that behave differently.",
+      "One large drawing with a few short labels pointing at parts of it; no columns of text.",
+      "Only draw a section or tab if the content shown needs it.",
+      "A stranger should get the point from the title and the main drawing alone.",
+      "Show a handful of objects at readable size, not dozens at tiny size.",
+      "Show each answer as a picture first (a path, bars, a strip of days, a map); use a sentence only where nothing visual says it better.",
+      "Draw boxes and arrows only where things branch, loop back meaningfully, connect many-to-many, or pass typed data between ports; a straight chain of steps is a numbered list.",
+      "Mark every card and node with what it opens; nothing that looks like an object is inert.",
+      "No ellipses: boxes and labels grow to fit their whole text; lists of points are bullets.",
+      "Every label and status has a short explanation reachable by hover or tap.",
+      "Sketch both the phone layout and the laptop layout.",
+      "Left: a short Topics list; middle: every view as a header with its summary, two of them open and drawn, the rest rolled up; right: a chat that answers in plain words and changes the same controls.",
+      "Draw a Sources list in the control column under Topics; one source selected, with its links glowing in the diagram and its quote in the details panel.",
+      "Draw controls left, the work centre, a Details pane right and a chat strip along the bottom, with a visible grab line on each divider.",
+      "Draw the control column with two sections rolled up to one-line headers that name their current selection, and one open.",
+      "Draw the chat as an input box with a row of rounded suggestion chips directly beneath it and no greeting above.",
+      "Draw two views side by side with one item picked in the first and its counterparts glowing in the second, everything else greyed, and a Clear highlight button.",
+      "Show the chat answering 'Show me the timeline' with the timeline opened alongside the views already open, and a note of what the agent opened.",
+      "Note beside the layout which remembered settings exist and that a redesign resets them once.",
+      "Annotate the sketch with the three viewports the checks run at.",
+      "Write every tour step or callout as one to five short bullet points, never a paragraph.",
+      "Show only tabs that have content for this subject; draw any item that opens another page as a link, not a tab.",
+      "Draw every group as a box, the shared members or stated links between them, and a note naming any group nothing ties to the others.",
+      "Title a combined view 'Custom view: <question>' with 'built from <codes>' under it; give each standard view its code and nothing else.",
+      "Draw the views area with its strip of view names on top and a chat dock at the bottom (log above the input, newest last), with answers opening views in the area above.",
+      "Draw the switch as a labelled row ('Show as:') directly under the view title; make the top navigation entry with the view's name open that view.",
+      "Draw one card or view per thing; if it has alternatives, show them as a switch inside it, never as separate sibling entries.",
+      "Draw the host switch above the embed with distinct option names, the embed filling the panel, and its status line stating what was checked when.",
+      "Draw the conversation on the left with the input at its bottom and the opened view on the right with a 'Browse all views' control above it.",
+      "Draw every page with the same header band and the same block containers; only the content inside the blocks changes from page to page."
+    ],
+    "checks": [
+      "title-states-what-this-is-and-for-whom",
+      "whole-design-visible-on-one-screen-at-the-target-viewport",
+      "one-element-dominates-by-size-weight-or-contrast",
+      "size-and-weight-follow-importance",
+      "reading-order-is-obvious-without-instructions",
+      "gap-between-groups-larger-than-gap-within",
+      "same-object-same-mark-across-every-view",
+      "enclosure-nesting-at-most-two-levels",
+      "elements-share-a-small-set-of-edges",
+      "same-role-same-treatment-everywhere",
+      "white-space-separates-groups-and-carries-hierarchy",
+      "every-mark-carries-information",
+      "context-quiet-subject-loud",
+      "every-object-reveals-more-on-click-nothing-is-a-dead-end",
+      "every-encoding-explained-on-the-same-screen",
+      "page-carries-its-date-and-version",
+      "one-highlighted-state-not-several",
+      "form-matches-job-lists-scan-tables-compare-flows-transition-maps-connect",
+      "relationships-drawn-not-implied-by-adjacency-or-links",
+      "overlapping-views-merged-into-one-view-with-forms-not-thinned",
+      "structural-devices-encode-information-not-decoration",
+      "no-generated-defaults-cream-serif-card-kit-caps-labels-middle-dots",
+      "each-concept-drawn-in-a-shape-that-mirrors-its-behaviour",
+      "one-primary-drawing-with-callouts-not-parallel-columns-of-text",
+      "structure-earned-by-content-not-imposed-taxonomy",
+      "cold-reader-gets-the-mechanism-in-sixty-seconds",
+      "object-count-within-density-budget-or-aggregated",
+      "each-element-encodes-its-answer-visually-text-only-where-no-visual-form-fits",
+      "each-drawing-shows-relations-a-list-cannot-linear-sequences-are-lists",
+      "every-named-element-opens-its-subject-on-click-or-tap",
+      "no-ellipsis-or-clipped-text-in-rendered-page",
+      "hovering-or-focusing-every-control-in-a-real-browser-shows-a-styled-tooltip-within-200ms-and-tap-works-on-phones",
+      "phone-and-laptop-each-have-a-layout-that-uses-their-width",
+      "every-view-stays-listed-in-sight-while-others-are-open-and-views-open-from-it-or-the-agent",
+      "sources-listed-beside-views-and-picking-one-highlights-what-rests-on-it",
+      "every-pane-resizable-by-drag-and-keyboard-and-one-inspector-holds-click-details",
+      "every-section-rolls-up-and-its-header-names-the-current-selection-and-the-controls-fit-one-pass",
+      "chat-suggestions-are-chips-below-the-input-and-ask-in-one-click",
+      "picking-an-item-lights-its-counterparts-in-every-open-view-and-can-be-cleared",
+      "agent-adds-to-the-readers-choices-unless-asked-to-replace-verified-with-live-asks",
+      "a-changed-default-is-visible-to-a-returning-reader",
+      "checks-measure-painted-geometry-after-fonts-load-at-each-supported-viewport",
+      "transient-explanations-are-at-most-five-short-points",
+      "every-navigation-item-has-content-and-stays-or-shows-its-way-back",
+      "groups-the-page-filters-by-have-one-view-relating-them-with-unlinked-groups-named",
+      "every-standard-code-labels-a-pure-view-and-custom-views-say-so",
+      "non-specialist-front-door-is-a-question-with-views-delivered-and-catalog-secondary",
+      "every-representation-switch-is-labelled-and-visible-on-arrival-and-each-name-has-one-destination",
+      "no-superseded-version-shown-beside-its-replacement-and-alternatives-are-one-view-with-a-switch",
+      "embedded-tool-has-no-label-clashing-with-host-full-area-and-honest-status",
+      "chat-led-page-has-conversation-plus-view-panel-and-a-non-empty-first-screen",
+      "every-page-renders-the-shared-anatomy-with-body-content-only-inside-block-containers"
+    ]
+  },
+  "viewSpec": {
+    "version": "0.1",
+    "id": "actor-input--master-detail",
+    "concern": "Inspect retained inputs supplied to one actor before the selected round without mistaking world truth or generated analysis for that actor knowledge.",
+    "viewpoint": {
+      "stakeholder": "Brian or a newcomer inspecting a saved small-world simulation",
+      "intent": [
+        "inspect",
+        "understand"
+      ],
+      "tasks": [
+        "select",
+        "inspect",
+        "lookup"
+      ],
+      "audience": {
+        "expertise": "mixed",
+        "domainFamiliarity": "novice",
+        "notationFamiliarity": "novice",
+        "frequency": "occasional"
+      }
+    },
+    "successCriteria": [
+      "The reader distinguishes supplied information from world truth and can open exact retained evidence."
+    ],
+    "surfaceContext": {
+      "medium": "application"
+    },
+    "representationContext": {
+      "role": "explanatory",
+      "abstractionLevel": "overview",
+      "concernHierarchy": null
+    },
+    "availability": {
+      "status": "available",
+      "present": [],
+      "missing": [],
+      "note": null
+    },
+    "projection": {
+      "entities": [
+        "actor",
+        "input record"
+      ],
+      "relationships": [
+        "actor receives input record"
+      ],
+      "focus": null,
+      "operations": []
+    },
+    "representation": {
+      "pattern": "master-detail",
+      "family": "application-ui",
+      "dynamics": "interactive",
+      "layout": "collection-plus-inspector"
+    },
+    "interactions": [
+      {
+        "trigger": "select visual mark",
+        "effect": "open persistent details",
+        "purpose": "Reveal model properties and provenance on demand."
+      },
+      {
+        "trigger": "search or selection",
+        "effect": "focus matching element",
+        "purpose": "Reach a known model element quickly."
+      }
+    ],
+    "provenance": {
+      "enabled": true,
+      "linkVisualMarksToModel": true,
+      "showDerivedCalculation": true,
+      "showEvidence": true
+    },
+    "rationale": [
+      "structure: list, document (+10)",
+      "intent: inspect (+3)",
+      "task: lookup, select, inspect (+12)",
+      "interaction: exploratory (+2)",
+      "dynamics: interactive (+3)",
+      "density: low (+2)",
+      "supports provenance (+2)",
+      "strong accessibility fit (+1)",
+      "strong mobile fit (+1)"
+    ]
+  }
+}

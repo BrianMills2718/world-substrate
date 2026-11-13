@@ -1,0 +1,82 @@
+{
+  "stakeholder": "Brian or a newcomer inspecting a saved small-world simulation",
+  "intent": [
+    "understand",
+    "trace"
+  ],
+  "informationStructure": [
+    "timeline",
+    "sequence"
+  ],
+  "tasks": [
+    "scrub",
+    "trace",
+    "inspect"
+  ],
+  "itemDetail": "in-page",
+  "scale": {
+    "items": 6,
+    "density": "low"
+  },
+  "interaction": {
+    "mode": "exploratory",
+    "dynamics": "interactive"
+  },
+  "audience": {
+    "expertise": "mixed",
+    "domainFamiliarity": "novice",
+    "notationFamiliarity": "novice",
+    "frequency": "occasional"
+  },
+  "consequence": {
+    "risk": "low",
+    "reversibility": "reversible"
+  },
+  "constraints": {
+    "mobile": true,
+    "viewports": [
+      {
+        "width": 1440,
+        "height": 1000
+      },
+      {
+        "width": 390,
+        "height": 844
+      }
+    ],
+    "accessibility": "high",
+    "provenance": true
+  },
+  "surfaceContext": {
+    "medium": "application"
+  },
+  "representationRole": "explanatory",
+  "abstractionLevel": "overview",
+  "id": "saved-run",
+  "title": "What changed in this run?",
+  "concern": "Track recorded rounds and select one attempted action to see its result without losing the round or actor.",
+  "entities": [
+    "round",
+    "attempt",
+    "change"
+  ],
+  "relationships": [
+    "round contains attempt",
+    "attempt produces change"
+  ],
+  "relationshipEnds": [
+    {
+      "relationship": "round contains attempt",
+      "from": "round",
+      "to": "attempt"
+    },
+    {
+      "relationship": "attempt produces change",
+      "from": "attempt",
+      "to": "change"
+    }
+  ],
+  "successCriteria": [
+    "A newcomer can stop on a round and identify its attempted actions and resulting world changes."
+  ]
+}

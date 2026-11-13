@@ -1,0 +1,522 @@
+{
+  "geometry": {
+    "w": 306,
+    "h": 357,
+    "scrollHeight": 357
+  },
+  "items": [
+    {
+      "tag": "DIV",
+      "id": "",
+      "cls": "stage",
+      "text": "\ud83d\udc64\nAri\nrecord assent\nARI \u00b7 RECORD-ASSENT\nMy technical repair and revalidation were accepted, so I support activation based on the current passed validation status.\n\ud83d\udc64\nBo\nnot understood: record assent\nBO \u00b7 UNMATCHED-ATTEMPT\nAs the pump operator, I should not assent to activation without evidence that the prototype is safe.\n\ud83d\udc64\nMara\nnot understood: complete validation\nMARA \u00b7 UNMATCHED-ATTEMPT\nI value a coordinated decision, and the conflicting report and decision record leave me without a sound basis to assent.\nRound 6 (6 of 6)\nari: record-assent \u00b7 bo: unmatched-attempt \u00b7 mara: unmatched-attempt\n\u25cf\nWhether to activate the prototype pump\n\u25cf\nTechnical condition\n\u25cf\nRecorded position of ari\n\u25cf\nRecorded position of mara\n\u25cf\nRecorded position of bo\n\u25cf\nTechnical authority of ari",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 4,
+        "y": 4,
+        "width": 298,
+        "height": 167.625,
+        "top": 4,
+        "right": 302,
+        "bottom": 171.625,
+        "left": 4
+      },
+      "display": "block"
+    },
+    {
+      "tag": "DIV",
+      "id": "",
+      "cls": "actor st-acted",
+      "text": "\ud83d\udc64\nAri\nrecord assent",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 74.27999877929688,
+        "y": 142.39999389648438,
+        "width": 75.44000244140625,
+        "height": 90.19999694824219,
+        "top": 142.39999389648438,
+        "right": 149.72000122070312,
+        "bottom": 232.59999084472656,
+        "left": 74.27999877929688
+      },
+      "display": "block"
+    },
+    {
+      "tag": "DIV",
+      "id": "",
+      "cls": "name",
+      "text": "Ari",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 95.53593444824219,
+        "y": 198.1599884033203,
+        "width": 32.928131103515625,
+        "height": 21.525009155273438,
+        "top": 198.1599884033203,
+        "right": 128.4640655517578,
+        "bottom": 219.68499755859375,
+        "left": 95.53593444824219
+      },
+      "display": "block"
+    },
+    {
+      "tag": "SPAN",
+      "id": "",
+      "cls": "did",
+      "text": "record assent",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 74.27999877929688,
+        "y": 221.3249969482422,
+        "width": 75.44000244140625,
+        "height": 7.5337371826171875,
+        "top": 221.3249969482422,
+        "right": 149.72000122070312,
+        "bottom": 228.85873413085938,
+        "left": 74.27999877929688
+      },
+      "display": "block"
+    },
+    {
+      "tag": "DIV",
+      "id": "",
+      "cls": "thought",
+      "text": "ARI \u00b7 RECORD-ASSENT\nMy technical repair and revalidation were accepted, so I support activation based on the current passed validation status.",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 13.796875,
+        "y": 36.71875,
+        "width": 116.265625,
+        "height": 219.96875,
+        "top": 36.71875,
+        "right": 130.0625,
+        "bottom": 256.6875,
+        "left": 13.796875
+      },
+      "display": "block"
+    },
+    {
+      "tag": "DIV",
+      "id": "",
+      "cls": "actor st-refused",
+      "text": "\ud83d\udc64\nBo\nnot understood: record assent",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 161.27999877929688,
+        "y": 142.39999389648438,
+        "width": 75.44000244140625,
+        "height": 90.19999694824219,
+        "top": 142.39999389648438,
+        "right": 236.72000122070312,
+        "bottom": 232.59999084472656,
+        "left": 161.27999877929688
+      },
+      "display": "block"
+    },
+    {
+      "tag": "DIV",
+      "id": "",
+      "cls": "name",
+      "text": "Bo",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 183.52249145507812,
+        "y": 198.1599884033203,
+        "width": 30.955001831054688,
+        "height": 21.525009155273438,
+        "top": 198.1599884033203,
+        "right": 214.4774932861328,
+        "bottom": 219.68499755859375,
+        "left": 183.52249145507812
+      },
+      "display": "block"
+    },
+    {
+      "tag": "SPAN",
+      "id": "",
+      "cls": "did",
+      "text": "not understood: record assent",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 161.27999877929688,
+        "y": 221.3249969482422,
+        "width": 75.44000244140625,
+        "height": 15.067489624023438,
+        "top": 221.3249969482422,
+        "right": 236.72000122070312,
+        "bottom": 236.39248657226562,
+        "left": 161.27999877929688
+      },
+      "display": "block"
+    },
+    {
+      "tag": "DIV",
+      "id": "",
+      "cls": "thought",
+      "text": "BO \u00b7 UNMATCHED-ATTEMPT\nAs the pump operator, I should not assent to activation without evidence that the prototype is safe.",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 175.9375,
+        "y": 36.71875,
+        "width": 116.265625,
+        "height": 205.125,
+        "top": 36.71875,
+        "right": 292.203125,
+        "bottom": 241.84375,
+        "left": 175.9375
+      },
+      "display": "block"
+    },
+    {
+      "tag": "DIV",
+      "id": "",
+      "cls": "actor st-refused",
+      "text": "\ud83d\udc64\nMara\nnot understood: complete validation",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 248.27999877929688,
+        "y": 142.39999389648438,
+        "width": 75.44000244140625,
+        "height": 90.19999694824219,
+        "top": 142.39999389648438,
+        "right": 323.7200012207031,
+        "bottom": 232.59999084472656,
+        "left": 248.27999877929688
+      },
+      "display": "block"
+    },
+    {
+      "tag": "DIV",
+      "id": "",
+      "cls": "name",
+      "text": "Mara",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 261.9765625,
+        "y": 198.1599884033203,
+        "width": 48.0340576171875,
+        "height": 21.525009155273438,
+        "top": 198.1599884033203,
+        "right": 310.0106201171875,
+        "bottom": 219.68499755859375,
+        "left": 261.9765625
+      },
+      "display": "block"
+    },
+    {
+      "tag": "SPAN",
+      "id": "",
+      "cls": "did",
+      "text": "not understood: complete validation",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 248.27999877929688,
+        "y": 221.3249969482422,
+        "width": 75.44000244140625,
+        "height": 15.067489624023438,
+        "top": 221.3249969482422,
+        "right": 323.7200012207031,
+        "bottom": 236.39248657226562,
+        "left": 248.27999877929688
+      },
+      "display": "block"
+    },
+    {
+      "tag": "DIV",
+      "id": "",
+      "cls": "thought",
+      "text": "MARA \u00b7 UNMATCHED-ATTEMPT\nI value a coordinated decision, and the conflicting report and decision record leave me without a sound basis to assent.",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 13.796875,
+        "y": 65.453125,
+        "width": 116.265625,
+        "height": 219.96875,
+        "top": 65.453125,
+        "right": 130.0625,
+        "bottom": 285.421875,
+        "left": 13.796875
+      },
+      "display": "block"
+    },
+    {
+      "tag": "DIV",
+      "id": "",
+      "cls": "hud",
+      "text": "Round 6 (6 of 6)",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 58,
+        "y": 36.71875,
+        "width": 190,
+        "height": 73.375,
+        "top": 36.71875,
+        "right": 248,
+        "bottom": 110.09375,
+        "left": 58
+      },
+      "display": "block"
+    },
+    {
+      "tag": "DIV",
+      "id": "action",
+      "cls": "action",
+      "text": "ari: record-assent \u00b7 bo: unmatched-attempt \u00b7 mara: unmatched-attempt",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 22.5,
+        "y": 132.25,
+        "width": 261,
+        "height": 32.1875,
+        "top": 132.25,
+        "right": 283.5,
+        "bottom": 164.4375,
+        "left": 22.5
+      },
+      "display": "block"
+    },
+    {
+      "tag": "SMALL",
+      "id": "",
+      "cls": "",
+      "text": "Whether to activate the prototype pump",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 47.0234375,
+        "y": 129.265625,
+        "width": 192.890625,
+        "height": 16.140625,
+        "top": 129.265625,
+        "right": 239.9140625,
+        "bottom": 145.40625,
+        "left": 47.0234375
+      },
+      "display": "block"
+    },
+    {
+      "tag": "SMALL",
+      "id": "",
+      "cls": "",
+      "text": "Technical condition",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 117.3125,
+        "y": 129.265625,
+        "width": 95.8125,
+        "height": 16.140625,
+        "top": 129.265625,
+        "right": 213.125,
+        "bottom": 145.40625,
+        "left": 117.3125
+      },
+      "display": "block"
+    },
+    {
+      "tag": "SMALL",
+      "id": "",
+      "cls": "",
+      "text": "Recorded position of ari",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 128.484375,
+        "y": 129.265625,
+        "width": 116.96875,
+        "height": 16.140625,
+        "top": 129.265625,
+        "right": 245.453125,
+        "bottom": 145.40625,
+        "left": 128.484375
+      },
+      "display": "block"
+    },
+    {
+      "tag": "SMALL",
+      "id": "",
+      "cls": "",
+      "text": "Recorded position of mara",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 79.09375,
+        "y": 139.890625,
+        "width": 128.75,
+        "height": 16.140625,
+        "top": 139.890625,
+        "right": 207.84375,
+        "bottom": 156.03125,
+        "left": 79.09375
+      },
+      "display": "block"
+    },
+    {
+      "tag": "SMALL",
+      "id": "",
+      "cls": "",
+      "text": "Recorded position of bo",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 106.9765625,
+        "y": 139.890625,
+        "width": 116.484375,
+        "height": 16.140625,
+        "top": 139.890625,
+        "right": 223.4609375,
+        "bottom": 156.03125,
+        "left": 106.9765625
+      },
+      "display": "block"
+    },
+    {
+      "tag": "SMALL",
+      "id": "",
+      "cls": "",
+      "text": "Technical authority of ari",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 126.3046875,
+        "y": 139.890625,
+        "width": 121.328125,
+        "height": 16.140625,
+        "top": 139.890625,
+        "right": 247.6328125,
+        "bottom": 156.03125,
+        "left": 126.3046875
+      },
+      "display": "block"
+    },
+    {
+      "tag": "DIV",
+      "id": "ws-story",
+      "cls": "",
+      "text": "Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nRecorded position of ari: assent: yes (was assent: no)\nAri\nNot changed this round (11)",
+      "title": "",
+      "tabIndex": -1,
+      "rect": {
+        "x": 4,
+        "y": 181.625,
+        "width": 298,
+        "height": 141.75,
+        "top": 181.625,
+        "right": 302,
+        "bottom": 323.375,
+        "left": 4
+      },
+      "display": "block"
+    },
+    {
+      "tag": "SUMMARY",
+      "id": "",
+      "cls": "",
+      "text": "Not changed this round (11)",
+      "title": "",
+      "tabIndex": 0,
+      "rect": {
+        "x": 4,
+        "y": 305.828125,
+        "width": 298,
+        "height": 17.546875,
+        "top": 305.828125,
+        "right": 302,
+        "bottom": 323.375,
+        "left": 4
+      },
+      "display": "list-item"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "restart",
+      "cls": "",
+      "text": "\u21ba Replay",
+      "title": "",
+      "tabIndex": 0,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "display": "inline-block"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "prev",
+      "cls": "",
+      "text": "\u2190",
+      "title": "",
+      "tabIndex": 0,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "display": "inline-block"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "toggle",
+      "cls": "",
+      "text": "Pause",
+      "title": "",
+      "tabIndex": 0,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "display": "inline-block"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "next",
+      "cls": "",
+      "text": "\u2192",
+      "title": "",
+      "tabIndex": 0,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "display": "inline-block"
+    }
+  ]
+}

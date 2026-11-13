@@ -1,0 +1,54 @@
+{
+  "revision": "96ea82334e9eb26eb217145421cfa3dc037f3efb",
+  "sources": [
+    {
+      "path": "README.md",
+      "url": "https://github.com/meta/astryx/blob/96ea82334e9eb26eb217145421cfa3dc037f3efb/README.md",
+      "bytes": 9105,
+      "sha256": "a8d4bd74d79a45ff1b87a54e15124e0ee9bb8fc1036244caf44f8138e2faf742",
+      "status": 200
+    },
+    {
+      "path": "LICENSE",
+      "url": "https://github.com/meta/astryx/blob/96ea82334e9eb26eb217145421cfa3dc037f3efb/LICENSE",
+      "bytes": 1077,
+      "sha256": "a6855be541fc8f446acd1bc4f2f8efce1ace6dce71dba32fcd8da553ee54b473",
+      "status": 200
+    },
+    {
+      "path": "plugins/astryx/skills/astryx/SKILL.md",
+      "url": "https://github.com/meta/astryx/blob/96ea82334e9eb26eb217145421cfa3dc037f3efb/plugins/astryx/skills/astryx/SKILL.md",
+      "bytes": 1880,
+      "sha256": "eb9e9b35764981dce9d72e665d168cc1ec71f372c06c5a761cfe179cb3d3333a",
+      "status": 200
+    },
+    {
+      "path": "packages/cli/assets/docs/tree/scaffold.doc.mjs",
+      "url": "https://github.com/meta/astryx/blob/96ea82334e9eb26eb217145421cfa3dc037f3efb/packages/cli/assets/docs/tree/scaffold.doc.mjs",
+      "bytes": 5687,
+      "sha256": "4a4d6a27360b71f3faf077c953a1efb18e93e3f2ff840c8c219787f80c625745",
+      "status": 200
+    },
+    {
+      "path": "packages/cli/assets/docs/tree/structure.doc.mjs",
+      "url": "https://github.com/meta/astryx/blob/96ea82334e9eb26eb217145421cfa3dc037f3efb/packages/cli/assets/docs/tree/structure.doc.mjs",
+      "bytes": 5078,
+      "sha256": "3c798bc82082bcbadaa5f9e881471de8eb124505fef575698df8d5b957cdd046",
+      "status": 200
+    },
+    {
+      "path": "packages/cli/assets/docs/tree/side-panels.doc.mjs",
+      "url": "https://github.com/meta/astryx/blob/96ea82334e9eb26eb217145421cfa3dc037f3efb/packages/cli/assets/docs/tree/side-panels.doc.mjs",
+      "bytes": 2593,
+      "sha256": "0bca9aedcfbb65e37466e8946650328c4501212274c0dff6b606da245493fc61",
+      "status": 200
+    },
+    {
+      "path": "packages/cli/assets/docs/tree/responsive.doc.mjs",
+      "url": "https://github.com/meta/astryx/blob/96ea82334e9eb26eb217145421cfa3dc037f3efb/packages/cli/assets/docs/tree/responsive.doc.mjs",
+      "bytes": 5730,
+      "sha256": "cba190db65470b036536bd3d91d0a24b2015001f53655a583c8294b0086f8c43",
+      "status": 200
+    }
+  ]
+}
