@@ -429,10 +429,25 @@ def work_cycle_guidance(cycle: dict[str, Any] | None) -> str:
     )
 
 
+def _with_action_subset(bundle: dict[str, Any], actions: list[dict[str, Any]]) -> dict[str, Any]:
+    """Keep actor forms referentially valid when a build projects its action set.
+
+    Rule authoring sees only uncompiled actions; final assembly can also remove
+    unsupported generated actions. Neither projection may retain forms naming
+    actions no longer in that bundle, or mutate the original approved inputs.
+    """
+    result = {**bundle, "actions": actions}
+    if "actor_information" in bundle:
+        kinds = {a["kind"] for a in actions}
+        result["actor_information"] = {**bundle["actor_information"], "public_actions": [
+            form for form in bundle["actor_information"].get("public_actions", []) if form["kind"] in kinds]}
+    return result
+
+
 def actions_to_write(prepared: dict[str, Any]) -> dict[str, Any]:
     """The bundle with only the actions no compiled rule covers: what the rule writer must give rules to."""
     compiled_kinds = {m["action_kind"] for m in prepared["compiled"]["mechanics"]}
-    return {**prepared["bundle"], "actions": [a for a in prepared["bundle"]["actions"] if a["kind"] not in compiled_kinds]}
+    return _with_action_subset(prepared["bundle"], [a for a in prepared["bundle"]["actions"] if a["kind"] not in compiled_kinds])
 
 
 def assemble_people_world(prepared: dict[str, Any], generated: dict[str, Any]) -> dict[str, Any]:
@@ -453,7 +468,7 @@ def assemble_people_world(prepared: dict[str, Any], generated: dict[str, Any]) -
     ruled = {m["action_kind"] for m in causal["mechanics"]}
     unruled = [a["kind"] for a in bundle["actions"] if a["kind"] not in ruled]
     if unruled:
-        bundle = {**bundle, "actions": [a for a in bundle["actions"] if a["kind"] in ruled]}
+        bundle = _with_action_subset(bundle, [a for a in bundle["actions"] if a["kind"] in ruled])
         dropped = dropped + [f"action {k} removed: its rule only wrote what compiled rules own" for k in unruled]
         # The declared laws must name only moves the world still has: a pairing law on a removed move goes, and a
         # total law stops listing it (nothing can make that move any more).

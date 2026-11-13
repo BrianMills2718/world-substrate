@@ -59,10 +59,14 @@ def validate_actor_information(bundle: dict[str, Any]) -> None:
         raise ActorInformationError("public_entities must be a list")
     known: set[str] = set()
     for row in public:
-        _object(row, {"id", "label", "fields"})
+        _object(row, {"id", "label", "fields"}, {"actor_ids"})
         if not isinstance(row["id"], str) or row["id"] in known:
             raise ActorInformationError("invalid or duplicate public entity")
         paths(row["id"], row["fields"])
+        if "actor_ids" in row:
+            allowed = row["actor_ids"]
+            if not isinstance(allowed, list) or any(not isinstance(a, str) or a not in declaration["actors"] for a in allowed) or len(allowed) != len(set(allowed)):
+                raise ActorInformationError("invalid actor identity visibility")
         _text(row["label"])
         known.add(row["id"])
     if not isinstance(declaration["actors"], dict):
@@ -127,6 +131,8 @@ def actor_observation(engine: Any, bundle: dict[str, Any], actor: str) -> dict[s
     extra = {row["entity"]: row["paths"] for row in profile["observable_fields"]}
     entities = {}
     for row in declaration["public_entities"]:
+        if "actor_ids" in row and actor not in row["actor_ids"]:
+            continue
         entity = engine.world.entities.get(row["id"])
         if entity is None or not entity_visible_to_actor(engine.world, actor, entity):
             continue

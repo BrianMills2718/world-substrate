@@ -435,6 +435,14 @@ Each item has an entry in [the open questions ledger](../planning/open-questions
 
 The complete actor-information boundary and asymmetric-evidence design are specified in the [modeling guide](../model/modeling-choices.md). This is a target contract across all resident inputs; current item filtering and recorded read scopes do not establish its enforcement.
 
+### Declared actor-input boundary and independent decisions (I0/I1 candidate)
+
+Source: Brian's approved I0/I1 implementation goal, 2026-11-12. Candidate code is on `feat/actor-information-concern-20261112`; deployment and live evidence retain their own status in the roadmap. This does not make generic Engine read scopes enforced.
+
+New generated worlds declare `actor_information` version 1: public setup, safe identities and field grants, individual profiles and initial knowledge, and known action forms. `scripts/actor_information.py` assembles actor context without privileged discovery/presentation rereads. Both runner policy paths consume it; hidden executability is checked at submission. Exact prompts, restored memory and provenance are retained separately for analysts, including failed calls. Continuation seals bind the actor state and next round identity. Historical worlds remain explicitly `legacy-unrestricted`; missing declarations are allowed only by the offline recorded-authoring adapter, never by fresh authoring.
+
+The generated independent decision procedure separates hidden technical condition, claims/delivery, expressed stance, each actor's assent, validation and institutional hold. Authorized repair changes only the condition; passing revalidation clears only the hold; activation checks the individual assents. Runtime rule proposals and restored rulings cannot replace the protected compiled writers. The existing historical decision family is preserved as a fixture contract rather than presented as general persuasion. `scripts/probe_actor_information.py` runs the real local HTTP service to retain one generated-world/resident demonstration; local evidence is not deployed evidence.
+
 ## 12. Glossary
 
 For fidelity, modeling methods, uncertainty and resource tradeoffs, see the

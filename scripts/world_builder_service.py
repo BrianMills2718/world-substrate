@@ -440,7 +440,7 @@ def _approval_record(*, bundle: Any, causal: Any, trace: dict[str, Any]) -> dict
 
 
 def _request_summary(path: str, body: dict[str, Any]) -> dict[str, Any]:
-    keep = ("description", "world_kind", "run_stop", "run_spent_usd", "policy", "turns", "turn_offset", "approved",
+    keep = ("description", "world_def", "world_kind", "run_stop", "run_spent_usd", "policy", "turns", "turn_offset", "approved",
             "execution_mode", "async", "judge_rulings", "decisions")
     out = {k: body[k] for k in keep if k in body}
     if path == "/readout":
@@ -1806,7 +1806,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         self._progress("doing", "A second AI is checking the rules against your description")
                         try:
                             found, _ = review_rules(description, world_bundle, rules, trace_id=trace_id, max_budget=budget)
+                            row["actor_inputs_reviewed"] = "actor_information" in world_bundle
                         except Exception as error:
+                            if "actor_information" in world_bundle:
+                                raise  # Actor authorization is a delivery gate, including unavailable reviews.
                             # A failed review is recorded and the build goes on without it, visibly.
                             row["review_error"] = f"{type(error).__name__}: {error}"[:300]
                             self._progress("note", "The second check of the rules failed", row["review_error"][:160])
@@ -2149,6 +2152,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     redesign_feedback = structure_feedback
                 assert best is not None
                 _, causal, compiled, best_row, bundle, not_modeled = best
+                if "actor_information" in bundle and not best_row.get("actor_inputs_reviewed"):
+                    found, _ = review_rules(description, bundle, causal, trace_id=trace_id, max_budget=budget)
+                    best_row["review_findings"] = found
+                    best_row["actor_inputs_reviewed"] = True
                 trace_cost = _trace_cost(trace_id)
             except Exception:
                 _settle_failed_call(budget, trace_id)
@@ -2348,6 +2355,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         try:
                             found, _ = review_rules(description, built["bundle"], built["causal_model"],
                                                     trace_id=trace_id, max_budget=budget)
+                            dry_row["actor_inputs_reviewed"] = "actor_information" in built["bundle"]
                             dry_row["review_findings"] = found
                             self._progress("done", f"The check found {len(found)} place{'s' if len(found) != 1 else ''} "
                                            "where the rules miss the description" if found
@@ -2356,6 +2364,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             if found:
                                 guidance = _review_findings_first(guidance, found)
                         except Exception as error:
+                            if "actor_information" in built["bundle"]:
+                                raise  # Do not execute residents on an unreviewed or unsafe actor profile.
                             # A failed review is recorded and the build goes on without it, visibly.
                             dry_row["review_error"] = f"{type(error).__name__}: {error}"[:300]
                             self._progress("note", "The second check of the rules failed", dry_row["review_error"][:160])
@@ -2382,6 +2392,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 assert best is not None
                 _, built, dry_row = best
                 bundle, causal = built["bundle"], built["causal_model"]
+                if "actor_information" in bundle and not dry_row.get("actor_inputs_reviewed"):
+                    found, _ = review_rules(description, bundle, causal, trace_id=trace_id, max_budget=budget)
+                    dry_row["review_findings"] = found
+                    dry_row["actor_inputs_reviewed"] = True
                 review = CausalModel.from_dict(causal, bundle=bundle).as_review()
                 trace_cost = _trace_cost(trace_id)
             except Exception:

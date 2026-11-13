@@ -124,3 +124,16 @@ def test_pending_message_and_its_action_identity_do_not_enter_recipient_input():
     after = actor_context(engine, bundle, "mara")
     assert "Private report" in str(after)
     assert len(after["actions"]) == 1
+
+
+def test_private_entity_identity_and_action_forms_are_recipient_scoped():
+    bundle, engine = fixture()
+    bundle['entities'].append({'id': 'private-note', 'label': 'PRIVILEGED', 'categories': ['record'], 'components': {'details': {'visible': 'measurement', 'secret': 'hidden'}}})
+    engine.world.entities['private-note'] = Entity(entity_id='private-note', label='PRIVILEGED', category_ids=('record',), components={'details': Details()})
+    bundle['actor_information']['public_entities'].append({'id': 'private-note', 'label': 'Private measurement', 'fields': ['details.visible'], 'actor_ids': ['ari']})
+    bundle['actor_information']['public_actions'].append({'kind': 'inspect', 'description': 'Inspect a known record.', 'fields': {'target': 'private-note'}})
+    mara = actor_context(engine, bundle, 'mara')
+    assert 'private-note' not in str(mara) and 'Private measurement' not in str(mara)
+    assert 'Private measurement' in str(actor_context(engine, bundle, 'ari'))
+    engine.world.entities['private-note'].components['details'].visible = 'different hidden condition'
+    assert actor_context(engine, bundle, 'mara') == mara

@@ -1,0 +1,339 @@
+{
+  "scenario_spec_version": 1,
+  "scenario_id": "prototype_pump_validation",
+  "title": "Prototype Pump: Validation and Activation",
+  "description": "Ari is the validation engineer, Mara the coordinator, and Bo operates a prototype pump. The scenario concerns whether it is safe to activate. The pump initially fails validation. Ari alone knows that sensor channel C drifted 8 units in validation batch V17. Mara knows the public procedure and has received a short report stating that validation failed, without the private channel or batch detail. Bo knows the public procedure and has received no failure report. Under the public procedure, filing a validation hold reveals failed validation but not private test details. A false warning cannot change the pump's actual condition. Completing a review or waiting does not repair it. Ari may perform an explicit technical repair and authorized revalidation. Passing revalidation clears only the technical hold; activation also requires Mara's and Bo's separate recorded assents.",
+  "people": [
+    {
+      "entity_id": "ari",
+      "label": "Ari",
+      "position": "Validation engineer",
+      "disposition": "May choose whether and whom to tell, and whether to investigate, repair, or revalidate.",
+      "memories": [
+        "In validation batch V17, sensor channel C drifted 8 units.",
+        "The pump failed validation."
+      ],
+      "behavioral_profile": {
+        "values": [
+          "Accurate validation"
+        ],
+        "goals": [
+          "Assess the pump's technical condition"
+        ],
+        "beliefs": [
+          "The V17 channel C drift is relevant to the failed validation."
+        ],
+        "decision_tendencies": [
+          "May choose whether to report the private detail or seek additional evidence."
+        ],
+        "social_perceptions": [],
+        "current_state": [
+          "Has private knowledge of the V17 channel C drift."
+        ],
+        "capabilities": [
+          "Can perform an explicit technical repair.",
+          "Can perform authorized revalidation."
+        ],
+        "limitations": [
+          "A report or review does not itself repair the pump."
+        ]
+      }
+    },
+    {
+      "entity_id": "mara",
+      "label": "Mara",
+      "position": "Coordinator",
+      "disposition": "May independently request evidence, interpret claims, and decide whether to record assent.",
+      "memories": [
+        "Knows the public procedure.",
+        "Received a short report saying validation failed; it did not include the private channel or batch detail."
+      ],
+      "behavioral_profile": {
+        "values": [
+          "Following the public procedure"
+        ],
+        "goals": [
+          "Coordinate consideration of whether to activate the pump"
+        ],
+        "beliefs": [
+          "A report she received states that validation failed."
+        ],
+        "decision_tendencies": [
+          "May seek review, ignore a claim, retain a position, dissent, or record assent."
+        ],
+        "social_perceptions": [],
+        "current_state": [
+          "Has received a short validation-failure report."
+        ],
+        "capabilities": [
+          "Can request evidence.",
+          "Can independently record or withhold her assent."
+        ],
+        "limitations": [
+          "The report she received does not disclose the private test details."
+        ]
+      }
+    },
+    {
+      "entity_id": "bo",
+      "label": "Bo",
+      "position": "Prototype pump operator",
+      "disposition": "May independently request evidence, interpret claims, and decide whether to record assent.",
+      "memories": [
+        "Knows the public procedure.",
+        "Has received no validation-failure report."
+      ],
+      "behavioral_profile": {
+        "values": [
+          "Operating the prototype pump responsibly"
+        ],
+        "goals": [
+          "Consider whether the pump should be activated"
+        ],
+        "beliefs": [],
+        "decision_tendencies": [
+          "May seek review, ignore a claim, retain a position, dissent, or record assent."
+        ],
+        "social_perceptions": [],
+        "current_state": [
+          "Has received no validation-failure report."
+        ],
+        "capabilities": [
+          "Can request evidence.",
+          "Can independently record or withhold his assent."
+        ],
+        "limitations": [
+          "Has not received the failure report at scenario start."
+        ]
+      }
+    }
+  ],
+  "world_records": [
+    {
+      "record_id": "prototype_pump",
+      "kind": "equipment",
+      "label": "Prototype pump",
+      "public_state": [
+        {
+          "key": "equipment_identity",
+          "value": "prototype pump"
+        }
+      ],
+      "hidden_state": [],
+      "visible_to_actor_ids": [
+        "ari",
+        "mara",
+        "bo"
+      ]
+    },
+    {
+      "record_id": "public_procedure",
+      "kind": "procedure",
+      "label": "Validation and activation procedure",
+      "public_state": [
+        {
+          "key": "filing_a_validation_hold_reveals",
+          "value": "failed validation"
+        },
+        {
+          "key": "filing_a_validation_hold_reveals_private_test_details",
+          "value": false
+        }
+      ],
+      "hidden_state": [],
+      "visible_to_actor_ids": [
+        "ari",
+        "mara",
+        "bo"
+      ]
+    },
+    {
+      "record_id": "private_validation_detail",
+      "kind": "test_evidence",
+      "label": "Private validation measurement detail",
+      "public_state": [],
+      "hidden_state": [
+        {
+          "key": "validation_batch",
+          "value": "V17"
+        },
+        {
+          "key": "sensor_channel",
+          "value": "C"
+        },
+        {
+          "key": "drift_units",
+          "value": 8
+        }
+      ],
+      "visible_to_actor_ids": [
+        "ari"
+      ]
+    }
+  ],
+  "information_items": [
+    {
+      "representation_id": "mara_failure_report",
+      "content": "Validation failed.",
+      "apparent_source": "Unspecified report source",
+      "holder_id": "ari",
+      "channel_id": "direct_report",
+      "recipient_ids": [
+        "mara"
+      ],
+      "hidden_provenance": [
+        {
+          "key": "originating_validation",
+          "value": "pump_validation_failure"
+        },
+        {
+          "key": "private_test_details_included",
+          "value": false
+        }
+      ],
+      "source_lineage": "pump_validation_failure"
+    }
+  ],
+  "scheduled_moments": [],
+  "behaviors": [
+    {
+      "request_id": "request_review_or_evidence",
+      "subject_refs": [
+        "ari",
+        "mara",
+        "bo"
+      ],
+      "behavior_description": "Each person may independently request evidence or investigate a claim.",
+      "desired_effects": [
+        "Requests and investigations may expose their results to particular people if delivered to them."
+      ],
+      "fidelity_need": "descriptive",
+      "causally_material": true
+    },
+    {
+      "request_id": "choose_report_recipients",
+      "subject_refs": [
+        "ari"
+      ],
+      "behavior_description": "Ari may choose whether to tell anyone and whom to tell. Reports are attributable when their source is known and are addressed to named recipients.",
+      "desired_effects": [
+        "Only a person who receives a report is exposed to its content.",
+        "Reports sharing a source lineage do not count as independent corroboration."
+      ],
+      "fidelity_need": "bounded",
+      "causally_material": true
+    },
+    {
+      "request_id": "interpret_claims_and_assent",
+      "subject_refs": [
+        "ari",
+        "mara",
+        "bo"
+      ],
+      "behavior_description": "Each person may interpret or ignore claims, retain support, dissent, or record assent independently.",
+      "desired_effects": [
+        "Personal interpretation and support remain distinct from recorded assent.",
+        "No message forces persuasion, support change, or assent."
+      ],
+      "fidelity_need": "descriptive",
+      "causally_material": true
+    },
+    {
+      "request_id": "file_validation_hold",
+      "subject_refs": [
+        "ari",
+        "mara",
+        "bo"
+      ],
+      "behavior_description": "Under the public procedure, filing a validation hold publicly reveals failed validation without revealing private test details.",
+      "desired_effects": [
+        "The technical hold remains distinct from personal support, recorded assent, and activation."
+      ],
+      "fidelity_need": "bounded",
+      "causally_material": true
+    },
+    {
+      "request_id": "review_does_not_repair",
+      "subject_refs": [
+        "ari",
+        "mara",
+        "bo"
+      ],
+      "behavior_description": "A review may confirm failure. Completing a review or waiting does not change the pump's actual technical condition.",
+      "desired_effects": [
+        "Evidence and reports do not themselves alter the technical condition."
+      ],
+      "fidelity_need": "exact",
+      "causally_material": true
+    },
+    {
+      "request_id": "false_warning_does_not_change_condition",
+      "subject_refs": [
+        "ari",
+        "mara",
+        "bo"
+      ],
+      "behavior_description": "A warning may be false; issuing or receiving a warning does not change the pump's actual technical condition.",
+      "desired_effects": [
+        "Claims remain distinct from actual technical state."
+      ],
+      "fidelity_need": "exact",
+      "causally_material": true
+    },
+    {
+      "request_id": "repair_and_revalidate",
+      "subject_refs": [
+        "ari"
+      ],
+      "behavior_description": "Ari may choose to perform an explicit technical repair and then authorized revalidation. Passing revalidation clears only the technical hold.",
+      "desired_effects": [
+        "Repair is an explicit technical intervention, not an effect of time or review.",
+        "Passing revalidation does not provide Mara's or Bo's assent."
+      ],
+      "fidelity_need": "exact",
+      "causally_material": true
+    },
+    {
+      "request_id": "activation_requires_separate_assents",
+      "subject_refs": [
+        "mara",
+        "bo"
+      ],
+      "behavior_description": "Activation requires the technical condition to pass and Mara and Bo each to record their own assent.",
+      "desired_effects": [
+        "Neither report delivery nor technical validation forces assent or a particular ending."
+      ],
+      "fidelity_need": "exact",
+      "causally_material": true
+    }
+  ],
+  "fidelity_assumptions": [
+    "The sender of Mara's short report is unspecified; its apparent source is therefore recorded as unspecified rather than assigned to Ari.",
+    "The report item is represented as held by Ari with Mara as its named recipient; the schema does not separately encode a completed delivery event.",
+    "No initial personal support or recorded assent is specified beyond the independent decision's initial failed validation."
+  ],
+  "unsupported": [
+    "The schema does not provide a detailed event-by-event mechanism for evidence requests, investigation, report delivery, repair, or revalidation.",
+    "The schema does not separately encode report delivery status, personal interpretations, or personal support levels.",
+    "The schema's independent decision records the initial validation status and activation requirements, but does not expose a separate field for the public filing or publication status of a validation hold."
+  ],
+  "unresolved_questions": [],
+  "decision": null,
+  "independent_decision": {
+    "decision_id": "pump_activation",
+    "question": "Whether to activate the prototype pump",
+    "required_actor_ids": [
+      "mara",
+      "bo"
+    ],
+    "validator_ids": [
+      "ari"
+    ],
+    "repairer_ids": [
+      "ari"
+    ],
+    "condition_initially_passing": false,
+    "initial_validation": "failed"
+  },
+  "public_summary": "The scenario concerns one prototype pump and whether to activate it."
+}

@@ -1,0 +1,16 @@
+{
+  "status": "failed; do not rerun for a preferred outcome",
+  "scope": "Local generated-world and resident-policy integration; no prescribed social ending; not deployed evidence.",
+  "owner_daily_cap_usd": 5.0,
+  "error_type": "RuntimeError",
+  "error": "/jobs/c52295247ae141368fa90c7284f68b82 returned HTTP 422: invalid public action form",
+  "traces": {
+    "trace_roots": [
+      "world-builder-live/people/ac0ed39d566b4ba8956fb13327d7f3cd"
+    ],
+    "llm_calls": 5,
+    "tool_calls": 0
+  },
+  "elapsed_s": 92.737,
+  "exit_status": 1
+}

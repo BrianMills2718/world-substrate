@@ -1,0 +1,29 @@
+Candidate repair verification (2026-11-12; before fresh integration evidence)
+
+Command: batch make check
+Exit: 0
+OpenSpec: 13 passed, 0 failed
+Runtime suite: 1030 passed, 2 skipped, 229 subtests passed in 76.72s
+Pinned source records checked: 16
+Scope: action-only immutable report append; initial delivered/source-holder distinction; private identity grants; all installed open-attempt kinds; source-grounded review gate; sealed continuation; saved legacy paths.
+Limit: focused and full checks establish implemented contracts, not scientific actor adequacy or deployed acceptance. Fresh generated-world and live product evidence remain required.
+
+Focused command: pytest tests/test_report_effect.py tests/test_actor_report_delivery.py tests/test_initial_actor_knowledge.py tests/test_rules_review.py tests/test_independent_rule_authority.py tests/test_resident_context_trace.py tests/test_world_builder_service.py
+Exit: 0
+Result: 168 passed, 12 subtests passed in 27.59s
+
+Trace-read checker: python scripts/check_trace_reads.py
+Exit: 0
+Result: runs=49 problems=0
+
+Production trace configuration: Docker environment now enables native structured raw artifacts under private /data/llm_client/structured-raw, so rejected structured attempts are retained for inspection as in the local probe. Container deployment/runtime verification remains pending.
+
+First all-recorded-build replay: exit 1 after 28 saved worlds and 14 build records; new strict privacy review correctly rejected integration-2's old reviewer response (no actor_input_review). Replay runner previously propagated that explicit rejection and aborted the remaining inventory. Fixed replay to report ActorInputPrivacyError as stopped evidence without bypassing review; rerun in progress. This failure is not counted as a compatibility pass.
+
+Final all-recorded-build replay: batch uv run --no-project --with-editable llm_client ... python -u scripts/check_saved_worlds.py --builds
+Exit: 0
+Saved worlds: 28 total, 13 whole, 15 previously partial, errors=0, lost=0. Every recorded build folder visited; missing old replies and integration-2 missing modern privacy verdict remain stopped replays, not claimed passes.
+
+Targeted publication follow-up: publish-checker native session 4b399ad6-f0e2-4888-80c6-d4c426b36e09; verdict publish. 110 files scanned, 27 credential identifiers redacted, 58 structured files parsed, 0 privacy findings. Publication verdict is not runtime certification.
+
+Targeted counterexample review: no blocking findings. Independent execution69 passed, 4 subtests, exit0; separate real resident-loop offline probe6 assertions, exit0. Unmatched request committed one send-report exposure at r1-e00002; recipient next actual input contained request, sender projection omitted recipient log, engine replay passed. Scope was these repairs, not a third broad review. Reviewer inherited producer context; execution verification was independent, review was not fully blind. Semantic review accuracy and deployed proof still require fresh trace inspection.

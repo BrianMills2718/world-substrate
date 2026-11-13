@@ -85,3 +85,16 @@ def test_interpreter_does_not_autofill_hidden_singleton_or_derived_argument():
         reading, _ = _read_attempt(engine, "mara", "I try unlocking", signatures,
                                   model="test", trace_id="t", max_budget=0)
     assert reading["fields"] == {}
+
+
+def test_open_attempt_can_match_an_installed_kind_without_a_bound_menu_form():
+    from scripts.run_authored_world import _read_attempt
+    engine = types.SimpleNamespace(actor_information_bundle={"actor_information": {"public_actions": []}})
+    def interpret(text, **kwargs):
+        assert kwargs["signatures"][0]["kind"] == "request-evidence"
+        assert kwargs["signatures"][0]["description"] == "request evidence"
+        assert kwargs["entities"] == {"mara": "Mara"}
+        return {"kind": "request-evidence", "fields": {}}, 0
+    with patch.dict(sys.modules, {"llm_client": types.SimpleNamespace()}), patch("scripts.run_authored_world.actor_info.actor_observation", return_value={"entities": {"mara": {"label": "Mara"}}}), patch("scripts.run_authored_world.open_attempt.interpret", side_effect=interpret):
+        reading, _ = _read_attempt(engine, "mara", "I request evidence", [{"kind": "request-evidence", "description": "HIDDEN internal rationale", "fields": []}], model="test", trace_id="t", max_budget=0)
+    assert reading["kind"] == "request-evidence"

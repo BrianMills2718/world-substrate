@@ -1,0 +1,14 @@
+{
+ "findings": [
+  {
+   "rule_id": "coordination.action.communicate",
+   "description_words": "Attributable reports are delivered to named recipients; undelivered reports reveal nothing. Ari may choose whether and whom to tell.",
+   "problem": "The communicate mechanic requires pre-existing information and delivery entities, and the starting world only contains a single delivery entity addressed to Mara (`delivery-info-mara-failure-report-to-mara`). Because there is no delivery entity for Bo and no rule creates new delivery or information entities, Ari can never deliver a report to Bo."
+  },
+  {
+   "rule_id": "author-attributed-claim-report",
+   "description_words": "Attributable reports are delivered to named recipients; undelivered reports reveal nothing. Ari may choose whether and whom to tell.",
+   "problem": "Authoring a report only flips the actor's `author_report_done` boolean flag without creating or updating an information or delivery entity that `coordination.action.communicate` can actually deliver to the chosen recipient."
+  }
+ ]
+}

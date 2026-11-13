@@ -393,9 +393,9 @@ def _read_attempt(engine: Engine, actor: str, text: str | None, signatures: list
               if boundary else {eid: entity.label for eid, entity in sorted(engine.world.entities.items())})
     if boundary:
         known_forms = {row["kind"]: row["description"] for row in boundary["actor_information"].get("public_actions", [])}
-        signatures = deepcopy([row for row in signatures if row.get("kind") in known_forms])
+        signatures = deepcopy(signatures)
         for signature in signatures:
-            signature["description"] = known_forms[signature["kind"]]
+            signature["description"] = known_forms.get(signature["kind"], signature["kind"].replace("-", " "))
             for field in signature.get("fields", []):
                 field.pop("only", None)  # canonical singleton cardinality is itself hidden information
                 field.pop("from", None)  # hidden canonical state cannot supply an actor's argument
@@ -805,7 +805,7 @@ def run_world(
     def ruling_notice(actor: str, text: str) -> None:
         residents.observe(actor, "Your earlier attempt has an updated disposition; inspect your authorized observations." if _boundary_bundle(engine) else text)
 
-    def reach(round_no: int, actor: str, attempt: str, person: str, note: str) -> None:
+    def reach(round_no: int, actor: str, attempt: str, person: str, note: str) -> dict[str, Any] | None:
         """The attempt needs another person's choice (Decided 4): their own resident is asked, in the words tried."""
         boundary = _boundary_bundle(engine)
         if boundary:
@@ -813,8 +813,14 @@ def run_world(
             theirs = actor_info.actor_observation(engine, boundary, person)["entities"]
             if person not in visible or actor not in theirs:
                 return
-            residents.observe(actor, f"Round {round_no}: your request was delivered to {visible[person]['label']}.")
-            residents.observe(person, f"Round {round_no}: {theirs[actor]['label']} asked: {attempt}")
+            if not any(a["kind"] == "send-report" for a in boundary.get("actions", [])):
+                return  # No memory-only delivery outside the world's installed communication rule.
+            delivered = engine.submit({"actor": actor, "controller": "resident-communication", "kind": "send-report",
+                "recipient": person, "content": attempt, "base_revision": engine.world.revision})
+            if delivered["status"] == "accepted":
+                residents.observe(actor, f"Round {round_no}: your request was delivered to {visible[person]['label']}.")
+                # Recipient reads the canonical, authorized report log next turn.
+            return {"status": delivered["status"], "event_id": _run_event_id(round_no, delivered["event"].get("event_id"))}
         else:
             residents.observe(actor, f"Round {round_no}: {note} Your words reach {label_of(person)}, who decides what to do.")
             residents.observe(person, f"Round {round_no}: {label_of(actor)} asked you, in their words: \"{attempt}\"")
@@ -1252,7 +1258,9 @@ def run_world(
                         f"Result: {'accepted' if row['status'] == 'accepted' else 'not carried out'}.")
                     asked = (row.get("did") or {}).get("asks")
                     if (row.get("did") or {}).get("kind") == open_attempt.UNMATCHED_KIND and asked in actors and asked != actor:
-                        reach(turn + turn_offset, actor, str((row.get("did") or {}).get("attempt") or ""), asked, "")
+                        receipt = reach(turn + turn_offset, actor, str((row.get("did") or {}).get("attempt") or ""), asked, "")
+                        if receipt is not None:
+                            row["request_delivery"] = receipt
                     continue
                 did = (row.get("did") or {}).get("kind") or "waited"
                 result = row["status"] + ("" if row.get("changed") or row["status"] != "accepted" else ", changed nothing")

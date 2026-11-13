@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/brian/code2/worktrees/world-substrate-i0-i1/scripts/probe_actor_information.py", line 213, in execute
+    build = run_job(request, "/generate-world", {"description": source["description"], **source["build"]}, report=lambda line: print(line, flush=True))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code2/worktrees/world-substrate-i0-i1/scripts/probe_actor_information.py", line 59, in run_job
+    value = request("/jobs/" + job_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code2/worktrees/world-substrate-i0-i1/scripts/probe_actor_information.py", line 203, in request
+    raise RuntimeError(f"{path} returned HTTP {status}: {value.get('error')}")
+RuntimeError: /jobs/c52295247ae141368fa90c7284f68b82 returned HTTP 422: invalid public action form

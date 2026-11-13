@@ -1,4 +1,4 @@
-limit: 192
+limit: 198
 reason: 'Measured at 544c086: 183 tracked Markdown files, including required per-run
   TRACE_READ records and historical OpenSpec change records. Preserve that evidence;
   current authority remains docs/index.md and roadmap/README.md. New authored documents
@@ -9,7 +9,12 @@ reason: 'Measured at 544c086: 183 tracked Markdown files, including required per
   normative adoption separately from unbuilt runtime behavior, with no new parallel
   planning authority. Add three required archival documents for the I1 independent
   generated concern procedure; implementation and deployed evidence retain their own
-  status rather than being inferred from normative adoption.'
+  status rather than being inferred from normative adoption. Add one required
+  TRACE_READ for the retained first authentic I0/I1 build failure; failures are
+  preserved and reviewed rather than erased to satisfy the cap. Add one required
+  TRACE_READ for integration-2 defect discovery and four required OpenSpec archive
+  files for actor-authored report exposure and source-grounded initial-input review;
+  these repair observed I0/I1 failures through existing seams, not a new roadmap.'
 unlinked_ok:
 - path: openspec/changes/archive/
   reason: Historical change proposals and deltas; current required behavior is openspec/specs/,

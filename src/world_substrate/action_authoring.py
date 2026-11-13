@@ -12,6 +12,8 @@ installation apply exactly as they do to hand-written rules.
 """
 from __future__ import annotations
 
+import hashlib
+import json
 from copy import deepcopy
 from dataclasses import dataclass, field
 from itertools import product
@@ -40,6 +42,50 @@ OPS = {
     "contains": lambda a, b: b in a,
 }
 EFFECT_OPS = frozenset({"set", "add", "subtract"})
+
+# Action-only effect: append one report record to a participant's string_list field. Processes are refused it
+# (`_effects(..., action=False)`), so it stays out of EFFECT_OPS, which both kinds of rule share.
+REPORT_OP = "append_report"
+# The ops an action response may name, in schema order (the generator's JSON schema takes its enum from here).
+ACTION_EFFECT_OPS: tuple[str, ...] = ("set", "add", "subtract", REPORT_OP)
+# The one record `append_report` appends, JSON-encoded (sorted keys, compact) as a single string; exactly these keys.
+#   id               "rpt-" + first 16 hex of sha256(JSON [world_id, world.revision, event_id]); one per event
+#   source_id        the entity that took the action (the action's own actor, never a field the actor wrote)
+#   recipient_id     the entity named as the effect's participant
+#   content          the actor-authored string, verbatim
+#   source_revision  world.revision while the action applies (the action's base revision; the event commits revision + 1)
+#   source_event_id  the event id of the accepted action that wrote the record
+#   channel          always "direct"
+#   delivery_status  always "delivered"
+#   source_lineage   always null: no independent provenance is inferred
+#   lineage_status   always "not_declared"
+REPORT_RECORD_KEYS: tuple[str, ...] = (
+    "id", "source_id", "recipient_id", "content", "source_revision", "source_event_id",
+    "channel", "delivery_status", "source_lineage", "lineage_status",
+)
+
+
+def report_record(
+    *, world_id: str, revision: int, event_id: str, source_id: str, recipient_id: str, content: str
+) -> dict[str, Any]:
+    """The explicit record `append_report` stores (see REPORT_RECORD_KEYS); records evidence only."""
+    digest = hashlib.sha256(json.dumps([world_id, revision, event_id]).encode()).hexdigest()[:16]
+    return {
+        "id": f"rpt-{digest}",
+        "source_id": source_id,
+        "recipient_id": recipient_id,
+        "content": content,
+        "source_revision": revision,
+        "source_event_id": event_id,
+        "channel": "direct",
+        "delivery_status": "delivered",
+        "source_lineage": None,
+        "lineage_status": "not_declared",
+    }
+
+
+def encode_report_record(record: dict[str, Any]) -> str:
+    return json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
 class ActionDeclarationError(ValueError):
@@ -165,7 +211,7 @@ class DeclaredActionMechanic:
 
         selectors = {"actor": actor_selector, **participants}
         checks = _checks(value["checks"], bundle, signature, selectors)
-        effects = _effects(value["effects"], bundle, signature, selectors)
+        effects = _effects(value["effects"], bundle, signature, selectors, action=True)
         limits = _string_list(value["limits"], "limits", nonempty=True)
         tests = _string_list(value["tests"], "tests", nonempty=True)
         semantic_bindings = _string_list(
@@ -709,6 +755,29 @@ class CompiledActionMechanic:
             except (KeyError, TypeError, ValueError, ActionDeclarationError):
                 left, right, ok = None, None, False
             checks.append(Check(row["label"], ok, left, right))
+        for effect in self.declared.effects:
+            if effect["op"] != REPORT_OP:
+                continue
+            # Refused here, as an ordinary failed check, so a bad report is visible and nothing is written.
+            target = world.entities.get(participants.get(effect["participant"], ""))
+            held = _entity_value(target, effect["path"]) if target is not None else None
+            content = record.get(effect["value"]["action_field"])
+            checks.append(
+                Check(
+                    f"the {effect['participant']}'s {effect['path']} holds a list of text records",
+                    _is_string_list(held),
+                    type(held).__name__,
+                    "list of strings",
+                )
+            )
+            checks.append(
+                Check(
+                    "the report content is nonempty text",
+                    isinstance(content, str) and bool(content),
+                    type(content).__name__,
+                    "nonempty string",
+                )
+            )
         return checks
 
     def apply(self, world: World, action: TypedAction, event_id: str) -> None:
@@ -727,7 +796,13 @@ class CompiledActionMechanic:
             value = _resolve_expr(
                 effect["value"], world, record, participants, event_id
             )
-            _assign_entity_value(entity, effect["path"], effect["op"], value)
+            if effect["op"] == REPORT_OP:
+                _append_report(
+                    world, entity, effect["path"],
+                    source_id=str(record["actor"]), content=value, event_id=event_id,
+                )
+            else:
+                _assign_entity_value(entity, effect["path"], effect["op"], value)
             touched.add(entity_id)
         for entity_id in touched:
             world.entities[entity_id].last_cause_event_id = event_id
@@ -1042,7 +1117,24 @@ def _checks(value: object, bundle: dict[str, Any], signature: dict[str, Any], se
     return tuple(out)
 
 
-def _effects(value: object, bundle: dict[str, Any], signature: dict[str, Any], selectors: dict[str, dict[str, Any]]) -> tuple[dict[str, Any], ...]:
+def _require_report_effect(
+    index: int, participant: str, target_type: str, expr: dict[str, Any], source_type: str | None,
+    earlier: list[dict[str, Any]],
+) -> None:
+    """An append_report effect writes the actor's own words into another participant's string_list field."""
+    label = f"effects[{index}] {REPORT_OP}"
+    if participant == "actor":
+        raise ActionDeclarationError(f"{label} must target a participant other than the actor (the record names both)")
+    if target_type != "string_list":
+        raise ActionDeclarationError(f"{label} needs a string_list target field, got {target_type}")
+    if "action_field" not in expr or source_type != "string":
+        raise ActionDeclarationError(f"{label} value must be an action_field naming a string field (the actor's content)")
+    if any(row["op"] == REPORT_OP for row in earlier):
+        # The record's id comes from world + revision + event, so one action writes one report.
+        raise ActionDeclarationError(f"{label}: an action may declare at most one {REPORT_OP} effect")
+
+
+def _effects(value: object, bundle: dict[str, Any], signature: dict[str, Any], selectors: dict[str, dict[str, Any]], *, action: bool = False) -> tuple[dict[str, Any], ...]:
     if not isinstance(value, list) or not value:
         raise ActionDeclarationError("effects must be a nonempty list")
     names = set(selectors)
@@ -1063,11 +1155,15 @@ def _effects(value: object, bundle: dict[str, Any], signature: dict[str, Any], s
             raise ActionDeclarationError("last_cause_event_id is engine-owned and cannot be authored as an effect")
         _require_selector_path(selectors[participant], path, f"effects[{index}]")
         op = row["op"]
-        if op not in EFFECT_OPS:
+        if op == REPORT_OP and not action:
+            raise ActionDeclarationError(f"effects[{index}] {REPORT_OP} is an action-only effect; a process cannot use it")
+        if op not in EFFECT_OPS and op != REPORT_OP:
             raise ActionDeclarationError(f"effects[{index}] has unknown op {op!r}")
         expr = _expr(row["value"], bundle, signature, selectors, f"effects[{index}].value")
         source_type = _expr_type(expr, bundle, signature)
-        if op == "set":
+        if op == REPORT_OP:
+            _require_report_effect(index, participant, target_type, expr, source_type, out)
+        elif op == "set":
             if not _compatible(target_type, source_type):
                 raise ActionDeclarationError(
                     f"effects[{index}] cannot set {target_type} from {source_type}"
@@ -1100,7 +1196,7 @@ def _derived_reads(actor_selector: dict[str, Any], participants: dict[str, dict[
                 ref = side["participant"]
                 reads.add(f"entities.<{ref['name']}>.{ref['path']}")
     for row in effects:
-        if row["op"] in {"add", "subtract"}:
+        if row["op"] in {"add", "subtract", REPORT_OP}:
             reads.add(f"entities.<{row['participant']}>.{row['path']}")
         expr = row["value"]
         if "participant" in expr:
@@ -1137,7 +1233,7 @@ def _entity_value(entity: Entity, path: str) -> Any:
     return current
 
 
-def _assign_entity_value(entity: Entity, path: str, op: str, value: Any) -> None:
+def _holder_and_field(entity: Entity, path: str) -> tuple[Any, str]:
     parts = path.split(".")
     if parts[0] == "components":
         holder: Any = entity.component(parts[1])
@@ -1151,7 +1247,34 @@ def _assign_entity_value(entity: Entity, path: str, op: str, value: Any) -> None
         raise ActionDeclarationError(
             f"effect path {path} is absent on entity {entity.entity_id}"
         )
-    field = parts[-1]
+    return holder, parts[-1]
+
+
+def _is_string_list(value: object) -> bool:
+    return isinstance(value, list) and all(isinstance(item, str) for item in value)
+
+
+def _append_report(
+    world: World, entity: Entity, path: str, *, source_id: str, content: Any, event_id: str
+) -> None:
+    """Append one immutable report record (REPORT_RECORD_KEYS) to the entity's string_list field, older entries kept."""
+    holder, field_name = _holder_and_field(entity, path)
+    current = getattr(holder, field_name)
+    if not _is_string_list(current):
+        raise ActionDeclarationError(f"{REPORT_OP} target {entity.entity_id}.{path} is not a list of strings")
+    if not isinstance(content, str) or not content:
+        raise ActionDeclarationError(f"{REPORT_OP} content must be a nonempty string")
+    record = report_record(
+        world_id=world.world_id, revision=world.revision, event_id=event_id,
+        source_id=source_id, recipient_id=entity.entity_id, content=content,
+    )
+    setattr(holder, field_name, [*current, encode_report_record(record)])
+
+
+def _assign_entity_value(entity: Entity, path: str, op: str, value: Any) -> None:
+    if op == REPORT_OP:
+        raise ActionDeclarationError(f"{REPORT_OP} is an action-only effect and cannot be assigned here")
+    holder, field = _holder_and_field(entity, path)
     current = getattr(holder, field)
     if op == "set":
         setattr(holder, field, deepcopy(value))

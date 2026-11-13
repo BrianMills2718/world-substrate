@@ -76,6 +76,8 @@ class InformationItem(_Strict):
     recipient_ids: list[str] = Field(min_length=1)
     hidden_provenance: list[StateEntry] = Field(default_factory=list)
     source_lineage: str = Field(default="", description="Common originating claim identity, not an independent corroboration.")
+    initially_delivered: bool = Field(default=False, description="Explicit initial exposure, not a pending invitation to send. Does not imply belief or assent.")
+    source_id: str | None = Field(default=None, description="Actual transmitting person for an already delivered item; null explicitly means unspecified, never invent the holder as sender.")
 
 
 class ScheduledMoment(_Strict):
@@ -165,7 +167,14 @@ class ScenarioSpecV1(_Strict):
                 raise ValueError(f"information item {i.representation_id} is held by undeclared person {i.holder_id}")
             if missing := set(i.recipient_ids) - people:
                 raise ValueError(f"information item {i.representation_id} names undeclared recipients {sorted(missing)}")
-            if i.holder_id in i.recipient_ids:
+            if i.initially_delivered:
+                if i.source_id is not None and i.source_id not in people:
+                    raise ValueError(f"initially delivered item {i.representation_id} names an undeclared source_id")
+                if i.holder_id not in i.recipient_ids:
+                    raise ValueError(f"initially delivered item {i.representation_id} must expose its holder")
+            elif i.source_id is not None and i.source_id != i.holder_id:
+                raise ValueError("pending item source_id must be its transmitting holder")
+            if not i.initially_delivered and i.holder_id in i.recipient_ids:
                 raise ValueError(f"information item {i.representation_id} is sent to its own holder")
         for m in self.scheduled_moments:
             if missing := set(m.participant_ids) - people:

@@ -1,0 +1,97 @@
+{
+  "world-builder-live/people/ac0ed39d566b4ba8956fb13327d7f3cd": {
+    "trace_id": "world-builder-live/people/ac0ed39d566b4ba8956fb13327d7f3cd",
+    "llm_calls": 5,
+    "tool_calls": 0,
+    "llm_errors": 1,
+    "tool_failures": 0,
+    "total_cost": 0.024992089999999998,
+    "total_tokens": 17924,
+    "first_timestamp": "2026-11-12T22:56:42.375802+00:00",
+    "last_timestamp": "2026-11-12T22:57:04.721589+00:00",
+    "matched_trace_ids": [
+      "world-builder-live/people/ac0ed39d566b4ba8956fb13327d7f3cd"
+    ],
+    "last_completed_llm_call": {
+      "kind": "llm_call",
+      "trace_id": "world-builder-live/people/ac0ed39d566b4ba8956fb13327d7f3cd",
+      "timestamp": "2026-11-12T22:57:04.721589+00:00",
+      "model": "openrouter/openai/gpt-6-luna",
+      "caller": "call_llm_structured",
+      "task": "world-substrate-action-signatures",
+      "error": null,
+      "latency_s": 22.158,
+      "finish_reason": "stop",
+      "cost": 0.0031888,
+      "total_tokens": 4512
+    },
+    "last_tool_call": null,
+    "timeline": [
+      {
+        "kind": "llm_call",
+        "trace_id": "world-builder-live/people/ac0ed39d566b4ba8956fb13327d7f3cd",
+        "timestamp": "2026-11-12T22:56:42.375802+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-substrate-scenario-spec",
+        "error": null,
+        "latency_s": 56.431,
+        "finish_reason": "stop",
+        "cost": 0.008814559999999999,
+        "total_tokens": 8277
+      },
+      {
+        "kind": "llm_call",
+        "trace_id": "world-builder-live/people/ac0ed39d566b4ba8956fb13327d7f3cd",
+        "timestamp": "2026-11-12T22:56:46.743119+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-substrate-scenario-spec",
+        "error": "Pydantic validation failed on provider-accepted response: 2 error(s). First: List should have at least 1 item after validation, not 0",
+        "latency_s": 60.743,
+        "finish_reason": "error",
+        "cost": 0.01027198,
+        "total_tokens": null
+      },
+      {
+        "kind": "llm_call",
+        "trace_id": "world-builder-live/people/ac0ed39d566b4ba8956fb13327d7f3cd",
+        "timestamp": "2026-11-12T22:56:57.233435+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-substrate-action-signatures",
+        "error": null,
+        "latency_s": 14.631,
+        "finish_reason": "stop",
+        "cost": 0.00228135,
+        "total_tokens": 3522
+      },
+      {
+        "kind": "llm_call",
+        "trace_id": "world-builder-live/people/ac0ed39d566b4ba8956fb13327d7f3cd",
+        "timestamp": "2026-11-12T22:57:02.556504+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm",
+        "task": "world-builder-people-laws",
+        "error": null,
+        "latency_s": 5.227,
+        "finish_reason": "stop",
+        "cost": 0.0004354,
+        "total_tokens": 1613
+      },
+      {
+        "kind": "llm_call",
+        "trace_id": "world-builder-live/people/ac0ed39d566b4ba8956fb13327d7f3cd",
+        "timestamp": "2026-11-12T22:57:04.721589+00:00",
+        "model": "openrouter/openai/gpt-6-luna",
+        "caller": "call_llm_structured",
+        "task": "world-substrate-action-signatures",
+        "error": null,
+        "latency_s": 22.158,
+        "finish_reason": "stop",
+        "cost": 0.0031888,
+        "total_tokens": 4512
+      }
+    ]
+  }
+}

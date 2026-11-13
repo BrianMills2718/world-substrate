@@ -649,6 +649,13 @@ def _independent_family(spec, entities, components):
     rules = []
     def rule(kind, participants, checks, effects):
         rules.append(_mechanic(kind, kind.replace("-", " "), participants, checks, effects))
+    rule("send-report", {"recipient": sel("member", "report_log")},
+         [_check("the sender supplies words", {"action_field": "content"}, "ne", "")],
+         [_effect("recipient", "components.report_log.entries", "append_report", {"action_field": "content"})])
+    # Parameters enumerate discovery examples, not permitted values. Open attempts
+    # supply their own content; this example is never an actor menu form.
+    rules[-1]["parameters"] = {"content": ["Report content supplied by the sender."]}
+    rules[-1]["rationale"] = "Send your own words directly to another person; records exposure, not belief or agreement."
     positions = {**decision, "position": sel("actor-position", "actor_position")}
     for kind, assent in (("record-assent", True), ("withdraw-assent", False)):
         rule(kind, positions, [own_position, _check("the recorded assent changes", _ref("position", "components.actor_position.assent"), "eq", not assent)],
@@ -683,7 +690,8 @@ def _independent_family(spec, entities, components):
                         _effect("it", "components.validation_decision.hold", "set", not passing),
                         _effect("it", "components.validation_decision.review", "set", "idle")]})
     actions = [{"kind": r["action_kind"], "description": r["rationale"],
-                "fields": [{"name": name, "type": "entity_ref"} for name in r["participants"]]} for r in rules]
+                "fields": [{"name": name, "type": "entity_ref"} for name in r["participants"]]
+                          + ([{"name": "content", "type": "string"}] if r["action_kind"] == "send-report" else [])} for r in rules]
     return actions, rules, processes
 
 
@@ -691,22 +699,30 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
     """Return (bundle, causal, coverage). Ids in the world are the spec ids with '_' turned into '-'."""
     entities: list[dict[str, Any]] = []
     components = [MEMBER, INFORMATION, DELIVERY]
+    if spec.independent_decision:
+        components.append({"name": "report_log", "fields": [{"name": "entries", "type": "string_list", "default": []}]})
     for p in spec.people:
         entities.append({"id": _eid(p.entity_id), "label": p.label, "categories": ["actor", "member"],
                          "components": {"member": {"role": p.position, "authorized": False, "approved": False,
                                                    "aware": False}}})
+        if spec.independent_decision:
+            entities[-1]["components"]["report_log"] = {"entries": []}
     if spec.public_summary or spec.independent_decision:
         components.append({"name": "claim_provenance", "fields": [
             {"name": "apparent_source", "type": "string", "default": "unspecified"},
             {"name": "source_lineage", "type": "string", "default": "unspecified"},
             {"name": "hidden_origin", "type": "string", "default": "unspecified"}]})
     for item in spec.information_items:
+        source = _eid(item.source_id or item.holder_id)
+        if item.initially_delivered and item.source_id is None:
+            source = f"unspecified-source-{_eid(item.representation_id)}"
+            entities.append({"id": source, "label": "Unspecified report source", "categories": ["information-source"], "components": {}})
         for r in item.recipient_ids:
             info_id = f"info-{_eid(item.representation_id)}-to-{_eid(r)}"
             entities.append({"id": info_id, "label": f"{item.content[:60]} (to {r})", "categories": ["information"],
-                             "components": {"information": {"content": item.content, "source_id": _eid(item.holder_id),
+                             "components": {"information": {"content": item.content, "source_id": source,
                                                             "channel_id": item.channel_id, "visibility": "direct",
-                                                            "topic": item.representation_id, "active": False}}})
+                                                            "topic": item.representation_id, "active": item.initially_delivered}}})
             if spec.public_summary or spec.independent_decision:
                 entities[-1]["components"]["claim_provenance"] = {
                     "apparent_source": item.apparent_source,
@@ -714,7 +730,7 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
                     "hidden_origin": json.dumps([e.model_dump() for e in item.hidden_provenance], sort_keys=True)}
             entities.append({"id": f"delivery-{info_id}", "label": f"Delivery to {r}", "categories": ["delivery"],
                              "components": {"delivery": {"info_id": info_id, "recipient_id": _eid(r),
-                                                         "channel_id": item.channel_id, "status": "pending"}}})
+                                                         "channel_id": item.channel_id, "status": "delivered" if item.initially_delivered else "pending"}}})
     for rec in spec.world_records:
         name = rec.record_id
         fields = [(e.key, e.value) for e in rec.public_state] + [(f"hidden_{e.key}", e.value) for e in rec.hidden_state]
@@ -781,8 +797,8 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
         briefs = person_briefs(spec)
         public = []
         actors = {_eid(p.entity_id): {"brief": briefs[_eid(p.entity_id)],
-                  "initial_knowledge": [{"id": f"profile-{_eid(p.entity_id)}", "text": briefs[_eid(p.entity_id)],
-                                         "source": f"scenario-profile:{p.entity_id}"}], "observable_fields": []} for p in spec.people}
+                  "initial_knowledge": [], "observable_fields":
+                  ([{"entity": _eid(p.entity_id), "paths": ["report_log.entries"]}] if spec.independent_decision else [])} for p in spec.people}
         records = {_eid(r.record_id): r for r in spec.world_records}
         for e in entities:
             fields = []
@@ -804,12 +820,18 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
                                   if not isinstance(entry.value, list) and entry.value is not None]})
             # Labels of undelivered claims must never contain their content or private identifiers.
             label = "Report" if "information" in comps else "Delivery" if "delivery" in comps else e["label"]
-            public.append({"id": e["id"], "label": label, "fields": fields})
+            public.append({"id": e["id"], "label": label, "fields": fields,
+                           **({"actor_ids": [_eid(a) for a in records[e["id"]].visible_to_actor_ids]} if e["id"] in records else {})})
+            if "information-source" in e["categories"]:
+                item = next(i for i in spec.information_items if e["id"] == f"unspecified-source-{_eid(i.representation_id)}")
+                public[-1]["actor_ids"] = [_eid(a) for a in item.recipient_ids]
         forms = []
         if spec.independent_decision:
             from itertools import product
             # Static signatures and declared participant categories, never applicability or canonical values.
             for mechanic in decision_mechanics:
+                if mechanic["action_kind"] == "send-report":
+                    continue  # Free content comes from an open attempt, never a canned menu utterance.
                 names = list(mechanic["participants"])
                 options = [[e["id"] for e in entities if _matches(e, mechanic["participants"][name])] for name in names]
                 for values in product(*options):

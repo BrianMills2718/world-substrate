@@ -59,9 +59,14 @@ def recorded_llm_client(calls: list[dict[str, Any]], asked: list[dict[str, Any]]
         call = answer(messages, kwargs.get("task"))
         return json.loads(call["response"]), types.SimpleNamespace(cost=0.0, model=call["model"])
 
+    def call_llm_structured(model: str, messages: Any, schema: Any, **kwargs: Any) -> Any:
+        call = answer(messages, kwargs.get("task"))
+        return schema.model_validate_json(call["response"]), types.SimpleNamespace(cost=0.0, model=call["model"])
+
     stub = types.ModuleType("llm_client")
     stub.__dict__.update({k: v for k, v in vars(real).items() if not k.startswith("__")})
     stub.call_llm, stub.call_llm_json_schema = call_llm, call_llm_json_schema
+    stub.call_llm_structured = call_llm_structured
     stub.get_cost = lambda **kwargs: 0.0
     return stub
 
@@ -74,6 +79,7 @@ def replay(folder: Path, follow_record: bool = False) -> dict[str, Any]:
     asked: list[dict[str, Any]] = []
     stub = recorded_llm_client(calls, asked, follow_record)
     import scripts.world_builder_service as service
+    from scripts.review_rules import ActorInputPrivacyError
     out: dict[str, Any] = {"kept": None, "stopped": None, "asked": asked}
 
     class Replay(service.WorldBuilderHandler):
@@ -103,6 +109,11 @@ def replay(folder: Path, follow_record: bool = False) -> dict[str, Any]:
             Replay()._generate_world("replay", build["request"])
     except Unrecorded as error:
         out["stopped"] = str(error)
+    except ActorInputPrivacyError as error:
+        # Old replies may lack today's privacy verdict. Preserve that rejection
+        # as a stopped replay, never manufacture approval or abort later worlds.
+        out["stopped"] = f"ActorInputPrivacyError: {error}"
+        out["actor_input_review"] = error.review
     finally:
         service.RULES_SIDE_BY_SIDE = side_by_side
         if real is None:
