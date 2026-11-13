@@ -1,0 +1,56 @@
+World Builder
+Simulate any small world
+
+Say who is involved and what they are trying to do. AI writes the rules and the simulation starts.
+
+A shared run, replayed
+⏸ Pause
+
+Replaying the recorded rounds; nothing is being decided now.
+
+Context view
+Analyst: whole run
+Actor: authorized inputs
+Person
+ari
+bo
+mara
+Exact inputs and provenance
+
+Round 1 · so far: 2 allowed · 1 refused
+
+Picture
+Network
+chooses moves
+place
+thing
+move the rules allow
+changes by itself
+
+Showing 6 of 28 boxes: who acted in round 1 and what that used or changed. Select a box to see its state now.
+
+Show the whole world (28 boxes)
+can
+decision
+position
+can
+decision
+Chooses moves
+Mara
+Chooses moves
+Bo
+Thing
+Whether to activate the prototype pump
+Thing
+Recorded position of bo
+Move
+record assent
+Move
+request review
+
+Round 1: Bo: record assent · Mara: request review
+Why things were refused
+Edit and run again
+See how it works
+More
+More

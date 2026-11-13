@@ -1,0 +1,674 @@
+[
+  {
+    "tag": "BUTTON",
+    "text": "Create simulation",
+    "type": "button",
+    "id": "build-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "or try an example",
+    "type": "button",
+    "id": "example-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Options\n      \n        \n          \n            A task to finishStops when the job is done.\n            Keeps runningNo finish line. Plays until things",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "INPUT",
+    "text": "",
+    "type": "radio",
+    "id": "",
+    "value": "task",
+    "role": null
+  },
+  {
+    "tag": "INPUT",
+    "text": "",
+    "type": "radio",
+    "id": "",
+    "value": "ongoing",
+    "role": null
+  },
+  {
+    "tag": "SELECT",
+    "text": "\n            Decide from my description\n            People with their own goals\n            Things and the steps of a job\n          ",
+    "type": "select-one",
+    "id": "world-def",
+    "value": "auto",
+    "role": null
+  },
+  {
+    "tag": "INPUT",
+    "text": "",
+    "type": "radio",
+    "id": "",
+    "value": "quiet",
+    "role": null
+  },
+  {
+    "tag": "INPUT",
+    "text": "",
+    "type": "number",
+    "id": "quiet-rounds",
+    "value": "6",
+    "role": null
+  },
+  {
+    "tag": "INPUT",
+    "text": "",
+    "type": "radio",
+    "id": "",
+    "value": "every_round",
+    "role": null
+  },
+  {
+    "tag": "INPUT",
+    "text": "",
+    "type": "checkbox",
+    "id": "stop-rounds-on",
+    "value": "on",
+    "role": null
+  },
+  {
+    "tag": "INPUT",
+    "text": "",
+    "type": "number",
+    "id": "stop-rounds",
+    "value": "40",
+    "role": null
+  },
+  {
+    "tag": "INPUT",
+    "text": "",
+    "type": "checkbox",
+    "id": "stop-spend-on",
+    "value": "on",
+    "role": null
+  },
+  {
+    "tag": "INPUT",
+    "text": "",
+    "type": "number",
+    "id": "stop-spend",
+    "value": "0.50",
+    "role": null
+  },
+  {
+    "tag": "SELECT",
+    "text": "\n            Approved by Create\n            Wait for my approval\n          ",
+    "type": "select-one",
+    "id": "judge-rulings",
+    "value": "create",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "I\u2019m feeling lucky: the AI makes one up",
+    "type": "button",
+    "id": "surprise-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Not sure what to write? Let the AI ask you a few questions",
+    "type": "button",
+    "id": "talk-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Send",
+    "type": "button",
+    "id": "send-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Use this description and create",
+    "type": "button",
+    "id": "use-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Close",
+    "type": "button",
+    "id": "talk-close",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Cancel",
+    "type": "button",
+    "id": "cancel-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Edit description",
+    "type": "button",
+    "id": "change-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Show detailsReads (15): entities.<actor>.category_ids, entities.<actor>.components.member, entities.<delivery>.category_ids, entities.<delivery>.compo",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Show detailsReads (5): entities.<actor>.category_ids, entities.<actor>.components.member, entities.<recipient>.category_ids, entities.<recipient>.comp",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Show detailsReads (10): entities.<actor>.category_ids, entities.<actor>.components.member, entities.<decision>.category_ids, entities.<decision>.compo",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Show detailsReads (10): entities.<actor>.category_ids, entities.<actor>.components.member, entities.<decision>.category_ids, entities.<decision>.compo",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Show detailsReads (5): entities.<actor>.category_ids, entities.<actor>.components.member, entities.<position>.category_ids, entities.<position>.compon",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Show detailsReads (5): entities.<actor>.category_ids, entities.<actor>.components.member, entities.<position>.category_ids, entities.<position>.compon",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Show detailsReads (5): entities.<actor>.category_ids, entities.<actor>.components.member, entities.<position>.category_ids, entities.<position>.compon",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Show detailsReads (5): entities.<actor>.category_ids, entities.<actor>.components.member, entities.<decision>.category_ids, entities.<decision>.compon",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Show detailsReads (8): entities.<actor>.category_ids, entities.<actor>.components.member, entities.<authority>.category_ids, entities.<authority>.comp",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Show detailsReads (8): entities.<actor>.category_ids, entities.<actor>.components.member, entities.<authority>.category_ids, entities.<authority>.comp",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Show detailsReads (8): entities.<actor>.category_ids, entities.<actor>.components.member, entities.<decision>.category_ids, entities.<decision>.compon",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Show detailsChanges (4): entities.<it>.components.validation_decision.hold, entities.<it>.components.validation_decision.review, entities.<it>.compone",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Show detailsChanges (4): entities.<it>.components.validation_decision.hold, entities.<it>.components.validation_decision.review, entities.<it>.compone",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Rule data{\n  \"world\": {\n    \"schema_version\": \"world-substrate-authoring-bundle/v0\",\n    \"world\": {\n      \"id\": \"prototype-pump-validation\",\n      \"la",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Run with these rules",
+    "type": "button",
+    "id": "approve-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "\u25b6 Watch again",
+    "type": "button",
+    "id": "play-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "SELECT",
+    "text": "Analyst: whole run\nActor: authorized inputs",
+    "type": "select-one",
+    "id": "context-mode",
+    "value": "analyst",
+    "role": null
+  },
+  {
+    "tag": "SELECT",
+    "text": "ari\nbo\nmara",
+    "type": "select-one",
+    "id": "context-actor",
+    "value": "ari",
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Input before round 1{\n  \"round\": 1,\n  \"model\": \"openrouter/openai/gpt-6-luna\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Input before round 2{\n  \"round\": 2,\n  \"model\": \"openrouter/openai/gpt-6-luna\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Input before round 3{\n  \"round\": 3,\n  \"model\": \"openrouter/openai/gpt-6-luna\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Input before round 4{\n  \"round\": 4,\n  \"model\": \"openrouter/openai/gpt-6-luna\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Input before round 5{\n  \"round\": 5,\n  \"model\": \"openrouter/openai/gpt-6-luna\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Input before round 6{\n  \"round\": 6,\n  \"model\": \"openrouter/openai/gpt-6-luna\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Exact inputs and provenance",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Picture",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Network\nchooses moves\nplace\nthing\nmove the rules allow\nchanges by itself\n\nShowing 4 of 28 boxes: who acted in round 6 and what that used or changed. S",
+    "type": null,
+    "id": "network",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Show the whole world (28 boxes)",
+    "type": "button",
+    "id": "net-whole",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Knock-on effects of r6-e00001 (decision.action.record assent): 0 steps run, 0 with a cause, no refusal, 1 blocked",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Knock-on effects of r4-e00001 (decision.action.state supportive): 0 steps run, 0 with a cause, no refusal, 1 blocked",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Knock-on effects of r3-e00001 (decision.action.complete validation): 1 step run, 1 with a cause, no refusal",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Knock-on effects of r2-e00001 (decision.action.repair condition): 0 steps run, 0 with a cause, no refusal, 1 blocked",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "Why things were refused",
+    "type": null,
+    "id": "attempts",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Edit and run again",
+    "type": "button",
+    "id": "new-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "See how it works",
+    "type": "button",
+    "id": "rules-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "Share this run",
+    "type": "button",
+    "id": "share-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "What happened",
+    "type": "button",
+    "id": "readout-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "More",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "again-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "download-btn",
+    "value": "",
+    "role": null
+  },
+  {
+    "tag": "DETAILS",
+    "text": "More",
+    "type": null,
+    "id": "",
+    "value": null,
+    "role": null
+  },
+  {
+    "tag": "BUTTON",
+    "text": "",
+    "type": "button",
+    "id": "owner-btn",
+    "value": "",
+    "role": null
+  }
+]

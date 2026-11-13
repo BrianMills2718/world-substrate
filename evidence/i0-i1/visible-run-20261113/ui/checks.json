@@ -1,0 +1,31 @@
+[
+  {
+    "actor": "bo",
+    "inputs": 6
+  },
+  {
+    "actor": "ari",
+    "inputs": 6,
+    "status": "ari: 6 recorded input(s)."
+  },
+  {
+    "actor": "mara",
+    "inputs": 6,
+    "status": "mara: 6 recorded input(s)."
+  },
+  {
+    "viewport": "390x844",
+    "document": {
+      "clientWidth": 390,
+      "scrollWidth": 390
+    }
+  },
+  {
+    "keyboard": "Enter opens actor input round 1 and round 2 native details",
+    "r2Open": "",
+    "phoneDocument": {
+      "clientWidth": 390,
+      "scrollWidth": 390
+    }
+  }
+]

@@ -1,0 +1,64 @@
+- banner: World Builder
+- main:
+  - heading "Simulate any small world" [level=1]
+  - paragraph: Say who is involved and what they are trying to do. AI writes the rules and the simulation starts.
+  - region "A shared run, replayed":
+    - heading "A shared run, replayed" [level=2]
+    - button "⏸ Pause"
+    - status: Replaying the recorded rounds; nothing is being decided now.
+    - text: Context view
+    - combobox "Context view":
+      - 'option "Analyst: whole run" [selected]'
+      - 'option "Actor: authorized inputs"'
+    - text: Person
+    - combobox "Person" [disabled]:
+      - option "ari" [selected]
+      - option "bo"
+      - option "mara"
+    - group: Exact inputs and provenance
+    - paragraph: "Round 1 · so far: 2 allowed · 1 refused"
+    - group:
+      - text: Picture
+      - iframe
+    - group:
+      - text: Network chooses moves place thing move the rules allow changes by itself
+      - status: "Showing 6 of 28 boxes: who acted in round 1 and what that used or changed. Select a box to see its state now."
+      - button "Show the whole world (28 boxes)"
+      - application:
+        - img:
+          - group "Edge from e:bo to a:record-assent"
+        - img:
+          - group "Edge from a:record-assent to e:pump-activation"
+        - img:
+          - group "Edge from a:record-assent to e:position-bo"
+        - img:
+          - group "Edge from e:mara to a:request-review"
+        - img:
+          - group "Edge from a:request-review to e:pump-activation"
+        - text: can decision position can decision
+        - group: Chooses moves Mara
+        - group: Chooses moves Bo
+        - group: Thing Whether to activate the prototype pump
+        - group: Thing Recorded position of bo
+        - group: Move record assent
+        - group: Move request review
+        - img
+        - button "Zoom In":
+          - img
+        - button "Zoom Out":
+          - img
+        - button "Fit View":
+          - img
+      - paragraph
+    - list "What just happened, newest round first":
+      - listitem:
+        - strong: "Round 1:"
+        - text: "Bo: record assent · Mara: request review"
+    - group: Why things were refused
+    - button "Edit and run again"
+    - button "See how it works"
+    - status
+    - status
+    - group: More
+- contentinfo:
+  - group: More

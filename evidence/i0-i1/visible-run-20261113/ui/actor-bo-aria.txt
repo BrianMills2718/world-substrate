@@ -1,0 +1,27 @@
+- banner: World Builder
+- main:
+  - heading "Simulate any small world" [level=1]
+  - paragraph: Say who is involved and what they are trying to do. AI writes the rules and the simulation starts.
+  - region "Actor context":
+    - heading "Actor context" [level=2]
+    - button "▶ Watch again"
+    - text: Context view
+    - combobox "Context view":
+      - 'option "Analyst: whole run"'
+      - 'option "Actor: authorized inputs" [selected]'
+    - text: Person
+    - combobox "Person":
+      - option "ari"
+      - option "bo" [selected]
+      - option "mara"
+    - region "Authorized actor inputs":
+      - paragraph: This is the selected person's recorded input, before their choice. Viewing it does not change the simulation.
+      - status: "bo: 6 recorded input(s)."
+      - group: Input before round 1
+      - group: Input before round 2
+      - group: Input before round 3
+      - group: Input before round 4
+      - group: Input before round 5
+      - group: Input before round 6
+- contentinfo:
+  - group: More
