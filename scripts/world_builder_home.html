@@ -1250,7 +1250,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   // Implements: living-scene/Living Scene: Inputs
   function recordedEvents(turn) {
     const seen = new Set();
-    const events = [...Object.values(turn.actors || {}).flatMap((row) => {
+    const events = [...(turn.ruling_events || []), ...Object.values(turn.actors || {}).flatMap((row) => {
       const settled = (((row.judge || {}).disposition || {}).settled);
       return settled ? [row, settled] : [row];
     }), ...(turn.world_events || []), ...(turn.reactions || [])]
@@ -1465,15 +1465,17 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   function savedEventRows(turn) {
     return recordedEvents(turn).map((event, index) => {
       const match = Object.entries(turn.actors || {}).find(([, row]) => row === event || (((row.judge || {}).disposition || {}).settled) === event);
-      const actor = match ? match[0] : null;
+      const ruling = (turn.ruling_events || []).includes(event);
+      const actor = match ? match[0] : ruling ? event.actor || null : null;
       const settlement = Boolean(match && match[1] !== event);
       const move = event.wanted || event.did || {};
-      const action = settlement ? "installed-rule settlement" : actor ? words(move.kind || (event.attempt && event.attempt.reading && event.attempt.reading.kind) || "wait") : words(event.rule_id || "automatic consequence");
-      return { event, actor, settlement, key: event.event_id || `round-${turn.turn}-event-${index}`, title: `${actor ? labelFor(actor) : "World"} — ${action}` };
+      const action = ruling ? `ruling ${words(event.result || event.decision || "decision")}` : settlement ? "installed-rule settlement" : actor ? words(move.kind || (event.attempt && event.attempt.reading && event.attempt.reading.kind) || "wait") : words(event.rule_id || "automatic consequence");
+      return { event, actor, settlement, ruling, key: event.event_id || `round-${turn.turn}-event-${index}`, title: `${actor ? labelFor(actor) : "World"} — ${action}` };
     });
   }
   function savedStatus(item) {
     if (item.event.interpretation_feedback) return "Interpretation rejected";
+    if (item.ruling) return `Ruling: ${words(item.event.status || item.event.result || item.event.decision || "recorded decision")}`;
     if (!item.actor) return item.event.refused ? "Automatic step refused" : "Automatic consequence";
     return ({ accepted: "Allowed", precondition_failed: "Refused by a rule", unsupported_action: "No matching move", no_action: "Waited", pending_ruling: "Waiting for ruling", refused_ruling: "Ruling refused" })[item.event.status] || words(item.event.status || "Recorded result");
   }
@@ -1553,7 +1555,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const box = $("saved-event-detail"); box.replaceChildren(); box.dataset.eventId = selected.key; box.dataset.round = turn.turn;
     $("saved-event-h").textContent = selected.title;
     const status = document.createElement("p"); status.className = "saved-event-result"; status.textContent = savedStatus(selected); box.append(status);
-    if (selected.actor && !selected.settlement) {
+    if (selected.actor && !selected.settlement && !selected.ruling) {
       const reasons = (selected.event.refused_because || []).map(plainCheck);
       const summary = selected.event.interpretation_feedback || (reasons.length ? `The installed rule refused this move because: ${reasons.join("; ")}.` : selected.event.status === "accepted" ? "The installed rule accepted this interpreted move." : selected.event.status === "unsupported_action" ? "No installed move matched these words. Any later ruling is recorded separately." : savedStatus(selected));
       const reading = (selected.event.attempt || {}).reading, dl = document.createElement("dl"); dl.className = "attempt-detail";
@@ -1563,7 +1565,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       const result = entry("Result", summary); savedChangeList(result, selected.event); box.append(dl);
       if (selected.event.judge) box.append(...judgePanel(selected.event));
     } else {
-      const p = document.createElement("p"); p.textContent = selected.settlement ? "This is the separately recorded consequence of an installed rule." : `Installed process: ${words(selected.event.rule_id || "not recorded")}.`; box.append(p);
+      const p = document.createElement("p"); p.textContent = selected.ruling ? "This is a separately recorded ruling decision or its settlement, not a new actor choice." : selected.settlement ? "This is the separately recorded consequence of an installed rule." : `Installed process: ${words(selected.event.rule_id || "not recorded")}.`; box.append(p);
+      if (selected.ruling && selected.event.why) { const reason = document.createElement("p"); reason.textContent = selected.event.why; box.append(reason); }
       if ((selected.event.refused_because || []).length) { const reason = document.createElement("p"); reason.textContent = selected.event.refused_because.map(plainCheck).join("; "); box.append(reason); }
       savedChangeList(box, selected.event);
       const id = document.createElement("p"); id.className = "saved-state-note"; id.textContent = `Recorded event: ${selected.event.event_id || "not recorded"}`; box.append(id);
@@ -1575,7 +1578,13 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     rows.filter((item) => (item.event.caused_by || []).includes(selected.key)).forEach((item) => link(item, "Consequence"));
     if (selected.actor && !selected.settlement) rows.filter((item) => item.settlement && (((selected.event.judge || {}).disposition || {}).settled) === item.event).forEach((item) => link(item, "Later rule settlement"));
     if (related.children.length) box.append(related);
-    savedActorInput(selected.actor, turn);
+    if (selected.ruling && selected.event.origin_event_id) {
+      const index = live.recorded.findIndex((record) => savedEventRows(record).some((item) => item.key === selected.event.origin_event_id));
+      if (index >= 0) { const earlier = document.createElement("button"); earlier.type = "button"; earlier.className = "secondary"; earlier.textContent = "Inspect the earlier attempt"; earlier.title = "Select the recorded original attempt and its actual round, state and actor input."; earlier.addEventListener("click", () => selectSavedRound(index, selected.event.origin_event_id)); box.append(earlier); }
+      else { const missing = document.createElement("p"); missing.textContent = "The earlier attempt is not included in this recording."; box.append(missing); }
+    }
+    savedActorInput(selected.ruling ? null : selected.actor, turn);
+    if (selected.ruling) { $("saved-actor-input").querySelector("h4").textContent = "Ruling origin"; $("saved-actor-input").querySelector("p").textContent = "This ruling is not a new resident choice. Inspect the earlier attempt for the input supplied before that choice."; }
   }
   function renderSavedReplay() {
     const actorMode = $("context-mode").value === "actor", turn = live.rounds[live.rounds.length - 1];
