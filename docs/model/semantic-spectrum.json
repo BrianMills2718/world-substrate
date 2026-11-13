@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "record_type": "semantic_spectrum",
-  "basis": "Project vocabulary projection of tools/planning/domain_src.py at the November 12 normative review. IDs, definitions and semantic relationships remain owned by domain_src.py and its generated domain.graph.json/DOMAIN.md. This file adds explicit aliases and classifications for the native planning checker; it is not a new world ontology. It covers the existing implementation/domain inventory, not every conceptual term in modeling-choices.md.",
+  "basis": "Project vocabulary projection of tools/planning/domain_src.py, including the bounded I0/I1 contract reconciliation. IDs, definitions and semantic relationships remain owned by domain_src.py and its generated domain.graph.json/DOMAIN.md. This file adds explicit aliases and classifications for the native planning checker; it is not a new world ontology or a scientific-fidelity claim.",
   "terms": [
     {
       "id": "world",
@@ -420,6 +420,49 @@
       "aliases": [
         "voluntary exchange offer"
       ]
+    },
+    {
+      "id": "actor-input-boundary",
+      "kind": "Substrate",
+      "aliases": [
+        "declared actor inputs",
+        "authorized actor context"
+      ]
+    },
+    {
+      "id": "claim-provenance",
+      "kind": "Family",
+      "aliases": [
+        "originating claim identity"
+      ]
+    },
+    {
+      "id": "technical-condition",
+      "kind": "Family",
+      "aliases": [
+        "represented technical condition"
+      ]
+    },
+    {
+      "id": "expressed-stance",
+      "kind": "Family",
+      "aliases": [
+        "public stance"
+      ]
+    },
+    {
+      "id": "recorded-assent",
+      "kind": "Family",
+      "aliases": [
+        "actor assent"
+      ]
+    },
+    {
+      "id": "validation-hold",
+      "kind": "Family",
+      "aliases": [
+        "technical hold"
+      ]
     }
   ],
   "classes": [
@@ -429,7 +472,7 @@
     },
     {
       "id": "Family",
-      "definition": "Fixed code every people world gets from compile_spec.py; the group-decision family is added when the description has a decision."
+      "definition": "Reusable compiled people-world parts; the scenario explicitly chooses the legacy decision family or the independent validation/assent procedure. Not every family applies to every world."
     },
     {
       "id": "PerWorld",
@@ -468,6 +511,14 @@
         "resident"
       ],
       "note": "The represented person and the external cognition agent operating its policy are distinct; use person or resident explicitly."
+    },
+    {
+      "word": "approval",
+      "means": [
+        "approval",
+        "recorded-assent"
+      ],
+      "note": "The outer user approves execution of rules; a represented person independently records assent inside the world. One cannot supply the other."
     }
   ]
 }

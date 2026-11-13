@@ -295,7 +295,7 @@
         "view": "actor-context/analyst-context comparison with exact per-round input records",
         "router_record": "docs/planning/open-attempt/router/information-review.recommendation.json"
       },
-      "entrypoint": "planned: retained production Ari/Mara/Bo share URL in https://brianmills.dev/world-builder/",
+      "entrypoint": "planned",
       "status": "not built",
       "status_note": "Implementation and controls are merged, but this criterion requires a retained usable production demonstration and share URL, which is not yet available. Production3 was rejected before residents; current fixes and full checks do not substitute for the missing demonstration.",
       "evidence": [
@@ -330,7 +330,7 @@
         "view": "linked actor inputs and chronological canonical event/state comparison",
         "router_record": "docs/planning/open-attempt/router/information-review.recommendation.json"
       },
-      "entrypoint": "planned: retained production Ari/Mara/Bo share URL in https://brianmills.dev/world-builder/",
+      "entrypoint": "planned",
       "status": "not built",
       "status_note": "Implementation and controls are merged, but this criterion requires a retained usable production demonstration and share URL, which is not yet available. Production3 was rejected before residents; current fixes and full checks do not substitute for the missing demonstration.",
       "evidence": [

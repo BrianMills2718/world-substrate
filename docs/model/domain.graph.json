@@ -9,7 +9,7 @@
   "Family": {
    "label": "Fixed people-world part",
    "color": "#3b6fa8",
-   "explain": "Fixed code every people world gets from compile_spec.py; the group-decision family is added when the description has a decision."
+   "explain": "Reusable compiled people-world parts; the scenario explicitly chooses the legacy decision family or the independent validation/assent procedure. Not every family applies to every world."
   },
   "PerWorld": {
    "label": "Written per world by an AI",
@@ -123,7 +123,7 @@
    "id": "information",
    "label": "Information item",
    "kind": "Substrate",
-   "explain": "A piece of information with a source and per-recipient deliveries; hidden until delivered. Code: src/world_substrate/information.py:57."
+   "explain": "A represented item with a source and per-recipient deliveries. The source can know it before delivery; other actors receive only authorized public or delivered exposure. Claim content does not become technical truth or assent. Code: src/world_substrate/information.py:57."
   },
   {
    "id": "run-loop",
@@ -231,25 +231,25 @@
    "id": "group-decision",
    "label": "Group decision",
    "kind": "Family",
-   "explain": "A decision with support, deadline, deployment and review; changed only by fixed rules. Code: spikes/any-scenario-2026-10/compile_spec.py:86."
+   "explain": "The legacy scripted decision family with support, deadline, deployment and operating review; distinct from the independent validation/assent procedure. Its fixed support/remedy dynamics are fixture assumptions, not general persuasion. Code: spikes/any-scenario-2026-10/compile_spec.py:86."
   },
   {
    "id": "concern",
    "label": "Concern",
    "kind": "Family",
-   "explain": "An objection a group holds on a delivered item: open, under remedy or resolved, with answered and remedy_by. Code: spikes/any-scenario-2026-10/compile_spec.py:70."
+   "explain": "The legacy scripted concern record on a delivered item: open, under remedy or resolved, with answered and remedy_by. Distinct from an independent actor expressing concern without a forced support change. Code: spikes/any-scenario-2026-10/compile_spec.py:70."
   },
   {
    "id": "support",
    "label": "Support",
    "kind": "Family",
-   "explain": "A member's stance on the decision: none, full or conditional on a concern. Code: spikes/any-scenario-2026-10/compile_spec.py:66."
+   "explain": "The legacy decision family's support record: none, full or conditional on a concern. Independent expressed stance and recorded assent use separate records instead. Code: spikes/any-scenario-2026-10/compile_spec.py:66."
   },
   {
    "id": "remedy",
    "label": "Remedy",
    "kind": "Family",
-   "explain": "A fix of a concern that takes 2 rounds; it can be stopped part-way by the concern's holder objecting. Code: spikes/any-scenario-2026-10/compile_spec.py:332."
+   "explain": "The legacy scripted concern-remedy task, stipulated to take 2 rounds and stoppable by the holder. It is not the independent procedure's technical repair or validation result. Code: spikes/any-scenario-2026-10/compile_spec.py:332."
   },
   {
    "id": "agenda",
@@ -267,7 +267,7 @@
    "id": "review",
    "label": "Operating review",
    "kind": "Family",
-   "explain": "Every 6 rounds after deployment; may reopen each resolved concern once. Code: spikes/any-scenario-2026-10/compile_spec.py:442."
+   "explain": "The legacy scripted operating review every 6 rounds after deployment; may reopen each resolved concern once. Distinct from independent technical validation and build-time rules review. Code: spikes/any-scenario-2026-10/compile_spec.py:442."
   },
   {
    "id": "person",
@@ -333,7 +333,7 @@
    "id": "observation",
    "label": "Observation",
    "kind": "Substrate",
-   "explain": "What one actor sees this round: the fields its senses and position allow, never the whole world. Code: src/world_substrate/engine.py:278."
+   "explain": "What one actor is supplied this round. Declared actor-information worlds use explicit grants and their own retained context; historical legacy-unrestricted worlds lack that complete boundary. Engine co-location and item filtering alone do not establish secrecy. Code: src/world_substrate/engine.py:278."
   },
   {
    "id": "place-way",
@@ -429,7 +429,7 @@
    "id": "rules-review",
    "label": "Independent rules review",
    "kind": "Substrate",
-   "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds. Code: scripts/review_rules.py:75."
+   "explain": "A separate source-grounded model call reviews proposed rules on both build paths. Mechanical mismatches remain findings, not a blanket pass mark. Declared actor-information worlds also require a complete typed authorization verdict for public setup and every exact initial actor context; missing, unsafe or unavailable review prevents delivery. That gate does not prove reviewer accuracy or scientific fidelity. Code: scripts/review_rules.py:75."
   },
   {
    "id": "consequence-report",
@@ -508,6 +508,42 @@
    "label": "Recorded draw",
    "kind": "Theory",
    "explain": "Plans estimate-rules E1 and open-attempt S3 (planned, not implemented): a number drawn from hash(run seed, event id, rule id) and recorded on the event; an estimate rule's chance becomes an outcome only through it, and a replay reads it. Code: none yet."
+  },
+  {
+   "id": "actor-input-boundary",
+   "label": "Declared actor-input boundary",
+   "kind": "Substrate",
+   "explain": "The declared-v1 assembly constraining both policy paths to explicit identity/field grants, public setup and actor-owned retained context. It covers profiles, observations, offered forms, feedback and sealed continuation; legacy-unrestricted worlds retain their older inputs. This is not generic Engine read-scope enforcement. Code: scripts/actor_information.py:128."
+  },
+  {
+   "id": "claim-provenance",
+   "label": "Canonical claim provenance",
+   "kind": "Family",
+   "explain": "Canonical attribution of initialized information: apparent source, declared common originating-claim identity and hidden origin. In declared actor inputs, lineage is private by default and requires lineage_visible_to_actor_ids authorization as well as visible exposure. New actor-authored speech records actual sender/recipient but inherited lineage remains undeclared; repetition is not independent corroboration. Code: spikes/any-scenario-2026-10/compile_spec.py:712."
+  },
+  {
+   "id": "technical-condition",
+   "label": "Independent technical condition",
+   "kind": "Family",
+   "explain": "The independent procedure's represented passing/failing condition, separate from claims, exposure and validation record. An authorized explicit repair changes it; completed validation reads it. The binary effective repair is a declared bounded intervention, not validated physics. Code: spikes/any-scenario-2026-10/compile_spec.py:621."
+  },
+  {
+   "id": "expressed-stance",
+   "label": "Actor-owned expressed stance",
+   "kind": "Family",
+   "explain": "A public supportive, concerned, undecided or unexpressed position recorded by that actor's own action. It is distinct from private interpretation and recorded assent; receiving information does not automatically write it. Code: spikes/any-scenario-2026-10/compile_spec.py:665."
+  },
+  {
+   "id": "recorded-assent",
+   "label": "Separately recorded assent",
+   "kind": "Family",
+   "explain": "The required person's own recorded assent or withdrawal, kept in actor_position.assent and tallied for activation. A supportive statement, delivered report or passing validation cannot supply it. It is also distinct from the outer user's approval to run the rules. Code: spikes/any-scenario-2026-10/compile_spec.py:660."
+  },
+  {
+   "id": "validation-hold",
+   "label": "Institutional validation hold",
+   "kind": "Family",
+   "explain": "The independent public procedure's activation block from failed validation. Completed authorized passing revalidation clears only this hold; activation still checks recorded assents. Because failure is the stated public cause here, seeing the hold may legitimately reveal failed validation without exposing private test detail. Code: spikes/any-scenario-2026-10/compile_spec.py:685."
   }
  ],
  "edges": [
@@ -1338,6 +1374,108 @@
    "source": "estimate-rule",
    "target": "resident",
    "label": "never decides for"
+  },
+  {
+   "id": "e138",
+   "source": "actor-input-boundary",
+   "target": "observation",
+   "label": "constrains declared inputs"
+  },
+  {
+   "id": "e139",
+   "source": "actor-input-boundary",
+   "target": "resident",
+   "label": "assembles authorized context for"
+  },
+  {
+   "id": "e140",
+   "source": "rules-review",
+   "target": "actor-input-boundary",
+   "label": "checks source-grounded initial authorization"
+  },
+  {
+   "id": "e141",
+   "source": "claim-provenance",
+   "target": "information",
+   "label": "attributes"
+  },
+  {
+   "id": "e142",
+   "source": "claim-provenance",
+   "target": "actor-input-boundary",
+   "label": "lineage requires explicit visibility grant"
+  },
+  {
+   "id": "e143",
+   "source": "claim-provenance",
+   "target": "causal-trace",
+   "label": "retained separately in"
+  },
+  {
+   "id": "e144",
+   "source": "technical-condition",
+   "target": "entity-component",
+   "label": "is stored in"
+  },
+  {
+   "id": "e145",
+   "source": "move",
+   "target": "technical-condition",
+   "label": "authorized explicit repair may change"
+  },
+  {
+   "id": "e146",
+   "source": "technical-condition",
+   "target": "validation-hold",
+   "label": "completed failed validation sets"
+  },
+  {
+   "id": "e147",
+   "source": "validation-hold",
+   "target": "move",
+   "label": "blocks activation until cleared"
+  },
+  {
+   "id": "e148",
+   "source": "resident",
+   "target": "expressed-stance",
+   "label": "may explicitly record"
+  },
+  {
+   "id": "e149",
+   "source": "resident",
+   "target": "recorded-assent",
+   "label": "may explicitly record or withdraw"
+  },
+  {
+   "id": "e150",
+   "source": "expressed-stance",
+   "target": "recorded-assent",
+   "label": "does not imply"
+  },
+  {
+   "id": "e151",
+   "source": "recorded-assent",
+   "target": "move",
+   "label": "required for activation"
+  },
+  {
+   "id": "e152",
+   "source": "information",
+   "target": "expressed-stance",
+   "label": "does not force"
+  },
+  {
+   "id": "e153",
+   "source": "information",
+   "target": "recorded-assent",
+   "label": "does not supply"
+  },
+  {
+   "id": "e154",
+   "source": "validation-hold",
+   "target": "recorded-assent",
+   "label": "clearing does not supply"
   }
  ],
  "layout": {

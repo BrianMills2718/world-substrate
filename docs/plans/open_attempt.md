@@ -95,7 +95,7 @@ Verdict: compliant, 1 pending
 <!-- /planning-compliance-checklist -->
 
 
-This is the open-attempt plan’s own package. The repository package (`docs/planning/planning-package.json`, repo-wide page `proposals/planning-package/review-page/`) covers the repository and currently points its plan part at declared laws. The packages share some models, checks and the question ledger, but each plan has its own acceptance and review scope; a repository-package pass does not certify this plan.
+This is the open-attempt plan’s own package. The repository package (`docs/planning/planning-package.json`, repo-wide page `proposals/planning-package/review-page/`) now uses this active plan and its I0/I1 acceptance entries. The packages share models, checks and the question ledger, and retain their own review records. Neither a repository-package nor a plan-package pass certifies production outcomes.
 
 Review page: [proposals/open-attempt/review-page/](../../proposals/open-attempt/review-page/index.html), live at
 <https://hive.brianmills.dev/plans/world-substrate/main/proposals/open-attempt/review-page/>.
