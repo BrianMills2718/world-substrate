@@ -429,7 +429,7 @@
       "status": "present",
       "path": "docs/planning/open-attempt/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "49f4d5a7a8c6918e7b003468a2b1ab4c08c2d03f",
+      "reviewed_revision": "a23067accd0cb6941a2f1a45e8e1ec399904f3fe",
       "package_commit": "49f4d5a7a8c6918e7b003468a2b1ab4c08c2d03f",
       "note": "Independent scoped polarity/reference contract review passed at49f4d5a on2026-11-13. A2 displays original utterances, quoted field bindings and separate consequences. Native and browser evidence retain their own scope; Q36 general semantic accuracy remains open."
     },

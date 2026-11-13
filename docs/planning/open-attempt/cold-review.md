@@ -21,3 +21,10 @@ Production3 failed before residents. No paid comparison, required social ending,
 
 
 Verdict: pass
+
+
+## Attempt inspector closure review — 2026-11-13
+
+Independent planning-compliance-reviewer: pass at `a23067accd0cb6941a2f1a45e8e1ec399904f3fe`. Q26/G17 closes on 78 browser checks covering the retained pump and S1 accepted/refused/unmatched/wait rows plus an explicitly model-free settlement-attribution fixture. The installed-rule settlement keeps its own status, checks, changes and event ID. Original run data remain unchanged; general semantic fidelity is not inferred.
+
+Both shared page sets were rebuilt: six rendered hub/review/questions pages show 42 open questions, retain Q26 as resolved and preserve the latest six-round run and separate Bo/Ari correction links in their source configurations. All three destinations returned HTTP 200. Navigation reproduced 0 findings, exit 0. A1–A4/S1 and prior conditional baseline, November17 system-map and nightly coverage limitations remain. This reviews changed planning truth and projections; it adds no design or paid simulation requirement.

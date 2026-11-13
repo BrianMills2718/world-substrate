@@ -1,0 +1,10 @@
+Attempt inspector delivery, 2026-11-13
+Implementation PR389, deployed f43846fa60cedbb50af754903d736c74d1120b2e; llm_client4ee0cf800587598672dfacfed99ea2954c2e01e6.
+UI source SHA256:422acd911801664c7f8a3658fc41ed150c01f7aeb91cd3221e0e7cdf9190ff9a.
+Local browser: uv run --no-project --with playwright python evidence/open-attempt/attempt-inspector-ui/browser_check.py;78checks,0unexpectederrors/failedrequests,exit0.
+Live browser: same command with --live;77checks,0unexpectederrors/failedrequests,exit0;4analyticsPOSTs deliberately blocked. Includes equality of all retained pump rounds, actor_inputs and world_fingerprint.
+Desktop1440 and phone390; Enter activation; accepted/refused/unmatched/wait; Actor context hides analyst inspector. Local-only settlement fixture separately tests original versus installed-rule event attribution. Synthetic fixture is not a native run.
+Focused Python tests:29passed,exit0. Normal merge gate:1100passed,2skipped,229subtestspassed;13specspassed;exit0. First gate caught G17TOML status stillopen; corrected to fixed.
+Deploy wrapper retained prior images; frontend exact-byte check and backend build_commit both f43846fa60ce,exit0. No model endpoints or new paid simulation.
+Both planning validators:10/10parts,0failures,exit0 after independentreviewa23067a; conditionalbaseline/system-map/nightlycoverage limitations remain. Q26/G17closed; complete A1–A4/S1 remains outstanding.
+Documentation sweep:0brokenentrylinks; wikiroot is workspacefrontdoor plus canonicaldocs/wiki, historical/normative limitations retained. Stopped frontend lane partial work was incorporated and corrected in PR389; other agent lanes left untouched.
