@@ -1,0 +1,16 @@
+== gate at 2ab2933e55df
+check_project skipped: tree b888f2cdf0c4 passed at 2026-11-13T18:51:09.268549+00:00
+== backend
+deploying world-substrate 2ab2933e55df with llm_client 4ee0cf800587598672dfacfed99ea2954c2e01e6
+sha256:3ee2d0df438f56799e6f1772ff876c54fb06a288ccb5e1ed06d15ba16f918b37
+ Container world-builder  Recreate
+ Container world-builder  Recreated
+ Container world-builder  Starting
+ Container world-builder  Started
+Optional old-image cleanup skipped; all prior build images retained.
+serving 2ab2933e55dfe5c1c58514a3b06e052cdb30c012
+== pages
+world-builder pages ready: 6 files
+Current Version ID: 06fb314c-752b-4e08-a26c-e310a514fd57
+== verify
+live page matches 2ab2933e55df; backend: 2ab2933e55df
