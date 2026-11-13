@@ -1041,3 +1041,7 @@ make check: exit0,1037passed2skipped229subtests,13specs,45.45seconds; code2fa9b8
 python scripts/check_trace_reads.py: exit0,runs=51 problems=0.
 durable_docs_check.py --repo . --arc42: exit0,0findings after actual source reread and reviewed_at2fa9b86 for compiler/reviewer rules.
 Production14-call failure retained and inspected; no resident or deployed acceptance pass claimed.
+
+2026-11-13 final changed-contract planning review
+Both current installed validate_planning_package commands: exit0,10/10parts,11/12substance,0failing1conditionalpending;86concepts155relations,74implemented12dashed,45relied-onconcepts,10measuredAIsteps,11not-builtcriteria. Coldreview64db257c8b07a1b85919dc3ccebfc7cb82a3dd60; freshness0changes.
+Trace reads51/0 and durable docs0findings independently reproduced exit0. Bothspectrumchecks9/9 exit0;15system-model tests exit0. Productionacceptance remains pending.

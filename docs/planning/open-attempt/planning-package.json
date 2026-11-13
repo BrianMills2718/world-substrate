@@ -426,12 +426,12 @@
       "url": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/open-attempt/review-page/"
     },
     "cold_review": {
-      "status": "missing",
+      "status": "present",
       "path": "docs/planning/open-attempt/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "fdca8f49e7bd9b15d44532f31a7cae0841235048",
-      "package_commit": "fdca8f49e7bd9b15d44532f31a7cae0841235048",
-      "note": "Historical pass and report remain at the recorded revision. Current review is pending because I0/I1 changed the specification contract and active-plan acceptance; restore present only after independent review of the committed current package."
+      "reviewed_revision": "64db257c8b07a1b85919dc3ccebfc7cb82a3dd60",
+      "package_commit": "64db257c8b07a1b85919dc3ccebfc7cb82a3dd60",
+      "note": "Current changed-contract review passed on the recorded immutable revision. Runtime acceptance remains separately not built/pending; no production or scientific claim follows from planning compliance."
     },
     "investigation": {
       "status": "present",

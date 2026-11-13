@@ -1,6 +1,6 @@
 {
   "title": "World Substrate: actor information and independent concern",
-  "lead": "I0/I1 implementation is merged. Inspect what Ari, Mara and Bo actually received and which installed rules changed condition, exposure, stance, assent and hold. Complete inspected production acceptance is still pending; the old cold review does not certify these changed contracts.",
+  "lead": "I0/I1 implementation is merged. Inspect the separate actor-input, claim, condition, stance, assent and hold contracts. The current planning review has passed; the retained production demonstration and acceptance remain pending.",
   "what_you_do": "Read the I0/I1 acceptance entries and their evidence, then inspect the World Builder Actor/Analyst controls. The implementation is already approved; no further plan approval is requested here. Report a concrete mismatch or modeling concern.",
   "summary": [
     "I0 constrains both policy paths and continuation to declared actor inputs, with exact retained prompts and separate Analyst provenance.",
