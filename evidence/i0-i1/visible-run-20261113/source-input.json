@@ -1,0 +1,24 @@
+{
+  "claim_scope": "Fresh deployed generated-world and autonomous resident run for Brian to inspect; no prescribed social ending.",
+  "description": "Ari is the validation engineer, Mara the coordinator, and Bo a member operating a prototype pump. There is one concern: whether it is safe to activate. Keep actual technical condition, reports/provenance, each recipient's exposure, personal interpretation/support, recorded assent, and institutional activation hold distinct. Initially the pump genuinely fails validation. Only Ari knows the private detail: sensor channel C drifted 8 units in validation batch V17. Mara knows the public procedure and receives a short report saying validation failed, without the private channel/batch detail. Bo knows the procedure but has received no failure report. Give each person their own profile and memory. They can independently request evidence, investigate, ignore a claim, retain support, dissent or record assent. Attributable reports are delivered to named recipients; undelivered reports reveal nothing. Ari may choose whether and whom to tell. Under the public procedure, filing a validation hold publicly reveals failed validation but never private test details. A false warning cannot change the pump's actual condition. Completing a review may confirm failure; neither review completion nor waiting repairs anything. Ari can perform an explicit technical repair and then authorized revalidation. Passing revalidation clears only the technical hold; activation still requires Mara's own recorded assent and Bo's own recorded assent. No message or rule forces persuasion, support change, assent or a particular ending. Limit the scenario to these three people, one pump, one concern, reports, repair/revalidation and activation.",
+  "build": {
+    "world_def": "people",
+    "world_kind": "task",
+    "run_stop": {
+      "mode": "every_round"
+    }
+  },
+  "run": {
+    "policy": "resident",
+    "rounds": 6,
+    "turns_per_request": 1
+  },
+  "acceptance_basis": [
+    "Read generated actor declarations and mechanics before drawing any behavioral conclusion.",
+    "Inspect exact ordinary and failing policy inputs, messages, tools and provenance for both rounds.",
+    "Assess technical condition, report, exposure, stance, assent and hold separately, regardless of ending."
+  ],
+  "approval": "Brian, 2026-11-13: i approve, after recommendation to produce one fresh visible run on the current system.",
+  "cost_basis": "Previous native generated/two-round run measured $0.05697485; six-round total not yet measured. Existing owner budget gates apply.",
+  "free_replay_basis": "Unchanged app source from PR384: saved worlds28/errors0/lost0; 1097 tests passed2skipped229subtests, exact deployment b3823f6. Newer main4a4d4b7 contains documentation only."
+}

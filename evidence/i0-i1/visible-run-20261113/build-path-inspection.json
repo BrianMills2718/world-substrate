@@ -1,0 +1,14 @@
+{
+  "checks": {
+    "declared_actor_information": true,
+    "independent_components": true,
+    "no_legacy_group_decision": true,
+    "explicit_repair_validation_and_assent": true,
+    "no_forced_stance_or_timer_repair": true
+  },
+  "passed": true,
+  "missing_components": [],
+  "missing_actions": [],
+  "forbidden_processes": [],
+  "limitation": "Read the complete generated declarations and traces before making behavioral claims."
+}

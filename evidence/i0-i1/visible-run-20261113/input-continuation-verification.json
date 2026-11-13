@@ -1,0 +1,189 @@
+{
+  "native_actor_matches": [
+    {
+      "round": 1,
+      "actor": "ari",
+      "matches": 1,
+      "call_ids": [
+        23477
+      ]
+    },
+    {
+      "round": 1,
+      "actor": "bo",
+      "matches": 1,
+      "call_ids": [
+        23476
+      ]
+    },
+    {
+      "round": 1,
+      "actor": "mara",
+      "matches": 1,
+      "call_ids": [
+        23478
+      ]
+    },
+    {
+      "round": 2,
+      "actor": "ari",
+      "matches": 1,
+      "call_ids": [
+        23482
+      ]
+    },
+    {
+      "round": 2,
+      "actor": "bo",
+      "matches": 1,
+      "call_ids": [
+        23484
+      ]
+    },
+    {
+      "round": 2,
+      "actor": "mara",
+      "matches": 1,
+      "call_ids": [
+        23483
+      ]
+    },
+    {
+      "round": 3,
+      "actor": "ari",
+      "matches": 1,
+      "call_ids": [
+        23491
+      ]
+    },
+    {
+      "round": 3,
+      "actor": "bo",
+      "matches": 1,
+      "call_ids": [
+        23489
+      ]
+    },
+    {
+      "round": 3,
+      "actor": "mara",
+      "matches": 1,
+      "call_ids": [
+        23490
+      ]
+    },
+    {
+      "round": 4,
+      "actor": "ari",
+      "matches": 1,
+      "call_ids": [
+        23496
+      ]
+    },
+    {
+      "round": 4,
+      "actor": "bo",
+      "matches": 1,
+      "call_ids": [
+        23495
+      ]
+    },
+    {
+      "round": 4,
+      "actor": "mara",
+      "matches": 1,
+      "call_ids": [
+        23497
+      ]
+    },
+    {
+      "round": 5,
+      "actor": "ari",
+      "matches": 1,
+      "call_ids": [
+        23503
+      ]
+    },
+    {
+      "round": 5,
+      "actor": "bo",
+      "matches": 1,
+      "call_ids": [
+        23501
+      ]
+    },
+    {
+      "round": 5,
+      "actor": "mara",
+      "matches": 1,
+      "call_ids": [
+        23502
+      ]
+    },
+    {
+      "round": 6,
+      "actor": "ari",
+      "matches": 1,
+      "call_ids": [
+        23509
+      ]
+    },
+    {
+      "round": 6,
+      "actor": "bo",
+      "matches": 1,
+      "call_ids": [
+        23507
+      ]
+    },
+    {
+      "round": 6,
+      "actor": "mara",
+      "matches": 1,
+      "call_ids": [
+        23508
+      ]
+    }
+  ],
+  "continuations": [
+    {
+      "round": 2,
+      "snapshot": true,
+      "seal": true,
+      "actor_state": true,
+      "approval": true
+    },
+    {
+      "round": 3,
+      "snapshot": true,
+      "seal": true,
+      "actor_state": true,
+      "approval": true
+    },
+    {
+      "round": 4,
+      "snapshot": true,
+      "seal": true,
+      "actor_state": true,
+      "approval": true
+    },
+    {
+      "round": 5,
+      "snapshot": true,
+      "seal": true,
+      "actor_state": true,
+      "approval": true
+    },
+    {
+      "round": 6,
+      "snapshot": true,
+      "seal": true,
+      "actor_state": true,
+      "approval": true
+    }
+  ],
+  "all_match": true,
+  "native_calls": 51,
+  "tokens": 228960,
+  "measured_cost_usd": 0.125753265
+}
