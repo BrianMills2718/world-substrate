@@ -1,0 +1,16 @@
+== gate at b3823f60b378
+check_project skipped: tree 67a64868cdf9 passed at 2026-11-13T10:08:26.893843+00:00
+== backend
+deploying world-substrate b3823f60b378 with llm_client 4ee0cf800587598672dfacfed99ea2954c2e01e6
+sha256:9cbf78cd140a7690ac9a00849e2ff99cf2644e7f04c65929581feb8b90b4d561
+ Container world-builder  Recreate
+ Container world-builder  Recreated
+ Container world-builder  Starting
+ Container world-builder  Started
+Optional old-image cleanup skipped; all prior build images retained.
+serving b3823f60b378450279ac3d096db5ee27117fa873
+== pages
+world-builder pages ready: 6 files
+Current Version ID: 9180c189-6f6c-49fd-94b8-feef0163e64b
+== verify
+live page matches b3823f60b378; backend: b3823f60b378
