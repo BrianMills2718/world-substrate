@@ -1,0 +1,503 @@
+{
+  "scope": {
+    "applies": true,
+    "new": false,
+    "full_method": true,
+    "first_commit": "2026-08-31",
+    "why": "the manifest sets full_method (first commit 2026-08-31)"
+  },
+  "route": "durable_solo",
+  "parts": [
+    {
+      "part": "investigation",
+      "status": "present",
+      "ok": true,
+      "detail": "5 places searched, 5 findings: 3 holds, 1 fails, 1 unknown; cost not applicable",
+      "problems": []
+    },
+    {
+      "part": "checks",
+      "status": "present",
+      "ok": true,
+      "detail": "11 results, 1 found problems",
+      "problems": []
+    },
+    {
+      "part": "open_questions",
+      "status": "present",
+      "ok": true,
+      "detail": "96 questions, 43 open, 53 resolved",
+      "problems": []
+    },
+    {
+      "part": "system_model",
+      "status": "present",
+      "ok": true,
+      "detail": "",
+      "problems": []
+    },
+    {
+      "part": "domain_model",
+      "status": "present",
+      "ok": true,
+      "detail": "86 concepts, 155 relations",
+      "problems": []
+    },
+    {
+      "part": "diagrams",
+      "status": "present",
+      "ok": true,
+      "detail": "4 diagrams",
+      "problems": []
+    },
+    {
+      "part": "plan",
+      "status": "present",
+      "ok": true,
+      "detail": "",
+      "problems": []
+    },
+    {
+      "part": "acceptance",
+      "status": "present",
+      "ok": true,
+      "detail": "11 criteria: 9 not built, 2 built, 0 judged pass, 0 judged fail",
+      "problems": []
+    },
+    {
+      "part": "review_page",
+      "status": "present",
+      "ok": true,
+      "detail": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/open-attempt/review-page/",
+      "problems": []
+    },
+    {
+      "part": "cold_review",
+      "status": "present",
+      "ok": true,
+      "detail": "verdict pass",
+      "problems": []
+    }
+  ],
+  "failing": 0,
+  "parts_pending": 0,
+  "substance": [
+    {
+      "check": "route follows from its path decision",
+      "ok": true,
+      "pending": "",
+      "detail": "route durable_solo",
+      "problems": [],
+      "waits_for": [
+        "required from 2026-11-08",
+        "pending until 2026-11-08"
+      ]
+    },
+    {
+      "check": "citations resolve",
+      "ok": true,
+      "pending": "",
+      "detail": "271 file citations checked, 23 other sources",
+      "problems": [],
+      "waits_for": [
+        "required from 2026-11-08",
+        "pending until 2026-11-08"
+      ]
+    },
+    {
+      "check": "domain model has a glossary",
+      "ok": true,
+      "pending": "",
+      "detail": "docs/model/DOMAIN.md",
+      "problems": [],
+      "waits_for": [
+        "required from 2026-11-08",
+        "pending until 2026-11-08"
+      ]
+    },
+    {
+      "check": "project layer checks against the planning layer",
+      "ok": true,
+      "pending": "",
+      "detail": "8 rules, 13 planning terms, 86 project terms",
+      "problems": [],
+      "waits_for": [
+        "required from 2026-11-08",
+        "pending until 2026-11-08"
+      ]
+    },
+    {
+      "check": "concepts point at their code",
+      "ok": true,
+      "pending": "",
+      "detail": "74 implemented, 12 dashed",
+      "problems": [],
+      "waits_for": [
+        "required from 2026-11-08",
+        "pending until 2026-11-08"
+      ]
+    },
+    {
+      "check": "plan names the concepts it relies on",
+      "ok": true,
+      "pending": "",
+      "detail": "45 concepts",
+      "problems": [],
+      "waits_for": [
+        "required from 2026-11-08",
+        "pending until 2026-11-08"
+      ]
+    },
+    {
+      "check": "plan records the cost basis of each AI step",
+      "ok": true,
+      "pending": "",
+      "detail": "10 AI steps: 10 measured, 0 computed",
+      "problems": [],
+      "standing": true,
+      "waits_for": [
+        "required from 2026-11-08",
+        "pending until 2026-11-08"
+      ]
+    },
+    {
+      "check": "plan compares its AI answer path with the plain version",
+      "ok": false,
+      "pending": "plain-version comparison is planned (Only if a future proposal adds an AI stage to interpretation and a named decision survives argument. No comparison run is needed or authorized by this documentation repair.)",
+      "detail": "planned: 2 cases, answer path: Attempt interpretation: one model call receives the complete actor-authorized utterance, installed signatures and known entities; deterministic typed/quote checks follow. This current implementation is already the plain version.",
+      "problems": [],
+      "standing": true,
+      "required_from": "2026-11-13",
+      "waits_for": [
+        "required from 2026-11-13",
+        "pending until 2026-11-13"
+      ]
+    },
+    {
+      "check": "plan shows what each stage adds over the plain version",
+      "ok": true,
+      "pending": "",
+      "detail": "no stages: the plan is the plain version",
+      "problems": [],
+      "standing": false,
+      "required_from": "2026-11-13",
+      "waits_for": [
+        "required from 2026-11-13",
+        "pending until 2026-11-13"
+      ]
+    },
+    {
+      "check": "plan records Brian's stops on this work",
+      "ok": true,
+      "pending": "",
+      "detail": "searched 4 ways; 2 stops found: 1 hold, 1 lifted",
+      "problems": [],
+      "notes": [
+        "stop holds: Brian, 2026-11-12, \"before we move to implementaiotn my instinct is that we should make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved\" (Brian, current normative-readiness conversation, 2026-11-12; recorded here verbatim); applies to Simulator implementation outside the separately approved I0/I1 slices; the original documentation-first boundary is not a grant for later engine, cognition, solver or unrelated judge work."
+      ],
+      "required_from": "2026-11-13",
+      "waits_for": [
+        "required from 2026-11-13",
+        "pending until 2026-11-13"
+      ]
+    },
+    {
+      "check": "type-level model of executable rules",
+      "ok": true,
+      "pending": "",
+      "detail": "29 types, 29 mapped onto BrianMills2718/scientific-hypergraph@7b0638fe0aef",
+      "problems": [],
+      "waits_for": [
+        "required from 2026-11-08",
+        "pending until 2026-11-08"
+      ]
+    },
+    {
+      "check": "cold review read this revision",
+      "ok": true,
+      "pending": "",
+      "detail": "reviewed 64db257c8b07",
+      "problems": [],
+      "waits_for": [
+        "required from 2026-11-08",
+        "pending until 2026-11-08"
+      ]
+    }
+  ],
+  "substance_failing": 0,
+  "substance_pending": 1,
+  "initiative_and_tiers": [
+    {
+      "check": "initiative names its home",
+      "due": "initiative",
+      "ok": true,
+      "pending": "",
+      "detail": "world-substrate: this repository is the home of a one-repository initiative",
+      "problems": [],
+      "waits_for": [
+        "required from 2026-11-12",
+        "pending until 2026-11-12"
+      ]
+    },
+    {
+      "check": "spectrum rungs 1-11 are cited",
+      "due": "tiers",
+      "ok": true,
+      "pending": "",
+      "detail": "11 rungs cited",
+      "problems": [],
+      "waits_for": [
+        "required from 2026-11-12",
+        "pending until 2026-11-12"
+      ]
+    },
+    {
+      "check": "production rungs 12-14 are cited when it runs in production",
+      "due": "tiers",
+      "ok": true,
+      "pending": "",
+      "detail": "runs in production; rungs cited",
+      "problems": [],
+      "waits_for": [
+        "required from 2026-11-12",
+        "pending until 2026-11-12"
+      ]
+    },
+    {
+      "check": "thesaurus separates near-identical names (rung 4)",
+      "due": "tiers",
+      "ok": true,
+      "pending": "",
+      "detail": "175 names compared",
+      "problems": [],
+      "waits_for": [
+        "required from 2026-11-12",
+        "pending until 2026-11-12"
+      ]
+    },
+    {
+      "check": "system map names every code unit",
+      "due": "system_map",
+      "ok": true,
+      "pending": "system_model.units is absent; no diagram item has kind system_map",
+      "detail": "",
+      "problems": [],
+      "waits_for": [
+        "required from 2026-11-17",
+        "pending until 2026-11-17"
+      ]
+    }
+  ],
+  "tiers_failing": 0,
+  "tiers_pending": 1,
+  "coverage": {
+    "ok": true,
+    "pending": "criteria edited or added: I0, I1; re-judged nightly",
+    "detail": "4 requirements of Brian's words: 3 covered, 0 deferred, 1 about the planning process; stored judgment by openrouter/anthropic/claude-sonnet-5.5 at 2026-11-12T15:58:40-0500",
+    "problems": [],
+    "lines": [
+      "  R1 [outcome] \"attempt to walk through wall\" -> A3, A1, A9",
+      "  R2 [outcome] \"such attempts not successful\" -> A3",
+      "  R3 [outcome] \"unskilled helicopter flying crashes\" -> A7; UNSURE: 2 of 3 runs found a gap",
+      "  R4 [process] \"approval of attempts design\" -> about the planning process: met by the validator and cold review, not a criterion"
+    ],
+    "nightly": true
+  },
+  "goal_provenance": {
+    "ok": true,
+    "pending": "",
+    "detail": "0 goal pages: 0 parts, 0 sourced, 0 agent judgment, 0 unsourced, 0 unverified quotes, 0 stale vs requirements, 0 without the actor/job form",
+    "problems": [],
+    "required_from": "now (the manifest sets full_method (first commit 2026-08-31))"
+  },
+  "collaborator_guides": null,
+  "freshness": {
+    "ok": true,
+    "reviewed_revision": "64db257c8b07a1b85919dc3ccebfc7cb82a3dd60",
+    "changed": [],
+    "problems": []
+  },
+  "compliant": true,
+  "checklist": [
+    {
+      "kind": "part",
+      "name": "investigation",
+      "state": "ok",
+      "detail": "5 places searched, 5 findings: 3 holds, 1 fails, 1 unknown; cost not applicable"
+    },
+    {
+      "kind": "part",
+      "name": "checks",
+      "state": "ok",
+      "detail": "11 results, 1 found problems"
+    },
+    {
+      "kind": "part",
+      "name": "open_questions",
+      "state": "ok",
+      "detail": "96 questions, 43 open, 53 resolved"
+    },
+    {
+      "kind": "part",
+      "name": "system_model",
+      "state": "ok",
+      "detail": ""
+    },
+    {
+      "kind": "part",
+      "name": "domain_model",
+      "state": "ok",
+      "detail": "86 concepts, 155 relations"
+    },
+    {
+      "kind": "part",
+      "name": "diagrams",
+      "state": "ok",
+      "detail": "4 diagrams"
+    },
+    {
+      "kind": "part",
+      "name": "plan",
+      "state": "ok",
+      "detail": ""
+    },
+    {
+      "kind": "part",
+      "name": "acceptance",
+      "state": "ok",
+      "detail": "11 criteria: 9 not built, 2 built, 0 judged pass, 0 judged fail"
+    },
+    {
+      "kind": "part",
+      "name": "review_page",
+      "state": "ok",
+      "detail": "https://hive.brianmills.dev/plans/world-substrate/main/proposals/open-attempt/review-page/"
+    },
+    {
+      "kind": "part",
+      "name": "cold_review",
+      "state": "ok",
+      "detail": "verdict pass"
+    },
+    {
+      "kind": "substance",
+      "name": "route follows from its path decision",
+      "state": "ok",
+      "detail": "route durable_solo"
+    },
+    {
+      "kind": "substance",
+      "name": "citations resolve",
+      "state": "ok",
+      "detail": "271 file citations checked, 23 other sources"
+    },
+    {
+      "kind": "substance",
+      "name": "domain model has a glossary",
+      "state": "ok",
+      "detail": "docs/model/DOMAIN.md"
+    },
+    {
+      "kind": "substance",
+      "name": "project layer checks against the planning layer",
+      "state": "ok",
+      "detail": "8 rules, 13 planning terms, 86 project terms"
+    },
+    {
+      "kind": "substance",
+      "name": "concepts point at their code",
+      "state": "ok",
+      "detail": "74 implemented, 12 dashed"
+    },
+    {
+      "kind": "substance",
+      "name": "plan names the concepts it relies on",
+      "state": "ok",
+      "detail": "45 concepts"
+    },
+    {
+      "kind": "substance",
+      "name": "plan records the cost basis of each AI step",
+      "state": "ok",
+      "detail": "10 AI steps: 10 measured, 0 computed"
+    },
+    {
+      "kind": "substance",
+      "name": "plan compares its AI answer path with the plain version",
+      "state": "failing",
+      "detail": "planned: 2 cases, answer path: Attempt interpretation: one model call receives the complete actor-authorized utterance, installed signatures and known entities; deterministic typed/quote checks follow. This current implementation is already the plain version."
+    },
+    {
+      "kind": "substance",
+      "name": "plan shows what each stage adds over the plain version",
+      "state": "ok",
+      "detail": "no stages: the plan is the plain version"
+    },
+    {
+      "kind": "substance",
+      "name": "plan records Brian's stops on this work",
+      "state": "ok",
+      "detail": "searched 4 ways; 2 stops found: 1 hold, 1 lifted"
+    },
+    {
+      "kind": "substance",
+      "name": "type-level model of executable rules",
+      "state": "ok",
+      "detail": "29 types, 29 mapped onto BrianMills2718/scientific-hypergraph@7b0638fe0aef"
+    },
+    {
+      "kind": "substance",
+      "name": "cold review read this revision",
+      "state": "ok",
+      "detail": "reviewed 64db257c8b07"
+    },
+    {
+      "kind": "initiative",
+      "name": "initiative names its home",
+      "state": "ok",
+      "detail": "world-substrate: this repository is the home of a one-repository initiative"
+    },
+    {
+      "kind": "tiers",
+      "name": "spectrum rungs 1-11 are cited",
+      "state": "ok",
+      "detail": "11 rungs cited"
+    },
+    {
+      "kind": "tiers",
+      "name": "production rungs 12-14 are cited when it runs in production",
+      "state": "ok",
+      "detail": "runs in production; rungs cited"
+    },
+    {
+      "kind": "tiers",
+      "name": "thesaurus separates near-identical names (rung 4)",
+      "state": "ok",
+      "detail": "175 names compared"
+    },
+    {
+      "kind": "system_map",
+      "name": "system map names every code unit",
+      "state": "pending",
+      "detail": ""
+    },
+    {
+      "kind": "coverage",
+      "name": "goal coverage",
+      "state": "pending",
+      "detail": "4 requirements of Brian's words: 3 covered, 0 deferred, 1 about the planning process; stored judgment by openrouter/anthropic/claude-sonnet-5.5 at 2026-11-12T15:58:40-0500"
+    },
+    {
+      "kind": "goal_provenance",
+      "name": "goal provenance",
+      "state": "ok",
+      "detail": "0 goal pages: 0 parts, 0 sourced, 0 agent judgment, 0 unsourced, 0 unverified quotes, 0 stale vs requirements, 0 without the actor/job form"
+    },
+    {
+      "kind": "freshness",
+      "name": "package is current",
+      "state": "ok",
+      "detail": "plan content unchanged since the cold review"
+    }
+  ]
+}

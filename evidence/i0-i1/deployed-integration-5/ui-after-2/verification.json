@@ -1,0 +1,39 @@
+{
+  "url": "https://brianmills.dev/world-builder/?run=q88DLJnu6w-l",
+  "revision": "a17406390325f0b485b62f5fc0d564c73de70706",
+  "record_data_unchanged": true,
+  "views": [
+    {
+      "viewport": [
+        1440,
+        1000
+      ],
+      "actor_records_equal": 6,
+      "procedure_detail": "Whether to activate the pump safely: validation: passed \u00b7 hold: false \u00b7 review: idle \u00b7 assents: 0 \u00b7 active: false \u00b7 condition id: condition-activate-prototype-pump.",
+      "story_matches": true,
+      "overflow": false
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "actor_records_equal": 6,
+      "procedure_detail": "Whether to activate the pump safely: validation: passed \u00b7 hold: false \u00b7 review: idle \u00b7 assents: 0 \u00b7 active: false \u00b7 condition id: condition-activate-prototype-pump.",
+      "story_matches": true,
+      "overflow": false
+    }
+  ],
+  "console_errors": [],
+  "failed_requests": [],
+  "blocked_writes": [],
+  "keyboard_mode_switch": true,
+  "outcome_unchanged": true,
+  "keyboard_replay": true,
+  "legacy_recording": {
+    "share_id": "iMrL2U84cLCS",
+    "status": "No authorized input recording is available for this person in this run. Older recordings remain available in Analyst view.",
+    "fabricated_actor_inputs": 0
+  },
+  "status": "pass"
+}
