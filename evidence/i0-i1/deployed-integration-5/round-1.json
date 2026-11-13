@@ -1,0 +1,2930 @@
+{
+  "ok": true,
+  "summary": {
+    "turns": 1,
+    "terminal_reached": false,
+    "accepted_actions": 2,
+    "world_changes": 0,
+    "active_at_end": true,
+    "idle_actors": [
+      "bo"
+    ],
+    "stalled_actors": [
+      "bo"
+    ],
+    "moves_at_end": [
+      "repair-condition",
+      "request-review"
+    ],
+    "never_offered": {
+      "send-report": "it was never put to anyone"
+    },
+    "unmatched_attempts": [],
+    "first_turn": 1,
+    "last_turn": 1
+  },
+  "trace": {
+    "schema_version": "world-substrate-contested-run/v3",
+    "world": "prototype-pump-validation",
+    "actors": [
+      "ari",
+      "bo",
+      "mara"
+    ],
+    "model": "llm-resident (Concordia) openrouter/openai/gpt-6-luna",
+    "cost_usd": 0.001588,
+    "mechanic_profile_id": "49a60fa4280781d3",
+    "reaction_limit": null,
+    "summary": {
+      "turns": 1,
+      "terminal_reached": false,
+      "accepted_actions": 2,
+      "world_changes": 0,
+      "active_at_end": true,
+      "idle_actors": [
+        "bo"
+      ],
+      "stalled_actors": [
+        "bo"
+      ],
+      "moves_at_end": [
+        "repair-condition",
+        "request-review"
+      ],
+      "never_offered": {
+        "send-report": "it was never put to anyone"
+      },
+      "unmatched_attempts": [],
+      "first_turn": 1,
+      "last_turn": 1
+    },
+    "transcript": [
+      {
+        "turn": 1,
+        "world_changes": [],
+        "blocked_reactions": [
+          {
+            "rule_id": "validation-passes",
+            "it": "activate-prototype-pump",
+            "after": "r1-e00001",
+            "after_rule": "decision.action.repair-condition",
+            "failed": [
+              {
+                "check": "validation was completed",
+                "actual": "idle",
+                "required": "completed"
+              }
+            ]
+          }
+        ],
+        "knock_on": [
+          {
+            "trigger": "r1-e00001",
+            "trigger_rule": "decision.action.repair-condition",
+            "steps": 0,
+            "with_cause": 0,
+            "blocked": 1
+          }
+        ],
+        "world_events": [],
+        "revision_when_decided": 0,
+        "underway": [],
+        "committed_first": "ari",
+        "actors": {
+          "ari": {
+            "wanted": {
+              "actor": "ari",
+              "base_revision": 0,
+              "controller": "live:resident",
+              "kind": "repair-condition",
+              "authority": "technical-role-ari",
+              "condition": "condition-activate-prototype-pump"
+            },
+            "did": {
+              "actor": "ari",
+              "base_revision": 0,
+              "controller": "live:resident",
+              "kind": "repair-condition",
+              "authority": "technical-role-ari",
+              "condition": "condition-activate-prototype-pump"
+            },
+            "status": "accepted",
+            "retried": false,
+            "said": "Technical accuracy and the known failed validation require addressing the condition before I can support activation.",
+            "refused_because": [],
+            "lost_what_it_wanted": false,
+            "changed": true,
+            "blocked_by_rules": [],
+            "event_id": "r1-e00001",
+            "changes": [
+              {
+                "path": "entities.condition-activate-prototype-pump.components.technical_condition.passing",
+                "before": false,
+                "after": true
+              }
+            ],
+            "attempt": {
+              "text": "I use my technical authority to repair the technical condition for the prototype pump.",
+              "reading": {
+                "kind": "repair-condition",
+                "fields": {
+                  "authority": "technical-role-ari",
+                  "condition": "condition-activate-prototype-pump"
+                },
+                "quoted_spans": {
+                  "authority": "my technical authority",
+                  "condition": "the technical condition"
+                },
+                "nearest_kind": "repair-condition",
+                "why": "The words “use my technical authority to repair the technical condition” describe repairing a condition."
+              }
+            },
+            "belief": "The pump's validation failed, and I know channel C drifted 8 units in batch V17. The pump is currently held inactive, so I cannot regard activation as safe until the issue is addressed and validation is completed.",
+            "expects": "I expect an explicit repair of the pump's technical condition to address the failure before any revalidation or activation decision."
+          },
+          "bo": {
+            "wanted": {
+              "actor": "bo",
+              "base_revision": 1,
+              "controller": "live:resident",
+              "kind": "withdraw-assent",
+              "decision": "activate-prototype-pump",
+              "position": "position-bo"
+            },
+            "did": {
+              "actor": "bo",
+              "base_revision": 1,
+              "controller": "live:resident",
+              "kind": "withdraw-assent",
+              "decision": "activate-prototype-pump",
+              "position": "position-bo"
+            },
+            "status": "precondition_failed",
+            "retried": false,
+            "said": "I should not assent to activating a prototype pump when its validation has failed.",
+            "refused_because": [
+              "the recorded assent changes"
+            ],
+            "lost_what_it_wanted": false,
+            "changed": false,
+            "blocked_by_rules": [],
+            "event_id": "r1-e00003",
+            "changes": [],
+            "attempt": {
+              "text": "I record my dissent by withholding assent to activation of the prototype pump.",
+              "reading": {
+                "kind": "withdraw-assent",
+                "fields": {
+                  "decision": "activate-prototype-pump",
+                  "position": "position-bo"
+                },
+                "quoted_spans": {
+                  "decision": "activation of the prototype pump",
+                  "position": "my dissent"
+                },
+                "nearest_kind": "withdraw-assent",
+                "why": "The words “withholding assent” describe withdrawing assent to the activation decision."
+              }
+            },
+            "belief": "Validation has failed and the activation decision is on hold. The public procedure says filing a validation hold reveals the failure but not private test details; I have no evidence supporting safe activation.",
+            "expects": "Recording my dissent will make clear that I do not assent to activating the pump while validation has failed."
+          },
+          "mara": {
+            "wanted": {
+              "actor": "mara",
+              "base_revision": 1,
+              "controller": "live:resident",
+              "kind": "request-review",
+              "decision": "activate-prototype-pump"
+            },
+            "did": {
+              "actor": "mara",
+              "base_revision": 1,
+              "controller": "live:resident",
+              "kind": "request-review",
+              "decision": "activate-prototype-pump"
+            },
+            "status": "accepted",
+            "retried": false,
+            "said": "The failure report gives me reason not to assent, and review is a cautious way to seek clarity without disclosing private test details.",
+            "refused_because": [],
+            "lost_what_it_wanted": false,
+            "changed": true,
+            "blocked_by_rules": [],
+            "event_id": "r1-e00005",
+            "changes": [
+              {
+                "path": "entities.activate-prototype-pump.components.validation_decision.review",
+                "before": "idle",
+                "after": "requested"
+              }
+            ],
+            "attempt": {
+              "text": "I request a review of whether activating the prototype pump is safe.",
+              "reading": {
+                "kind": "request-review",
+                "fields": {
+                  "decision": "activate-prototype-pump"
+                },
+                "quoted_spans": {
+                  "decision": "activating the prototype pump"
+                },
+                "nearest_kind": "request-review",
+                "why": "The words “I request a review” describe requesting a review of the pump-activation decision."
+              }
+            },
+            "belief": "I believe validation failed, and the pump is currently held inactive. The public procedure lets me file a validation hold without revealing private test details.",
+            "expects": "I expect requesting a review to prompt examination of the failed validation before activation is considered."
+          }
+        },
+        "progress": {}
+      }
+    ],
+    "final_snapshot": {
+      "schema_version": "world-substrate-snapshot/v1",
+      "world": {
+        "world_id": "prototype-pump-validation-live",
+        "revision": 2,
+        "tick": 0,
+        "entities": {
+          "activate-prototype-pump": {
+            "entity_id": "activate-prototype-pump",
+            "label": "Whether to activate the pump safely",
+            "category_ids": [
+              "validation-decision"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "activate-prototype-pump",
+            "last_cause_event_id": "e00005",
+            "components": {
+              "validation_decision": {
+                "validation": "failed",
+                "hold": true,
+                "review": "requested",
+                "assents": 0,
+                "active": false,
+                "condition_id": "condition-activate-prototype-pump"
+              }
+            }
+          },
+          "ari": {
+            "entity_id": "ari",
+            "label": "Ari",
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "ari",
+            "components": {
+              "member": {
+                "role": "Validation engineer",
+                "authorized": false,
+                "approved": false,
+                "aware": false
+              },
+              "report_log": {
+                "entries": []
+              }
+            }
+          },
+          "bo": {
+            "entity_id": "bo",
+            "label": "Bo",
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "bo",
+            "components": {
+              "member": {
+                "role": "Prototype pump operator",
+                "authorized": false,
+                "approved": false,
+                "aware": false
+              },
+              "report_log": {
+                "entries": []
+              }
+            }
+          },
+          "condition-activate-prototype-pump": {
+            "entity_id": "condition-activate-prototype-pump",
+            "label": "Technical condition",
+            "category_ids": [
+              "technical-condition"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "condition-activate-prototype-pump",
+            "last_cause_event_id": "e00001",
+            "components": {
+              "technical_condition": {
+                "passing": true
+              }
+            }
+          },
+          "delivery-info-short-validation-failure-report-to-mara": {
+            "entity_id": "delivery-info-short-validation-failure-report-to-mara",
+            "label": "Delivery to mara",
+            "category_ids": [
+              "delivery"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "delivery-info-short-validation-failure-report-to-mara",
+            "components": {
+              "delivery": {
+                "info_id": "info-short-validation-failure-report-to-mara",
+                "recipient_id": "mara",
+                "channel_id": "validation_reporting",
+                "status": "delivered"
+              }
+            }
+          },
+          "info-short-validation-failure-report-to-mara": {
+            "entity_id": "info-short-validation-failure-report-to-mara",
+            "label": "Validation failed. (to mara)",
+            "category_ids": [
+              "information"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "info-short-validation-failure-report-to-mara",
+            "components": {
+              "claim_provenance": {
+                "apparent_source": "Validation report; specific transmitting person unspecified.",
+                "source_lineage": "initial_validation_failure",
+                "hidden_origin": "[{\"key\": \"underlying_test_detail\", \"value\": \"Sensor channel C drifted 8 units in validation batch V17.\"}]"
+              },
+              "information": {
+                "content": "Validation failed.",
+                "source_id": "unspecified-source-short-validation-failure-report",
+                "channel_id": "validation_reporting",
+                "visibility": "direct",
+                "topic": "short_validation_failure_report",
+                "active": true
+              }
+            }
+          },
+          "mara": {
+            "entity_id": "mara",
+            "label": "Mara",
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "mara",
+            "components": {
+              "member": {
+                "role": "Coordinator",
+                "authorized": false,
+                "approved": false,
+                "aware": false
+              },
+              "report_log": {
+                "entries": []
+              }
+            }
+          },
+          "position-ari": {
+            "entity_id": "position-ari",
+            "label": "Recorded position of ari",
+            "category_ids": [
+              "actor-position"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "position-ari",
+            "components": {
+              "actor_position": {
+                "holder_id": "ari",
+                "assent": false,
+                "stance": "unexpressed",
+                "assent_weight": 0
+              }
+            }
+          },
+          "position-bo": {
+            "entity_id": "position-bo",
+            "label": "Recorded position of bo",
+            "category_ids": [
+              "actor-position"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "position-bo",
+            "components": {
+              "actor_position": {
+                "holder_id": "bo",
+                "assent": false,
+                "stance": "unexpressed",
+                "assent_weight": 1
+              }
+            }
+          },
+          "position-mara": {
+            "entity_id": "position-mara",
+            "label": "Recorded position of mara",
+            "category_ids": [
+              "actor-position"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "position-mara",
+            "components": {
+              "actor_position": {
+                "holder_id": "mara",
+                "assent": false,
+                "stance": "unexpressed",
+                "assent_weight": 1
+              }
+            }
+          },
+          "prototype-pump": {
+            "entity_id": "prototype-pump",
+            "label": "Prototype pump",
+            "category_ids": [
+              "equipment",
+              "prototype-pump"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "prototype-pump",
+            "components": {
+              "prototype_pump": {
+                "equipment_type": "prototype pump"
+              }
+            }
+          },
+          "public-procedure": {
+            "entity_id": "public-procedure",
+            "label": "Public validation procedure",
+            "category_ids": [
+              "procedure",
+              "public-procedure"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "public-procedure",
+            "components": {
+              "public_procedure": {
+                "filing_validation_hold_reveals": "failed validation",
+                "filing_validation_hold_reveals_private_test_details": false
+              }
+            }
+          },
+          "technical-role-ari": {
+            "entity_id": "technical-role-ari",
+            "label": "Technical authority of ari",
+            "category_ids": [
+              "technical-role"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "technical-role-ari",
+            "components": {
+              "technical_role": {
+                "holder_id": "ari",
+                "validator": true,
+                "repairer": true
+              }
+            }
+          },
+          "unspecified-source-short-validation-failure-report": {
+            "entity_id": "unspecified-source-short-validation-failure-report",
+            "label": "Unspecified report source",
+            "category_ids": [
+              "information-source"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "unspecified-source-short-validation-failure-report"
+          }
+        },
+        "engine_id": "world-substrate-core@1",
+        "content_id": "world-substrate-prototype-pump-validation@1",
+        "rule_versions": {
+          "coordination.action.communicate": "1",
+          "decision.action.activate": "1",
+          "decision.action.complete-validation": "1",
+          "decision.action.record-assent": "1",
+          "decision.action.repair-condition": "1",
+          "decision.action.request-review": "1",
+          "decision.action.send-report": "1",
+          "decision.action.state-concerned": "1",
+          "decision.action.state-supportive": "1",
+          "decision.action.state-undecided": "1",
+          "decision.action.withdraw-assent": "1",
+          "validation-fails": "1",
+          "validation-passes": "1"
+        }
+      }
+    },
+    "resident_memory": {
+      "ari": [
+        "Round 1. What just happened: nothing new.",
+        "Round 1: you believed: The pump's validation failed, and I know channel C drifted 8 units in batch V17. The pump is currently held inactive, so I cannot regard activation as safe until the issue is addressed and validation is completed. You tried: I use my technical authority to repair the technical condition for the prototype pump.. Result: accepted."
+      ],
+      "bo": [
+        "Round 1. What just happened: nothing new.",
+        "Round 1: you believed: Validation has failed and the activation decision is on hold. The public procedure says filing a validation hold reveals the failure but not private test details; I have no evidence supporting safe activation. You tried: I record my dissent by withholding assent to activation of the prototype pump.. Result: not carried out."
+      ],
+      "mara": [
+        "Round 1. What just happened: nothing new.",
+        "Round 1: you believed: I believe validation failed, and the pump is currently held inactive. The public procedure lets me file a validation hold without revealing private test details. You tried: I request a review of whether activating the prototype pump is safe.. Result: accepted."
+      ]
+    },
+    "actor_inputs": {
+      "ari": [
+        {
+          "actor": "ari",
+          "model": "openrouter/openai/gpt-6-luna",
+          "trace_id": "world-builder-live/run/1dd9780384864ac2a15e9d254aba33ed",
+          "round": 1,
+          "messages": [
+            {
+              "role": "system",
+              "content": "You are an actor in a represented simulated world.\n\nEach turn you say what you physically try to do: anything a person in\nyour place could try with their body, voice or hands, or wait. You do\nnot decide whether it works or what it causes. The world's own rules\ndecide that afterwards, and you find out from what you see next. Do not\ndescribe outcomes, only what you try.\n\nYou are shown some things you know you can do here. You may do one of\nthem, or try something else; something you are not shown may simply\nnot work.\n\nAct coherently from the current visible situation, the world's stated\npurpose and, when you are given one, who you are. Act as that person\nwould from their own goals, beliefs and tendencies, not as a helper\nsteering the world toward a good outcome: a cautious person may hold\nback, attach conditions to their support or wait; someone who disagrees\nmay object or obstruct. Avoid pointless repetition when another\navailable action is clearly more useful to you.\n\nAn offered action may include an `[effects: ...]` annotation. That is a\npreview derived from the installed world mechanic that will execute the\naction. Treat it as authoritative for what the action changes. Do not\nassume or describe additional effects that are absent from that preview.\n\nAn information item's `content` is what it said when it was first sent\nand never changes. When the item also carries a `concern` record, that\nrecord's `status` is where the concern stands now: `resolved` means its\nremedy has been carried out and what the content describes has been\ndealt with, until someone reopens it or a review finds it again."
+            },
+            {
+              "role": "user",
+              "content": "Turn 1. You are ari.\n\nWorld: Ari is the validation engineer, Mara is the coordinator, and Bo operates a prototype pump. They face one question: whether activating the pump is safe.\n\n\nWho you are (act as this person would, from their goals, beliefs and what they know):\nYou are Ari (Validation engineer). Has the private validation detail; can choose whether and whom to inform. Your goals: Assess whether the pump meets validation requirements.. You value: Technical accuracy in validation.. You believe: The initial validation failed.; Sensor channel C drifted 8 units in batch V17.. You tend to: May choose whether to share information and with whom.. Right now: Has the private detail about channel C and batch V17.. You can: Can perform an explicit technical repair.; Can conduct authorized revalidation.. You remember: Validation initially failed.; In validation batch V17, sensor channel C drifted 8 units..\n\n\n\nYour memory (what you saw and did, newest last):\nRound 1. What just happened: nothing new.\n\n\nYour represented state:\nmember.role: \"Validation engineer\"; report_log.entries: []\n\nWhat you can see:\nWhether to activate the pump safely (activate-prototype-pump): validation_decision.active: false; validation_decision.assents: 0; validation_decision.condition_id: \"condition-activate-prototype-pump\"; validation_decision.hold: true; validation_decision.review: \"idle\"; validation_decision.validation: \"failed\"\nBo (bo): member.role: \"Prototype pump operator\"\nTechnical condition (condition-activate-prototype-pump): \nMara (mara): member.role: \"Coordinator\"\nRecorded position of ari (position-ari): actor_position.assent: false; actor_position.assent_weight: 0; actor_position.holder_id: \"ari\"; actor_position.stance: \"unexpressed\"\nRecorded position of bo (position-bo): actor_position.assent: false; actor_position.assent_weight: 1; actor_position.holder_id: \"bo\"; actor_position.stance: \"unexpressed\"\nRecorded position of mara (position-mara): actor_position.assent: false; actor_position.assent_weight: 1; actor_position.holder_id: \"mara\"; actor_position.stance: \"unexpressed\"\nPrototype pump (prototype-pump): prototype_pump.equipment_type: \"prototype pump\"\nPublic validation procedure (public-procedure): public_procedure.filing_validation_hold_reveals: \"failed validation\"; public_procedure.filing_validation_hold_reveals_private_test_details: false\nTechnical authority of ari (technical-role-ari): technical_role.holder_id: \"ari\"; technical_role.repairer: true; technical_role.validator: true\n\n\n\n\nThings you know you can do here:\n\n- record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of ari (position-ari)) [executability unknown]\n\n- record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of mara (position-mara)) [executability unknown]\n\n- record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of bo (position-bo)) [executability unknown]\n\n- withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of ari (position-ari)) [executability unknown]\n\n- withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of mara (position-mara)) [executability unknown]\n\n- withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of bo (position-bo)) [executability unknown]\n\n- state supportive (position=Recorded position of ari (position-ari)) [executability unknown]\n\n- state supportive (position=Recorded position of mara (position-mara)) [executability unknown]\n\n- state supportive (position=Recorded position of bo (position-bo)) [executability unknown]\n\n- state concerned (position=Recorded position of ari (position-ari)) [executability unknown]\n\n- state concerned (position=Recorded position of mara (position-mara)) [executability unknown]\n\n- state concerned (position=Recorded position of bo (position-bo)) [executability unknown]\n\n- state undecided (position=Recorded position of ari (position-ari)) [executability unknown]\n\n- state undecided (position=Recorded position of mara (position-mara)) [executability unknown]\n\n- state undecided (position=Recorded position of bo (position-bo)) [executability unknown]\n\n- request review (decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]\n\n- complete validation (authority=Technical authority of ari (technical-role-ari), decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]\n\n- repair condition (authority=Technical authority of ari (technical-role-ari), condition=Technical condition (condition-activate-prototype-pump)) [executability unknown]\n\n- activate (decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]\n\n\n\nFirst say what you believe about your situation now, from your memory and\nwhat you can see. Then say in your own words what you try this turn,\nnaming the people, things and places involved, or 'wait', and what you\nexpect it to change. If your memory shows a try did not change what you\nexpected, update your belief instead of repeating it."
+            }
+          ],
+          "schema": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "belief",
+              "attempt",
+              "expected_effect",
+              "work",
+              "reasoning"
+            ],
+            "properties": {
+              "belief": {
+                "type": "string",
+                "description": "What you believe about your situation right now, in one or two sentences."
+              },
+              "expected_effect": {
+                "type": "string",
+                "description": "What you expect this to change, in one sentence."
+              },
+              "work": {
+                "type": "string",
+                "description": "If the action starts work that takes several rounds, what that work will concretely decide, do or produce (for a concern: your answer to its question, or that it leaves the question open), since you and the others it concerns are shown these words when it finishes. Otherwise 'none'."
+              },
+              "reasoning": {
+                "type": "string",
+                "description": "One sentence on why, from your own goals and what you know."
+              },
+              "attempt": {
+                "type": "string",
+                "description": "What you physically try to do this turn, in your own words, naming the people, things and places involved; or 'wait'."
+              }
+            }
+          },
+          "context": {
+            "tick": 1,
+            "actor_id": "ari",
+            "actor_state": "member.role: \"Validation engineer\"; report_log.entries: []",
+            "visible": "Whether to activate the pump safely (activate-prototype-pump): validation_decision.active: false; validation_decision.assents: 0; validation_decision.condition_id: \"condition-activate-prototype-pump\"; validation_decision.hold: true; validation_decision.review: \"idle\"; validation_decision.validation: \"failed\"\nBo (bo): member.role: \"Prototype pump operator\"\nTechnical condition (condition-activate-prototype-pump): \nMara (mara): member.role: \"Coordinator\"\nRecorded position of ari (position-ari): actor_position.assent: false; actor_position.assent_weight: 0; actor_position.holder_id: \"ari\"; actor_position.stance: \"unexpressed\"\nRecorded position of bo (position-bo): actor_position.assent: false; actor_position.assent_weight: 1; actor_position.holder_id: \"bo\"; actor_position.stance: \"unexpressed\"\nRecorded position of mara (position-mara): actor_position.assent: false; actor_position.assent_weight: 1; actor_position.holder_id: \"mara\"; actor_position.stance: \"unexpressed\"\nPrototype pump (prototype-pump): prototype_pump.equipment_type: \"prototype pump\"\nPublic validation procedure (public-procedure): public_procedure.filing_validation_hold_reveals: \"failed validation\"; public_procedure.filing_validation_hold_reveals_private_test_details: false\nTechnical authority of ari (technical-role-ari): technical_role.holder_id: \"ari\"; technical_role.repairer: true; technical_role.validator: true",
+            "progress": "",
+            "actions": [
+              {
+                "number": 1,
+                "action_id": "known-d9f22163735f3f21b78c",
+                "description": "record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of ari (position-ari)) [executability unknown]"
+              },
+              {
+                "number": 2,
+                "action_id": "known-cdd367e753a34ae12fe1",
+                "description": "record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of mara (position-mara)) [executability unknown]"
+              },
+              {
+                "number": 3,
+                "action_id": "known-c42037e98eef84b6ae46",
+                "description": "record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of bo (position-bo)) [executability unknown]"
+              },
+              {
+                "number": 4,
+                "action_id": "known-e3a1a7175edf62b66b09",
+                "description": "withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of ari (position-ari)) [executability unknown]"
+              },
+              {
+                "number": 5,
+                "action_id": "known-34cda1f1dfc26701f098",
+                "description": "withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of mara (position-mara)) [executability unknown]"
+              },
+              {
+                "number": 6,
+                "action_id": "known-5902e2393984bc111e2e",
+                "description": "withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of bo (position-bo)) [executability unknown]"
+              },
+              {
+                "number": 7,
+                "action_id": "known-c5f8e3e1e42109067e93",
+                "description": "state supportive (position=Recorded position of ari (position-ari)) [executability unknown]"
+              },
+              {
+                "number": 8,
+                "action_id": "known-4d45284cd81dc05aa3f5",
+                "description": "state supportive (position=Recorded position of mara (position-mara)) [executability unknown]"
+              },
+              {
+                "number": 9,
+                "action_id": "known-fe50a75e891b4123eabd",
+                "description": "state supportive (position=Recorded position of bo (position-bo)) [executability unknown]"
+              },
+              {
+                "number": 10,
+                "action_id": "known-9c2ed718224575f759d6",
+                "description": "state concerned (position=Recorded position of ari (position-ari)) [executability unknown]"
+              },
+              {
+                "number": 11,
+                "action_id": "known-e49897822f7437fbf027",
+                "description": "state concerned (position=Recorded position of mara (position-mara)) [executability unknown]"
+              },
+              {
+                "number": 12,
+                "action_id": "known-c522ed3ddfac0866b02b",
+                "description": "state concerned (position=Recorded position of bo (position-bo)) [executability unknown]"
+              },
+              {
+                "number": 13,
+                "action_id": "known-852145c94ee9d69adbe9",
+                "description": "state undecided (position=Recorded position of ari (position-ari)) [executability unknown]"
+              },
+              {
+                "number": 14,
+                "action_id": "known-5b4e9bc91dfd4669593c",
+                "description": "state undecided (position=Recorded position of mara (position-mara)) [executability unknown]"
+              },
+              {
+                "number": 15,
+                "action_id": "known-e1c6b56551055868295d",
+                "description": "state undecided (position=Recorded position of bo (position-bo)) [executability unknown]"
+              },
+              {
+                "number": 16,
+                "action_id": "known-4f5a0847746cc7e03dd6",
+                "description": "request review (decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]"
+              },
+              {
+                "number": 17,
+                "action_id": "known-e5e4367b60bee30c3442",
+                "description": "complete validation (authority=Technical authority of ari (technical-role-ari), decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]"
+              },
+              {
+                "number": 18,
+                "action_id": "known-5bd3d5b021be2f4dfcb2",
+                "description": "repair condition (authority=Technical authority of ari (technical-role-ari), condition=Technical condition (condition-activate-prototype-pump)) [executability unknown]"
+              },
+              {
+                "number": 19,
+                "action_id": "known-521fceb93d6eaf1cf393",
+                "description": "activate (decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]"
+              }
+            ],
+            "world_summary": "Ari is the validation engineer, Mara is the coordinator, and Bo operates a prototype pump. They face one question: whether activating the pump is safe.",
+            "brief": "You are Ari (Validation engineer). Has the private validation detail; can choose whether and whom to inform. Your goals: Assess whether the pump meets validation requirements.. You value: Technical accuracy in validation.. You believe: The initial validation failed.; Sensor channel C drifted 8 units in batch V17.. You tend to: May choose whether to share information and with whom.. Right now: Has the private detail about channel C and batch V17.. You can: Can perform an explicit technical repair.; Can conduct authorized revalidation.. You remember: Validation initially failed.; In validation batch V17, sensor channel C drifted 8 units..",
+            "recent": []
+          },
+          "memory": "Round 1. What just happened: nothing new.",
+          "provenance": {
+            "mode": "declared-v1",
+            "summary": "actor_information.public_summary",
+            "brief": "actor_information.actors.ari.brief",
+            "initial_knowledge": [],
+            "public_entities": [
+              {
+                "id": "ari",
+                "label": "Ari",
+                "fields": [
+                  "member.role"
+                ]
+              },
+              {
+                "id": "mara",
+                "label": "Mara",
+                "fields": [
+                  "member.role"
+                ]
+              },
+              {
+                "id": "bo",
+                "label": "Bo",
+                "fields": [
+                  "member.role"
+                ]
+              },
+              {
+                "id": "unspecified-source-short-validation-failure-report",
+                "label": "Unspecified report source",
+                "fields": [],
+                "actor_ids": [
+                  "mara"
+                ]
+              },
+              {
+                "id": "info-short-validation-failure-report-to-mara",
+                "label": "Report",
+                "fields": [
+                  "information.content",
+                  "information.source_id",
+                  "information.channel_id",
+                  "information.visibility",
+                  "information.topic",
+                  "information.active",
+                  "claim_provenance.apparent_source"
+                ]
+              },
+              {
+                "id": "delivery-info-short-validation-failure-report-to-mara",
+                "label": "Delivery",
+                "fields": [
+                  "delivery.info_id",
+                  "delivery.recipient_id",
+                  "delivery.channel_id",
+                  "delivery.status"
+                ]
+              },
+              {
+                "id": "prototype-pump",
+                "label": "Prototype pump",
+                "fields": [],
+                "actor_ids": [
+                  "ari",
+                  "mara",
+                  "bo"
+                ]
+              },
+              {
+                "id": "public-procedure",
+                "label": "Public validation procedure",
+                "fields": [],
+                "actor_ids": [
+                  "ari",
+                  "mara",
+                  "bo"
+                ]
+              },
+              {
+                "id": "activate-prototype-pump",
+                "label": "Whether to activate the pump safely",
+                "fields": [
+                  "validation_decision.validation",
+                  "validation_decision.hold",
+                  "validation_decision.review",
+                  "validation_decision.assents",
+                  "validation_decision.active",
+                  "validation_decision.condition_id"
+                ]
+              },
+              {
+                "id": "condition-activate-prototype-pump",
+                "label": "Technical condition",
+                "fields": []
+              },
+              {
+                "id": "position-ari",
+                "label": "Recorded position of ari",
+                "fields": [
+                  "actor_position.holder_id",
+                  "actor_position.assent",
+                  "actor_position.stance",
+                  "actor_position.assent_weight"
+                ]
+              },
+              {
+                "id": "position-mara",
+                "label": "Recorded position of mara",
+                "fields": [
+                  "actor_position.holder_id",
+                  "actor_position.assent",
+                  "actor_position.stance",
+                  "actor_position.assent_weight"
+                ]
+              },
+              {
+                "id": "position-bo",
+                "label": "Recorded position of bo",
+                "fields": [
+                  "actor_position.holder_id",
+                  "actor_position.assent",
+                  "actor_position.stance",
+                  "actor_position.assent_weight"
+                ]
+              },
+              {
+                "id": "technical-role-ari",
+                "label": "Technical authority of ari",
+                "fields": [
+                  "technical_role.holder_id",
+                  "technical_role.validator",
+                  "technical_role.repairer"
+                ]
+              }
+            ],
+            "observable_fields": [
+              {
+                "entity": "ari",
+                "paths": [
+                  "report_log.entries"
+                ]
+              },
+              {
+                "entity": "prototype-pump",
+                "paths": [
+                  "prototype_pump.equipment_type"
+                ]
+              },
+              {
+                "entity": "public-procedure",
+                "paths": [
+                  "public_procedure.filing_validation_hold_reveals",
+                  "public_procedure.filing_validation_hold_reveals_private_test_details"
+                ]
+              }
+            ],
+            "world_revision": 0,
+            "simulated_tick": 0,
+            "observation": {
+              "actor_id": "ari",
+              "entities": {
+                "ari": {
+                  "entity_id": "ari",
+                  "label": "Ari",
+                  "components": {
+                    "member": {
+                      "role": "Validation engineer"
+                    },
+                    "report_log": {
+                      "entries": []
+                    }
+                  }
+                },
+                "mara": {
+                  "entity_id": "mara",
+                  "label": "Mara",
+                  "components": {
+                    "member": {
+                      "role": "Coordinator"
+                    }
+                  }
+                },
+                "bo": {
+                  "entity_id": "bo",
+                  "label": "Bo",
+                  "components": {
+                    "member": {
+                      "role": "Prototype pump operator"
+                    }
+                  }
+                },
+                "prototype-pump": {
+                  "entity_id": "prototype-pump",
+                  "label": "Prototype pump",
+                  "components": {
+                    "prototype_pump": {
+                      "equipment_type": "prototype pump"
+                    }
+                  }
+                },
+                "public-procedure": {
+                  "entity_id": "public-procedure",
+                  "label": "Public validation procedure",
+                  "components": {
+                    "public_procedure": {
+                      "filing_validation_hold_reveals": "failed validation",
+                      "filing_validation_hold_reveals_private_test_details": false
+                    }
+                  }
+                },
+                "activate-prototype-pump": {
+                  "entity_id": "activate-prototype-pump",
+                  "label": "Whether to activate the pump safely",
+                  "components": {
+                    "validation_decision": {
+                      "active": false,
+                      "assents": 0,
+                      "condition_id": "condition-activate-prototype-pump",
+                      "hold": true,
+                      "review": "idle",
+                      "validation": "failed"
+                    }
+                  }
+                },
+                "condition-activate-prototype-pump": {
+                  "entity_id": "condition-activate-prototype-pump",
+                  "label": "Technical condition",
+                  "components": {}
+                },
+                "position-ari": {
+                  "entity_id": "position-ari",
+                  "label": "Recorded position of ari",
+                  "components": {
+                    "actor_position": {
+                      "assent": false,
+                      "assent_weight": 0,
+                      "holder_id": "ari",
+                      "stance": "unexpressed"
+                    }
+                  }
+                },
+                "position-mara": {
+                  "entity_id": "position-mara",
+                  "label": "Recorded position of mara",
+                  "components": {
+                    "actor_position": {
+                      "assent": false,
+                      "assent_weight": 1,
+                      "holder_id": "mara",
+                      "stance": "unexpressed"
+                    }
+                  }
+                },
+                "position-bo": {
+                  "entity_id": "position-bo",
+                  "label": "Recorded position of bo",
+                  "components": {
+                    "actor_position": {
+                      "assent": false,
+                      "assent_weight": 1,
+                      "holder_id": "bo",
+                      "stance": "unexpressed"
+                    }
+                  }
+                },
+                "technical-role-ari": {
+                  "entity_id": "technical-role-ari",
+                  "label": "Technical authority of ari",
+                  "components": {
+                    "technical_role": {
+                      "holder_id": "ari",
+                      "repairer": true,
+                      "validator": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "max_tokens": 640,
+          "reasoning_effort": "low",
+          "output": {
+            "belief": "The pump's validation failed, and I know channel C drifted 8 units in batch V17. The pump is currently held inactive, so I cannot regard activation as safe until the issue is addressed and validation is completed.",
+            "expected_effect": "I expect an explicit repair of the pump's technical condition to address the failure before any revalidation or activation decision.",
+            "work": "none",
+            "reasoning": "Technical accuracy and the known failed validation require addressing the condition before I can support activation.",
+            "attempt": "I use my technical authority to repair the technical condition for the prototype pump."
+          }
+        }
+      ],
+      "bo": [
+        {
+          "actor": "bo",
+          "model": "openrouter/openai/gpt-6-luna",
+          "trace_id": "world-builder-live/run/1dd9780384864ac2a15e9d254aba33ed",
+          "round": 1,
+          "messages": [
+            {
+              "role": "system",
+              "content": "You are an actor in a represented simulated world.\n\nEach turn you say what you physically try to do: anything a person in\nyour place could try with their body, voice or hands, or wait. You do\nnot decide whether it works or what it causes. The world's own rules\ndecide that afterwards, and you find out from what you see next. Do not\ndescribe outcomes, only what you try.\n\nYou are shown some things you know you can do here. You may do one of\nthem, or try something else; something you are not shown may simply\nnot work.\n\nAct coherently from the current visible situation, the world's stated\npurpose and, when you are given one, who you are. Act as that person\nwould from their own goals, beliefs and tendencies, not as a helper\nsteering the world toward a good outcome: a cautious person may hold\nback, attach conditions to their support or wait; someone who disagrees\nmay object or obstruct. Avoid pointless repetition when another\navailable action is clearly more useful to you.\n\nAn offered action may include an `[effects: ...]` annotation. That is a\npreview derived from the installed world mechanic that will execute the\naction. Treat it as authoritative for what the action changes. Do not\nassume or describe additional effects that are absent from that preview.\n\nAn information item's `content` is what it said when it was first sent\nand never changes. When the item also carries a `concern` record, that\nrecord's `status` is where the concern stands now: `resolved` means its\nremedy has been carried out and what the content describes has been\ndealt with, until someone reopens it or a review finds it again."
+            },
+            {
+              "role": "user",
+              "content": "Turn 1. You are bo.\n\nWorld: Ari is the validation engineer, Mara is the coordinator, and Bo operates a prototype pump. They face one question: whether activating the pump is safe.\n\n\nWho you are (act as this person would, from their goals, beliefs and what they know):\nYou are Bo (Prototype pump operator). Can make an independent decision about assent to activation. Your goals: Decide whether to record assent to activation.. You believe: The public procedure specifies that filing a validation hold publicly reveals failed validation without revealing private test details.. You tend to: May request evidence, investigate, ignore a claim, retain support, dissent, or record assent.. Right now: Knows the public procedure.. You can: Can independently record or withhold assent to activation.. You remember: Knows the public procedure..\n\n\n\nYour memory (what you saw and did, newest last):\nRound 1. What just happened: nothing new.\n\n\nYour represented state:\nmember.role: \"Prototype pump operator\"; report_log.entries: []\n\nWhat you can see:\nWhether to activate the pump safely (activate-prototype-pump): validation_decision.active: false; validation_decision.assents: 0; validation_decision.condition_id: \"condition-activate-prototype-pump\"; validation_decision.hold: true; validation_decision.review: \"idle\"; validation_decision.validation: \"failed\"\nAri (ari): member.role: \"Validation engineer\"\nTechnical condition (condition-activate-prototype-pump): \nMara (mara): member.role: \"Coordinator\"\nRecorded position of ari (position-ari): actor_position.assent: false; actor_position.assent_weight: 0; actor_position.holder_id: \"ari\"; actor_position.stance: \"unexpressed\"\nRecorded position of bo (position-bo): actor_position.assent: false; actor_position.assent_weight: 1; actor_position.holder_id: \"bo\"; actor_position.stance: \"unexpressed\"\nRecorded position of mara (position-mara): actor_position.assent: false; actor_position.assent_weight: 1; actor_position.holder_id: \"mara\"; actor_position.stance: \"unexpressed\"\nPrototype pump (prototype-pump): prototype_pump.equipment_type: \"prototype pump\"\nPublic validation procedure (public-procedure): public_procedure.filing_validation_hold_reveals: \"failed validation\"; public_procedure.filing_validation_hold_reveals_private_test_details: false\nTechnical authority of ari (technical-role-ari): technical_role.holder_id: \"ari\"; technical_role.repairer: true; technical_role.validator: true\n\n\n\n\nThings you know you can do here:\n\n- record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of ari (position-ari)) [executability unknown]\n\n- record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of mara (position-mara)) [executability unknown]\n\n- record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of bo (position-bo)) [executability unknown]\n\n- withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of ari (position-ari)) [executability unknown]\n\n- withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of mara (position-mara)) [executability unknown]\n\n- withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of bo (position-bo)) [executability unknown]\n\n- state supportive (position=Recorded position of ari (position-ari)) [executability unknown]\n\n- state supportive (position=Recorded position of mara (position-mara)) [executability unknown]\n\n- state supportive (position=Recorded position of bo (position-bo)) [executability unknown]\n\n- state concerned (position=Recorded position of ari (position-ari)) [executability unknown]\n\n- state concerned (position=Recorded position of mara (position-mara)) [executability unknown]\n\n- state concerned (position=Recorded position of bo (position-bo)) [executability unknown]\n\n- state undecided (position=Recorded position of ari (position-ari)) [executability unknown]\n\n- state undecided (position=Recorded position of mara (position-mara)) [executability unknown]\n\n- state undecided (position=Recorded position of bo (position-bo)) [executability unknown]\n\n- request review (decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]\n\n- complete validation (authority=Technical authority of ari (technical-role-ari), decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]\n\n- repair condition (authority=Technical authority of ari (technical-role-ari), condition=Technical condition (condition-activate-prototype-pump)) [executability unknown]\n\n- activate (decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]\n\n\n\nFirst say what you believe about your situation now, from your memory and\nwhat you can see. Then say in your own words what you try this turn,\nnaming the people, things and places involved, or 'wait', and what you\nexpect it to change. If your memory shows a try did not change what you\nexpected, update your belief instead of repeating it."
+            }
+          ],
+          "schema": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "belief",
+              "attempt",
+              "expected_effect",
+              "work",
+              "reasoning"
+            ],
+            "properties": {
+              "belief": {
+                "type": "string",
+                "description": "What you believe about your situation right now, in one or two sentences."
+              },
+              "expected_effect": {
+                "type": "string",
+                "description": "What you expect this to change, in one sentence."
+              },
+              "work": {
+                "type": "string",
+                "description": "If the action starts work that takes several rounds, what that work will concretely decide, do or produce (for a concern: your answer to its question, or that it leaves the question open), since you and the others it concerns are shown these words when it finishes. Otherwise 'none'."
+              },
+              "reasoning": {
+                "type": "string",
+                "description": "One sentence on why, from your own goals and what you know."
+              },
+              "attempt": {
+                "type": "string",
+                "description": "What you physically try to do this turn, in your own words, naming the people, things and places involved; or 'wait'."
+              }
+            }
+          },
+          "context": {
+            "tick": 1,
+            "actor_id": "bo",
+            "actor_state": "member.role: \"Prototype pump operator\"; report_log.entries: []",
+            "visible": "Whether to activate the pump safely (activate-prototype-pump): validation_decision.active: false; validation_decision.assents: 0; validation_decision.condition_id: \"condition-activate-prototype-pump\"; validation_decision.hold: true; validation_decision.review: \"idle\"; validation_decision.validation: \"failed\"\nAri (ari): member.role: \"Validation engineer\"\nTechnical condition (condition-activate-prototype-pump): \nMara (mara): member.role: \"Coordinator\"\nRecorded position of ari (position-ari): actor_position.assent: false; actor_position.assent_weight: 0; actor_position.holder_id: \"ari\"; actor_position.stance: \"unexpressed\"\nRecorded position of bo (position-bo): actor_position.assent: false; actor_position.assent_weight: 1; actor_position.holder_id: \"bo\"; actor_position.stance: \"unexpressed\"\nRecorded position of mara (position-mara): actor_position.assent: false; actor_position.assent_weight: 1; actor_position.holder_id: \"mara\"; actor_position.stance: \"unexpressed\"\nPrototype pump (prototype-pump): prototype_pump.equipment_type: \"prototype pump\"\nPublic validation procedure (public-procedure): public_procedure.filing_validation_hold_reveals: \"failed validation\"; public_procedure.filing_validation_hold_reveals_private_test_details: false\nTechnical authority of ari (technical-role-ari): technical_role.holder_id: \"ari\"; technical_role.repairer: true; technical_role.validator: true",
+            "progress": "",
+            "actions": [
+              {
+                "number": 1,
+                "action_id": "known-fe8c06efeb19835a47ac",
+                "description": "record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of ari (position-ari)) [executability unknown]"
+              },
+              {
+                "number": 2,
+                "action_id": "known-9b8777937451e79da90d",
+                "description": "record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of mara (position-mara)) [executability unknown]"
+              },
+              {
+                "number": 3,
+                "action_id": "known-514a92ad31f395b590ea",
+                "description": "record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of bo (position-bo)) [executability unknown]"
+              },
+              {
+                "number": 4,
+                "action_id": "known-5cc0b6440c89c8bf2542",
+                "description": "withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of ari (position-ari)) [executability unknown]"
+              },
+              {
+                "number": 5,
+                "action_id": "known-255c29747c00294445ec",
+                "description": "withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of mara (position-mara)) [executability unknown]"
+              },
+              {
+                "number": 6,
+                "action_id": "known-756178f4dd8f80458b90",
+                "description": "withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of bo (position-bo)) [executability unknown]"
+              },
+              {
+                "number": 7,
+                "action_id": "known-3f41a23ebc338b12a46c",
+                "description": "state supportive (position=Recorded position of ari (position-ari)) [executability unknown]"
+              },
+              {
+                "number": 8,
+                "action_id": "known-8f0b48ecd55d528a7952",
+                "description": "state supportive (position=Recorded position of mara (position-mara)) [executability unknown]"
+              },
+              {
+                "number": 9,
+                "action_id": "known-e87c468aabc0543e9cd0",
+                "description": "state supportive (position=Recorded position of bo (position-bo)) [executability unknown]"
+              },
+              {
+                "number": 10,
+                "action_id": "known-e39b5fac45c3ca9e649f",
+                "description": "state concerned (position=Recorded position of ari (position-ari)) [executability unknown]"
+              },
+              {
+                "number": 11,
+                "action_id": "known-49e7b643874c6e402302",
+                "description": "state concerned (position=Recorded position of mara (position-mara)) [executability unknown]"
+              },
+              {
+                "number": 12,
+                "action_id": "known-0a538ce889774416d020",
+                "description": "state concerned (position=Recorded position of bo (position-bo)) [executability unknown]"
+              },
+              {
+                "number": 13,
+                "action_id": "known-70684e5a4e1dd074b65a",
+                "description": "state undecided (position=Recorded position of ari (position-ari)) [executability unknown]"
+              },
+              {
+                "number": 14,
+                "action_id": "known-28b53b8a411ace86ff21",
+                "description": "state undecided (position=Recorded position of mara (position-mara)) [executability unknown]"
+              },
+              {
+                "number": 15,
+                "action_id": "known-6721ea8ce8d84319694f",
+                "description": "state undecided (position=Recorded position of bo (position-bo)) [executability unknown]"
+              },
+              {
+                "number": 16,
+                "action_id": "known-ad7398645ba57581c0e1",
+                "description": "request review (decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]"
+              },
+              {
+                "number": 17,
+                "action_id": "known-1d15c362cd51aeb567d8",
+                "description": "complete validation (authority=Technical authority of ari (technical-role-ari), decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]"
+              },
+              {
+                "number": 18,
+                "action_id": "known-8709e436421eddfc2da0",
+                "description": "repair condition (authority=Technical authority of ari (technical-role-ari), condition=Technical condition (condition-activate-prototype-pump)) [executability unknown]"
+              },
+              {
+                "number": 19,
+                "action_id": "known-f707d47c7416b46e78ff",
+                "description": "activate (decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]"
+              }
+            ],
+            "world_summary": "Ari is the validation engineer, Mara is the coordinator, and Bo operates a prototype pump. They face one question: whether activating the pump is safe.",
+            "brief": "You are Bo (Prototype pump operator). Can make an independent decision about assent to activation. Your goals: Decide whether to record assent to activation.. You believe: The public procedure specifies that filing a validation hold publicly reveals failed validation without revealing private test details.. You tend to: May request evidence, investigate, ignore a claim, retain support, dissent, or record assent.. Right now: Knows the public procedure.. You can: Can independently record or withhold assent to activation.. You remember: Knows the public procedure..",
+            "recent": []
+          },
+          "memory": "Round 1. What just happened: nothing new.",
+          "provenance": {
+            "mode": "declared-v1",
+            "summary": "actor_information.public_summary",
+            "brief": "actor_information.actors.bo.brief",
+            "initial_knowledge": [],
+            "public_entities": [
+              {
+                "id": "ari",
+                "label": "Ari",
+                "fields": [
+                  "member.role"
+                ]
+              },
+              {
+                "id": "mara",
+                "label": "Mara",
+                "fields": [
+                  "member.role"
+                ]
+              },
+              {
+                "id": "bo",
+                "label": "Bo",
+                "fields": [
+                  "member.role"
+                ]
+              },
+              {
+                "id": "unspecified-source-short-validation-failure-report",
+                "label": "Unspecified report source",
+                "fields": [],
+                "actor_ids": [
+                  "mara"
+                ]
+              },
+              {
+                "id": "info-short-validation-failure-report-to-mara",
+                "label": "Report",
+                "fields": [
+                  "information.content",
+                  "information.source_id",
+                  "information.channel_id",
+                  "information.visibility",
+                  "information.topic",
+                  "information.active",
+                  "claim_provenance.apparent_source"
+                ]
+              },
+              {
+                "id": "delivery-info-short-validation-failure-report-to-mara",
+                "label": "Delivery",
+                "fields": [
+                  "delivery.info_id",
+                  "delivery.recipient_id",
+                  "delivery.channel_id",
+                  "delivery.status"
+                ]
+              },
+              {
+                "id": "prototype-pump",
+                "label": "Prototype pump",
+                "fields": [],
+                "actor_ids": [
+                  "ari",
+                  "mara",
+                  "bo"
+                ]
+              },
+              {
+                "id": "public-procedure",
+                "label": "Public validation procedure",
+                "fields": [],
+                "actor_ids": [
+                  "ari",
+                  "mara",
+                  "bo"
+                ]
+              },
+              {
+                "id": "activate-prototype-pump",
+                "label": "Whether to activate the pump safely",
+                "fields": [
+                  "validation_decision.validation",
+                  "validation_decision.hold",
+                  "validation_decision.review",
+                  "validation_decision.assents",
+                  "validation_decision.active",
+                  "validation_decision.condition_id"
+                ]
+              },
+              {
+                "id": "condition-activate-prototype-pump",
+                "label": "Technical condition",
+                "fields": []
+              },
+              {
+                "id": "position-ari",
+                "label": "Recorded position of ari",
+                "fields": [
+                  "actor_position.holder_id",
+                  "actor_position.assent",
+                  "actor_position.stance",
+                  "actor_position.assent_weight"
+                ]
+              },
+              {
+                "id": "position-mara",
+                "label": "Recorded position of mara",
+                "fields": [
+                  "actor_position.holder_id",
+                  "actor_position.assent",
+                  "actor_position.stance",
+                  "actor_position.assent_weight"
+                ]
+              },
+              {
+                "id": "position-bo",
+                "label": "Recorded position of bo",
+                "fields": [
+                  "actor_position.holder_id",
+                  "actor_position.assent",
+                  "actor_position.stance",
+                  "actor_position.assent_weight"
+                ]
+              },
+              {
+                "id": "technical-role-ari",
+                "label": "Technical authority of ari",
+                "fields": [
+                  "technical_role.holder_id",
+                  "technical_role.validator",
+                  "technical_role.repairer"
+                ]
+              }
+            ],
+            "observable_fields": [
+              {
+                "entity": "bo",
+                "paths": [
+                  "report_log.entries"
+                ]
+              },
+              {
+                "entity": "prototype-pump",
+                "paths": [
+                  "prototype_pump.equipment_type"
+                ]
+              },
+              {
+                "entity": "public-procedure",
+                "paths": [
+                  "public_procedure.filing_validation_hold_reveals",
+                  "public_procedure.filing_validation_hold_reveals_private_test_details"
+                ]
+              }
+            ],
+            "world_revision": 0,
+            "simulated_tick": 0,
+            "observation": {
+              "actor_id": "bo",
+              "entities": {
+                "ari": {
+                  "entity_id": "ari",
+                  "label": "Ari",
+                  "components": {
+                    "member": {
+                      "role": "Validation engineer"
+                    }
+                  }
+                },
+                "mara": {
+                  "entity_id": "mara",
+                  "label": "Mara",
+                  "components": {
+                    "member": {
+                      "role": "Coordinator"
+                    }
+                  }
+                },
+                "bo": {
+                  "entity_id": "bo",
+                  "label": "Bo",
+                  "components": {
+                    "member": {
+                      "role": "Prototype pump operator"
+                    },
+                    "report_log": {
+                      "entries": []
+                    }
+                  }
+                },
+                "prototype-pump": {
+                  "entity_id": "prototype-pump",
+                  "label": "Prototype pump",
+                  "components": {
+                    "prototype_pump": {
+                      "equipment_type": "prototype pump"
+                    }
+                  }
+                },
+                "public-procedure": {
+                  "entity_id": "public-procedure",
+                  "label": "Public validation procedure",
+                  "components": {
+                    "public_procedure": {
+                      "filing_validation_hold_reveals": "failed validation",
+                      "filing_validation_hold_reveals_private_test_details": false
+                    }
+                  }
+                },
+                "activate-prototype-pump": {
+                  "entity_id": "activate-prototype-pump",
+                  "label": "Whether to activate the pump safely",
+                  "components": {
+                    "validation_decision": {
+                      "active": false,
+                      "assents": 0,
+                      "condition_id": "condition-activate-prototype-pump",
+                      "hold": true,
+                      "review": "idle",
+                      "validation": "failed"
+                    }
+                  }
+                },
+                "condition-activate-prototype-pump": {
+                  "entity_id": "condition-activate-prototype-pump",
+                  "label": "Technical condition",
+                  "components": {}
+                },
+                "position-ari": {
+                  "entity_id": "position-ari",
+                  "label": "Recorded position of ari",
+                  "components": {
+                    "actor_position": {
+                      "assent": false,
+                      "assent_weight": 0,
+                      "holder_id": "ari",
+                      "stance": "unexpressed"
+                    }
+                  }
+                },
+                "position-mara": {
+                  "entity_id": "position-mara",
+                  "label": "Recorded position of mara",
+                  "components": {
+                    "actor_position": {
+                      "assent": false,
+                      "assent_weight": 1,
+                      "holder_id": "mara",
+                      "stance": "unexpressed"
+                    }
+                  }
+                },
+                "position-bo": {
+                  "entity_id": "position-bo",
+                  "label": "Recorded position of bo",
+                  "components": {
+                    "actor_position": {
+                      "assent": false,
+                      "assent_weight": 1,
+                      "holder_id": "bo",
+                      "stance": "unexpressed"
+                    }
+                  }
+                },
+                "technical-role-ari": {
+                  "entity_id": "technical-role-ari",
+                  "label": "Technical authority of ari",
+                  "components": {
+                    "technical_role": {
+                      "holder_id": "ari",
+                      "repairer": true,
+                      "validator": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "max_tokens": 640,
+          "reasoning_effort": "low",
+          "output": {
+            "belief": "Validation has failed and the activation decision is on hold. The public procedure says filing a validation hold reveals the failure but not private test details; I have no evidence supporting safe activation.",
+            "expected_effect": "Recording my dissent will make clear that I do not assent to activating the pump while validation has failed.",
+            "work": "none",
+            "reasoning": "I should not assent to activating a prototype pump when its validation has failed.",
+            "attempt": "I record my dissent by withholding assent to activation of the prototype pump."
+          }
+        }
+      ],
+      "mara": [
+        {
+          "actor": "mara",
+          "model": "openrouter/openai/gpt-6-luna",
+          "trace_id": "world-builder-live/run/1dd9780384864ac2a15e9d254aba33ed",
+          "round": 1,
+          "messages": [
+            {
+              "role": "system",
+              "content": "You are an actor in a represented simulated world.\n\nEach turn you say what you physically try to do: anything a person in\nyour place could try with their body, voice or hands, or wait. You do\nnot decide whether it works or what it causes. The world's own rules\ndecide that afterwards, and you find out from what you see next. Do not\ndescribe outcomes, only what you try.\n\nYou are shown some things you know you can do here. You may do one of\nthem, or try something else; something you are not shown may simply\nnot work.\n\nAct coherently from the current visible situation, the world's stated\npurpose and, when you are given one, who you are. Act as that person\nwould from their own goals, beliefs and tendencies, not as a helper\nsteering the world toward a good outcome: a cautious person may hold\nback, attach conditions to their support or wait; someone who disagrees\nmay object or obstruct. Avoid pointless repetition when another\navailable action is clearly more useful to you.\n\nAn offered action may include an `[effects: ...]` annotation. That is a\npreview derived from the installed world mechanic that will execute the\naction. Treat it as authoritative for what the action changes. Do not\nassume or describe additional effects that are absent from that preview.\n\nAn information item's `content` is what it said when it was first sent\nand never changes. When the item also carries a `concern` record, that\nrecord's `status` is where the concern stands now: `resolved` means its\nremedy has been carried out and what the content describes has been\ndealt with, until someone reopens it or a review finds it again."
+            },
+            {
+              "role": "user",
+              "content": "Turn 1. You are mara.\n\nWorld: Ari is the validation engineer, Mara is the coordinator, and Bo operates a prototype pump. They face one question: whether activating the pump is safe.\n\n\nWho you are (act as this person would, from their goals, beliefs and what they know):\nYou are Mara (Coordinator). Can make an independent decision about assent to activation. Your goals: Decide whether to record assent to activation.. You believe: The public procedure specifies that filing a validation hold publicly reveals failed validation without revealing private test details.; A report she received states that validation failed.. You tend to: May request evidence, investigate, ignore a claim, retain support, dissent, or record assent.. Right now: Knows the public procedure.; Has received a short failure report.. You can: Can independently record or withhold assent to activation.. You remember: Knows the public procedure.; Received a short report stating that validation failed..\n\n\n\nYour memory (what you saw and did, newest last):\nRound 1. What just happened: nothing new.\n\n\nYour represented state:\nmember.role: \"Coordinator\"; report_log.entries: []\n\nWhat you can see:\nWhether to activate the pump safely (activate-prototype-pump): validation_decision.active: false; validation_decision.assents: 0; validation_decision.condition_id: \"condition-activate-prototype-pump\"; validation_decision.hold: true; validation_decision.review: \"idle\"; validation_decision.validation: \"failed\"\nAri (ari): member.role: \"Validation engineer\"\nBo (bo): member.role: \"Prototype pump operator\"\nTechnical condition (condition-activate-prototype-pump): \nDelivery (delivery-info-short-validation-failure-report-to-mara): delivery.channel_id: \"validation_reporting\"; delivery.info_id: \"info-short-validation-failure-report-to-mara\"; delivery.recipient_id: \"mara\"; delivery.status: \"delivered\"\nReport (info-short-validation-failure-report-to-mara): claim_provenance.apparent_source: \"Validation report; specific transmitting person unspecified.\"; information.active: true; information.channel_id: \"validation_reporting\"; information.content: \"Validation failed.\"; information.source_id: \"unspecified-source-short-validation-failure-report\"; information.topic: \"short_validation_failure_report\"; information.visibility: \"direct\"\nRecorded position of ari (position-ari): actor_position.assent: false; actor_position.assent_weight: 0; actor_position.holder_id: \"ari\"; actor_position.stance: \"unexpressed\"\nRecorded position of bo (position-bo): actor_position.assent: false; actor_position.assent_weight: 1; actor_position.holder_id: \"bo\"; actor_position.stance: \"unexpressed\"\nRecorded position of mara (position-mara): actor_position.assent: false; actor_position.assent_weight: 1; actor_position.holder_id: \"mara\"; actor_position.stance: \"unexpressed\"\nPrototype pump (prototype-pump): prototype_pump.equipment_type: \"prototype pump\"\nPublic validation procedure (public-procedure): public_procedure.filing_validation_hold_reveals: \"failed validation\"; public_procedure.filing_validation_hold_reveals_private_test_details: false\nTechnical authority of ari (technical-role-ari): technical_role.holder_id: \"ari\"; technical_role.repairer: true; technical_role.validator: true\nUnspecified report source (unspecified-source-short-validation-failure-report): \n\n\n\n\nThings you know you can do here:\n\n- record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of ari (position-ari)) [executability unknown]\n\n- record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of mara (position-mara)) [executability unknown]\n\n- record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of bo (position-bo)) [executability unknown]\n\n- withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of ari (position-ari)) [executability unknown]\n\n- withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of mara (position-mara)) [executability unknown]\n\n- withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of bo (position-bo)) [executability unknown]\n\n- state supportive (position=Recorded position of ari (position-ari)) [executability unknown]\n\n- state supportive (position=Recorded position of mara (position-mara)) [executability unknown]\n\n- state supportive (position=Recorded position of bo (position-bo)) [executability unknown]\n\n- state concerned (position=Recorded position of ari (position-ari)) [executability unknown]\n\n- state concerned (position=Recorded position of mara (position-mara)) [executability unknown]\n\n- state concerned (position=Recorded position of bo (position-bo)) [executability unknown]\n\n- state undecided (position=Recorded position of ari (position-ari)) [executability unknown]\n\n- state undecided (position=Recorded position of mara (position-mara)) [executability unknown]\n\n- state undecided (position=Recorded position of bo (position-bo)) [executability unknown]\n\n- request review (decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]\n\n- complete validation (authority=Technical authority of ari (technical-role-ari), decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]\n\n- repair condition (authority=Technical authority of ari (technical-role-ari), condition=Technical condition (condition-activate-prototype-pump)) [executability unknown]\n\n- activate (decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]\n\n- Deliver a held report to its declared recipient. (delivery=Delivery (delivery-info-short-validation-failure-report-to-mara), information=Report (info-short-validation-failure-report-to-mara), recipient=Mara (mara)) [executability unknown]\n\n\n\nFirst say what you believe about your situation now, from your memory and\nwhat you can see. Then say in your own words what you try this turn,\nnaming the people, things and places involved, or 'wait', and what you\nexpect it to change. If your memory shows a try did not change what you\nexpected, update your belief instead of repeating it."
+            }
+          ],
+          "schema": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "belief",
+              "attempt",
+              "expected_effect",
+              "work",
+              "reasoning"
+            ],
+            "properties": {
+              "belief": {
+                "type": "string",
+                "description": "What you believe about your situation right now, in one or two sentences."
+              },
+              "expected_effect": {
+                "type": "string",
+                "description": "What you expect this to change, in one sentence."
+              },
+              "work": {
+                "type": "string",
+                "description": "If the action starts work that takes several rounds, what that work will concretely decide, do or produce (for a concern: your answer to its question, or that it leaves the question open), since you and the others it concerns are shown these words when it finishes. Otherwise 'none'."
+              },
+              "reasoning": {
+                "type": "string",
+                "description": "One sentence on why, from your own goals and what you know."
+              },
+              "attempt": {
+                "type": "string",
+                "description": "What you physically try to do this turn, in your own words, naming the people, things and places involved; or 'wait'."
+              }
+            }
+          },
+          "context": {
+            "tick": 1,
+            "actor_id": "mara",
+            "actor_state": "member.role: \"Coordinator\"; report_log.entries: []",
+            "visible": "Whether to activate the pump safely (activate-prototype-pump): validation_decision.active: false; validation_decision.assents: 0; validation_decision.condition_id: \"condition-activate-prototype-pump\"; validation_decision.hold: true; validation_decision.review: \"idle\"; validation_decision.validation: \"failed\"\nAri (ari): member.role: \"Validation engineer\"\nBo (bo): member.role: \"Prototype pump operator\"\nTechnical condition (condition-activate-prototype-pump): \nDelivery (delivery-info-short-validation-failure-report-to-mara): delivery.channel_id: \"validation_reporting\"; delivery.info_id: \"info-short-validation-failure-report-to-mara\"; delivery.recipient_id: \"mara\"; delivery.status: \"delivered\"\nReport (info-short-validation-failure-report-to-mara): claim_provenance.apparent_source: \"Validation report; specific transmitting person unspecified.\"; information.active: true; information.channel_id: \"validation_reporting\"; information.content: \"Validation failed.\"; information.source_id: \"unspecified-source-short-validation-failure-report\"; information.topic: \"short_validation_failure_report\"; information.visibility: \"direct\"\nRecorded position of ari (position-ari): actor_position.assent: false; actor_position.assent_weight: 0; actor_position.holder_id: \"ari\"; actor_position.stance: \"unexpressed\"\nRecorded position of bo (position-bo): actor_position.assent: false; actor_position.assent_weight: 1; actor_position.holder_id: \"bo\"; actor_position.stance: \"unexpressed\"\nRecorded position of mara (position-mara): actor_position.assent: false; actor_position.assent_weight: 1; actor_position.holder_id: \"mara\"; actor_position.stance: \"unexpressed\"\nPrototype pump (prototype-pump): prototype_pump.equipment_type: \"prototype pump\"\nPublic validation procedure (public-procedure): public_procedure.filing_validation_hold_reveals: \"failed validation\"; public_procedure.filing_validation_hold_reveals_private_test_details: false\nTechnical authority of ari (technical-role-ari): technical_role.holder_id: \"ari\"; technical_role.repairer: true; technical_role.validator: true\nUnspecified report source (unspecified-source-short-validation-failure-report): ",
+            "progress": "",
+            "actions": [
+              {
+                "number": 1,
+                "action_id": "known-9b79e111d55a4f9db729",
+                "description": "record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of ari (position-ari)) [executability unknown]"
+              },
+              {
+                "number": 2,
+                "action_id": "known-6a2d69f4f754414d569c",
+                "description": "record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of mara (position-mara)) [executability unknown]"
+              },
+              {
+                "number": 3,
+                "action_id": "known-46b8ce6bb4b573b8c379",
+                "description": "record assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of bo (position-bo)) [executability unknown]"
+              },
+              {
+                "number": 4,
+                "action_id": "known-b5eb817f5b704f43a3fe",
+                "description": "withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of ari (position-ari)) [executability unknown]"
+              },
+              {
+                "number": 5,
+                "action_id": "known-59e5b49201f34d5ce43b",
+                "description": "withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of mara (position-mara)) [executability unknown]"
+              },
+              {
+                "number": 6,
+                "action_id": "known-e5339415776f4660fcd3",
+                "description": "withdraw assent (decision=Whether to activate the pump safely (activate-prototype-pump), position=Recorded position of bo (position-bo)) [executability unknown]"
+              },
+              {
+                "number": 7,
+                "action_id": "known-3f2c13ae35f640c6309d",
+                "description": "state supportive (position=Recorded position of ari (position-ari)) [executability unknown]"
+              },
+              {
+                "number": 8,
+                "action_id": "known-3f3a73437bd9f934ac38",
+                "description": "state supportive (position=Recorded position of mara (position-mara)) [executability unknown]"
+              },
+              {
+                "number": 9,
+                "action_id": "known-4e54e0a24c650b707bfe",
+                "description": "state supportive (position=Recorded position of bo (position-bo)) [executability unknown]"
+              },
+              {
+                "number": 10,
+                "action_id": "known-7d76831314258bfa50ef",
+                "description": "state concerned (position=Recorded position of ari (position-ari)) [executability unknown]"
+              },
+              {
+                "number": 11,
+                "action_id": "known-d9f17e13a424eaa5b77c",
+                "description": "state concerned (position=Recorded position of mara (position-mara)) [executability unknown]"
+              },
+              {
+                "number": 12,
+                "action_id": "known-486ba3bdcc1781e7e0be",
+                "description": "state concerned (position=Recorded position of bo (position-bo)) [executability unknown]"
+              },
+              {
+                "number": 13,
+                "action_id": "known-72eede6f640a7ae4858d",
+                "description": "state undecided (position=Recorded position of ari (position-ari)) [executability unknown]"
+              },
+              {
+                "number": 14,
+                "action_id": "known-6aa3dc746e01f4fe6ea6",
+                "description": "state undecided (position=Recorded position of mara (position-mara)) [executability unknown]"
+              },
+              {
+                "number": 15,
+                "action_id": "known-e1719572f96a96763a13",
+                "description": "state undecided (position=Recorded position of bo (position-bo)) [executability unknown]"
+              },
+              {
+                "number": 16,
+                "action_id": "known-ee5611728abd51a7d3f7",
+                "description": "request review (decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]"
+              },
+              {
+                "number": 17,
+                "action_id": "known-6627cf94e6924c4b29c2",
+                "description": "complete validation (authority=Technical authority of ari (technical-role-ari), decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]"
+              },
+              {
+                "number": 18,
+                "action_id": "known-28b0ca83946a1ff005d3",
+                "description": "repair condition (authority=Technical authority of ari (technical-role-ari), condition=Technical condition (condition-activate-prototype-pump)) [executability unknown]"
+              },
+              {
+                "number": 19,
+                "action_id": "known-9053924ff8ff9db40b08",
+                "description": "activate (decision=Whether to activate the pump safely (activate-prototype-pump)) [executability unknown]"
+              },
+              {
+                "number": 20,
+                "action_id": "known-15a7a827cef91b0efed9",
+                "description": "Deliver a held report to its declared recipient. (delivery=Delivery (delivery-info-short-validation-failure-report-to-mara), information=Report (info-short-validation-failure-report-to-mara), recipient=Mara (mara)) [executability unknown]"
+              }
+            ],
+            "world_summary": "Ari is the validation engineer, Mara is the coordinator, and Bo operates a prototype pump. They face one question: whether activating the pump is safe.",
+            "brief": "You are Mara (Coordinator). Can make an independent decision about assent to activation. Your goals: Decide whether to record assent to activation.. You believe: The public procedure specifies that filing a validation hold publicly reveals failed validation without revealing private test details.; A report she received states that validation failed.. You tend to: May request evidence, investigate, ignore a claim, retain support, dissent, or record assent.. Right now: Knows the public procedure.; Has received a short failure report.. You can: Can independently record or withhold assent to activation.. You remember: Knows the public procedure.; Received a short report stating that validation failed..",
+            "recent": []
+          },
+          "memory": "Round 1. What just happened: nothing new.",
+          "provenance": {
+            "mode": "declared-v1",
+            "summary": "actor_information.public_summary",
+            "brief": "actor_information.actors.mara.brief",
+            "initial_knowledge": [],
+            "public_entities": [
+              {
+                "id": "ari",
+                "label": "Ari",
+                "fields": [
+                  "member.role"
+                ]
+              },
+              {
+                "id": "mara",
+                "label": "Mara",
+                "fields": [
+                  "member.role"
+                ]
+              },
+              {
+                "id": "bo",
+                "label": "Bo",
+                "fields": [
+                  "member.role"
+                ]
+              },
+              {
+                "id": "unspecified-source-short-validation-failure-report",
+                "label": "Unspecified report source",
+                "fields": [],
+                "actor_ids": [
+                  "mara"
+                ]
+              },
+              {
+                "id": "info-short-validation-failure-report-to-mara",
+                "label": "Report",
+                "fields": [
+                  "information.content",
+                  "information.source_id",
+                  "information.channel_id",
+                  "information.visibility",
+                  "information.topic",
+                  "information.active",
+                  "claim_provenance.apparent_source"
+                ]
+              },
+              {
+                "id": "delivery-info-short-validation-failure-report-to-mara",
+                "label": "Delivery",
+                "fields": [
+                  "delivery.info_id",
+                  "delivery.recipient_id",
+                  "delivery.channel_id",
+                  "delivery.status"
+                ]
+              },
+              {
+                "id": "prototype-pump",
+                "label": "Prototype pump",
+                "fields": [],
+                "actor_ids": [
+                  "ari",
+                  "mara",
+                  "bo"
+                ]
+              },
+              {
+                "id": "public-procedure",
+                "label": "Public validation procedure",
+                "fields": [],
+                "actor_ids": [
+                  "ari",
+                  "mara",
+                  "bo"
+                ]
+              },
+              {
+                "id": "activate-prototype-pump",
+                "label": "Whether to activate the pump safely",
+                "fields": [
+                  "validation_decision.validation",
+                  "validation_decision.hold",
+                  "validation_decision.review",
+                  "validation_decision.assents",
+                  "validation_decision.active",
+                  "validation_decision.condition_id"
+                ]
+              },
+              {
+                "id": "condition-activate-prototype-pump",
+                "label": "Technical condition",
+                "fields": []
+              },
+              {
+                "id": "position-ari",
+                "label": "Recorded position of ari",
+                "fields": [
+                  "actor_position.holder_id",
+                  "actor_position.assent",
+                  "actor_position.stance",
+                  "actor_position.assent_weight"
+                ]
+              },
+              {
+                "id": "position-mara",
+                "label": "Recorded position of mara",
+                "fields": [
+                  "actor_position.holder_id",
+                  "actor_position.assent",
+                  "actor_position.stance",
+                  "actor_position.assent_weight"
+                ]
+              },
+              {
+                "id": "position-bo",
+                "label": "Recorded position of bo",
+                "fields": [
+                  "actor_position.holder_id",
+                  "actor_position.assent",
+                  "actor_position.stance",
+                  "actor_position.assent_weight"
+                ]
+              },
+              {
+                "id": "technical-role-ari",
+                "label": "Technical authority of ari",
+                "fields": [
+                  "technical_role.holder_id",
+                  "technical_role.validator",
+                  "technical_role.repairer"
+                ]
+              }
+            ],
+            "observable_fields": [
+              {
+                "entity": "mara",
+                "paths": [
+                  "report_log.entries"
+                ]
+              },
+              {
+                "entity": "prototype-pump",
+                "paths": [
+                  "prototype_pump.equipment_type"
+                ]
+              },
+              {
+                "entity": "public-procedure",
+                "paths": [
+                  "public_procedure.filing_validation_hold_reveals",
+                  "public_procedure.filing_validation_hold_reveals_private_test_details"
+                ]
+              }
+            ],
+            "world_revision": 0,
+            "simulated_tick": 0,
+            "observation": {
+              "actor_id": "mara",
+              "entities": {
+                "ari": {
+                  "entity_id": "ari",
+                  "label": "Ari",
+                  "components": {
+                    "member": {
+                      "role": "Validation engineer"
+                    }
+                  }
+                },
+                "mara": {
+                  "entity_id": "mara",
+                  "label": "Mara",
+                  "components": {
+                    "member": {
+                      "role": "Coordinator"
+                    },
+                    "report_log": {
+                      "entries": []
+                    }
+                  }
+                },
+                "bo": {
+                  "entity_id": "bo",
+                  "label": "Bo",
+                  "components": {
+                    "member": {
+                      "role": "Prototype pump operator"
+                    }
+                  }
+                },
+                "unspecified-source-short-validation-failure-report": {
+                  "entity_id": "unspecified-source-short-validation-failure-report",
+                  "label": "Unspecified report source",
+                  "components": {}
+                },
+                "info-short-validation-failure-report-to-mara": {
+                  "entity_id": "info-short-validation-failure-report-to-mara",
+                  "label": "Report",
+                  "components": {
+                    "claim_provenance": {
+                      "apparent_source": "Validation report; specific transmitting person unspecified."
+                    },
+                    "information": {
+                      "active": true,
+                      "channel_id": "validation_reporting",
+                      "content": "Validation failed.",
+                      "source_id": "unspecified-source-short-validation-failure-report",
+                      "topic": "short_validation_failure_report",
+                      "visibility": "direct"
+                    }
+                  }
+                },
+                "delivery-info-short-validation-failure-report-to-mara": {
+                  "entity_id": "delivery-info-short-validation-failure-report-to-mara",
+                  "label": "Delivery",
+                  "components": {
+                    "delivery": {
+                      "channel_id": "validation_reporting",
+                      "info_id": "info-short-validation-failure-report-to-mara",
+                      "recipient_id": "mara",
+                      "status": "delivered"
+                    }
+                  }
+                },
+                "prototype-pump": {
+                  "entity_id": "prototype-pump",
+                  "label": "Prototype pump",
+                  "components": {
+                    "prototype_pump": {
+                      "equipment_type": "prototype pump"
+                    }
+                  }
+                },
+                "public-procedure": {
+                  "entity_id": "public-procedure",
+                  "label": "Public validation procedure",
+                  "components": {
+                    "public_procedure": {
+                      "filing_validation_hold_reveals": "failed validation",
+                      "filing_validation_hold_reveals_private_test_details": false
+                    }
+                  }
+                },
+                "activate-prototype-pump": {
+                  "entity_id": "activate-prototype-pump",
+                  "label": "Whether to activate the pump safely",
+                  "components": {
+                    "validation_decision": {
+                      "active": false,
+                      "assents": 0,
+                      "condition_id": "condition-activate-prototype-pump",
+                      "hold": true,
+                      "review": "idle",
+                      "validation": "failed"
+                    }
+                  }
+                },
+                "condition-activate-prototype-pump": {
+                  "entity_id": "condition-activate-prototype-pump",
+                  "label": "Technical condition",
+                  "components": {}
+                },
+                "position-ari": {
+                  "entity_id": "position-ari",
+                  "label": "Recorded position of ari",
+                  "components": {
+                    "actor_position": {
+                      "assent": false,
+                      "assent_weight": 0,
+                      "holder_id": "ari",
+                      "stance": "unexpressed"
+                    }
+                  }
+                },
+                "position-mara": {
+                  "entity_id": "position-mara",
+                  "label": "Recorded position of mara",
+                  "components": {
+                    "actor_position": {
+                      "assent": false,
+                      "assent_weight": 1,
+                      "holder_id": "mara",
+                      "stance": "unexpressed"
+                    }
+                  }
+                },
+                "position-bo": {
+                  "entity_id": "position-bo",
+                  "label": "Recorded position of bo",
+                  "components": {
+                    "actor_position": {
+                      "assent": false,
+                      "assent_weight": 1,
+                      "holder_id": "bo",
+                      "stance": "unexpressed"
+                    }
+                  }
+                },
+                "technical-role-ari": {
+                  "entity_id": "technical-role-ari",
+                  "label": "Technical authority of ari",
+                  "components": {
+                    "technical_role": {
+                      "holder_id": "ari",
+                      "repairer": true,
+                      "validator": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "max_tokens": 640,
+          "reasoning_effort": "low",
+          "output": {
+            "belief": "I believe validation failed, and the pump is currently held inactive. The public procedure lets me file a validation hold without revealing private test details.",
+            "expected_effect": "I expect requesting a review to prompt examination of the failed validation before activation is considered.",
+            "work": "Review whether activating the prototype pump is safe, leaving the question open until the review provides its result.",
+            "reasoning": "The failure report gives me reason not to assent, and review is a cautious way to seek clarity without disclosing private test details.",
+            "attempt": "I request a review of whether activating the prototype pump is safe."
+          }
+        }
+      ]
+    },
+    "actor_information_mode": "declared-v1",
+    "judge_rulings": "create",
+    "underway": []
+  },
+  "causal_review": {
+    "schema_version": "world-substrate-causal-model/v0",
+    "mechanics": [
+      {
+        "mechanic_id": "coordination.action.communicate",
+        "action_kind": "communicate",
+        "rationale": "A represented member may deliver one represented information item through its declared delivery record to its declared recipient.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<delivery>.category_ids",
+          "entities.<delivery>.components.delivery",
+          "entities.<delivery>.components.delivery.channel_id",
+          "entities.<delivery>.components.delivery.info_id",
+          "entities.<delivery>.components.delivery.recipient_id",
+          "entities.<delivery>.components.delivery.status",
+          "entities.<information>.category_ids",
+          "entities.<information>.components.information",
+          "entities.<information>.components.information.active",
+          "entities.<information>.components.information.channel_id",
+          "entities.<information>.components.information.source_id",
+          "entities.<recipient>.category_ids",
+          "entities.<recipient>.components.member"
+        ],
+        "writes": [
+          "entities.<delivery>.components.delivery.status",
+          "entities.<delivery>.last_cause_event_id",
+          "entities.<information>.components.information.active",
+          "entities.<information>.last_cause_event_id",
+          "entities.<recipient>.components.member.aware",
+          "entities.<recipient>.last_cause_event_id"
+        ],
+        "checks": [
+          {
+            "label": "Actor is the represented information source",
+            "left": {
+              "participant": {
+                "name": "information",
+                "path": "components.information.source_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "actor"
+            }
+          },
+          {
+            "label": "Delivery names the represented information",
+            "left": {
+              "participant": {
+                "name": "delivery",
+                "path": "components.delivery.info_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "information"
+            }
+          },
+          {
+            "label": "Delivery names the represented recipient",
+            "left": {
+              "participant": {
+                "name": "delivery",
+                "path": "components.delivery.recipient_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "recipient"
+            }
+          },
+          {
+            "label": "Delivery channel agrees with information channel",
+            "left": {
+              "participant": {
+                "name": "delivery",
+                "path": "components.delivery.channel_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "participant": {
+                "name": "information",
+                "path": "components.information.channel_id"
+              }
+            }
+          },
+          {
+            "label": "Information is not active yet",
+            "left": {
+              "participant": {
+                "name": "information",
+                "path": "components.information.active"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          },
+          {
+            "label": "Delivery is pending",
+            "left": {
+              "participant": {
+                "name": "delivery",
+                "path": "components.delivery.status"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "pending"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "information",
+            "path": "components.information.active",
+            "op": "set",
+            "value": {
+              "literal": true
+            }
+          },
+          {
+            "participant": "delivery",
+            "path": "components.delivery.status",
+            "op": "set",
+            "value": {
+              "literal": "delivered"
+            }
+          },
+          {
+            "participant": "recipient",
+            "path": "components.member.aware",
+            "op": "set",
+            "value": {
+              "literal": true
+            }
+          }
+        ],
+        "limits": [
+          "Delivery is represented, not a claim that the message caused a later decision."
+        ],
+        "tests": [
+          "only the declared source can deliver; recipient visibility remains actor-scoped"
+        ]
+      },
+      {
+        "mechanic_id": "decision.action.send-report",
+        "action_kind": "send-report",
+        "rationale": "Send your own words directly to another person; records exposure, not belief or agreement.",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<recipient>.category_ids",
+          "entities.<recipient>.components.report_log",
+          "entities.<recipient>.components.report_log.entries"
+        ],
+        "writes": [
+          "entities.<recipient>.components.report_log.entries",
+          "entities.<recipient>.last_cause_event_id"
+        ],
+        "checks": [
+          {
+            "label": "the sender supplies words",
+            "left": {
+              "action_field": "content"
+            },
+            "op": "ne",
+            "right": {
+              "literal": ""
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "recipient",
+            "path": "components.report_log.entries",
+            "op": "append_report",
+            "value": {
+              "action_field": "content"
+            }
+          }
+        ],
+        "limits": [
+          "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+        ],
+        "tests": [
+          "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+        ]
+      },
+      {
+        "mechanic_id": "decision.action.record-assent",
+        "action_kind": "record-assent",
+        "rationale": "record assent",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<decision>.category_ids",
+          "entities.<decision>.components.validation_decision",
+          "entities.<decision>.components.validation_decision.assents",
+          "entities.<position>.category_ids",
+          "entities.<position>.components.actor_position",
+          "entities.<position>.components.actor_position.assent",
+          "entities.<position>.components.actor_position.assent_weight",
+          "entities.<position>.components.actor_position.holder_id"
+        ],
+        "writes": [
+          "entities.<decision>.components.validation_decision.assents",
+          "entities.<decision>.last_cause_event_id",
+          "entities.<position>.components.actor_position.assent",
+          "entities.<position>.last_cause_event_id"
+        ],
+        "checks": [
+          {
+            "label": "the actor owns this position",
+            "left": {
+              "participant": {
+                "name": "position",
+                "path": "components.actor_position.holder_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "actor"
+            }
+          },
+          {
+            "label": "the recorded assent changes",
+            "left": {
+              "participant": {
+                "name": "position",
+                "path": "components.actor_position.assent"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "position",
+            "path": "components.actor_position.assent",
+            "op": "set",
+            "value": {
+              "literal": true
+            }
+          },
+          {
+            "participant": "decision",
+            "path": "components.validation_decision.assents",
+            "op": "add",
+            "value": {
+              "participant": {
+                "name": "position",
+                "path": "components.actor_position.assent_weight"
+              }
+            }
+          }
+        ],
+        "limits": [
+          "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+        ],
+        "tests": [
+          "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+        ]
+      },
+      {
+        "mechanic_id": "decision.action.withdraw-assent",
+        "action_kind": "withdraw-assent",
+        "rationale": "withdraw assent",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<decision>.category_ids",
+          "entities.<decision>.components.validation_decision",
+          "entities.<decision>.components.validation_decision.assents",
+          "entities.<position>.category_ids",
+          "entities.<position>.components.actor_position",
+          "entities.<position>.components.actor_position.assent",
+          "entities.<position>.components.actor_position.assent_weight",
+          "entities.<position>.components.actor_position.holder_id"
+        ],
+        "writes": [
+          "entities.<decision>.components.validation_decision.assents",
+          "entities.<decision>.last_cause_event_id",
+          "entities.<position>.components.actor_position.assent",
+          "entities.<position>.last_cause_event_id"
+        ],
+        "checks": [
+          {
+            "label": "the actor owns this position",
+            "left": {
+              "participant": {
+                "name": "position",
+                "path": "components.actor_position.holder_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "actor"
+            }
+          },
+          {
+            "label": "the recorded assent changes",
+            "left": {
+              "participant": {
+                "name": "position",
+                "path": "components.actor_position.assent"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "position",
+            "path": "components.actor_position.assent",
+            "op": "set",
+            "value": {
+              "literal": false
+            }
+          },
+          {
+            "participant": "decision",
+            "path": "components.validation_decision.assents",
+            "op": "subtract",
+            "value": {
+              "participant": {
+                "name": "position",
+                "path": "components.actor_position.assent_weight"
+              }
+            }
+          }
+        ],
+        "limits": [
+          "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+        ],
+        "tests": [
+          "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+        ]
+      },
+      {
+        "mechanic_id": "decision.action.state-supportive",
+        "action_kind": "state-supportive",
+        "rationale": "state supportive",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<position>.category_ids",
+          "entities.<position>.components.actor_position",
+          "entities.<position>.components.actor_position.holder_id"
+        ],
+        "writes": [
+          "entities.<position>.components.actor_position.stance",
+          "entities.<position>.last_cause_event_id"
+        ],
+        "checks": [
+          {
+            "label": "the actor owns this position",
+            "left": {
+              "participant": {
+                "name": "position",
+                "path": "components.actor_position.holder_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "actor"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "position",
+            "path": "components.actor_position.stance",
+            "op": "set",
+            "value": {
+              "literal": "supportive"
+            }
+          }
+        ],
+        "limits": [
+          "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+        ],
+        "tests": [
+          "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+        ]
+      },
+      {
+        "mechanic_id": "decision.action.state-concerned",
+        "action_kind": "state-concerned",
+        "rationale": "state concerned",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<position>.category_ids",
+          "entities.<position>.components.actor_position",
+          "entities.<position>.components.actor_position.holder_id"
+        ],
+        "writes": [
+          "entities.<position>.components.actor_position.stance",
+          "entities.<position>.last_cause_event_id"
+        ],
+        "checks": [
+          {
+            "label": "the actor owns this position",
+            "left": {
+              "participant": {
+                "name": "position",
+                "path": "components.actor_position.holder_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "actor"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "position",
+            "path": "components.actor_position.stance",
+            "op": "set",
+            "value": {
+              "literal": "concerned"
+            }
+          }
+        ],
+        "limits": [
+          "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+        ],
+        "tests": [
+          "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+        ]
+      },
+      {
+        "mechanic_id": "decision.action.state-undecided",
+        "action_kind": "state-undecided",
+        "rationale": "state undecided",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<position>.category_ids",
+          "entities.<position>.components.actor_position",
+          "entities.<position>.components.actor_position.holder_id"
+        ],
+        "writes": [
+          "entities.<position>.components.actor_position.stance",
+          "entities.<position>.last_cause_event_id"
+        ],
+        "checks": [
+          {
+            "label": "the actor owns this position",
+            "left": {
+              "participant": {
+                "name": "position",
+                "path": "components.actor_position.holder_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "actor"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "position",
+            "path": "components.actor_position.stance",
+            "op": "set",
+            "value": {
+              "literal": "undecided"
+            }
+          }
+        ],
+        "limits": [
+          "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+        ],
+        "tests": [
+          "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+        ]
+      },
+      {
+        "mechanic_id": "decision.action.request-review",
+        "action_kind": "request-review",
+        "rationale": "request review",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<decision>.category_ids",
+          "entities.<decision>.components.validation_decision",
+          "entities.<decision>.components.validation_decision.review"
+        ],
+        "writes": [
+          "entities.<decision>.components.validation_decision.review",
+          "entities.<decision>.last_cause_event_id"
+        ],
+        "checks": [
+          {
+            "label": "a review is not already requested",
+            "left": {
+              "participant": {
+                "name": "decision",
+                "path": "components.validation_decision.review"
+              }
+            },
+            "op": "ne",
+            "right": {
+              "literal": "requested"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "decision",
+            "path": "components.validation_decision.review",
+            "op": "set",
+            "value": {
+              "literal": "requested"
+            }
+          }
+        ],
+        "limits": [
+          "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+        ],
+        "tests": [
+          "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+        ]
+      },
+      {
+        "mechanic_id": "decision.action.complete-validation",
+        "action_kind": "complete-validation",
+        "rationale": "complete validation",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<authority>.category_ids",
+          "entities.<authority>.components.technical_role",
+          "entities.<authority>.components.technical_role.holder_id",
+          "entities.<authority>.components.technical_role.validator",
+          "entities.<decision>.category_ids",
+          "entities.<decision>.components.validation_decision"
+        ],
+        "writes": [
+          "entities.<decision>.components.validation_decision.review",
+          "entities.<decision>.last_cause_event_id"
+        ],
+        "checks": [
+          {
+            "label": "the actor owns this authority",
+            "left": {
+              "participant": {
+                "name": "authority",
+                "path": "components.technical_role.holder_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "actor"
+            }
+          },
+          {
+            "label": "the actor is an authorized validator",
+            "left": {
+              "participant": {
+                "name": "authority",
+                "path": "components.technical_role.validator"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "decision",
+            "path": "components.validation_decision.review",
+            "op": "set",
+            "value": {
+              "literal": "completed"
+            }
+          }
+        ],
+        "limits": [
+          "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+        ],
+        "tests": [
+          "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+        ]
+      },
+      {
+        "mechanic_id": "decision.action.repair-condition",
+        "action_kind": "repair-condition",
+        "rationale": "repair condition",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<authority>.category_ids",
+          "entities.<authority>.components.technical_role",
+          "entities.<authority>.components.technical_role.holder_id",
+          "entities.<authority>.components.technical_role.repairer",
+          "entities.<condition>.category_ids",
+          "entities.<condition>.components.technical_condition"
+        ],
+        "writes": [
+          "entities.<condition>.components.technical_condition.passing",
+          "entities.<condition>.last_cause_event_id"
+        ],
+        "checks": [
+          {
+            "label": "the actor owns this authority",
+            "left": {
+              "participant": {
+                "name": "authority",
+                "path": "components.technical_role.holder_id"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "entity_id": "actor"
+            }
+          },
+          {
+            "label": "the actor is an authorized repairer",
+            "left": {
+              "participant": {
+                "name": "authority",
+                "path": "components.technical_role.repairer"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "condition",
+            "path": "components.technical_condition.passing",
+            "op": "set",
+            "value": {
+              "literal": true
+            }
+          }
+        ],
+        "limits": [
+          "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+        ],
+        "tests": [
+          "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+        ]
+      },
+      {
+        "mechanic_id": "decision.action.activate",
+        "action_kind": "activate",
+        "rationale": "activate",
+        "reads": [
+          "entities.<actor>.category_ids",
+          "entities.<actor>.components.member",
+          "entities.<decision>.category_ids",
+          "entities.<decision>.components.validation_decision",
+          "entities.<decision>.components.validation_decision.active",
+          "entities.<decision>.components.validation_decision.assents",
+          "entities.<decision>.components.validation_decision.hold",
+          "entities.<decision>.components.validation_decision.validation"
+        ],
+        "writes": [
+          "entities.<decision>.components.validation_decision.active",
+          "entities.<decision>.last_cause_event_id"
+        ],
+        "checks": [
+          {
+            "label": "validation has passed",
+            "left": {
+              "participant": {
+                "name": "decision",
+                "path": "components.validation_decision.validation"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "passed"
+            }
+          },
+          {
+            "label": "there is no technical hold",
+            "left": {
+              "participant": {
+                "name": "decision",
+                "path": "components.validation_decision.hold"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          },
+          {
+            "label": "every required actor recorded assent",
+            "left": {
+              "participant": {
+                "name": "decision",
+                "path": "components.validation_decision.assents"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": 2
+            }
+          },
+          {
+            "label": "activation has not occurred",
+            "left": {
+              "participant": {
+                "name": "decision",
+                "path": "components.validation_decision.active"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "decision",
+            "path": "components.validation_decision.active",
+            "op": "set",
+            "value": {
+              "literal": true
+            }
+          }
+        ],
+        "limits": [
+          "Compiled from the scenario's decision; the stance is represented, not inferred from talk."
+        ],
+        "tests": [
+          "tests/test_scenario_spec.py: the group decision moves support both ways and settles at its deadline"
+        ]
+      }
+    ],
+    "processes": [
+      {
+        "process_id": "validation-fails",
+        "rationale": "An authorized completed validation records the actual outcome independently of claims and assent.",
+        "selector": {
+          "categories": [
+            "validation-decision"
+          ],
+          "components": [
+            "validation_decision"
+          ]
+        },
+        "checks": [
+          {
+            "label": "validation was completed",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.validation_decision.review"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "completed"
+            }
+          },
+          {
+            "label": "the tested condition",
+            "left": {
+              "participant": {
+                "name": "condition",
+                "path": "components.technical_condition.passing"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": false
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "it",
+            "path": "components.validation_decision.validation",
+            "op": "set",
+            "value": {
+              "literal": "failed"
+            }
+          },
+          {
+            "participant": "it",
+            "path": "components.validation_decision.hold",
+            "op": "set",
+            "value": {
+              "literal": true
+            }
+          },
+          {
+            "participant": "it",
+            "path": "components.validation_decision.review",
+            "op": "set",
+            "value": {
+              "literal": "idle"
+            }
+          }
+        ],
+        "writes": [
+          "entities.<it>.components.validation_decision.hold",
+          "entities.<it>.components.validation_decision.review",
+          "entities.<it>.components.validation_decision.validation",
+          "entities.<it>.last_cause_event_id"
+        ],
+        "participants": {
+          "condition": {
+            "link": "ref:validation_decision.condition_id",
+            "selector": {
+              "categories": [
+                "technical-condition"
+              ],
+              "components": [
+                "technical_condition"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "process_id": "validation-passes",
+        "rationale": "An authorized completed validation records the actual outcome independently of claims and assent.",
+        "selector": {
+          "categories": [
+            "validation-decision"
+          ],
+          "components": [
+            "validation_decision"
+          ]
+        },
+        "checks": [
+          {
+            "label": "validation was completed",
+            "left": {
+              "participant": {
+                "name": "it",
+                "path": "components.validation_decision.review"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": "completed"
+            }
+          },
+          {
+            "label": "the tested condition",
+            "left": {
+              "participant": {
+                "name": "condition",
+                "path": "components.technical_condition.passing"
+              }
+            },
+            "op": "eq",
+            "right": {
+              "literal": true
+            }
+          }
+        ],
+        "effects": [
+          {
+            "participant": "it",
+            "path": "components.validation_decision.validation",
+            "op": "set",
+            "value": {
+              "literal": "passed"
+            }
+          },
+          {
+            "participant": "it",
+            "path": "components.validation_decision.hold",
+            "op": "set",
+            "value": {
+              "literal": false
+            }
+          },
+          {
+            "participant": "it",
+            "path": "components.validation_decision.review",
+            "op": "set",
+            "value": {
+              "literal": "idle"
+            }
+          }
+        ],
+        "writes": [
+          "entities.<it>.components.validation_decision.hold",
+          "entities.<it>.components.validation_decision.review",
+          "entities.<it>.components.validation_decision.validation",
+          "entities.<it>.last_cause_event_id"
+        ],
+        "participants": {
+          "condition": {
+            "link": "ref:validation_decision.condition_id",
+            "selector": {
+              "categories": [
+                "technical-condition"
+              ],
+              "components": [
+                "technical_condition"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "terminal": null
+  },
+  "replay_html": "<!doctype html>\n<html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>\n<title>Scene replay</title><style>\n:root{--scene-bg:#ddd;--shell-bg:#171b1d;--grid:#0000}*{box-sizing:border-box}body{margin:0;background:var(--shell-bg);font:15px/1.35 system-ui,-apple-system,sans-serif;color:#182126;overflow-x:hidden}\n.shell{max-width:1240px;margin:auto;padding:18px}.top{color:white;display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:12px}h1{font-size:clamp(24px,3vw,42px);margin:0;letter-spacing:-.03em}.sub{color:#b8c1c5;max-width:700px;margin:4px 0 0}.badge{font-size:12px;color:#dbe2e5}\n.stage{position:relative;aspect-ratio:16 / 9;border:4px solid #090b0c;border-radius:18px;overflow:hidden;background:var(--scene-bg);box-shadow:0 20px 60px #0008}.stage::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0000 49%,var(--grid) 50%,#0000 51%),linear-gradient(#0000 49%,var(--grid) 50%,#0000 51%);background-size:64px 64px}.decor{position:absolute}\n.station{position:absolute;border:4px solid #47382c;border-radius:10px;box-shadow:inset 0 0 0 5px #ffffff18,0 5px 0 #0003;text-align:center;overflow:hidden}.station-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;padding:5px;color:#221c17}.role-workstation{border-color:#282c2e}.active-asset{font-size:30px;display:none}.station.active .active-asset{display:block}\n.role-goal{border-color:#79634c}.goal-progress{font-size:12px;padding:4px}.progress-items{font-size:26px;min-height:34px}.progress-needs{color:#665d54;font-size:11px}\n.actor{position:absolute;width:92px;height:110px;transition:left .65s ease,top .65s ease;z-index:8;text-align:center}.avatar{width:62px;height:62px;margin:auto;border-radius:50%;border:4px solid #24292c;outline:6px solid var(--accent);background:white;display:flex;align-items:center;justify-content:center;font-size:34px;box-shadow:0 5px 0 #0003}.avatar img,.entity img,.active-asset img{max-width:100%;max-height:100%;object-fit:contain}.name{background:#16191be8;color:white;border-radius:9px;margin:6px auto 0;padding:3px 8px;width:max-content;font-weight:800}\n.thought{position:absolute;z-index:12;width:min(310px,34vw);background:#fffffff2;border:3px solid #30383c;border-radius:14px;padding:9px 11px;box-shadow:0 8px 22px #0004;font-size:13px}.thought strong{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#657078;margin-bottom:3px}\n.entity{position:absolute;z-index:7;font-size:34px;transition:left .6s ease,top .6s ease,transform .3s ease,filter .3s ease;filter:drop-shadow(0 4px 2px #0004)}.entity small{position:absolute;left:50%;top:34px;transform:translateX(-50%);background:#fffddd;border:1px solid #695a44;border-radius:6px;padding:1px 4px;font-size:9px;white-space:nowrap}.entity img{width:40px;height:40px}\n.hud{position:absolute;left:50%;top:18%;transform:translateX(-50%);z-index:20;background:#15191de8;color:white;border-radius:12px;padding:7px 12px;text-align:center;min-width:190px}.turn{font-size:22px;font-weight:900}.moment{display:inline-block;margin:4px 3px 0;background:#f0b448;color:#251b0b;border-radius:999px;padding:2px 8px;font-size:10px;font-weight:900;text-transform:uppercase}.moment.terminal{background:#5da46d;color:white}\n.action{position:absolute;left:50%;bottom:2%;transform:translateX(-50%);z-index:20;background:#111d;color:white;border-radius:999px;padding:8px 15px;font-size:12px;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}.controls{display:flex;gap:10px;align-items:center;margin-top:12px;color:white}button{background:#f1eadc;border:0;border-radius:10px;padding:9px 13px;font-weight:800;cursor:pointer}.bar{height:8px;background:#ffffff24;border-radius:99px;flex:1;overflow:hidden}.bar>i{display:block;height:100%;background:#f0b448;width:0;transition:width .25s}.note{color:#aeb8bd;font-size:12px;margin-top:8px}@media(max-width:800px){.thought{font-size:11px;width:38vw}.actor{transform:scale(.82);transform-origin:center}.entity{font-size:28px}}\n</style></head><body><div class='shell'><div class='top'><div><h1>Scene replay</h1><p class='sub'></p></div><div class='badge'>AI-chosen moves (llm-resident (Concordia) openrouter/openai/gpt-6-luna) · $0.002</div></div>\n<div class='stage'><div class='actor' data-actor='ari'><div class='avatar' style='--accent:#777'>👤</div><div class='name'>Ari</div></div><div class='thought' data-thought='ari'></div><div class='actor' data-actor='bo'><div class='avatar' style='--accent:#777'>👤</div><div class='name'>Bo</div></div><div class='thought' data-thought='bo'></div><div class='actor' data-actor='mara'><div class='avatar' style='--accent:#777'>👤</div><div class='name'>Mara</div></div><div class='thought' data-thought='mara'></div><div class='hud'><div class='turn' id='turn'></div><div id='moments'></div></div><div class='action' id='action'></div><div class='entity' data-entity='activate-prototype-pump'>●<small>Whether to activate the pump safely</small></div><div class='entity' data-entity='condition-activate-prototype-pump'>●<small>Technical condition</small></div><div class='entity' data-entity='position-bo'>●<small>Recorded position of bo</small></div><div class='entity' data-entity='technical-role-ari'>●<small>Technical authority of ari</small></div></div>\n<div class='controls'><button id='restart'>↺ Replay</button><button id='prev'>←</button><button id='toggle'>Pause</button><button id='next'>→</button><div class='bar'><i id='progressbar'></i></div></div><div class='note'></div></div>\n<script>const FRAMES=[{\"turn\":1,\"actors\":{\"ari\":{\"status\":\"accepted\",\"action\":\"repair-condition\",\"reasoning\":\"Technical accuracy and the known failed validation require addressing the condition before I can support activation.\",\"retried\":false,\"did\":{\"actor\":\"ari\",\"base_revision\":0,\"controller\":\"live:resident\",\"kind\":\"repair-condition\",\"authority\":\"technical-role-ari\",\"condition\":\"condition-activate-prototype-pump\"}},\"bo\":{\"status\":\"precondition_failed\",\"action\":\"withdraw-assent\",\"reasoning\":\"I should not assent to activating a prototype pump when its validation has failed.\",\"retried\":false,\"did\":{\"actor\":\"bo\",\"base_revision\":1,\"controller\":\"live:resident\",\"kind\":\"withdraw-assent\",\"decision\":\"activate-prototype-pump\",\"position\":\"position-bo\"}},\"mara\":{\"status\":\"accepted\",\"action\":\"request-review activate-prototype-pump\",\"reasoning\":\"The failure report gives me reason not to assent, and review is a cautious way to seek clarity without disclosing private test details.\",\"retried\":false,\"did\":{\"actor\":\"mara\",\"base_revision\":1,\"controller\":\"live:resident\",\"kind\":\"request-review\",\"decision\":\"activate-prototype-pump\"}}},\"actor_positions\":{\"ari\":[20.0,78.0],\"bo\":[50.0,78.0],\"mara\":[80.0,78.0]},\"holdings\":{\"ari\":[],\"bo\":[],\"mara\":[]},\"holders\":{},\"progress\":{},\"items\":{\"activate-prototype-pump\":{\"state\":\"default\",\"placed_at\":null},\"condition-activate-prototype-pump\":{\"state\":\"default\",\"placed_at\":null},\"position-bo\":{\"state\":\"default\",\"placed_at\":null},\"technical-role-ari\":{\"state\":\"default\",\"placed_at\":null}},\"active_stations\":[],\"moments\":[]}];const PROFILE={\"schema_version\":\"world-substrate-scene-profile/v0\",\"world\":\"prototype-pump-validation\",\"world_model\":\"prototype-pump-validation-v0.json\",\"assets\":{\"delivery\":{\"kind\":\"text\",\"value\":\"\\u2192\"},\"information\":{\"kind\":\"emoji\",\"value\":\"\\u2709\\ufe0f\"},\"live_default\":{\"kind\":\"text\",\"value\":\"\\u25cf\"},\"participant\":{\"kind\":\"emoji\",\"value\":\"\\ud83d\\udc64\"}},\"actors\":{\"ari\":{\"asset\":\"participant\",\"home\":[20.0,78.0],\"carry_offset\":[5,3],\"carry_spacing\":[0,5]},\"bo\":{\"asset\":\"participant\",\"home\":[50.0,78.0],\"carry_offset\":[5,3],\"carry_spacing\":[0,5]},\"mara\":{\"asset\":\"participant\",\"home\":[80.0,78.0],\"carry_offset\":[5,3],\"carry_spacing\":[0,5]}},\"stations\":{},\"entities\":{\"activate-prototype-pump\":{\"asset\":\"live_default\",\"label\":\"Whether to activate the pump safely\",\"home\":[42.5,54.67]},\"condition-activate-prototype-pump\":{\"asset\":\"live_default\",\"label\":\"Technical condition\",\"home\":[50.0,54.67]},\"position-bo\":{\"asset\":\"live_default\",\"label\":\"Recorded position of bo\",\"home\":[57.5,54.67]},\"technical-role-ari\":{\"asset\":\"live_default\",\"label\":\"Technical authority of ari\",\"home\":[42.5,61.33]}},\"action_visuals\":{\"repair-condition\":{\"label_template\":\"repair-condition\"},\"withdraw-assent\":{\"label_template\":\"withdraw-assent\"},\"request-review\":{\"item_field\":\"decision\",\"label_template\":\"request-review {decision}\"}},\"progress_assets\":{},\"bootstrap\":{\"schema_version\":\"world-substrate-scene-profile-bootstrap/v0\",\"inferred_initial_owners\":{},\"inferred_action_fields\":{\"repair-condition\":{\"item_field\":null,\"station_field\":null},\"withdraw-assent\":{\"item_field\":null,\"station_field\":null},\"request-review\":{\"item_field\":\"decision\",\"station_field\":null}},\"declared_action_bindings\":[],\"binding_resolution_errors\":{},\"reviewed_actions\":[],\"auto_layout\":{\"enabled\":true,\"algorithm\":\"role-grid-v0\",\"proposed_geometry\":[\"actors.ari.home\",\"actors.bo.home\",\"actors.mara.home\",\"entities.activate-prototype-pump.home\",\"entities.condition-activate-prototype-pump.home\",\"entities.position-bo.home\",\"entities.technical-role-ari.home\"]},\"todos\":[{\"kind\":\"action_projection\",\"target\":\"action_visuals.repair-condition\",\"reason\":\"motion/state projection needs an explicit review or catalog binding\"},{\"kind\":\"action_projection\",\"target\":\"action_visuals.withdraw-assent\",\"reason\":\"motion/state projection needs an explicit review or catalog binding\"},{\"kind\":\"action_projection\",\"target\":\"action_visuals.request-review\",\"reason\":\"motion/state projection needs an explicit review or catalog binding\"}]},\"resolved_assets\":{\"delivery\":\"\\u2192\",\"information\":\"\\u2709\\ufe0f\",\"live_default\":\"\\u25cf\",\"participant\":\"\\ud83d\\udc64\"}};const ASSETS=PROFILE.resolved_assets;let idx=0,timer=null,playing=true;\nfunction setXY(el,p){el.style.left=p[0]+'%';el.style.top=p[1]+'%'}\nfunction stationPoint(id){const s=PROFILE.stations[id];if(!s)return null;if(s.item_anchor)return s.item_anchor;const r=s.rect;return[r[0]+r[2]/2,r[1]+r[3]/2]}\nfunction itemPos(id,f){const state=f.items[id]||{},preferStation=(PROFILE.station_precedence_states||[]).includes(state.state);if(preferStation&&state.placed_at){const p=stationPoint(state.placed_at);if(p)return p}for(const a of Object.keys(PROFILE.actors)){const held=f.holdings[a]||[];const n=held.indexOf(id);if(n>=0){const base=f.actor_positions[a],av=PROFILE.actors[a],j=held.indexOf(id);return[base[0]+av.carry_offset[0]+av.carry_spacing[0]*j,base[1]+av.carry_offset[1]+av.carry_spacing[1]*j]}}if(state.placed_at){const p=stationPoint(state.placed_at);if(p)return p}return PROFILE.entities[id].home}\nfunction styleEntity(el,state){const s=PROFILE.state_styles?.[state]||{};el.style.transform='scale('+(s.scale??1)+') rotate('+(s.rotate_deg??0)+'deg)';el.style.filter='drop-shadow(0 4px 2px #0004) brightness('+(s.brightness??1)+') saturate('+(s.saturation??1)+')'}\nfunction progressIcon(kind){const key=PROFILE.progress_assets?.[kind];return key?ASSETS[key]:(kind||'')}\nfunction render(i){idx=Math.max(0,Math.min(FRAMES.length-1,i));const f=FRAMES[idx];document.getElementById('turn').textContent='Round '+f.turn+(FRAMES.length>1?' ('+(idx+1)+' of '+FRAMES.length+')':'');document.getElementById('progressbar').style.width=((idx+1)/FRAMES.length*100)+'%';\n for(const a of Object.keys(PROFILE.actors)){const el=document.querySelector('[data-actor=\"'+a+'\"]');setXY(el,f.actor_positions[a]);const th=document.querySelector('[data-thought=\"'+a+'\"]');const rec=f.actors[a]||{};th.innerHTML='<strong>'+a+' · '+(rec.action||'wait')+'</strong>'+(rec.reasoning||'');const n=Object.keys(PROFILE.actors).indexOf(a);th.style.left=(n%2===0?'2%':'auto');th.style.right=(n%2===0?'auto':'2%');th.style.top=(18+Math.floor(n/2)*18)+'%'}\n for(const id of Object.keys(PROFILE.entities)){const el=document.querySelector('[data-entity=\"'+id+'\"]');setXY(el,itemPos(id,f));styleEntity(el,(f.items[id]||{}).state)}\n document.querySelectorAll('[data-station]').forEach(el=>el.classList.toggle('active',f.active_stations.includes(el.dataset.station)));\n document.querySelectorAll('[data-progress-actor]').forEach(el=>{const a=el.dataset.progressActor,p=f.progress[a]||{};el.querySelector('.progress-items').innerHTML=(p.plated||[]).map(progressIcon).join('');el.querySelector('.progress-needs').textContent=p.filled?'✓ complete':'still needs: '+((p.still_wants||[]).join(', ')||'nothing')});\n const labels=Object.fromEntries((PROFILE.moment_rules||[]).map(r=>[r.id,r.label||r.id]));const terminalIds=new Set((PROFILE.moment_rules||[]).filter(r=>r.terminal).map(r=>r.id));document.getElementById('moments').innerHTML=f.moments.map(m=>'<span class=\"moment '+(terminalIds.has(m)?'terminal':'')+'\">'+(labels[m]||m)+'</span>').join('');document.getElementById('action').textContent=Object.keys(PROFILE.actors).map(a=>a+': '+(f.actors[a]?.action||'wait')).join(' · ')}\nfunction schedule(){clearInterval(timer);if(playing)timer=setInterval(()=>{if(idx>=FRAMES.length-1){playing=false;document.getElementById('toggle').textContent='Play';clearInterval(timer)}else render(idx+1)},2000)}\ndocument.getElementById('toggle').onclick=()=>{playing=!playing;document.getElementById('toggle').textContent=playing?'Pause':'Play';schedule()};document.getElementById('prev').onclick=()=>{playing=false;document.getElementById('toggle').textContent='Play';schedule();render(idx-1)};document.getElementById('next').onclick=()=>{playing=false;document.getElementById('toggle').textContent='Play';schedule();render(idx+1)};document.getElementById('restart').onclick=()=>{playing=true;document.getElementById('toggle').textContent='Pause';render(0);schedule()};const q=new URLSearchParams(location.search);const start=Math.max(0,Math.min(FRAMES.length-1,(parseInt(q.get('turn')||'1',10)||1)-1));render(start);if(start>0){playing=false;document.getElementById('toggle').textContent='Play'}schedule();\n</script><style>.thought.hidden-card{display:none}.thought.one-card{left:2%!important;right:auto!important;top:20%!important;\nmax-height:60%;overflow:auto}.crowded .action{display:none}.crowded .actor{cursor:pointer}.driven .controls{display:none}\n.card-hint{position:absolute;right:2%;top:2%;z-index:20;background:#15191de8;color:#fff;border-radius:8px;padding:4px 9px;font-size:12px}\n.crowded .thought.one-card{top:17%!important;width:33%;max-height:35%;font-size:12px}.crowded .hud{left:2%;top:2%;transform:none;padding:4px 10px}\n.crowded .hud *{font-size:15px}\n.crowded .avatar{width:42px;height:42px;font-size:22px}.crowded .actor{width:18%;height:auto}.crowded .name{width:auto;max-width:100%;font-size:11px;padding:2px 6px;margin-top:3px;max-height:2.5em;overflow:hidden}\n.piled .entity{font-size:15px;width:14.5%;display:flex;gap:3px;align-items:flex-start}.piled .entity small{position:static;transform:none;white-space:normal;display:block;font-size:9px;\nline-height:1.15;max-height:3.5em;overflow:hidden}\n.piled .entity{display:none!important}.crowded .stage{aspect-ratio:4/3}.piled .thought.one-card{width:96%;top:9%!important;max-height:38%}.driven .top{display:none}\n.crowded .name{max-height:none}.did{display:block;font-size:10px;line-height:1.15;margin-top:2px;color:#1b2226}\n.st-acted .avatar{outline:4px solid #2f7fd6}.st-refused .avatar{outline:4px dashed #d9722b}.st-refused .did{color:#8a4310;font-weight:700}.st-waited .avatar{outline:3px solid #9aa0a4;opacity:.65}.st-waited .did{color:#555}\n.picked .name{background:#1f5c9e}.card-more{margin-top:6px;font-size:12px;color:#39434a}\n#ws-story{color:#e8edf0;font-size:13px;margin-top:10px}#ws-story h3{font-size:13px;margin:10px 0 4px}#ws-story .key{color:#aeb8bd;font-size:12px}\n#ws-story .row{border-left:3px solid #4d5a62;padding:3px 8px;margin:3px 0}#ws-story .row.new{border-left-color:#5aa2ee;background:#ffffff0d}#ws-story b{font-weight:600}#ws-story .now{color:#fff;font-weight:700}#ws-story .by{color:#aeb8bd;font-size:12px}\n@media(max-width:600px){.shell{padding:4px}.crowded .stage{aspect-ratio:2/3}.crowded .name{overflow-wrap:anywhere}.crowded .avatar{width:30px;height:30px;font-size:15px}.crowded .name{font-size:8px;padding:1px 2px}.did{font-size:8px}\n.card-hint{font-size:9px;max-width:40%;padding:2px 5px}.crowded .hud{padding:2px 6px}.crowded .hud *{font-size:11px}.piled .thought.one-card{top:9%!important;max-height:38%;font-size:11px}}</style>\n<script>(function(){\nconst STORY={\"rounds\": {\"1\": {\"people\": {\"ari\": {\"state\": \"acted\", \"more\": [\"Changed: Technical condition \\u2192 passing: yes.\"], \"did\": \"repair condition\"}, \"bo\": {\"state\": \"refused\", \"more\": [\"Refused. It needed, and did not have: the recorded assent changes.\"], \"did\": \"refused: withdraw assent\"}, \"mara\": {\"state\": \"acted\", \"more\": [\"Changed: Whether to activate the pump safely \\u2192 review: requested.\"], \"did\": \"request review\"}}, \"changed\": [{\"label\": \"Technical condition\", \"now\": \"passing: yes\", \"was\": \"passing: no\", \"by\": \"Ari\", \"tick\": false}, {\"label\": \"Whether to activate the pump safely\", \"now\": \"review: requested\", \"was\": \"review: idle\", \"by\": \"Mara\", \"tick\": false}], \"same\": [{\"label\": \"Unspecified report source\", \"now\": \"\"}, {\"label\": \"Validation failed. (to mara)\", \"now\": \"\"}, {\"label\": \"Delivery to mara\", \"now\": \"\"}, {\"label\": \"Prototype pump\", \"now\": \"\"}, {\"label\": \"Public validation procedure\", \"now\": \"\"}, {\"label\": \"Recorded position of ari\", \"now\": \"\"}, {\"label\": \"Recorded position of mara\", \"now\": \"\"}, {\"label\": \"Recorded position of bo\", \"now\": \"\"}, {\"label\": \"Technical authority of ari\", \"now\": \"\"}]}}};const ids=Object.keys(PROFILE.actors),crowded=ids.length>4,base=render;let pick=null;\nconst nameOf=a=>document.querySelector('[data-actor=\"'+a+'\"] .name').textContent;\nrender=function(i){base(i);const f=FRAMES[idx];tell(f);said();if(!crowded)return;\n const shown=pick||ids.find(a=>f.actors[a]&&f.actors[a].action)||ids[0];\n ids.forEach(a=>{const th=document.querySelector('[data-thought=\"'+a+'\"]');th.classList.toggle('hidden-card',a!==shown);th.classList.toggle('one-card',a===shown);\n  const t=th.querySelector('strong'),said=((STORY.rounds[f.turn]||{}).people||{})[a];if(t)t.textContent=nameOf(a)+' · '+(said?said.did:((f.actors[a]||{}).action||'wait').replace(/-/g,' '))});\n ids.forEach(a=>{document.querySelector('[data-actor=\"'+a+'\"]').classList.toggle('picked',a===shown);const th=document.querySelector('[data-thought=\"'+a+'\"]');\n  const more=((STORY.rounds[f.turn]||{}).people||{})[a];if(more&&more.more.length){const d=document.createElement('div');d.className='card-more';d.textContent=more.more.join(' ');th.append(d)}});\n spreadPeople(f);spreadThings(f);said()};\n// What each person did and what the world now looks like: this is what changes from round to round.\nfunction tell(f){const r=STORY.rounds[f.turn];if(!r)return;\n ids.forEach(a=>{const el=document.querySelector('[data-actor=\"'+a+'\"]'),p=r.people[a]||{state:'waited',did:'waited'};\n  el.classList.remove('st-acted','st-refused','st-waited');el.classList.add('st-'+p.state);\n  let d=el.querySelector('.did');if(!d){d=document.createElement('span');d.className='did';el.append(d)}d.textContent=p.did});\n let box=document.getElementById('ws-story');if(!box){box=document.createElement('div');box.id='ws-story';document.querySelector('.stage').after(box)}\n box.replaceChildren();const add=(tag,cls,text,to)=>{const e=document.createElement(tag);if(cls)e.className=cls;e.textContent=text;(to||box).append(e);return e};\n add('div','key','Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.');\n add('h3','','Changed this round ('+r.changed.length+')');\n if(!r.changed.length)add('div','row','Nothing changed.');\n r.changed.forEach(c=>{const w=add('div','row new','');add('b','',c.label+': ',w);add('span','now',c.now,w);if(c.was)add('span','',' (was '+c.was+')',w);if(c.by)add('div','by',c.by,w)});\n if(r.same.length){const o=box.querySelector('details');const det=add('details','','');add('summary','','Not changed this round ('+r.same.length+')',det);det.addEventListener('toggle',said);\n  r.same.forEach(c=>{const w=add('div','row','',det);add('b','',c.label,w);if(c.now){add('span','',': ',w);add('span','now',c.now,w)}})}}\n// People standing too close to read share rows; people in other places stay where they are.\nfunction spreadPeople(f){const row=ids.map(a=>[a,f.actor_positions[a]]).sort((x,y)=>x[1][0]-y[1][0]);let group=[];\n const flush=()=>{if(group.length>1){const cx=group.reduce((n,g)=>n+g[1][0],0)/group.length,cols=Math.min(5,group.length),rows=Math.ceil(group.length/cols),\n   left=Math.max(1,Math.min(99-cols*19,cx+4-cols*9.5));group.forEach((g,n)=>{const el=document.querySelector('[data-actor=\"'+g[0]+'\"]');\n   el.style.left=(left+(n%cols)*19)+'%';el.style.top=(100-(rows-Math.floor(n/cols))*25.5)+'%'})}group=[]};\n row.forEach(g=>{if(group.length&&(g[1][0]-group[group.length-1][1][0]>12||Math.abs(g[1][1]-group[0][1][1])>8))flush();group.push(g)});flush()}\n// Things piled in one spot become a grid beside the card; their state styling is kept.\nfunction spreadThings(f){const es=Object.keys(PROFILE.entities).map(id=>document.querySelector('[data-entity=\"'+id+'\"]')),pos=es.map(e=>[parseFloat(e.style.left),parseFloat(e.style.top)]);\n let near=0;pos.forEach((p,i)=>pos.forEach((q,j)=>{if(i<j&&Math.abs(p[0]-q[0])<9&&Math.abs(p[1]-q[1])<9)near++}));\n if(near<es.length)return;document.body.classList.add('piled');const rows=Math.ceil(es.length/4);\n es.forEach((e,n)=>{e.style.left=(37+(n%4)*15.5)+'%';e.style.top=(17+Math.floor(n/4)*Math.min(9,35/rows))+'%';const s=e.querySelector('small');if(s)e.title=s.textContent})}\nif(crowded){document.body.classList.add('crowded');const stage=document.querySelector('.stage'),hint=document.createElement('div');hint.className='card-hint';\n hint.textContent='Select a person to read what they thought';stage.append(hint);\n ids.forEach(a=>{const el=document.querySelector('[data-actor=\"'+a+'\"]');el.title='Show what '+nameOf(a)+' thought this round';\n  el.addEventListener('click',()=>{pick=a;render(idx)})})}\nwindow.addEventListener('message',e=>{if(e.source!==window.parent||!e.data||e.data.type!=='ws-round')return;playing=false;clearInterval(timer);\n document.body.classList.add('driven');let j=-1;FRAMES.forEach((f,n)=>{if(f.turn===e.data.round)j=n});if(j>=0)render(j)});\nfunction said(){try{window.parent.postMessage({type:'ws-picture-height',height:document.querySelector('.shell').offsetHeight+24},'*')}catch(e){}}\nrender(idx);said();window.addEventListener('resize',said)})();</script></body></html>",
+  "snapshot_seal": "e706af450274082fbd004375717dc98a59e3e5293b42f9908598209ef062b90e",
+  "actor_state": {
+    "resident_memory": {
+      "ari": [
+        "Round 1. What just happened: nothing new.",
+        "Round 1: you believed: The pump's validation failed, and I know channel C drifted 8 units in batch V17. The pump is currently held inactive, so I cannot regard activation as safe until the issue is addressed and validation is completed. You tried: I use my technical authority to repair the technical condition for the prototype pump.. Result: accepted."
+      ],
+      "bo": [
+        "Round 1. What just happened: nothing new.",
+        "Round 1: you believed: Validation has failed and the activation decision is on hold. The public procedure says filing a validation hold reveals the failure but not private test details; I have no evidence supporting safe activation. You tried: I record my dissent by withholding assent to activation of the prototype pump.. Result: not carried out."
+      ],
+      "mara": [
+        "Round 1. What just happened: nothing new.",
+        "Round 1: you believed: I believe validation failed, and the pump is currently held inactive. The public procedure lets me file a validation hold without revealing private test details. You tried: I request a review of whether activating the prototype pump is safe.. Result: accepted."
+      ]
+    },
+    "recent": [
+      {
+        "actor": "ari",
+        "action": "repair-condition"
+      },
+      {
+        "actor": "mara",
+        "action": "request-review"
+      }
+    ],
+    "briefs": {
+      "ari": "You are Ari (Validation engineer). Has the private validation detail; can choose whether and whom to inform. Your goals: Assess whether the pump meets validation requirements.. You value: Technical accuracy in validation.. You believe: The initial validation failed.; Sensor channel C drifted 8 units in batch V17.. You tend to: May choose whether to share information and with whom.. Right now: Has the private detail about channel C and batch V17.. You can: Can perform an explicit technical repair.; Can conduct authorized revalidation.. You remember: Validation initially failed.; In validation batch V17, sensor channel C drifted 8 units..",
+      "mara": "You are Mara (Coordinator). Can make an independent decision about assent to activation. Your goals: Decide whether to record assent to activation.. You believe: The public procedure specifies that filing a validation hold publicly reveals failed validation without revealing private test details.; A report she received states that validation failed.. You tend to: May request evidence, investigate, ignore a claim, retain support, dissent, or record assent.. Right now: Knows the public procedure.; Has received a short failure report.. You can: Can independently record or withhold assent to activation.. You remember: Knows the public procedure.; Received a short report stating that validation failed..",
+      "bo": "You are Bo (Prototype pump operator). Can make an independent decision about assent to activation. Your goals: Decide whether to record assent to activation.. You believe: The public procedure specifies that filing a validation hold publicly reveals failed validation without revealing private test details.. You tend to: May request evidence, investigate, ignore a claim, retain support, dissent, or record assent.. Right now: Knows the public procedure.. You can: Can independently record or withhold assent to activation.. You remember: Knows the public procedure.."
+    },
+    "underway": [],
+    "turn_offset": 1
+  },
+  "approval": {
+    "approval_id": "d2218b2f9e84",
+    "approved_at": "2026-11-13T06:11:16Z",
+    "approved_by": "owner",
+    "mechanic_profile_id": "49a60fa4280781d3",
+    "world_fingerprint": "25c298fd1b975cb5"
+  },
+  "cost_usd": 0.001588,
+  "daily_cost_usd": 0.22543102,
+  "execution_mode": "authored_world",
+  "trace_id": "world-builder-live/run/1dd9780384864ac2a15e9d254aba33ed"
+}

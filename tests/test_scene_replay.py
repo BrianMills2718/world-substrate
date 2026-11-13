@@ -7,11 +7,75 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import pytest
+
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "scripts"))
 spec = importlib.util.spec_from_file_location("scene_replay", REPO / "scripts/render_scene_replay.py")
 scene = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(scene)
+
+
+def projection_order_round() -> dict:
+    def change(field, before, after):
+        return {"path": f"entities.vote.components.decision.{field}", "before": before, "after": after}
+    reaction = {"event_id": "r3-e00013", "rule_id": "settle-marker", "caused_by": ["r3-e00012"],
+                "changes": [change("marker", "pending", "settled")]}
+    return {"turn": 3, "actors": {
+        "later": {"event_id": "r3-e00011", "status": "accepted", "did": {"kind": "reopen"},
+                  "changes": [change("review", "idle", "reopened")]},
+        "parent": {"event_id": "r3-e00009", "status": "accepted", "did": {"kind": "complete"},
+                   "changes": [change("review", "requested", "completed")]}},
+        "world_events": [{"event_id": "r3-e00012", "rule_id": "start-marker",
+                          "changes": [change("marker", "off", "pending")]}, reaction],
+        "reactions": [reaction, {"event_id": "r3-e00010", "rule_id": "validation-passes",
+                                 "caused_by": ["r3-e00009"], "changes": [change("review", "completed", "idle")]}]}
+
+
+class CurrentStateReplay(unittest.TestCase):
+    @pytest.mark.req("living-scene/frames-come-from-a-projection-and-a-profile", existing=True)
+    def test_saved_pump_story_matches_final_snapshot_and_rendered_story(self):
+        from scripts.run_authored_world import _picture_story, recorded_trace, render_run
+        evidence = REPO / "evidence/i0-i1/deployed-integration-5"
+        build = json.loads((evidence / "build.json").read_text())
+        traces = [json.loads((evidence / f"round-{n}.json").read_text())["trace"] for n in (1, 2)]
+        trace = recorded_trace(build["bundle"], [r for t in traces for r in t["transcript"]])
+        story = _picture_story(build["bundle"], trace)
+        for recorded in traces:
+            turn = recorded["transcript"][0]["turn"]
+            procedure = recorded["final_snapshot"]["world"]["entities"]["activate-prototype-pump"]
+            shown = next(r for r in story["rounds"][turn]["changed"] if r["label"] == procedure["label"])
+            current = procedure["components"]["validation_decision"]
+            self.assertIn(f"review: {current['review']}", shown["now"])
+            if turn == 2:
+                self.assertIn(f"validation: {current['validation']}", shown["now"])
+                self.assertIn("hold: no", shown["now"])
+                self.assertIn("by itself: validation passes", shown["by"])
+        html = render_run(build["bundle"], trace)
+        self.assertIn(json.dumps(story).replace("</", "<\\/"), html)
+
+    @pytest.mark.req("living-scene/frames-come-from-a-projection-and-a-profile", existing=True)
+    def test_story_replays_parent_reaction_later_actor_and_round_reaction_in_event_order(self):
+        from scripts.run_authored_world import _picture_story
+        bundle = {"entities": [{"id": "vote", "label": "The vote"}]}
+        story = _picture_story(bundle, {"actors": ["parent", "later"], "transcript": [projection_order_round()]})
+        changed = story["rounds"][3]["changed"][0]
+        self.assertEqual(changed["now"], "review: reopened · marker: settled")
+        self.assertEqual(changed["was"], "review: requested · marker: off")
+        self.assertEqual(changed["by"], "parent, by itself: validation passes, later, by itself: start marker, by itself: settle marker")
+
+    @pytest.mark.req("living-scene/frames-come-from-a-projection-and-a-profile", existing=True)
+    def test_story_keeps_legacy_actor_then_world_order_without_event_ids(self):
+        from scripts.run_authored_world import _picture_story
+        turn = projection_order_round()
+        turn.pop("reactions")
+        turn["world_events"] = [{"rule_id": "archive", "changes": [{
+            "path": "entities.vote.components.decision.review", "before": "completed", "after": "archived"}]}]
+        for actor in turn["actors"].values():
+            actor.pop("event_id")
+        story = _picture_story({"entities": [{"id": "vote", "label": "The vote"}]},
+                               {"actors": ["parent", "later"], "transcript": [turn]})
+        self.assertEqual(story["rounds"][3]["changed"][0]["now"], "review: archived")
 
 
 def lab_profile() -> dict:

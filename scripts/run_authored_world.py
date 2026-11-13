@@ -1663,6 +1663,32 @@ def _shown_value(field: str, value: Any) -> str | None:
     return f"{_words(field)}: {_words(value)}"
 
 
+def _recorded_moves(row: dict[str, Any]) -> list[tuple[str | None, dict[str, Any]]]:
+    """Recorded commits in event order, including same-moment reactions exactly once."""
+    # Implements: living-scene/Living Scene: Inputs
+    moves = list((row.get("actors") or {}).items()) + [
+        (None, event) for event in [*(row.get("world_events") or []), *(row.get("reactions") or [])]
+    ]
+    seen: set[str] = set()
+    unique = []
+    for actor, event in moves:
+        event_id = event.get("event_id")
+        if event_id and event_id in seen:
+            continue
+        if event_id:
+            seen.add(event_id)
+        unique.append((actor, event))
+    numbered = []
+    for index, move in enumerate(unique):
+        match = re.fullmatch(r"(?:r(\d+)-)?e(\d+)", move[1].get("event_id") or "")
+        if match:
+            numbered.append((index, (int(match[1] or row.get("turn") or 0), int(match[2])), move))
+    # Preserve the legacy actor-then-world ordering of unnumbered recordings/rows.
+    for slot, ordered in zip(numbered, sorted(numbered, key=lambda item: item[1])):
+        unique[slot[0]] = ordered[2]
+    return unique
+
+
 def _picture_story(bundle: dict[str, Any], trace: dict[str, Any]) -> dict[str, Any]:
     """Per round, what each person did and what changed, from the recorded before and after values."""
     actors = set(trace["actors"])
@@ -1684,9 +1710,7 @@ def _picture_story(bundle: dict[str, Any], trace: dict[str, Any]) -> dict[str, A
     from_start = bool(rounds) and rounds[0].get("turn") == 1
     now: dict[str, dict[str, Any]] = {}
     for row in rounds:
-        for change in [c for a in row["actors"].values() for c in a.get("changes") or []] + [
-            c for e in row.get("world_events") or [] for c in e.get("changes") or []
-        ]:
+        for change in [c for _, event in _recorded_moves(row) for c in event.get("changes") or []]:
             part = change["path"].split(".")
             if part[0] == "entities" and len(part) >= 3:
                 now.setdefault(part[1], {}).setdefault(part[-1], change.get("before"))
@@ -1701,9 +1725,9 @@ def _picture_story(bundle: dict[str, Any], trace: dict[str, Any]) -> dict[str, A
         before = {eid: dict(fields) for eid, fields in now.items()}
         who: dict[str, list[str]] = {}
         people: dict[str, dict[str, Any]] = {}
-        moves = [(a, names.get(a, a), rec.get("changes") or []) for a, rec in row["actors"].items()]
-        moves += [(None, "by itself: " + _words(e.get("rule_id", "")), e.get("changes") or []) for e in row.get("world_events") or []]
-        for actor, source, changes in moves:
+        for actor, rec in _recorded_moves(row):
+            source = names.get(actor, actor) if actor else "by itself: " + _words(rec.get("rule_id", ""))
+            changes = rec.get("changes") or []
             mine: list[str] = []
             for change in changes:
                 part = change["path"].split(".")

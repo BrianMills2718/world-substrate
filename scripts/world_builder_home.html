@@ -1108,14 +1108,29 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       (row.changes || []).forEach((c) => ent(c.path));
     });
     (turn.world_changes || []).forEach((rule) => ids.add("p:" + rule));
-    (turn.world_events || []).forEach((ev) => (ev.changes || []).forEach((c) => ent(c.path)));
+    [...(turn.world_events || []), ...(turn.reactions || [])].forEach((ev) => {
+      if (ev.rule_id) ids.add("p:" + ev.rule_id);
+      (ev.changes || []).forEach((c) => ent(c.path));
+    });
     return ids;
+  }
+  // Implements: living-scene/Living Scene: Inputs
+  function recordedEvents(turn) {
+    const seen = new Set();
+    const events = [...Object.values(turn.actors || {}), ...(turn.world_events || []), ...(turn.reactions || [])]
+      .filter((ev) => { if (!ev.event_id) return true; if (seen.has(ev.event_id)) return false; seen.add(ev.event_id); return true; });
+    // Immediate reactions interleave with actor commits, rather than happening at the end of the round.
+    // Old recordings have no ids: keep their actor-then-world order and leave unnumbered rows in place.
+    const numbered = events.map((ev, index) => ({ ev, index, id: /^(?:r(\d+)-)?e(\d+)$/.exec(ev.event_id || "") }))
+      .filter((x) => x.id);
+    const ordered = [...numbered].sort((a, b) => Number(a.id[1] || turn.turn || 0) - Number(b.id[1] || turn.turn || 0)
+      || Number(a.id[2]) - Number(b.id[2]));
+    numbered.forEach((slot, i) => { events[slot.index] = ordered[i].ev; });
+    return events;
   }
   // Keep a copy of every entity and apply each round's recorded changes, so "is in" links follow people as they move.
   function applyRound(entities, turn) {
-    const changes = [];
-    Object.values(turn.actors || {}).forEach((row) => changes.push(...(row.changes || [])));
-    (turn.world_events || []).forEach((ev) => changes.push(...(ev.changes || [])));
+    const changes = recordedEvents(turn).flatMap((ev) => ev.changes || []);
     changes.forEach((c) => {
       const m = /^entities\.([^.]+)\.(.+)$/.exec(c.path || "");
       const e = m && entities.find((x) => x.id === m[1]);
