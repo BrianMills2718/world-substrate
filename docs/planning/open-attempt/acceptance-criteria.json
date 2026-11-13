@@ -70,9 +70,10 @@
       "demonstration": [
         "Open the planned saved airfield attempt case with the words Fly the helicopter to the coast.",
         "Read the original words beside the interpreted action and its quoted evidence.",
-        "Read the world outcome separately."
+        "Read the world outcome separately.",
+        "Open the polarity/reference repair recordings linked on the review page. Compare Bo's negative attempt with unchanged assent, then Ari's exact repair wording with the distinct authority object. Inspect controls for positive assent, withdrawal, quoted negative report content, uncertainty and another owner's authority."
       ],
-      "expected": "The reading identifies the intended piloting action and quotes fly the helicopter; it never substitutes a move/walk. If the world has no such action, the limitation is explicit rather than a fabricated successful flight.",
+      "expected": "The reading identifies the intended piloting action and quotes fly the helicopter; it never substitutes a move/walk. If the world has no such action, the limitation is explicit rather than a fabricated successful flight. The complete operation preserves polarity and person/object referents. Public field examples help resolve a role without hidden fillers, overriding explicit arguments or deciding success. These retained-input checks do not complete older full-run requirements or prove general semantic accuracy.",
       "failure_example": "Broken: a legal walk is substituted for flight. Working: the correct action is identified, or unsupported interpretation is visible without pretending A2's positive pilot-binding case passed.",
       "representation": {
         "view": "composite-linked-view: original attempt, interpreted action, world result and event evidence with shared event focus",
@@ -84,7 +85,8 @@
       "evidence": [
         "docs/plans/open_attempt.md:223",
         "tests/fixtures/airfield-s1-live.json",
-        "evidence/open-attempt/s1-airfield/TRACE_READ.md:23"
+        "evidence/open-attempt/s1-airfield/TRACE_READ.md:23",
+        "evidence/open-attempt/preserve-operation-polarity/TRACE_READ.md"
       ]
     },
     {
