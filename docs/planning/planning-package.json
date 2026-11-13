@@ -206,7 +206,7 @@
         "attempt": "src/world_substrate/attempt.py:221",
         "attempt-reading": "src/world_substrate/attempt.py:92",
         "unmatched-attempt": "src/world_substrate/attempt.py:34",
-        "observation": "src/world_substrate/engine.py:278",
+        "observation": "scripts/actor_information.py:128",
         "place-way": "scripts/generate_world_bundle.py:96",
         "projection": "src/world_substrate/projection.py:44",
         "causal-parent": "src/world_substrate/rules.py:383",
@@ -220,12 +220,18 @@
         "law-check": "src/world_substrate/laws.py:36",
         "resource": "scripts/scaffold_world.py:45",
         "world-design": "scripts/generate_world_bundle.py:53",
-        "rules-review": "scripts/review_rules.py:75",
+        "rules-review": "scripts/review_rules.py:157",
         "run-stop": "scripts/run_stop.py:65",
         "consequence-report": "scripts/consequence_report.py:67",
         "judge-ruling": "scripts/judge.py:288",
         "ruling-rule": "scripts/rulings.py:91",
-        "midrun-setting": "scripts/rulings.py:47"
+        "midrun-setting": "scripts/rulings.py:47",
+        "actor-input-boundary": "scripts/actor_information.py:128",
+        "claim-provenance": "spikes/any-scenario-2026-10/compile_spec.py:712",
+        "technical-condition": "spikes/any-scenario-2026-10/compile_spec.py:621",
+        "expressed-stance": "spikes/any-scenario-2026-10/compile_spec.py:665",
+        "recorded-assent": "spikes/any-scenario-2026-10/compile_spec.py:660",
+        "validation-hold": "spikes/any-scenario-2026-10/compile_spec.py:685"
       },
       "spectrum": "docs/model/semantic-spectrum.json"
     },
@@ -292,7 +298,13 @@
         "share",
         "mechanisms",
         "test-run",
-        "scene-replay"
+        "scene-replay",
+        "actor-input-boundary",
+        "claim-provenance",
+        "technical-condition",
+        "expressed-stance",
+        "recorded-assent",
+        "validation-hold"
       ],
       "stops": {
         "searched": [
