@@ -1,0 +1,9 @@
+Fresh run authorized by Brian2026-11-13 after recommendation of one inspectable current-system run.
+Unchanged runtime source b3823f6; prior free saved-world replay28worlds,errors0,lost0 and1097tests/2skipped/229subtests retained in evidence/open-attempt/whole-attempt-coverage/. No prior checks are relabeled as a fresh semantic pass.
+Fresh HTTPgeneration+6resident rounds: exit0,51nativecalls/0tools,provider-reported $0.125753265,228960tokens,181.641821237seconds.
+Native message+output equality:18/18; fivecontinuations×snapshot/seal/actor-state/approval=20/20; exit0, input-continuation-verification.json.
+Independent reader inspectedall51calls/49structuredhistories/28engineevents; polarityinversionsat23481/23493,r1-e00002/r3-e00004 remain seriousQ36 failures.
+python scripts/check_trace_reads.py --root evidence:54runs,0problems,exit0.
+New saved fixture compiled and ran24scripted rounds,exit0. Neverofferedcommunicate because originalreport source is unspecified and information alreadyactive; this doesnotprove autonomousactor fidelity or fullactioncoverage.
+Both planning package validators exit0,compliant,10/10parts,0freshnesschanges. Existing conditional baseline/systemmap/nightlycoverage pending; no newadoption review required for evidence/status updates.
+Publication scan before share:20files,approximately7.93MB,gitleaks exit0,contact/key scans exit0,no actualprivate material. Server-assembledshareT-e9dYLdIi61contains sixunbrokenrounds and18actualactorinputrecords.
