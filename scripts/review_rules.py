@@ -104,6 +104,24 @@ def initial_actor_inputs(bundle: dict[str, Any], causal_model: dict[str, Any]) -
     return {actor: actor_context(engine, bundle, actor) for actor in bundle["actor_information"]["actors"]}
 
 
+def builtin_semantics(bundle: dict[str, Any]) -> dict[str, Any]:
+    """Give semantic review the executable operator and opted-in procedure contracts."""
+    from world_substrate.action_authoring import REPORT_RECORD_KEYS
+    semantics = {"append_report": {
+        "implementation": "src/world_substrate/action_authoring.py:report_record",
+        "record_fields": sorted(REPORT_RECORD_KEYS),
+        "effect": "Append one immutable JSON record to the recipient participant's string_list. source_id is the actual acting person, recipient_id the target; content is their verbatim action string. Event, revision and direct delivered status are recorded. Unknown claim lineage remains explicitly undeclared. The operation changes neither belief, stance, assent nor technical condition.",
+    }}
+    if any("validation_decision" in e.get("components", {}) for e in bundle.get("entities", [])):
+        semantics["independent_decision"] = {
+            "implementation": "spikes/any-scenario-2026-10/compile_spec.py:_independent_family",
+            "authority": "docs/model/modeling-choices.md:single-concern institutional procedure (Brian-approved I0/I1 contract)",
+            "initial_state": "initial_validation is an already recorded result. A failed initial result creates a public hold at initialization. Public dashboard exposure is distinct from receiving a private report; a public hold legitimately reveals failed validation under this explicit procedure. No new filing action is required to expose already recorded initial public state.",
+            "review_boundary": "Check the opted-in public procedure against the source and adopted contract. Lack of a private report does not imply lack of authorized public evidence. Private test details and hidden actual technical condition still require separate grants. Reject any source-inconsistent disclosure; the compiled declaration alone does not authorize arbitrary private facts.",
+        }
+    return semantics
+
+
 def read_findings(value: Any, ids: list[str]) -> list[dict[str, str]]:
     """The findings whose rule id is a real rule (or 'missing'); anything else in the reply is dropped."""
     rows = value.get("findings") if isinstance(value, dict) else None
@@ -162,11 +180,15 @@ def review_rules(description: str, bundle: dict[str, Any], causal_model: dict[st
             "Negative knowledge can disclose secrets: 'you have not received the failure report' reveals that "
             "a report exists; 'you were not given channel C or batch V17' reveals its private identifiers. "
             "An intended recipient does not know a pending message. A delivered report is exposure to a claim, "
+            "not proof of its origin. For an initial report, actual transmitter attribution requires an explicitly "
+            "named sender in the source; an unspecified sender must stay unspecified even if one seems plausible. "
+            "Apparent source and common claim lineage are distinct from actual transmitter identity. Exposure is "
             "not endorsement or knowledge that the claim is true. Check labels, identities, action forms, "
             "briefs and initial knowledge as well as field values. An authorized judgment needs a short "
             "explanation grounded in the source; reject invented disclosures even when put in a limitation. "
             "Never repair or suppress the inputs silently. Mechanical findings remain separate.\n" +
             json.dumps({"public_summary": bundle["actor_information"]["public_summary"],
+                        "builtin_semantics": builtin_semantics(bundle),
                         "initial_actor_inputs": initial_actor_inputs(bundle, causal_model)}, indent=1))})
     value, result = call_llm_json_schema(
         model, messages, review_schema(ids, actor_ids), schema_name="world_substrate_rules_review", task=TASK,

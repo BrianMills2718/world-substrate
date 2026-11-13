@@ -1,0 +1,11 @@
+{
+  "status": "failed",
+  "revision": "f4b7afab183691df0e364a624a275876bcddb9ba",
+  "started_utc": "2026-11-13T04:38:40.687996+00:00",
+  "error": "RuntimeError: /generate-world HTTP 403: same-origin browser request required",
+  "trace_roots": [],
+  "llm_calls": 0,
+  "tool_calls": 0,
+  "elapsed_s": 8.579833675998088,
+  "exit_status": 1
+}

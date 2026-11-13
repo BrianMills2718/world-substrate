@@ -152,3 +152,24 @@ def test_generated_rules_cannot_overwrite_compiled_report_exposure_log():
     merged, drops = merge_causal(compiled, generated)
     assert merged["mechanics"] == []
     assert any("compiled components" in row for row in drops)
+
+
+def test_reviewer_receives_executable_report_and_public_procedure_semantics():
+    from scripts.review_rules import builtin_semantics
+    from world_substrate.action_authoring import REPORT_RECORD_KEYS
+    bundle, _ = _world()
+    contracts = builtin_semantics(bundle)
+    assert contracts["append_report"]["record_fields"] == sorted(REPORT_RECORD_KEYS)
+    assert "actual acting person" in contracts["append_report"]["effect"]
+    assert "public hold at initialization" in contracts["independent_decision"]["initial_state"]
+    assert "compiled declaration alone does not authorize" in contracts["independent_decision"]["review_boundary"]
+
+
+def test_builtin_semantics_do_not_override_a_rejected_privacy_verdict():
+    from scripts.review_rules import builtin_semantics
+    bundle, _ = _world()
+    value = _approved()
+    value["actor_input_review"]["actors"][1]["authorized"] = False
+    value["builtin_semantics"] = builtin_semantics(bundle)
+    with pytest.raises(ActorInputPrivacyError):
+        require_actor_input_review(value, ["ari", "bo"])

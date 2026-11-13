@@ -1,0 +1,8 @@
+{
+  "ok": true,
+  "service": "world-builder",
+  "build_commit": "f4b7afab183691df0e364a624a275876bcddb9ba",
+  "owner": false,
+  "llm_daily_budget_usd": 3.0,
+  "llm_daily_committed_usd": 0.0
+}
