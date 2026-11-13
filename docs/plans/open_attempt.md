@@ -313,7 +313,7 @@ comes from its trace against A1-A9, and an incomplete review leaves the claim un
 
 | Slice | What lands | State | Checks |
 | --- | --- | --- | --- |
-| S1 | Close Q23 (rules writer makes places, ways and the wall check), then open attempt: resident `attempt` field, interpreter, unmatched fallback, build-record list | built, not done: merged `fe8c492` (#239); page fix `87b4aa2` (#242); live run `evidence/open-attempt/s1-airfield/` (#247): A4 and A9 pass, A2 and A3 not exercised; the run page does not yet show own-words attempts (Q26) | A1, A8 at merge; free replay `evidence/open-attempt/s1-replay/replay.txt` exit 0; A4, A9 on the owner-allowance run; still owed: A2 and A3 on the saved world `tests/fixtures/airfield-s1-live.json`, and Q26 |
+| S1 | Close Q23 (rules writer makes places, ways and the wall check), then open attempt: resident `attempt` field, interpreter, unmatched fallback, build-record list | built, not done: merged `fe8c492` (#239); page fix `87b4aa2` (#242); live run `evidence/open-attempt/s1-airfield/` (#247): A4 and A9 pass, A2 and A3 not exercised; the run-page inspector now shows original words, interpretation and recorded result (Q26 closed 2026-11-13) | A1, A8 at merge; free replay `evidence/open-attempt/s1-replay/replay.txt` exit 0; A4, A9 on the owner-allowance run; still owed: A2 and A3 on the saved world `tests/fixtures/airfield-s1-live.json`, Q26 display gap closed |
 | S2 | `timing: immediately` processes run to a fixpoint inside one moment | built, not done: engine `_settle` (Decision 009), rules writer `timing`, transcript `reactions`, round picture and state panel show each knock-on effect with its cause; Q28 resolved (no reuse of the library damage processes, `evidence/open-attempt/q28/README.md`); deployed `623bce2`; the S2 owner run (`evidence/open-attempt/s2-airfield/`) did not exercise A5 on a generated world: the rules writer wrote no `timing: immediately` process for the airfield, nothing pushed the glass, and the builder kept a circling world (#253) whose fly and teach moves change nothing (#254); still owed: a generated world with something that can be knocked over | A6 and the A5 fixture chain in `tests/test_open_attempt.py::KnockOnEffectTests`; A8 at merge; model drift test `tests/test_system_model.py::test_knock_on_effects` |
 | S3 | `roll` on action mechanics, seeded and recorded; rules writer prompt can declare it; the compiler adds the roll's skill path to derived reads and every outcome's effects to derived writes (Q40) | fully_specifiable_now | A7, A8, a test that a roll outside its derived scope is refused, then the full canonical run for A9 |
 | S4 | AI game master for unmatched attempts | deliberately_deferred (D2 answered "not yet" by Brian 2026-10-26) | none; reopened only by a new decision |
@@ -337,7 +337,7 @@ build was accepted anyway (#244, Q30). Two smaller defects were filed: a refusal
 dispatcher") rather than a requirement (#245, Q31), and the readout chose the goods-flow lens for a training world (#246, Q32).
 S1 is therefore built but not done. Next: A2 as a fixture run of "fly the helicopter to the coast" and A3 as an
 interpreted attempt at the wall, both on the saved world `tests/fixtures/airfield-s1-live.json` (free, no new build),
-then Q26 (the run page shows each attempt in its owner's words).
+Q26 is closed by the saved-run inspector verification; the A2/A3 demonstrations remain outstanding.
 
 Each slice is its own pull request and leaves a working World Builder. S1 alone already lets a
 resident walk into the wall. The rules writer (`scripts/generate_causal_model.py`, its process and mechanic schemas) learns `timing` in S2 and
@@ -381,9 +381,9 @@ resident walk into the wall. The rules writer (`scripts/generate_causal_model.py
   RULE-FROZEN-PROFILE and RULE-DERIVED-AUTHORITY are relied on unchanged.
 - Views: [docs/model/VIEW_COVERAGE.md](../model/VIEW_COVERAGE.md) records which view shows each element; each slice adds its rows there. Per element:
   - `attempt interpretation` (`AttemptReading`): `owner_run_log` shows it (`GET /runs?full=1` keeps the
-    transcript, `scripts/world_builder_service.py:1011`); `home` does not yet, gap G17, now open question Q26 (S1 is not done until it closes).
+    transcript, `scripts/world_builder_service.py:1011`); `home` now shows original words, grounded fields and separate recorded changes in the Analyst attempt inspector (G17/Q26 closed 2026-11-13).
   - `unmatched_attempts`: `owner_run_log` shows it in the run summary (`GET /runs` keeps `summary`,
-    written at `scripts/run_authored_world.py:800`); `home` does not yet, gap G17.
+    written at `scripts/run_authored_world.py:800`); `home` shows each unmatched row with its nearest move/reason in the Analyst attempt inspector; this does not establish the full A4 list/hash demonstration.
   - `timing` and the reaction wave (S2): `round_replay` and `scenario_state_panel` must show each
     reaction event with its parent; S2 adds the row.
   - `roll` (S3): `scenario_state_panel` must show each roll's seed and dice; S3 adds the row.
@@ -459,7 +459,7 @@ The material uncertainties, listed in full as of 2026-10-26: each below could ch
 
 - Q23 (agent, resolved 2026-10-25): the rules writer now gives `move` a way-open check (`evidence/open-attempt/q23/README.md`).
 - Q25 (agent, resolved by argument 2026-10-26): ways are two-way unless the description declares them one-way; the build is F6 below. Until it lands, each run's `TRACE_READ.md` names any resident stuck behind a way it already used, so it is not read as a refusal by the world.
-- Q26 (agent, open): the run page does not show an attempt in its owner's words or that it matched nothing (G17); S1 is not done until it does.
+- Q26 (agent, resolved 2026-11-13): the existing Analyst inspector shows Original words, Interpretation and Result together, including grounded fields/quotes and recorded changes. Saved S1 accepted/refused/unmatched rows and the six-round pump recording are checked without new model calls (`evidence/open-attempt/attempt-inspector-ui/checks.json`). S1 still owes A2/A3; Q26 closure does not complete A1–A4 demonstrations.
 - Q27 (resolved by Brian 2026-10-26, "i approve"; Decision 009): S2's same-moment fixpoint in `engine.py` is rule semantics, not the engine capability AGENTS.md and Decision 006 forbid, within its bounds (inside the existing commit, 32-reaction cap (amended 2026-11-10 by J0 of [the AI judge plan](ai_judge.md) and Decision 009: no cap for new runs, once per pair of process and thing per moment still ends every chain, and runs saved before J0 replay under 32), `timing: immediately` only).
 - Q28 (agent, resolved 2026-10-26): S2's glass chain does not reuse the hand-written spill and damage processes (`src/world_substrate/mechanisms/damage.py:116`): they read built-in entity slots a generated world never has and cannot run immediately, so the rules writer writes its own (`evidence/open-attempt/q28/README.md`, reading plus one free probe).
 - Q30 (#244, agent, open): a build is accepted although its own test runs say a task is never possible; blocks A2 and A3 on a newly built world, not on the saved fixture.

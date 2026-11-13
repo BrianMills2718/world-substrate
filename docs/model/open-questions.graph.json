@@ -37,12 +37,6 @@
    "explain": "Blocks: when the harness replaces the fixed build calls and the rules retry (Q1) on the live path."
   },
   {
-   "id": "Q26",
-   "label": "Q26: Run page hides own-words attempts",
-   "kind": "AgentQuestion",
-   "explain": "Blocks: the plan's inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done."
-  },
-  {
    "id": "Q30",
    "label": "Q30: Build accepted with a task never possible",
    "kind": "AgentQuestion",
@@ -619,24 +613,6 @@
    "id": "Q14-rules-retry",
    "source": "Q14",
    "target": "rules-retry",
-   "label": "bears on"
-  },
-  {
-   "id": "Q26-attempt",
-   "source": "Q26",
-   "target": "attempt",
-   "label": "bears on"
-  },
-  {
-   "id": "Q26-unmatched-attempt",
-   "source": "Q26",
-   "target": "unmatched-attempt",
-   "label": "bears on"
-  },
-  {
-   "id": "Q26-run-loop",
-   "source": "Q26",
-   "target": "run-loop",
    "label": "bears on"
   },
   {

@@ -1,0 +1,15 @@
+Original words
+I try to perform a technical repair on the prototype pump’s technical condition.
+Interpretation
+repair condition
+authority: Ari (ari) — from “I”
+condition: Technical condition (condition-pump-activation) — from “technical condition”
+Reading: The words “perform a technical repair” describe repairing the prototype pump’s technical condition.
+Coverage: complete.
+Result
+Recorded status: precondition failed.
+Round 1: Ari tried to repair condition. Refused, because this check was false: the authority named is the right kind of thing for this move; the actor owns this authority; the actor is an authorized repairer Decided by rule, judge not asked. They believed: I believe the pump failed validation because sensor channel C drifted 8 units in batch V17. It is currently held inactive, and the public procedure allows a validation hold to reveal the failure without exposing private test details. They expected: I expect repairing the pump’s technical condition to address the failure so I can revalidate it before anyone considers activation.
+
+No recorded state changes.
+
+Recorded event: r1-e00001

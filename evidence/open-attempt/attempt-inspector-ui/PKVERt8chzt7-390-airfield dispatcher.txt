@@ -1,0 +1,15 @@
+Original words
+I use the training requests to request one training session.
+Interpretation
+request training
+queue: Training requests (training-requests) — from “training requests”
+Reading: The words “request one training session” describe adding a flight-training request.
+Result
+Recorded status: accepted.
+Round 1: Airfield dispatcher — request training. Allowed: every check held. Decided by rule, judge not asked. They believed: I am the dispatcher in the office beside the hangar. One training session is already waiting, and Sam has not yet completed any flights. They expected: Requesting training will add another session to the waiting queue.
+
+Recorded state changes:
+
+Training requests · components · training queue · waiting sessions: 1 → 2
+
+Recorded event: r1-e00001

@@ -191,13 +191,12 @@ a{color:var(--have)}
 <tr><td>project make check</td><td>passed 938, skipped 2, subtests passed 225, specs passed 13</td><td><span class="tag have">exit 0</span></td></tr>
 <tr><td>Lockstep requirement/scenario trace links</td><td>findings 329, missing requirement annotations 128, missing scenario markers 201, unknown ids 0 (tracked as Q77)</td><td><span class="tag miss">exit 1</span></td></tr>
 </tbody></table></div>
-<h3 class="sub">Open questions: 43 open, 53 resolved</h3>
+<h3 class="sub">Open questions: 42 open, 54 resolved</h3>
 <p class="lede">Each open question and the decision it blocks (<a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/planning/open-questions.json">open-questions.json</a>). "Agent" means checking or reading can settle it; "Brian" means it is a product call.</p>
 <div class="tablewrap"><table class="qs"><thead><tr><th>Question</th><th>Whose call</th><th>Blocks</th></tr></thead><tbody>
 <tr><td><b>Q1</b> Rules retry never runs here</td><td>agent</td><td>whether a world whose rules fail the part-way or liveness checks can be repaired on the live path, or only scored lower</td></tr>
 <tr><td><b>Q3</b> Agenda item has no content</td><td>agent</td><td>whether the group-decision family&#x27;s agenda needs content or should be dropped</td></tr>
 <tr><td><b>Q14</b> Harness build time not measured</td><td>agent</td><td>when the harness replaces the fixed build calls and the rules retry (Q1) on the live path</td></tr>
-<tr><td><b>Q26</b> Run page hides own-words attempts</td><td>agent</td><td>the plan&#x27;s inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done</td></tr>
 <tr><td><b>Q30</b> Build accepted with a task never possible</td><td>agent</td><td>A2 and A3 on any newly built world (they need the helicopter and the wall reachable), and whether a visitor&#x27;s world can do what they described; A2 and A3 on the saved fixture tests/fixtures/airfield-s1-live.json do not wait for it</td></tr>
 <tr><td><b>Q31</b> Refusal reason reads as a fact</td><td>agent</td><td>whether a person, and a reader of the run, can tell why a move was refused</td></tr>
 <tr><td><b>Q32</b> Readout picks the wrong lens</td><td>agent</td><td>whether a run&#x27;s readout describes the world the visitor wrote</td></tr>
@@ -247,7 +246,7 @@ a{color:var(--have)}
 <p class="lede">The domain map: every idea this plan touches, coloured by kind (Substrate code (every world) · Fixed people-world part · Written per world by an AI · Reference worlds code only · In documents only), so you can see what every world gets as substrate code and what each world writes for itself. 86 ideas, 155 links. Drag to move, scroll to zoom, click an idea to read it. Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/domain.graph.json">domain.graph.json</a>, explained in <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/DOMAIN.md">DOMAIN.md</a>.</p>
 <div class="graph" id="map-domain"></div>
 <p class="mapinfo" id="map-domain-info">Click an idea to see what it is and where it lives in the code.</p>
-<p class="lede">The open-questions map: each open question beside the ideas it touches (43 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
+<p class="lede">The open-questions map: each open question beside the ideas it touches (42 questions drawn). Source: <a href="https://github.com/BrianMills2718/world-substrate/blob/main/docs/model/open-questions.graph.json">open-questions.graph.json</a>.</p>
 <div class="graph" id="map-questions"></div>
 <p class="mapinfo" id="map-questions-info">Click a question to read it.</p>
 <!-- maps:end -->

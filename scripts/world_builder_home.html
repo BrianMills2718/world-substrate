@@ -71,6 +71,10 @@ button.linkish{background:none;border:0;padding:0;color:var(--accent);text-decor
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);align-items:center}
 .legend .tick{cursor:default;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:4px}
 .detail{min-height:24px;font-size:14px;margin:6px 0 12px}
+.attempt-detail{margin:10px 0;color:var(--text);overflow-wrap:anywhere}
+.attempt-detail dt{font-weight:700;margin-top:10px}
+.attempt-detail dd{margin:2px 0 0;white-space:pre-wrap}
+.attempt-detail ul{margin:6px 0;padding-left:20px}
 .judge{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 12px;font-size:14px;overflow-wrap:anywhere}
 .judge h3{font-size:15px;margin:10px 0 4px}.judge h3:first-child{margin-top:0}
 .judge ul{margin:2px 0 6px;padding-left:18px}.judge li{margin:2px 0}
@@ -294,7 +298,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <details class="picture" id="attempts"><summary title="Every person in the last 10 rounds as squares: allowed, refused, held back by the rules (not allowed to try), or waited. Select one to see why.">Why things were refused</summary>
     <div class="legend"><span><span class="tick accepted"></span>allowed</span><span><span class="tick refused"></span>refused by the rules (or lost to someone faster)</span><span><span class="tick held"></span>held back by the rules (not allowed to try)</span><span><span class="tick waited"></span>waited (nothing it could do)</span></div>
     <div class="strip" id="strip" aria-label="Every attempt in the last 10 rounds, in order. Select one to see why."></div>
-    <p class="detail" id="detail"></p>
+    <div class="detail" id="detail" aria-live="polite"></div>
     <div class="judge" id="judge-panel" hidden aria-label="The judge's ruling on this attempt"></div>
     </details>
 
@@ -699,6 +703,62 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   $("surprise-btn").addEventListener("click", () => surprise());
   $("cancel-btn").addEventListener("click", () => { buildGen++; clearInterval(timer); show("describe"); });
 
+  function attemptDetail(row, summary) {
+    const detail = document.createElement("dl"); detail.className = "attempt-detail";
+    const entry = (label, text) => {
+      const dt = document.createElement("dt"), dd = document.createElement("dd");
+      dt.textContent = label; dd.textContent = text; detail.append(dt, dd); return dd;
+    };
+    const attempt = row.attempt || {}, reading = attempt.reading;
+    entry("Original words", typeof attempt.text === "string" ? attempt.text
+      : row.wanted && row.wanted.kind === "unmatched-attempt" && typeof row.wanted.attempt === "string" ? row.wanted.attempt
+      : "Not recorded for this attempt.");
+    const move = reading || row.wanted;
+    let interpretation = reading ? (reading.kind ? words(reading.kind) : "No installed move matched.")
+      : move ? `Recorded move: ${words(move.kind)}. The original interpretation was not recorded.`
+      : "No interpretation recorded.";
+    const fields = reading ? reading.fields || {} : Object.fromEntries(Object.entries(move || {}).filter(([key]) => !["kind", "actor", "base_revision", "controller", "attempt"].includes(key)));
+    Object.entries(fields).forEach(([key, value]) => {
+      const entity = world && world.bundle.entities.find((item) => item.id === value);
+      const valueLabel = entity ? `${entity.label} (${value})` : JSON.stringify(value);
+      interpretation += `\n${words(key)}: ${valueLabel}`;
+      if (reading && reading.quoted_spans && reading.quoted_spans[key]) interpretation += ` — from “${reading.quoted_spans[key]}”`;
+    });
+    if (reading && reading.nearest_kind && !reading.kind) interpretation += `\nNearest move considered: ${words(reading.nearest_kind)} (not selected).`;
+    if (reading && reading.why) interpretation += `\nReading: ${reading.why}`;
+    if (reading && reading.coverage) {
+      interpretation += `\nCoverage: ${words(reading.coverage.status || "not recorded")}.`;
+      if ((reading.coverage.unrepresented_spans || []).length) interpretation += ` Unrepresented words: ${reading.coverage.unrepresented_spans.join("; ")}`;
+    }
+    if (row.interpretation_feedback) interpretation += `\nNot submitted as a move: ${row.interpretation_feedback}`;
+    entry("Interpretation", interpretation);
+    const result = entry("Result", `Recorded status: ${words(row.status || "not recorded")}.\n${summary}`);
+    const settled = ((row.judge || {}).disposition || {}).settled;
+    const appendChanges = (target, record) => {
+      const changes = record.changes;
+      const changesText = document.createElement("p");
+      changesText.textContent = Array.isArray(changes) ? changes.length ? "Recorded state changes:" : "No recorded state changes." : "State changes were not recorded for this attempt.";
+      target.append(changesText);
+      if (Array.isArray(changes) && changes.length) {
+        const list = document.createElement("ul");
+        changes.forEach((change) => {
+          const li = document.createElement("li"), path = String(change.path || ""), parts = path.split(".");
+          const name = parts[0] === "entities" && parts.length > 2 ? `${labelFor(parts[1])} · ${parts.slice(2).map(words).join(" · ")}` : path;
+          li.textContent = `${name}: ${JSON.stringify(change.before)} → ${JSON.stringify(change.after)}`; list.append(li);
+        });
+        target.append(list);
+      }
+      if (record.event_id) { const event = document.createElement("p"); event.textContent = `Recorded event: ${record.event_id}`; target.append(event); }
+    };
+    appendChanges(result, row);
+    if (settled) {
+      const settlement = entry("Installed-rule settlement", `Recorded status: ${words(settled.status || "not recorded")}. These consequences belong to the installed rule, separately from the original attempt above.`);
+      if ((settled.refused_because || []).length) { const refusal = document.createElement("p"); refusal.textContent = "Failed checks: " + settled.refused_because.map(plainCheck).join("; "); settlement.append(refusal); }
+      appendChanges(settlement, settled);
+    }
+    return detail;
+  }
+
   function attemptButton(a) {
     const t = document.createElement("button"); t.type = "button";
     let text;
@@ -734,7 +794,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     }
     t.setAttribute("aria-label", text); t.title = text;
     t.addEventListener("click", () => {
-      $("detail").textContent = text;
+      $("detail").replaceChildren(a.row ? attemptDetail(a.row, text) : document.createTextNode(text));
       const panel = $("judge-panel"); panel.innerHTML = "";
       panel.hidden = !(a.row && a.row.judge);
       if (!panel.hidden) panel.append(...judgePanel(a.row));

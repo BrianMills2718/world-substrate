@@ -1,0 +1,13 @@
+Original words
+I speak to Sam in the office and invite him to join me for flight training.
+Interpretation
+No installed move matched.
+Nearest move considered: request training (not selected).
+Reading: The words “speak to Sam in the office and invite him” describe a conversation, not adding a training request to the airfield’s waiting requests.
+Result
+Recorded status: unsupported action.
+Round 1: Flight instructor tried: “I speak to Sam in the office and invite him to join me for flight training.” The system could not match these words to a move, so the rules never judged it. They believed: I am the instructor in the office, with Sam here and one waiting training session. The brick wall separates this office from the hangar, so I cannot simply walk through it. They expected: I expect to begin addressing the waiting session by inviting Sam to train with me.
+
+No recorded state changes.
+
+Recorded event: r1-e00002

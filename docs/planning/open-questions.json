@@ -493,17 +493,19 @@
    "short": "Run page hides own-words attempts",
    "question": "The run page's round text reads row.belief and row.expects (scripts/world_builder_home.html:651) and never summary.unmatched_attempts; since #333 it shows an attempt the system could not read in the person's own words (scripts/world_builder_home.html:646, and the picture's card at scripts/run_authored_world.py:1242), but an allowed or refused move still shows only the move, not the words behind it (view gap G17). The plan's inspectable result is that the run page shows each person's own-words attempt. How should the page show them?",
    "blocks": "the plan's inspectable result (docs/plans/open_attempt.md, Actor and result) and S1 being done",
-   "resolves_with": "Audit 2026-11-12: Design settled: show original attempt, interpretation and outcome together. Implementation closes on visible ordinary/refused/unmatched attempts in the saved S1 airfield page; no new simulation needed.",
+   "resolves_with": "Closed 2026-11-13: the existing Analyst inspector shows Original words, Interpretation and Result together, including grounded fields/quotes and exact recorded changes. Browser checks cover saved S1 accepted r1-e00001, unmatched r1-e00002 and refused r1-e00004 plus the pump consent inversion, at desktop and phone widths; evidence/open-attempt/attempt-inspector-ui/checks.json. Actor context hides the inspector. Historical absent fields say not recorded. No new simulation or model call; full A1–A4 demonstrations remain separately outstanding.",
+   "evidence": "evidence/open-attempt/attempt-inspector-ui/checks.json; saved S1 accepted/refused/unmatched rows and the pump recording, no new model calls.",
    "classification": "implementation_gap",
    "dependencies": [],
    "revisit_trigger": "When the run-page attempt presentation is changed; inspect saved ordinary, refused and unmatched rows.",
    "owner": "agent",
-   "status": "open",
+   "status": "resolved",
    "sources": [
     "docs/model/VIEW_COVERAGE.md:191",
     "scripts/world_builder_home.html:651",
     "docs/plans/open_attempt.md:65",
-    "evidence/open-attempt/s1-airfield/TRACE_READ.md"
+    "evidence/open-attempt/s1-airfield/TRACE_READ.md",
+    "evidence/open-attempt/attempt-inspector-ui/checks.json"
    ],
    "touches": [
     "attempt",

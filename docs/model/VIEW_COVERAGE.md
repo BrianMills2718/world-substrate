@@ -48,7 +48,7 @@ Deployed pages come from `deploy/cloudflare/world-builder/build.sh` (home, `play
 | ScenarioModel (`model.json`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | missing (G13) | n/a |
 | CheckReport (`checks.json`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | missing (G13) | n/a |
 | Attempt (`attempts.jsonl`) | n/a | n/a | n/a | n/a | n/a | n/a | n/a | shown (G16 fixed) | n/a |
-| Attempt reading (`AttemptReading`) | missing (G17) | n/a | n/a | n/a | n/a | n/a | shown | n/a | n/a |
+| Attempt reading (`AttemptReading`) | shown (G17 fixed) | n/a | n/a | n/a | n/a | n/a | shown | n/a | n/a |
 | event `reaction_limit` | partial | partial | partial | partial | partial | partial | partial | shown | shown |
 | event `law_breach` | partial | partial | partial | partial | partial | partial | partial | shown | shown |
 | knock-on reaction (`Reaction`) | shown | shown | missing | shown | missing | missing | shown | missing | shown |
@@ -198,6 +198,8 @@ Each gap names what the model says, what the view does instead, the evidence, an
 - **Model:** with open attempts each run row keeps `attempt {text, reading}` and the run summary lists `unmatched_attempts` (`scripts/run_authored_world.py`, ODD 11.3).
 - **View:** the run page's round text reads `row.belief` and `row.expects` (`scripts/world_builder_home.html:627-629`) and never `row.attempt` or `summary.unmatched_attempts`, so a visitor sees the move but not the words behind it, and an attempt that changed nothing shows only as waiting.
 - **Reproduced: from the page source and the S1 live run's rows.** The live run with residents (`evidence/open-attempt/s1-airfield/`, 2026-10-26) keeps `attempt {text, reading}` on every row and 15 refused or unmatched attempts, and the round text above reads neither the attempt words nor the unmatched list (`grep -n "row.attempt\|unmatched_attempts" scripts/world_builder_home.html` finds no hit). The owner run log keeps both (`transcript`, `summary`). Open question Q26; S1 is not done until it closes.
+
+- **Fixed 2026-11-13.** The existing Analyst attempt inspector now shows Original words, Interpretation (fields, quoted bindings, nearest unmatched move/reason and retained coverage) and Result (recorded status, checks and exact state changes) together. Actor context hides this inspector. Historical missing fields say not recorded. Browser checks cover saved S1 accepted/refused/unmatched/wait rows and Bo’s preserved consent inversion, at desktop and phone widths: `evidence/open-attempt/attempt-inspector-ui/checks.json`. Q26 is closed; full A1–A4 demonstrations retain their separate outstanding requirements.
 
 ## Not verified
 

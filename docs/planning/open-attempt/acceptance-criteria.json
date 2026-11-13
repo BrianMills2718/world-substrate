@@ -55,7 +55,7 @@
       },
       "entrypoint": "planned",
       "status": "not built",
-      "status_note": "Schema separation is implemented and recorded as passing at S1; this exact end-user contract/attempt demonstration is planned.",
+      "status_note": "Schema separation is implemented and recorded as passing at S1; this exact end-user contract/attempt demonstration is planned. The generic Analyst attempt inspector is delivered and Q26 is closed; the exact wall demonstration and linked interpreter contract remain outstanding.",
       "evidence": [
         "tests/test_open_attempt.py:56",
         "docs/plans/open_attempt.md:222"
@@ -135,7 +135,7 @@
       },
       "entrypoint": "planned",
       "status": "not built",
-      "status_note": "Retained S1 trace reports A4 passing for the no-rule fallback. Q26 still tracks the full own-words/list display, so the complete demonstration is not marked built or judged pass. The bounded coverage correction has native interpreter and model-free engine evidence plus a retained renderer recording; this does not complete the older full A4 inspector criterion or claim a fresh autonomous resident run.",
+      "status_note": "Retained S1 trace establishes the no-rule fallback. Q26 is closed: saved ordinary/refused/unmatched rows visibly show original words, reading and result in the main Analyst inspector (evidence/open-attempt/attempt-inspector-ui/checks.json). The full A4 unmatched-list entry, before/after hash demonstration and later-ruling distinctions retain their separate acceptance requirements. Coverage and polarity corrections have retained native/engine evidence, not a fresh autonomous resident run.",
       "evidence": [
         "docs/plans/open_attempt.md:225",
         "evidence/open-attempt/s1-airfield/TRACE_READ.md:18",
