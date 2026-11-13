@@ -1,0 +1,26 @@
+{
+  "result": "PASS",
+  "scenarios": 12,
+  "assertions": 40,
+  "viewport_sizes": [
+    [
+      1440,
+      1000
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "browser": "Playwright Chromium1254 headless",
+  "scope": "local recorded-input replay; no fresh resident decision; no paid calls; main-page share API fixture uses retained native engine trace with original authored bundle",
+  "console_errors": 0,
+  "failed_requests": 0,
+  "page_errors": 0,
+  "horizontal_overflow_scenarios": 0,
+  "limitation": "Preexisting mobile scene actor/card clipping persists, essential clarification and stance change below stage are readable. Main page srcdoc is populated and readable through frame DOM; full-page captures show blank iframe raster, so standalone screenshot is the direct picture evidence.",
+  "receipt_files": [
+    "receipt.json",
+    "scene-receipt.json"
+  ]
+}

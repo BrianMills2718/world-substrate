@@ -7,3 +7,7 @@ python tools/planning/build.py
 five page builders completed; nodes86 edges155 questions96 open43; exit0 after repairing legacy scaffold assumption.
 Native replay: three calls, 7658tokens, provider reported $0.00097666, tools0 retries0; exit0.
 Model-free engine branches: Mara stance concerned only; compound no changes, judge_calls0; both replay hashes/event lists match,2steps; exit0.
+Independent code review: first found provider/schema LLMError bypass; corrected and reproduced zero judge calls/no request delivery/safe clarification. Final bounded pass.
+Planning reviewer: pass at a6efda72357b5f983404728583b5753700da437a, after A4 and attempt-reading alignment. Both package validators compliant, exit0, freshness0changed.
+Browser:12scenarios40assertions,exit0; console/page/HTTP/network0errors, overflow0. Existing mobile scene clipping retained; essential text readable.
+Full preliminary gate:16failed1081passed2skipped229subtests (fresh judge mocks lacked required coverage); updated only mocks,31judgechecks passed,exit0. Final exact-candidate ship gate follows.

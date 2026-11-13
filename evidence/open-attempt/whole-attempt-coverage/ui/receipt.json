@@ -1,0 +1,225 @@
+{
+  "scope": "Local recorded-input replay; native interpreter output and engine trace, resident choices recorded, no fresh resident policy and no paid calls. Main-page share fixture retains original authored bundle.",
+  "cases": [
+    {
+      "case": "compound",
+      "kind": "homepage",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "frames": [
+        {
+          "url": "http://127.0.0.1:40871/scripts/world_builder_home.html?run=recorded-input-compound",
+          "text": "World Builder\nSimulate any small world\n\nSay who is involved and what they are trying to do. AI writes the rules and the simulation starts.\n\nA shared run, replayed\n\u23f8 Pause\n\nReplaying the recorded rounds; nothing is being decided now.\n\nContext view\nAnalyst: whole run\nActor: authorized inputs\nPerson\nExact inputs and provenance\n\nRound 2 \u00b7 so far: 0 allowed \u00b7 1 refused\n\nPicture\nNetwork\nchooses moves\nplace\nthing\nmove the rules allow\nchanges by itself\n\nShowing 3 of 27 boxes: who acted in round 2 and what that used or changed. Select a box to see its state now.\n\nShow the whole world (27 boxes)\nChooses moves\nAri\nChooses moves\nMara\nChooses moves\nBo\n\nRound 2: Nobody could do anything.\nWhy things were refused\nallowed\nrefused by the rules (or lost to someone faster)\nheld back by the rules (not allowed to try)\nwaited (nothing it could do)\n\nSelect a square to see why.\n\nEdit and run again\nSee how it works\nMore\nMore\nEvery person in the last 10 rounds as squares: allowed, refused, held back by the rules"
+        },
+        {
+          "url": "about:srcdoc",
+          "text": "\ud83d\udc64\nAri\nneeds clarification\nARI \u00b7 UNMATCHED-ATTEMPT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nwaited\nMARA \u00b7 WAIT\nRecorded-input replay.\nRound 2\nari: unmatched-attempt \u00b7 bo: wait \u00b7 mara: wait\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nAri: No part of this attempt was carried out. Choose one concrete operation and try again.\nChanged this round (0)\nNothing changed."
+        }
+      ],
+      "srcdoc_length": 19960,
+      "attempt_count": 3,
+      "attempt_labels": [
+        "Round 2: Ari tried: \u201cI repair the technical condition for the prototype pump using my technical authority and send Mara a report saying the repair is complete.\u201d No part of this attempt was carried out. Choose one concrete operation and try again. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+        "Round 2: Bo chose to wait. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+        "Round 2: Mara chose to wait. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics."
+      ],
+      "keyboard_detail_visible": true,
+      "detail": "Round 2: Ari tried: \u201cI repair the technical condition for the prototype pump using my technical authority and send Mara a report saying the repair is complete.\u201d No part of this attempt was carried out. Choose one concrete operation and try again. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+      "judge_panel_hidden": true,
+      "message_present": true,
+      "misleading_missing_rule_claim": false,
+      "body_text": "World Builder\nSimulate any small world\n\nSay who is involved and what they are trying to do. AI writes the rules and the simulation starts.\n\nA shared run, replayed\n\u23f8 Pause\n\nReplaying the recorded rounds; nothing is being decided now.\n\nContext view\nAnalyst: whole run\nActor: authorized inputs\nPerson\nExact inputs and provenance\n\nRound 2 \u00b7 so far: 0 allowed \u00b7 1 refused\n\nPicture\nNetwork\nchooses moves\nplace\nthing\nmove the rules allow\nchanges by itself\n\nShowing 3 of 27 boxes: who acted in round 2 and what that used or changed. Select a box to see its state now.\n\nShow the whole world (27 boxes)\nChooses moves\nAri\nChooses moves\nMara\nChooses moves\nBo\n\nRound 2: Nobody could do anything.\nWhy things were refused\nallowed\nrefused by the rules (or lost to someone faster)\nheld back by the rules (not allowed to try)\nwaited (nothing it could do)\n\nRound 2: Ari tried: \u201cI repair the technical condition for the prototype pump using my technical authority and send Mara a report saying the repair is complete.\u201d No part of this attempt was carried out. Choose one concrete operation and try again. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.\n\nEdit and run again\nSee how it works\nMore\nMore\nRound 2: Ari tried: \u201cI repair the technical condition for the prototype pump using my technical authority and send Mara a report saying the repair is complete.\u201d No part of this attempt was carried out. Choose one concrete operation and try again. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/compound-homepage-1440.png"
+    },
+    {
+      "case": "compound",
+      "kind": "picture",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "body_text": "Scene replay\n\nAI-chosen moves (llm-resident (Concordia) recorded-native-interpretation) \u00b7 free\n\ud83d\udc64\nAri\nneeds clarification\nARI \u00b7 UNMATCHED-ATTEMPT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nwaited\nMARA \u00b7 WAIT\nRecorded-input replay.\nRound 2\nari: unmatched-attempt \u00b7 bo: wait \u00b7 mara: wait\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nAri: No part of this attempt was carried out. Choose one concrete operation and try again.\nChanged this round (0)\nNothing changed.\n\u21ba Replay\n\u2190\nPause\n\u2192",
+      "message_visible": true,
+      "mara_did": "waited",
+      "story_text": "Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nAri: No part of this attempt was carried out. Choose one concrete operation and try again.\nChanged this round (0)\nNothing changed.",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/compound-picture-1440.png"
+    },
+    {
+      "case": "compound",
+      "kind": "homepage",
+      "viewport": [
+        390,
+        844
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "frames": [
+        {
+          "url": "http://127.0.0.1:40871/scripts/world_builder_home.html?run=recorded-input-compound",
+          "text": "World Builder\nSimulate any small world\n\nSay who is involved and what they are trying to do. AI writes the rules and the simulation starts.\n\nA shared run, replayed\n\u23f8 Pause\n\nReplaying the recorded rounds; nothing is being decided now.\n\nContext view\nAnalyst: whole run\nActor: authorized inputs\nPerson\nExact inputs and provenance\n\nRound 2 \u00b7 so far: 0 allowed \u00b7 1 refused\n\nPicture\nNetwork\nchooses moves\nplace\nthing\nmove the rules allow\nchanges by itself\n\nShowing 3 of 27 boxes: who acted in round 2 and what that used or changed. Select a box to see its state now.\n\nShow the whole world (27 boxes)\nChooses moves\nAri\nChooses moves\nMara\nChooses moves\nBo\n\nRound 2: Nobody could do anything.\nWhy things were refused\nallowed\nrefused by the rules (or lost to someone faster)\nheld back by the rules (not allowed to try)\nwaited (nothing it could do)\n\nSelect a square to see why.\n\nEdit and run again\nSee how it works\nMore\nMore\nEvery person in the last 10 rounds as squares: allowed, refused, held back by the rules"
+        },
+        {
+          "url": "about:srcdoc",
+          "text": "\ud83d\udc64\nAri\nneeds clarification\nARI \u00b7 UNMATCHED-ATTEMPT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nwaited\nMARA \u00b7 WAIT\nRecorded-input replay.\nRound 2\nari: unmatched-attempt \u00b7 bo: wait \u00b7 mara: wait\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nAri: No part of this attempt was carried out. Choose one concrete operation and try again.\nChanged this round (0)\nNothing changed."
+        }
+      ],
+      "srcdoc_length": 19960,
+      "attempt_count": 3,
+      "attempt_labels": [
+        "Round 2: Ari tried: \u201cI repair the technical condition for the prototype pump using my technical authority and send Mara a report saying the repair is complete.\u201d No part of this attempt was carried out. Choose one concrete operation and try again. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+        "Round 2: Bo chose to wait. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+        "Round 2: Mara chose to wait. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics."
+      ],
+      "keyboard_detail_visible": true,
+      "detail": "Round 2: Ari tried: \u201cI repair the technical condition for the prototype pump using my technical authority and send Mara a report saying the repair is complete.\u201d No part of this attempt was carried out. Choose one concrete operation and try again. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+      "judge_panel_hidden": true,
+      "message_present": true,
+      "misleading_missing_rule_claim": false,
+      "body_text": "World Builder\nSimulate any small world\n\nSay who is involved and what they are trying to do. AI writes the rules and the simulation starts.\n\nA shared run, replayed\n\u23f8 Pause\n\nReplaying the recorded rounds; nothing is being decided now.\n\nContext view\nAnalyst: whole run\nActor: authorized inputs\nPerson\nExact inputs and provenance\n\nRound 2 \u00b7 so far: 0 allowed \u00b7 1 refused\n\nPicture\nNetwork\nchooses moves\nplace\nthing\nmove the rules allow\nchanges by itself\n\nShowing 3 of 27 boxes: who acted in round 2 and what that used or changed. Select a box to see its state now.\n\nShow the whole world (27 boxes)\nChooses moves\nAri\nChooses moves\nMara\nChooses moves\nBo\n\nRound 2: Nobody could do anything.\nWhy things were refused\nallowed\nrefused by the rules (or lost to someone faster)\nheld back by the rules (not allowed to try)\nwaited (nothing it could do)\n\nRound 2: Ari tried: \u201cI repair the technical condition for the prototype pump using my technical authority and send Mara a report saying the repair is complete.\u201d No part of this attempt was carried out. Choose one concrete operation and try again. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.\n\nEdit and run again\nSee how it works\nMore\nMore\nRound 2: Ari tried: \u201cI repair the technical condition for the prototype pump using my technical authority and send Mara a report saying the repair is complete.\u201d No part of this attempt was carried out. Choose one concrete operation and try again. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/compound-homepage-390.png"
+    },
+    {
+      "case": "compound",
+      "kind": "picture",
+      "viewport": [
+        390,
+        844
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "body_text": "Scene replay\n\nAI-chosen moves (llm-resident (Concordia) recorded-native-interpretation) \u00b7 free\n\ud83d\udc64\nAri\nneeds clarification\nARI \u00b7 UNMATCHED-ATTEMPT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nwaited\nMARA \u00b7 WAIT\nRecorded-input replay.\nRound 2\nari: unmatched-attempt \u00b7 bo: wait \u00b7 mara: wait\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nAri: No part of this attempt was carried out. Choose one concrete operation and try again.\nChanged this round (0)\nNothing changed.\n\u21ba Replay\n\u2190\nPause\n\u2192",
+      "message_visible": true,
+      "mara_did": "waited",
+      "story_text": "Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nAri: No part of this attempt was carried out. Choose one concrete operation and try again.\nChanged this round (0)\nNothing changed.",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/compound-picture-390.png"
+    },
+    {
+      "case": "mara",
+      "kind": "homepage",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "frames": [
+        {
+          "url": "http://127.0.0.1:40871/scripts/world_builder_home.html?run=recorded-input-mara",
+          "text": "World Builder\nSimulate any small world\n\nSay who is involved and what they are trying to do. AI writes the rules and the simulation starts.\n\nA shared run, replayed\n\u23f8 Pause\n\nReplaying the recorded rounds; nothing is being decided now.\n\nContext view\nAnalyst: whole run\nActor: authorized inputs\nPerson\nExact inputs and provenance\n\nRound 2 \u00b7 so far: 1 allowed \u00b7 0 refused\n\nPicture\nNetwork\nchooses moves\nplace\nthing\nmove the rules allow\nchanges by itself\n\nShowing 3 of 27 boxes: who acted in round 2 and what that used or changed. Select a box to see its state now.\n\nShow the whole world (27 boxes)\ncan\nposition\nChooses moves\nMara\nThing\nRecorded position of mara\nMove\nstate concerned\n\nRound 2: Mara: state concerned\nKnock-on effects of r2-e00001 (decision.action.state concerned): 0 steps run, 0 with a cause, no refusal, 1 blocked\nWhy things were refused\nallowed\nrefused by the rules (or lost to someone faster)\nheld back by the rules (not allowed to try)\nwaited (nothing it could do)\n\nNothing was refused"
+        },
+        {
+          "url": "about:srcdoc",
+          "text": "\ud83d\udc64\nAri\nwaited\nARI \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nstate concerned\nMARA \u00b7 STATE-CONCERNED POSITION-MARA\nRecorded-input replay.\nRound 2\nari: wait \u00b7 bo: wait \u00b7 mara: state-concerned position-mara\n\u25cf\nRecorded position of mara\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nRecorded position of mara: stance: concerned (was stance: unexpressed)\nMara"
+        }
+      ],
+      "srcdoc_length": 19797,
+      "attempt_count": 3,
+      "attempt_labels": [
+        "Round 2: Ari chose to wait. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+        "Round 2: Bo chose to wait. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+        "Round 2: Mara \u2014 state concerned. Allowed: every check held. Decided by rule, judge not asked. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics."
+      ],
+      "keyboard_detail_visible": true,
+      "detail": "Round 2: Mara \u2014 state concerned. Allowed: every check held. Decided by rule, judge not asked. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+      "judge_panel_hidden": true,
+      "message_present": false,
+      "misleading_missing_rule_claim": false,
+      "body_text": "World Builder\nSimulate any small world\n\nSay who is involved and what they are trying to do. AI writes the rules and the simulation starts.\n\nA shared run, replayed\n\u23f8 Pause\n\nReplaying the recorded rounds; nothing is being decided now.\n\nContext view\nAnalyst: whole run\nActor: authorized inputs\nPerson\nExact inputs and provenance\n\nRound 2 \u00b7 so far: 1 allowed \u00b7 0 refused\n\nPicture\nNetwork\nchooses moves\nplace\nthing\nmove the rules allow\nchanges by itself\n\nShowing 3 of 27 boxes: who acted in round 2 and what that used or changed. Select a box to see its state now.\n\nShow the whole world (27 boxes)\ncan\nposition\nChooses moves\nMara\nThing\nRecorded position of mara\nMove\nstate concerned\n\nRound 2: Mara: state concerned\nKnock-on effects of r2-e00001 (decision.action.state concerned): 0 steps run, 0 with a cause, no refusal, 1 blocked\nWhy things were refused\nallowed\nrefused by the rules (or lost to someone faster)\nheld back by the rules (not allowed to try)\nwaited (nothing it could do)\n\nRound 2: Mara \u2014 state concerned. Allowed: every check held. Decided by rule, judge not asked. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.\n\nEdit and run again\nSee how it works\nMore\nMore\nRound 2: Mara \u2014 state concerned. Allowed: every check held. Decided by rule, judge not asked. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/mara-homepage-1440.png"
+    },
+    {
+      "case": "mara",
+      "kind": "picture",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "body_text": "Scene replay\n\nAI-chosen moves (llm-resident (Concordia) recorded-native-interpretation) \u00b7 free\n\ud83d\udc64\nAri\nwaited\nARI \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nstate concerned\nMARA \u00b7 STATE-CONCERNED POSITION-MARA\nRecorded-input replay.\nRound 2\nari: wait \u00b7 bo: wait \u00b7 mara: state-concerned position-mara\n\u25cf\nRecorded position of mara\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nRecorded position of mara: stance: concerned (was stance: unexpressed)\nMara\n\u21ba Replay\n\u2190\nPause\n\u2192",
+      "message_visible": false,
+      "mara_did": "state concerned",
+      "story_text": "Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nRecorded position of mara: stance: concerned (was stance: unexpressed)\nMara",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/mara-picture-1440.png"
+    },
+    {
+      "case": "mara",
+      "kind": "homepage",
+      "viewport": [
+        390,
+        844
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "frames": [
+        {
+          "url": "http://127.0.0.1:40871/scripts/world_builder_home.html?run=recorded-input-mara",
+          "text": "World Builder\nSimulate any small world\n\nSay who is involved and what they are trying to do. AI writes the rules and the simulation starts.\n\nA shared run, replayed\n\u23f8 Pause\n\nReplaying the recorded rounds; nothing is being decided now.\n\nContext view\nAnalyst: whole run\nActor: authorized inputs\nPerson\nExact inputs and provenance\n\nRound 2 \u00b7 so far: 1 allowed \u00b7 0 refused\n\nPicture\nNetwork\nchooses moves\nplace\nthing\nmove the rules allow\nchanges by itself\n\nShowing 3 of 27 boxes: who acted in round 2 and what that used or changed. Select a box to see its state now.\n\nShow the whole world (27 boxes)\ncan\nposition\nChooses moves\nMara\nThing\nRecorded position of mara\nMove\nstate concerned\n\nRound 2: Mara: state concerned\nKnock-on effects of r2-e00001 (decision.action.state concerned): 0 steps run, 0 with a cause, no refusal, 1 blocked\nWhy things were refused\nallowed\nrefused by the rules (or lost to someone faster)\nheld back by the rules (not allowed to try)\nwaited (nothing it could do)\n\nNothing was refused"
+        },
+        {
+          "url": "about:srcdoc",
+          "text": "\ud83d\udc64\nAri\nwaited\nARI \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nstate concerned\nMARA \u00b7 STATE-CONCERNED POSITION-MARA\nRecorded-input replay.\nRound 2\nari: wait \u00b7 bo: wait \u00b7 mara: state-concerned position-mara\n\u25cf\nRecorded position of mara\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nRecorded position of mara: stance: concerned (was stance: unexpressed)\nMara"
+        }
+      ],
+      "srcdoc_length": 19797,
+      "attempt_count": 3,
+      "attempt_labels": [
+        "Round 2: Ari chose to wait. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+        "Round 2: Bo chose to wait. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+        "Round 2: Mara \u2014 state concerned. Allowed: every check held. Decided by rule, judge not asked. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics."
+      ],
+      "keyboard_detail_visible": true,
+      "detail": "Round 2: Mara \u2014 state concerned. Allowed: every check held. Decided by rule, judge not asked. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+      "judge_panel_hidden": true,
+      "message_present": false,
+      "misleading_missing_rule_claim": false,
+      "body_text": "World Builder\nSimulate any small world\n\nSay who is involved and what they are trying to do. AI writes the rules and the simulation starts.\n\nA shared run, replayed\n\u23f8 Pause\n\nReplaying the recorded rounds; nothing is being decided now.\n\nContext view\nAnalyst: whole run\nActor: authorized inputs\nPerson\nExact inputs and provenance\n\nRound 2 \u00b7 so far: 1 allowed \u00b7 0 refused\n\nPicture\nNetwork\nchooses moves\nplace\nthing\nmove the rules allow\nchanges by itself\n\nShowing 3 of 27 boxes: who acted in round 2 and what that used or changed. Select a box to see its state now.\n\nShow the whole world (27 boxes)\ncan\nposition\nChooses moves\nMara\nThing\nRecorded position of mara\nMove\nstate concerned\n\nRound 2: Mara: state concerned\nKnock-on effects of r2-e00001 (decision.action.state concerned): 0 steps run, 0 with a cause, no refusal, 1 blocked\nWhy things were refused\nallowed\nrefused by the rules (or lost to someone faster)\nheld back by the rules (not allowed to try)\nwaited (nothing it could do)\n\nRound 2: Mara \u2014 state concerned. Allowed: every check held. Decided by rule, judge not asked. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.\n\nEdit and run again\nSee how it works\nMore\nMore\nRound 2: Mara \u2014 state concerned. Allowed: every check held. Decided by rule, judge not asked. They believed: Recorded-input engine replay, not a fresh resident decision. They expected: Replay installed mechanics.",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/mara-homepage-390.png"
+    },
+    {
+      "case": "mara",
+      "kind": "picture",
+      "viewport": [
+        390,
+        844
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "body_text": "Scene replay\n\nAI-chosen moves (llm-resident (Concordia) recorded-native-interpretation) \u00b7 free\n\ud83d\udc64\nAri\nwaited\nARI \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nstate concerned\nMARA \u00b7 STATE-CONCERNED POSITION-MARA\nRecorded-input replay.\nRound 2\nari: wait \u00b7 bo: wait \u00b7 mara: state-concerned position-mara\n\u25cf\nRecorded position of mara\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nRecorded position of mara: stance: concerned (was stance: unexpressed)\nMara\n\u21ba Replay\n\u2190\nPause\n\u2192",
+      "message_visible": false,
+      "mara_did": "state concerned",
+      "story_text": "Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nRecorded position of mara: stance: concerned (was stance: unexpressed)\nMara",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/mara-picture-390.png"
+    }
+  ]
+}

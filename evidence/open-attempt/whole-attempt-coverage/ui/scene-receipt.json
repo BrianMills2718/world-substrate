@@ -1,0 +1,149 @@
+{
+  "scope": "Local recorded-input replay; native interpreter output and engine trace, resident choices recorded, no fresh resident policy and no paid calls. Main-page share fixture retains original authored bundle.",
+  "cases": [
+    {
+      "case": "compound",
+      "kind": "picture",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "body_text": "Scene replay\n\nAI-chosen moves (llm-resident (Concordia) recorded-native-interpretation) \u00b7 free\n\ud83d\udc64\nAri\nneeds clarification\nARI \u00b7 UNMATCHED-ATTEMPT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nwaited\nMARA \u00b7 WAIT\nRecorded-input replay.\nRound 2\nari: unmatched-attempt \u00b7 bo: wait \u00b7 mara: wait\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nAri: No part of this attempt was carried out. Choose one concrete operation and try again.\nChanged this round (0)\nNothing changed.\n\u21ba Replay\n\u2190\nPause\n\u2192",
+      "message_visible": true,
+      "mara_did": "waited",
+      "story_text": "Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nAri: No part of this attempt was carried out. Choose one concrete operation and try again.\nChanged this round (0)\nNothing changed.",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/compound-picture-1440.png"
+    },
+    {
+      "case": "compound",
+      "kind": "public-picture",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "body_text": "Compound attempt: no part carried out\n\nRecorded-input check: a retained native interpretation submitted to installed mechanics. Resident choices are supplied from recorded inputs. Read the evidence and limits.\n\nScene replay\n\nAI-chosen moves (llm-resident (Concordia) recorded-native-interpretation) \u00b7 free\n\ud83d\udc64\nAri\nneeds clarification\nARI \u00b7 UNMATCHED-ATTEMPT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nwaited\nMARA \u00b7 WAIT\nRecorded-input replay.\nRound 2\nari: unmatched-attempt \u00b7 bo: wait \u00b7 mara: wait\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nAri: No part of this attempt was carried out. Choose one concrete operation and try again.\nChanged this round (0)\nNothing changed.\n\u21ba Replay\n\u2190\nPause\n\u2192",
+      "message_visible": true,
+      "mara_did": "waited",
+      "story_text": "Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nAri: No part of this attempt was carried out. Choose one concrete operation and try again.\nChanged this round (0)\nNothing changed.",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/compound-public-picture-1440.png"
+    },
+    {
+      "case": "compound",
+      "kind": "picture",
+      "viewport": [
+        390,
+        844
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "body_text": "Scene replay\n\nAI-chosen moves (llm-resident (Concordia) recorded-native-interpretation) \u00b7 free\n\ud83d\udc64\nAri\nneeds clarification\nARI \u00b7 UNMATCHED-ATTEMPT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nwaited\nMARA \u00b7 WAIT\nRecorded-input replay.\nRound 2\nari: unmatched-attempt \u00b7 bo: wait \u00b7 mara: wait\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nAri: No part of this attempt was carried out. Choose one concrete operation and try again.\nChanged this round (0)\nNothing changed.\n\u21ba Replay\n\u2190\nPause\n\u2192",
+      "message_visible": true,
+      "mara_did": "waited",
+      "story_text": "Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nAri: No part of this attempt was carried out. Choose one concrete operation and try again.\nChanged this round (0)\nNothing changed.",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/compound-picture-390.png"
+    },
+    {
+      "case": "compound",
+      "kind": "public-picture",
+      "viewport": [
+        390,
+        844
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "body_text": "Compound attempt: no part carried out\n\nRecorded-input check: a retained native interpretation submitted to installed mechanics. Resident choices are supplied from recorded inputs. Read the evidence and limits.\n\nScene replay\n\nAI-chosen moves (llm-resident (Concordia) recorded-native-interpretation) \u00b7 free\n\ud83d\udc64\nAri\nneeds clarification\nARI \u00b7 UNMATCHED-ATTEMPT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nwaited\nMARA \u00b7 WAIT\nRecorded-input replay.\nRound 2\nari: unmatched-attempt \u00b7 bo: wait \u00b7 mara: wait\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nAri: No part of this attempt was carried out. Choose one concrete operation and try again.\nChanged this round (0)\nNothing changed.\n\u21ba Replay\n\u2190\nPause\n\u2192",
+      "message_visible": true,
+      "mara_did": "waited",
+      "story_text": "Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nAri: No part of this attempt was carried out. Choose one concrete operation and try again.\nChanged this round (0)\nNothing changed.",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/compound-public-picture-390.png"
+    },
+    {
+      "case": "mara",
+      "kind": "picture",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "body_text": "Scene replay\n\nAI-chosen moves (llm-resident (Concordia) recorded-native-interpretation) \u00b7 free\n\ud83d\udc64\nAri\nwaited\nARI \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nstate concerned\nMARA \u00b7 STATE-CONCERNED POSITION-MARA\nRecorded-input replay.\nRound 2\nari: wait \u00b7 bo: wait \u00b7 mara: state-concerned position-mara\n\u25cf\nRecorded position of mara\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nRecorded position of mara: stance: concerned (was stance: unexpressed)\nMara\n\u21ba Replay\n\u2190\nPause\n\u2192",
+      "message_visible": false,
+      "mara_did": "state concerned",
+      "story_text": "Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nRecorded position of mara: stance: concerned (was stance: unexpressed)\nMara",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/mara-picture-1440.png"
+    },
+    {
+      "case": "mara",
+      "kind": "public-picture",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "body_text": "Recording concern: stance changes separately from assent\n\nRecorded-input check: a retained native interpretation submitted to installed mechanics. Resident choices are supplied from recorded inputs. Read the evidence and limits.\n\nScene replay\n\nAI-chosen moves (llm-resident (Concordia) recorded-native-interpretation) \u00b7 free\n\ud83d\udc64\nAri\nwaited\nARI \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nstate concerned\nMARA \u00b7 STATE-CONCERNED POSITION-MARA\nRecorded-input replay.\nRound 2\nari: wait \u00b7 bo: wait \u00b7 mara: state-concerned position-mara\n\u25cf\nRecorded position of mara\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nRecorded position of mara: stance: concerned (was stance: unexpressed)\nMara\n\u21ba Replay\n\u2190\nPause\n\u2192",
+      "message_visible": false,
+      "mara_did": "state concerned",
+      "story_text": "Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nRecorded position of mara: stance: concerned (was stance: unexpressed)\nMara",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/mara-public-picture-1440.png"
+    },
+    {
+      "case": "mara",
+      "kind": "picture",
+      "viewport": [
+        390,
+        844
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "body_text": "Scene replay\n\nAI-chosen moves (llm-resident (Concordia) recorded-native-interpretation) \u00b7 free\n\ud83d\udc64\nAri\nwaited\nARI \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nstate concerned\nMARA \u00b7 STATE-CONCERNED POSITION-MARA\nRecorded-input replay.\nRound 2\nari: wait \u00b7 bo: wait \u00b7 mara: state-concerned position-mara\n\u25cf\nRecorded position of mara\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nRecorded position of mara: stance: concerned (was stance: unexpressed)\nMara\n\u21ba Replay\n\u2190\nPause\n\u2192",
+      "message_visible": false,
+      "mara_did": "state concerned",
+      "story_text": "Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nRecorded position of mara: stance: concerned (was stance: unexpressed)\nMara",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/mara-picture-390.png"
+    },
+    {
+      "case": "mara",
+      "kind": "public-picture",
+      "viewport": [
+        390,
+        844
+      ],
+      "console": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": [],
+      "body_text": "Recording concern: stance changes separately from assent\n\nRecorded-input check: a retained native interpretation submitted to installed mechanics. Resident choices are supplied from recorded inputs. Read the evidence and limits.\n\nScene replay\n\nAI-chosen moves (llm-resident (Concordia) recorded-native-interpretation) \u00b7 free\n\ud83d\udc64\nAri\nwaited\nARI \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nBo\nwaited\nBO \u00b7 WAIT\nRecorded-input replay.\n\ud83d\udc64\nMara\nstate concerned\nMARA \u00b7 STATE-CONCERNED POSITION-MARA\nRecorded-input replay.\nRound 2\nari: wait \u00b7 bo: wait \u00b7 mara: state-concerned position-mara\n\u25cf\nRecorded position of mara\nRing around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nRecorded position of mara: stance: concerned (was stance: unexpressed)\nMara\n\u21ba Replay\n\u2190\nPause\n\u2192",
+      "message_visible": false,
+      "mara_did": "state concerned",
+      "story_text": "Ring around a person: solid blue = acted, dashed orange = refused, faint grey = waited.\nChanged this round (1)\nRecorded position of mara: stance: concerned (was stance: unexpressed)\nMara",
+      "horizontal_overflow": false,
+      "screenshot": "/tmp/ws-coverage-ui-20261113/mara-public-picture-390.png"
+    }
+  ]
+}

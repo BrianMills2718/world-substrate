@@ -21,3 +21,10 @@ Production3 failed before residents. No paid comparison, required social ending,
 
 
 Verdict: pass
+
+
+## Whole-attempt coverage adoption — pass
+
+Date:2026-11-13. Reviewed revision:`a6efda72357b5f983404728583b5753700da437a`. Independent planning-compliance-reviewer read the bounded Q36 requirement against the original23462 wording and installed state-concerned kind. Initial findings were fixed: A4 now includes safe clarification, unchanged state and no request delivery without inventing a complete old inspector or human verdict; existing attempt-reading includes coverage and rejection rather than adding unnecessary ontology nodes. No remaining substantive blocker. Both manifests record this immutable revision; validator readback follows. Prior adopted contracts retain their earlier review above.
+
+The reviewer read all three exact native prompts/responses, schema, structured attempts and lifecycle:3calls,0tools,0retries,7658tokens,measured$0.00097666. Mara binds concrete recording; repair remains unchanged; compound detection omits required evidence and safely rejects. Q36 remains open. No additional model stage, engine, cognition system, benchmark or preferred resident ending is required. Browser outcome is separately checked by the frontend reviewer; planning pass alone establishes no runtime or scientific fidelity.
