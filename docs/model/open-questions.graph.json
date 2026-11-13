@@ -378,7 +378,7 @@
    "id": "group-decision",
    "label": "Group decision",
    "kind": "Concept",
-   "explain": "A decision with support, deadline, deployment and review; changed only by fixed rules."
+   "explain": "The legacy scripted decision family with support, deadline, deployment and operating review; distinct from the independent validation/assent procedure. Its fixed support/remedy dynamics are fixture assumptions, not general persuasion."
   },
   {
    "id": "harness-build",
@@ -422,7 +422,7 @@
    "id": "observation",
    "label": "Observation",
    "kind": "Concept",
-   "explain": "What one actor sees this round: the fields its senses and position allow, never the whole world."
+   "explain": "What one actor is supplied this round. Declared actor-information worlds use explicit grants and their own retained context; historical legacy-unrestricted worlds lack that complete boundary. Engine co-location and item filtering alone do not establish secrecy."
   },
   {
    "id": "offer",
@@ -477,7 +477,7 @@
    "id": "rules-review",
    "label": "Independent rules review",
    "kind": "Concept",
-   "explain": "Plan declared-laws S3 (built): a separate model call with a fresh context reads the description, the declared laws and the written rules, and lists concrete mismatches (each naming a rule and the words it contradicts) for the rules writer to fix; findings, never a pass mark. Runs on things worlds and, from 2026-10-30, on people worlds."
+   "explain": "A separate source-grounded model call reviews proposed rules on both build paths. Mechanical mismatches remain findings, not a blanket pass mark. Declared actor-information worlds also require a complete typed authorization verdict for public setup and every exact initial actor context; missing, unsafe or unavailable review prevents delivery. That gate does not prove reviewer accuracy or scientific fidelity."
   },
   {
    "id": "ruling-rule",
@@ -533,7 +533,7 @@
    "id": "support",
    "label": "Support",
    "kind": "Concept",
-   "explain": "A member's stance on the decision: none, full or conditional on a concern."
+   "explain": "The legacy decision family's support record: none, full or conditional on a concern. Independent expressed stance and recorded assent use separate records instead."
   },
   {
    "id": "task",

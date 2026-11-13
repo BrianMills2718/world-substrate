@@ -187,7 +187,8 @@ class RunRecordTests(unittest.TestCase):
         def call_llm_json_schema(model, messages, schema, **kwargs):
             if kwargs["task"] == open_attempt.TASK:
                 return ({"kind": "none", "fields": [], "nearest_kind": "none", "asks": "rosa",
-                         "names": ["rosa", "crate"], "why": "no kind hands over coins"},
+                         "names": ["rosa", "crate"], "why": "no kind hands over coins",
+                         "coverage": {"status": "complete", "action_spans": [BRIBE], "unrepresented_spans": []}},
                         types.SimpleNamespace(cost=0.0))
             return ({"belief": "b", "attempt": "wait", "expected_effect": "e", "work": "none", "reasoning": "r"},
                     types.SimpleNamespace(cost=0.0))

@@ -716,7 +716,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       t.className = "tick " + kind;
       const who = labelFor(a.actor), act = a.row.wanted ? words(a.row.wanted.kind) : "";
       const said = (a.row.attempt && a.row.attempt.text) || "", rid = a.row.ruling ? a.row.ruling.id : "";
-      if (a.row.wanted && a.row.wanted.kind === "unmatched-attempt" && a.row.judge) text = `Round ${a.turn}: ${who} tried: “${a.row.wanted.attempt || ""}” No installed rule covers these words, so the world’s game master ruled on it: ${judgeLine(a.row.judge)}`;
+      if (a.row.interpretation_feedback) text = `Round ${a.turn}: ${who} tried: “${said}” ${a.row.interpretation_feedback}`;
+      else if (a.row.wanted && a.row.wanted.kind === "unmatched-attempt" && a.row.judge) text = `Round ${a.turn}: ${who} tried: “${a.row.wanted.attempt || ""}” No installed rule covers these words, so the world’s game master ruled on it: ${judgeLine(a.row.judge)}`;
       else if (a.row.status === "pending_ruling") text = `Round ${a.turn}: ${who} tried: “${said}” It means the same move as the held ruling ${rid}, so it joined that ruling. Pending: waiting for your approval. Nothing changed, and the judge was not asked again.`;
       else if (a.row.status === "refused_ruling") text = `Round ${a.turn}: ${who} tried: “${said}” Refused, because the ruling ${rid} it needs was rejected. Nothing changed, and the judge was not asked again.`;
       else if (kind === "accepted") text = `Round ${a.turn}: ${who} — ${act}. Allowed: every check held.`;

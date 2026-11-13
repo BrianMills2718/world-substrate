@@ -24,6 +24,7 @@ for spec in sys.argv[4:]:
         rows.append({"call_id": int(cid), "try": i, "actor": actor, "attempt": attempt,
                      "was": json.loads(c["response"]).get("kind"), "now": reading.get("kind") or "unmatched",
                      "fields": reading.get("fields"), "asks": reading.get("asks"), "why": reading.get("why"),
+                     "reading": reading, "trace_id": trace,
                      "cost": cost})
         print(cid, i, actor, "was", rows[-1]["was"], "now", rows[-1]["now"], rows[-1]["fields"], "asks", rows[-1]["asks"],
               flush=True)
