@@ -80,7 +80,7 @@ def test_interpreter_does_not_autofill_hidden_singleton_or_derived_argument():
         assert "HIDDEN" not in str(kwargs["signatures"])
         return {"kind": "unlock", "fields": {}, "unmatched": True}, 0
     with patch.dict(sys.modules, {"llm_client": types.SimpleNamespace()}), \
-         patch("scripts.run_authored_world.actor_info.actor_observation", return_value={"entities": {"mara": {"label": "Mara"}}}), \
+         patch("scripts.run_authored_world.actor_info.actor_page", return_value={"observation": {"entities": {"mara": {"label": "Mara"}}}, "available": [{"description": "Try unlocking", "action": {"kind": "unlock"}}]}), \
          patch("scripts.run_authored_world.open_attempt.interpret", side_effect=interpret):
         reading, _ = _read_attempt(engine, "mara", "I try unlocking", signatures,
                                   model="test", trace_id="t", max_budget=0)
@@ -95,6 +95,6 @@ def test_open_attempt_can_match_an_installed_kind_without_a_bound_menu_form():
         assert kwargs["signatures"][0]["description"] == "request evidence"
         assert kwargs["entities"] == {"mara": "Mara"}
         return {"kind": "request-evidence", "fields": {}}, 0
-    with patch.dict(sys.modules, {"llm_client": types.SimpleNamespace()}), patch("scripts.run_authored_world.actor_info.actor_observation", return_value={"entities": {"mara": {"label": "Mara"}}}), patch("scripts.run_authored_world.open_attempt.interpret", side_effect=interpret):
+    with patch.dict(sys.modules, {"llm_client": types.SimpleNamespace()}), patch("scripts.run_authored_world.actor_info.actor_page", return_value={"observation": {"entities": {"mara": {"label": "Mara"}}}, "available": []}), patch("scripts.run_authored_world.open_attempt.interpret", side_effect=interpret):
         reading, _ = _read_attempt(engine, "mara", "I request evidence", [{"kind": "request-evidence", "description": "HIDDEN internal rationale", "fields": []}], model="test", trace_id="t", max_budget=0)
     assert reading["kind"] == "request-evidence"
