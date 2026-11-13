@@ -1,0 +1,4 @@
+Test-first red, recorded before the saved-run-player implementation.
+Command: uv run --no-project --with playwright python evidence/ui/saved-player-20261113/browser_check.py --widths 1440 --timeout 3000 --output evidence/ui/saved-player-20261113/test-first-red
+Exit1 as expected: #saved-player does not exist in current HTML SHA256 422acd911801664c7f8a3658fc41ed150c01f7aeb91cd3221e0e7cdf9190ff9a. The retained accessibility snapshot demonstrates auto-advancing old replay at round2 and absent new player.
+0 page errors,0 unexpectedfailedrequests,0 modelwrites. This is the intended missing-capability counterexample, not a new simulation failure.
