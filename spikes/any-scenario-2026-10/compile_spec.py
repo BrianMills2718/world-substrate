@@ -618,7 +618,7 @@ def limit_to_work_cycle(mechanics: list[dict[str, Any]], cycle: dict[str, Any] |
 
 
 # Implements: native-coordination/independent-generated-concern-procedure
-def _independent_family(spec, entities, components):
+def _independent_family(spec, entities, components, *, all_actor_stances=True):
     """Validation governs a hold; residents alone record stance and assent."""
     d = spec.independent_decision
     did = _eid(d.decision_id)
@@ -628,6 +628,8 @@ def _independent_family(spec, entities, components):
                                 "review": "idle", "assents": 0, "active": False, "condition_id": f"condition-{did}"},
         "actor_position": {"holder_id": "placeholder", "assent": False, "stance": "unexpressed"},
         "technical_role": {"holder_id": "placeholder", "validator": False, "repairer": False}}
+    if all_actor_stances:
+        definitions["actor_position"]["assent_weight"] = 0
     for name, fields in definitions.items():
         components.append({"name": name, "fields": [
             {"name": k, "type": "entity_ref" if k.endswith("_id") else _field_type(v), "default": v}
@@ -636,9 +638,11 @@ def _independent_family(spec, entities, components):
         entities.append({"id": eid, "label": label, "categories": [category], "components": {comp: values}})
     entity(did, d.question, "validation-decision", "validation_decision", definitions["validation_decision"].copy())
     entity(f"condition-{did}", "Technical condition", "technical-condition", "technical_condition", definitions["technical_condition"].copy())
-    for actor in d.required_actor_ids:
+    position_actors = ([p.entity_id for p in getattr(spec, "people", [])] or d.required_actor_ids) if all_actor_stances else d.required_actor_ids
+    for actor in position_actors:
         entity(f"position-{_eid(actor)}", f"Recorded position of {actor}", "actor-position", "actor_position",
-               {"holder_id": _eid(actor), "assent": False, "stance": "unexpressed"})
+               {"holder_id": _eid(actor), "assent": False, "stance": "unexpressed",
+                **({"assent_weight": int(actor in d.required_actor_ids)} if all_actor_stances else {})})
     for actor in dict.fromkeys(d.validator_ids + d.repairer_ids):
         entity(f"technical-role-{_eid(actor)}", f"Technical authority of {actor}", "technical-role", "technical_role",
                {"holder_id": _eid(actor), "validator": actor in d.validator_ids, "repairer": actor in d.repairer_ids})
@@ -660,7 +664,8 @@ def _independent_family(spec, entities, components):
     for kind, assent in (("record-assent", True), ("withdraw-assent", False)):
         rule(kind, positions, [own_position, _check("the recorded assent changes", _ref("position", "components.actor_position.assent"), "eq", not assent)],
              [_effect("position", "components.actor_position.assent", "set", assent),
-              _effect("decision", "components.validation_decision.assents", "add" if assent else "subtract", 1)])
+              _effect("decision", "components.validation_decision.assents", "add" if assent else "subtract",
+                      _ref("position", "components.actor_position.assent_weight") if all_actor_stances else 1)])
     for stance in ("supportive", "concerned", "undecided"):
         rule(f"state-{stance}", {"position": sel("actor-position", "actor_position")}, [own_position],
              [_effect("position", "components.actor_position.stance", "set", stance)])

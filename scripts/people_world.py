@@ -224,13 +224,13 @@ def unfinished_hedges(trace_id: str) -> list[Future]:
         return [f for f in _HEDGES.pop(trace_id, []) if not f.done()]
 
 
-def prepare_people_world(description: str, *, trace_id: str, max_budget: float, progress: Progress) -> dict[str, Any]:
+def prepare_people_world(description: str, *, trace_id: str, max_budget: float, progress: Progress, feedback: str = "") -> dict[str, Any]:
     """Description -> ScenarioSpecV1 -> compiled bundle and the attempts people can make (no rules yet)."""
     compile_spec, sp = _pipeline()
     progress("doing", "Working out who is involved and what each of them wants")
     spec, _ = hedged(trace_id, lambda: sp.scenario_spec(description, model=PEOPLE_MODEL, trace_id=trace_id,
                                                         max_budget=max_budget, reasoning_effort=SPEC_EFFORT,
-                                                        route_policy=fast_route(PEOPLE_MODEL)))
+                                                        route_policy=fast_route(PEOPLE_MODEL), **({"feedback": feedback} if feedback else {})))
     from scripts.generate_world_bundle import is_recorded_authoring_replay
     if not spec.public_summary.strip() and not is_recorded_authoring_replay():
         raise ValueError("Fresh people-world authoring requires an explicit actor-safe public_summary")

@@ -38,7 +38,8 @@ def _world():
 
 
 def _approved():
-    return {"findings": [], "actor_input_review": {
+    return {"findings": [], "canonical_state_review": {
+        "consistent": True, "explanation": "The compiled technical condition owns current truth; reports retain historical evidence."}, "actor_input_review": {
         "public_summary": {"authorized": True, "explanation": "Shared activation question from the source."},
         "actors": [
             {"actor_id": "ari", "authorized": True, "explanation": "Ari owns the detailed evidence."},

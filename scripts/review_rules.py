@@ -6,6 +6,8 @@ description, the world's laws and the compiled rules. It returns mechanical find
 Declared actor-information worlds also require a source-grounded privacy verdict on each
 actual starting actor context in that same call. Missing or rejected privacy review raises
 ActorInputPrivacyError so the builder cannot treat it as an optional mechanical finding.
+Independent decisions also require a canonical-state authority verdict in the same call.
+Only well-formed negative source judgments permit the existing bounded source repair.
 """
 from __future__ import annotations
 
@@ -21,7 +23,17 @@ REVIEW_MODEL = "openrouter/google/gemini-4-argon"
 MISSING = "missing"
 
 
-class ActorInputPrivacyError(ValueError):
+class SourceDraftReviewError(ValueError):
+    """A required source judgment failed; only a valid typed negative permits repair."""
+
+    def __init__(self, message: str, review: Any = None, *, repairable: bool = False):
+        super().__init__(message)
+        self.review = review
+        self.repairable = repairable
+        self.feedback = message + "\n" + json.dumps(review, ensure_ascii=False)
+
+
+class ActorInputPrivacyError(SourceDraftReviewError):
     """The generated candidate has not passed the required actor-input review.
 
     The builder must reject this candidate, rather than treating this as an
@@ -29,9 +41,9 @@ class ActorInputPrivacyError(ValueError):
     complete review, and ``review`` permits the builder to retain it as well.
     """
 
-    def __init__(self, message: str, review: Any = None):
-        super().__init__(message)
-        self.review = review
+
+class CanonicalStateAuthorityError(SourceDraftReviewError):
+    """Current material state has not passed the independent authority review."""
 
 
 def rule_ids(causal_model: dict[str, Any]) -> list[str]:
@@ -40,7 +52,7 @@ def rule_ids(causal_model: dict[str, Any]) -> list[str]:
             + [str(p["process_id"]) for p in causal_model.get("processes") or []])
 
 
-def review_schema(ids: list[str], actor_ids: list[str] | None = None) -> dict[str, Any]:
+def review_schema(ids: list[str], actor_ids: list[str] | None = None, *, independent: bool = False) -> dict[str, Any]:
     schema = {
         "type": "object", "additionalProperties": False, "required": ["findings"],
         "properties": {"findings": {"type": "array", "items": {
@@ -67,6 +79,13 @@ def review_schema(ids: list[str], actor_ids: list[str] | None = None) -> dict[st
             "required": ["public_summary", "actors"], "properties": {
                 "public_summary": judgment,
                 "actors": {"type": "array", "minItems": len(actor_ids), "maxItems": len(actor_ids), "items": actor}}}
+    if independent:
+        schema["required"].append("canonical_state_review")
+        schema["properties"]["canonical_state_review"] = {
+            "type": "object", "additionalProperties": False,
+            "required": ["consistent", "explanation"], "properties": {
+                "consistent": {"type": "boolean"},
+                "explanation": {"type": "string", "minLength": 1}}}
     return schema
 
 
@@ -91,8 +110,21 @@ def require_actor_input_review(value: Any, actor_ids: list[str]) -> None:
         if (type(row.get("authorized")) is not bool or not isinstance(row.get("explanation"), str)
                 or not row["explanation"].strip()):
             raise ActorInputPrivacyError("actor-input review needs an explicit judgment and source basis", review)
-        if not row["authorized"]:
-            raise ActorInputPrivacyError("generated candidate discloses unauthorized actor information", review)
+    if any(not row["authorized"] for row in [public, *actors]):
+        raise ActorInputPrivacyError("generated candidate discloses unauthorized actor information", review,
+                                     repairable=True)
+
+
+def require_canonical_state_review(value: Any) -> None:
+    review = value.get("canonical_state_review") if isinstance(value, dict) else None
+    if (not isinstance(review, dict) or set(review) != {"consistent", "explanation"}
+            or type(review.get("consistent")) is not bool
+            or not isinstance(review.get("explanation"), str) or not review["explanation"].strip()):
+        raise CanonicalStateAuthorityError("canonical-state authority review is missing or malformed", review)
+    if not review["consistent"]:
+        raise CanonicalStateAuthorityError("generated candidate duplicates or contradicts canonical current state",
+                                           review, repairable=True)
+
 
 
 def initial_actor_inputs(bundle: dict[str, Any], causal_model: dict[str, Any]) -> dict[str, Any]:
@@ -117,6 +149,7 @@ def builtin_semantics(bundle: dict[str, Any]) -> dict[str, Any]:
             "implementation": "spikes/any-scenario-2026-10/compile_spec.py:_independent_family",
             "authority": "docs/model/modeling-choices.md:single-concern institutional procedure (Brian-approved I0/I1 contract)",
             "initial_state": "initial_validation is an already recorded result. A failed initial result creates a public hold at initialization. Public dashboard exposure is distinct from receiving a private report; a public hold legitimately reveals failed validation under this explicit procedure. No new filing action is required to expose already recorded initial public state.",
+            "canonical_state_authority": "technical_condition.passing is the current technical truth, changed only by authorized repair. validation_decision.validation records the latest validation, its hold is institutional state, and actor_position owns every actor's stance and assent, including nonrequired actors whose assent has zero decision weight; activation checks the required actors' individual assents. A separate world_record asserting the current actual condition must not duplicate this truth unless every relevant transition keeps it consistent. Immutable dated reports, past test measurements and historical results may remain unchanged after repair: they describe the past or a claim, not the current actual condition. Private historical evidence does not become public merely because the public validation state changes.",
             "review_boundary": "Check the opted-in public procedure against the source and adopted contract. Lack of a private report does not imply lack of authorized public evidence. Private test details and hidden actual technical condition still require separate grants. Reject any source-inconsistent disclosure; the compiled declaration alone does not authorize arbitrary private facts.",
         }
     return semantics
@@ -157,7 +190,7 @@ def starting_values(bundle: dict[str, Any]) -> dict[str, dict[str, Any]]:
 def review_rules(description: str, bundle: dict[str, Any], causal_model: dict[str, Any], *, trace_id: str,
                  max_budget: float, model: str = REVIEW_MODEL,
                  reasoning_effort: str = "medium") -> tuple[list[dict[str, str]], float]:
-    """(findings, cost) for one compiled world. Raises on a failed call; the caller records that and goes on."""
+    """(findings, cost); required source reviews fail closed on missing, invalid or rejected judgments."""
     from llm_client import call_llm_json_schema, render_prompt
 
     ids = rule_ids(causal_model)
@@ -168,7 +201,20 @@ def review_rules(description: str, bundle: dict[str, Any], causal_model: dict[st
     start = starting_values(bundle)
     messages = render_prompt(PROMPT, description=description, laws=json.dumps(laws, indent=1),
                              rules=json.dumps(rules, indent=1), start=json.dumps(start, indent=1))
+    independent = any("validation_decision" in e.get("components", {}) for e in bundle.get("entities", []))
     actor_ids = None
+    if independent:
+        messages.append({"role": "user", "content": (
+            "Also return canonical_state_review: an explicit consistent boolean and a source-grounded explanation. "
+            "Check the ORIGINAL description, all starting entity fields and the ACTUAL compiled rules against the "
+            "builtin contracts below. Identify every representation of the same CURRENT material fact, including "
+            "semantic aliases in world_records. Reject duplicate current technical condition, validation, hold, stance "
+            "or assent truth that relevant transitions do not keep consistent. In particular a repair must not leave "
+            "a second field still asserting the current actual condition is failed. Do not reject immutable historical "
+            "reports or past measurements just because they remain unchanged after a repair. Explain which fields "
+            "own current truth and how their writers preserve it, citing the source. Never infer authority from a "
+            "field's name alone. Mechanical findings and actor privacy judgments remain separate.\n" +
+            json.dumps({"builtin_semantics": builtin_semantics(bundle)}, indent=1))})
     if "actor_information" in bundle:
         actor_ids = list(bundle["actor_information"]["actors"])
         messages.append({"role": "user", "content": (
@@ -191,14 +237,27 @@ def review_rules(description: str, bundle: dict[str, Any], causal_model: dict[st
                         "builtin_semantics": builtin_semantics(bundle),
                         "initial_actor_inputs": initial_actor_inputs(bundle, causal_model)}, indent=1))})
     value, result = call_llm_json_schema(
-        model, messages, review_schema(ids, actor_ids), schema_name="world_substrate_rules_review", task=TASK,
+        model, messages, review_schema(ids, actor_ids, independent=independent), schema_name="world_substrate_rules_review", task=TASK,
         trace_id=trace_id, max_budget=max_budget, max_tokens=16000, reasoning_effort=reasoning_effort,
         model_justification="independent rules review on another model family (declared-laws plan, Q44)",
     )
-    if actor_ids is not None:
-        require_actor_input_review(value, actor_ids)
-    return read_findings(value, ids), float(getattr(result, "cost", 0.0) or 0.0)
+    findings = read_findings(value, ids)
+    failures = []
+    for check in ([lambda: require_actor_input_review(value, actor_ids)] if actor_ids is not None else []) + (
+            [lambda: require_canonical_state_review(value)] if independent else []):
+        try:
+            check()
+        except SourceDraftReviewError as error:
+            failures.append(error)
+    if failures:
+        # A malformed gate cannot be disguised as a repairable negative on another gate.
+        error = next((e for e in failures if not e.repairable), failures[0])
+        error.feedback = "\n".join(e.feedback for e in failures)
+        error.full_review = value
+        raise error
+    return findings, float(getattr(result, "cost", 0.0) or 0.0)
 
 
 __all__ = ["MISSING", "REVIEW_MODEL", "TASK", "read_findings", "review_rules", "review_schema", "rule_ids",
-           "starting_values", "ActorInputPrivacyError", "require_actor_input_review", "initial_actor_inputs"]
+           "starting_values", "SourceDraftReviewError", "ActorInputPrivacyError", "CanonicalStateAuthorityError",
+           "require_actor_input_review", "require_canonical_state_review", "initial_actor_inputs"]
