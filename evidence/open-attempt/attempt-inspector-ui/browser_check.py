@@ -63,6 +63,13 @@ async def main():
     assert 'fixture-original' in result and 'fixture-settlement' not in result and 'No recorded state changes.' in result
     assert 'fixture-settlement' in settlement and 'fixture.value: 0 → 1' in settlement and 'Recorded status: accepted' in settlement
     checks.extend([f'{width}: model-free original result retains original event/no changes',f'{width}: model-free settlement retains own status/event/changes'])
+   elif width==1440:
+    response=await context.request.get('https://brianmills.dev/world-builder/api/share/T-e9dYLdIi61')
+    actual=await response.json()
+    retained=json.loads((ROOT/'evidence/i0-i1/visible-run-20261113/share.json').read_text())
+    for key in ('rounds','actor_inputs','world_fingerprint'):
+     assert actual[key]==retained[key],key
+     checks.append(f'live recording unchanged: {key}')
    await context.close()
   await browser.close()
  assert not errors,errors
