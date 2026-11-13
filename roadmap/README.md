@@ -21,6 +21,12 @@ Ari repairs in round2 and revalidates in round3; public validation passes and th
 
 Executed current deployment b3823f6. Fresh generation plus six autonomous rounds:51nativecalls,228960tokens,measured$0.125753265,181.641821237seconds. The original authoring candidate failed review; the existing repair path produced the adopted candidate. The review's individual objections are retained as judgments, not treated as proven leaks. [Full trace and limits](../evidence/i0-i1/visible-run-20261113/TRACE_READ.md). Eighteen native actor inputs/outputs and twenty continuation comparisons match. Scientific or general semantic fidelity is not certified.
 
+## Run inspector display correction (2026-11-13)
+
+The existing Analyst view now shows Original words, Interpretation and Result together when an attempt square is selected under Why things were refused. Grounded fields, quoted bindings, unmatched nearest-move/reason and exact recorded changes stay distinct. Open the six-round recording above and select Bo in round1 to see the retained negation error directly, without opening JSON. Actor context hides this analyst evidence.
+
+Q26/G17 closes on saved S1 accepted/refused/unmatched rows plus the pump recording at desktop and phone widths (`evidence/open-attempt/attempt-inspector-ui/checks.json`); no new model call or simulation. The original recording remains unchanged. S1 still owes A2/A3 and the complete A1/A4 demonstrations retain their separate requirements.
+
 ## Delivered polarity and authority correction (2026-11-13)
 
 Brian approved fixing the fresh run's negation/authority failures. [PR387](https://github.com/BrianMills2718/world-substrate/pull/387) merged and deployment is verified at `2ab2933e55dfe5c1c58514a3b06e052cdb30c012`, with llm_client4ee0cf8. [Inspect Bo's unchanged non-assent](https://hive.brianmills.dev/plans/world-substrate/main/proposals/open-attempt/review-page/polarity-bo.html) and [Ari's authority-object repair](https://hive.brianmills.dev/plans/world-substrate/main/proposals/open-attempt/review-page/polarity-ari.html). The views display exact original words, quoted field bindings, separate consequences and nine native checks. The original autonomous recording above remains unchanged.

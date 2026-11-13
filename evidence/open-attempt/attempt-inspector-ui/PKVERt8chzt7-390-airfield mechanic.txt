@@ -1,0 +1,10 @@
+Original words
+wait
+Interpretation
+wait
+Reading: the person waited
+Result
+Recorded status: no action.
+Round 1: Airfield mechanic chose to wait. They believed: I am the mechanic at the airfield, and the helicopter is visible and marked ready. I have no other current information or task. They expected: Waiting should leave the helicopter and situation unchanged while I remain available.
+
+State changes were not recorded for this attempt.

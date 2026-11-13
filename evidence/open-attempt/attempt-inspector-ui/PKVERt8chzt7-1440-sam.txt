@@ -1,0 +1,13 @@
+Original words
+I speak to the airfield dispatcher at the office desk and ask to be assigned the waiting training session.
+Interpretation
+request training
+queue: Training requests (training-requests) — from “waiting training session”
+Reading: The words “ask to be assigned” describe requesting training to be added to the waiting requests.
+Result
+Recorded status: precondition failed.
+Round 1: Sam tried to request training. Refused, because this check was false: you are the dispatcher Decided by rule, judge not asked. They believed: I am a trainee in the office beside the hangar, with no flights yet. One training session is waiting, and the dispatcher and instructor are here. They expected: I expect asking the dispatcher to assign me the waiting session may get my training started.
+
+No recorded state changes.
+
+Recorded event: r1-e00004

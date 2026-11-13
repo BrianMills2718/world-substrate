@@ -1,0 +1,18 @@
+Original words
+I withhold assent to activation by recording my position as not assenting.
+Interpretation
+record assent
+decision: Whether to activate the prototype pump (pump-activation) — from “activation”
+position: Recorded position of bo (position-bo) — from “my position”
+Reading: The concrete operation is recording a not-assenting position on the activation decision; withholding assent describes the stance, not a separate withdrawal.
+Coverage: complete.
+Result
+Recorded status: accepted.
+Round 1: Bo — record assent. Allowed: every check held. Decided by rule, judge not asked. They believed: The pump's validation is failed and activation is on hold. I don't have evidence that it is safe, and I know I can make an independent assent decision. They expected: Withholding assent will keep my position from supporting activation while the safety concern remains unresolved.
+
+Recorded state changes:
+
+Recorded position of bo · components · actor position · assent: false → true
+Whether to activate the prototype pump · components · validation decision · assents: 0 → 1
+
+Recorded event: r1-e00002
