@@ -1266,16 +1266,17 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   }
   // Keep a copy of every entity and apply each round's recorded changes, so "is in" links follow people as they move.
   function applyRound(entities, turn) {
+    const copyValue = (value) => value !== null && typeof value === "object" ? JSON.parse(JSON.stringify(value)) : value;
     const changes = recordedEvents(turn).flatMap((ev) => ev.changes || []);
     changes.forEach((c) => {
       const m = /^entities\.([^.]+)\.(.+)$/.exec(c.path || "");
       const e = m && entities.find((x) => x.id === m[1]);
       if (!e) return;
-      if (m[2] === "location" || m[2] === "location.location_id") { e.location = c.after; return; }
+      if (m[2] === "location" || m[2] === "location.location_id") { e.location = copyValue(c.after && typeof c.after === "object" ? c.after.location_id : c.after); return; }
       const parts = m[2].split(".");
       let at = e;
       for (const p of parts.slice(0, -1)) { if (at[p] === undefined || at[p] === null) at[p] = {}; at = at[p]; }
-      at[parts[parts.length - 1]] = c.after;
+      at[parts[parts.length - 1]] = copyValue(c.after);
     });
   }
   let netViewer = null, netLoading = null;
@@ -1325,10 +1326,11 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const shape = JSON.stringify([graph.nodes.map((n) => n.id), graph.edges.map((e) => e.id)]);
     if (!netViewer) {
       // A highlight sent before the first layout is lost, so send the latest one again once it is drawn.
-      netViewer = GraphViewer.mount($("net-graph"), { graph, fullPage: false, onSelect: (pick) => { $("net-detail").textContent = pick ? netDescribe(pick.id) : ""; },
+      netViewer = GraphViewer.mount($("net-graph"), { graph, fullPage: false, onSelect: (pick) => { if (live) live.netSelectedId = pick ? pick.id : null; $("net-detail").textContent = pick ? netDescribe(pick.id) : ""; },
         onLayout: () => { if (live && live.net) netViewer.highlight(live.net.lit); } });
     } else if (shape !== live.net.shape) netViewer.update(graph);
     live.net.shape = shape;
+    $("net-detail").textContent = live.netSelectedId ? netDescribe(live.netSelectedId) : "";
     const turn = turnNow;
     const lit = turn ? [...roundTouched(turn, live.replay)].filter((id) => graph.nodes.some((n) => n.id === id)) : [];
     const litSet = new Set(lit);
@@ -1487,14 +1489,17 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   function selectSavedRound(index, eventKey) {
     if (!live || !live.replay || !live.recorded.length) return;
     const focusedEvent = document.activeElement && document.activeElement.dataset.eventId;
+    const fromHistory = document.activeElement && document.activeElement.dataset.savedHistoryEvent === "true";
     live.gen++; live.playing = false;
     live.replayIndex = Math.max(0, Math.min(live.recorded.length - 1, Number(index)));
     live.rounds = live.recorded.slice(0, live.replayIndex + 1);
     live.selectedEvent = eventKey || null;
     live.finished = savedIsFinished();
     live.net = null;
+    $("net-detail").textContent = "";
     renderLive();
-    if (focusedEvent && eventKey) { const next = $("saved-events").querySelector(`[data-event-id="${CSS.escape(eventKey)}"]`); if (next) next.focus({ preventScroll: true }); }
+    if (fromHistory) { $("saved-event-h").setAttribute("tabindex", "-1"); $("saved-event-h").focus({ preventScroll: true }); $("saved-event-h").scrollIntoView({ block: "start" }); }
+    else if (focusedEvent && eventKey) { const next = $("saved-events").querySelector(`[data-event-id="${CSS.escape(eventKey)}"]`); if (next) next.focus({ preventScroll: true }); }
   }
   function savedStateAt(turn, selected) {
     const entities = JSON.parse(JSON.stringify(world.bundle.entities));
@@ -1557,7 +1562,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const status = document.createElement("p"); status.className = "saved-event-result"; status.textContent = savedStatus(selected); box.append(status);
     if (selected.actor && !selected.settlement && !selected.ruling) {
       const reasons = (selected.event.refused_because || []).map(plainCheck);
-      const summary = selected.event.interpretation_feedback || (reasons.length ? `The installed rule refused this move because: ${reasons.join("; ")}.` : selected.event.status === "accepted" ? "The installed rule accepted this interpreted move." : selected.event.status === "unsupported_action" ? "No installed move matched these words. Any later ruling is recorded separately." : savedStatus(selected));
+      const summary = selected.event.interpretation_feedback || (reasons.length ? `The installed rule refused this move. Required checks that did not hold: ${reasons.join("; ")}.` : selected.event.status === "accepted" ? "The installed rule accepted this interpreted move." : selected.event.status === "unsupported_action" ? "No installed move matched these words. Any later ruling is recorded separately." : savedStatus(selected));
       const reading = (selected.event.attempt || {}).reading, dl = document.createElement("dl"); dl.className = "attempt-detail";
       const entry = (label, text) => { const dt = document.createElement("dt"), dd = document.createElement("dd"); dt.textContent = label; dd.textContent = text; dl.append(dt, dd); return dd; };
       entry("Original words", typeof (selected.event.attempt || {}).text === "string" ? selected.event.attempt.text : (selected.event.wanted || {}).attempt || "Not recorded for this attempt.");
