@@ -25,7 +25,7 @@ Executed current deployment b3823f6. Fresh generation plus six autonomous rounds
 
 The existing Analyst view now shows Original words, Interpretation and Result together when an attempt square is selected under Why things were refused. Grounded fields, quoted bindings, unmatched nearest-move/reason and exact recorded changes stay distinct. Open the six-round recording above and select Bo in round1 to see the retained negation error directly, without opening JSON. Actor context hides this analyst evidence.
 
-Q26/G17 closes on saved S1 accepted/refused/unmatched rows plus the pump recording at desktop and phone widths (`evidence/open-attempt/attempt-inspector-ui/checks.json`); no new model call or simulation. The original recording remains unchanged. S1 still owes A2/A3 and the complete A1/A4 demonstrations retain their separate requirements.
+Q26/G17 closes on saved S1 accepted/refused/unmatched rows plus the pump recording at desktop and phone widths (`evidence/open-attempt/attempt-inspector-ui/checks.json`); no new model call or simulation. PR389 is merged and deployed at `f43846fa60cedbb50af754903d736c74d1120b2e`. Local browser78/78 and live77/77 checks pass; live rounds, actor inputs and world fingerprint equal the retained recording (`evidence/open-attempt/attempt-inspector-ui/live-checks.json`). The original recording remains unchanged. S1 still owes A2/A3 and the complete A1/A4 demonstrations retain their separate requirements.
 
 ## Delivered polarity and authority correction (2026-11-13)
 
