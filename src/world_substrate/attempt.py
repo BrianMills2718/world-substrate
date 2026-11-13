@@ -35,6 +35,8 @@ UNMATCHED_KIND = "unmatched-attempt"  # never a generated kind: generated kinds 
 NONE = "none"
 WAIT_KIND = "wait"
 RESERVED_FIELDS = ("actor", "kind", "base_revision", "controller")
+COVERAGE_STATUSES = ("complete", "requires_decomposition", "partial", "ambiguous")
+REJECTION_MESSAGE = "No part of this attempt was carried out. Choose one concrete operation and try again."
 
 
 def interpreter_schema(signatures: list[dict[str, Any]]) -> dict[str, Any]:
@@ -44,8 +46,19 @@ def interpreter_schema(signatures: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "type": "object",
         "additionalProperties": False,
-        "required": ["kind", "fields", "nearest_kind", "asks", "names", "why"],
+        "required": ["kind", "fields", "nearest_kind", "asks", "names", "why", "coverage"],
         "properties": {
+            "coverage": {
+                "type": "object", "additionalProperties": False,
+                "required": ["status", "action_spans", "unrepresented_spans"],
+                "properties": {
+                    "status": {"type": "string", "enum": list(COVERAGE_STATUSES)},
+                    "action_spans": {"type": "array", "items": {"type": "string", "minLength": 1},
+                                     "description": "Exact nonblank substrings naming the attempted operation."},
+                    "unrepresented_spans": {"type": "array", "items": {"type": "string", "minLength": 1},
+                                            "description": "Exact nonblank substrings not represented by one operation."},
+                },
+            },
             "kind": {"type": "string", "enum": kinds + [WAIT_KIND, NONE],
                      "description": "The action kind this attempt is, 'wait' for doing nothing, or 'none' if no kind fits."},
             "fields": {
@@ -92,8 +105,34 @@ def _coerce(field_type: str, raw: str) -> tuple[bool, Any]:
     return False, None
 
 
+def _coverage(value: object, attempt: str) -> dict[str, Any] | None:
+    """Validate evidence shape and exact quotes, without inferring prose meaning."""
+    if not isinstance(value, dict) or set(value) != {"status", "action_spans", "unrepresented_spans"}:
+        return None
+    status = value["status"]
+    if not isinstance(status, str) or status not in COVERAGE_STATUSES:
+        return None
+    for name in ("action_spans", "unrepresented_spans"):
+        spans = value[name]
+        if not isinstance(spans, list) or any(not isinstance(s, str) or not s.strip() or s not in attempt for s in spans):
+            return None
+    actions, remaining = value["action_spans"], value["unrepresented_spans"]
+    if status == "complete":
+        if not actions or remaining:
+            return None
+    elif not remaining or (status != "ambiguous" and not actions):
+        return None
+    return {"status": status, "action_spans": list(actions), "unrepresented_spans": list(remaining)}
+
+
+def rejection_message(reading: dict[str, Any]) -> str | None:
+    """Actor-safe result; model reasoning and world information never enter this message."""
+    return REJECTION_MESSAGE if reading.get("interpretation_rejection") else None
+
+
 def read_interpretation(value: object, attempt: str, signatures: list[dict[str, Any]],
-                        entity_ids: set[str], actor: str | None = None) -> dict[str, Any]:
+                        entity_ids: set[str], actor: str | None = None, *,
+                        require_coverage: bool = False) -> dict[str, Any]:
     """Check the model's reading against the world's kinds and entities.
 
     Returns {"kind", "fields", "quoted_spans", "nearest_kind", "why"} for a matched move, {"kind": "wait", ...} for a
@@ -105,7 +144,19 @@ def read_interpretation(value: object, attempt: str, signatures: list[dict[str, 
 
     Implements: ai-judge/pass-1-reports-what-installed-rules-compute-for-the-people-an-attempt-involves
     """
+    # Implements: semantic-binding/whole-attempt-coverage
+    # Gate before parsing even a wait: no chosen prefix or request may escape an incomplete reading.
+    coverage = None
+    if require_coverage or (isinstance(value, dict) and "coverage" in value):
+        coverage = _coverage(value.get("coverage") if isinstance(value, dict) else None, attempt)
+        rejection = "invalid_coverage" if coverage is None else coverage["status"]
+        if rejection != "complete":
+            return {"unmatched": True, "nearest_kind": NONE, "why": REJECTION_MESSAGE,
+                    "interpretation_rejection": rejection, "names": [],
+                    **({"coverage": coverage} if coverage is not None else {})}
     reading = _read(value, attempt, signatures, entity_ids, actor)
+    if coverage is not None:
+        reading["coverage"] = coverage
     if not reading.get("unmatched"):
         return reading
     asks = str(value.get("asks") or NONE) if isinstance(value, dict) else NONE
@@ -205,6 +256,7 @@ def fill_derived(reading: dict[str, Any], signatures: list[dict[str, Any]],
     missing = sorted({str(f["name"]) for f in signature.get("fields") or []} - set(fields))
     if missing:
         return {"unmatched": True, "nearest_kind": reading["kind"],
+                **({"coverage": reading["coverage"]} if "coverage" in reading else {}),
                 "why": f"the reading did not fit the world: no value for {', '.join(missing)}"}
     return {**reading, "fields": fields, "quoted_spans": spans}
 
@@ -218,6 +270,9 @@ def envelope(reading: dict[str, Any], *, actor: str, attempt: str, base_revision
     if reading.get("unmatched"):
         return {**head, "kind": UNMATCHED_KIND, "attempt": attempt,
                 "nearest_kind": reading.get("nearest_kind"), "why": reading.get("why"),
+                **({"coverage": reading["coverage"]} if "coverage" in reading else {}),
+                **({"interpretation_rejection": reading["interpretation_rejection"]}
+                   if reading.get("interpretation_rejection") else {}),
                 **({"asks": reading["asks"]} if reading.get("asks") else {}),
                 **({"names": list(reading["names"])} if reading.get("names") else {})}
     return {**head, "kind": reading["kind"], **reading["fields"]}
@@ -245,8 +300,9 @@ def interpret(attempt: str, *, actor: str, signatures: list[dict[str, Any]], ent
         model, messages, interpreter_schema(signatures), schema_name="world_substrate_attempt_reading",
         task=TASK, trace_id=trace_id, max_budget=max_budget, max_tokens=MAX_OUTPUT_TOKENS, reasoning_effort="low",
     )
-    return read_interpretation(value, attempt, signatures, set(entities), actor), float(getattr(result, "cost", 0.0) or 0.0)
+    return read_interpretation(value, attempt, signatures, set(entities), actor,
+                               require_coverage=True), float(getattr(result, "cost", 0.0) or 0.0)
 
 
 __all__ = ["NONE", "TASK", "UNMATCHED_KIND", "WAIT_KIND", "envelope", "interpret", "interpreter_schema",
-           "fill_derived", "read_interpretation", "signatures_for"]
+           "fill_derived", "read_interpretation", "rejection_message", "signatures_for"]
