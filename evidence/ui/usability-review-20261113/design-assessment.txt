@@ -1,0 +1,95 @@
+# What changed in this saved world, why, and what did each person know?
+
+Assessment A only: independent design/UX critique of `scripts/world_builder_home.html`, rendered at https://brianmills.dev/world-builder/?run=T-e9dYLdIi61. No detector findings or other reviewer assessments consumed. Fresh isolated Chromium contexts, desktop 1440×1000 and mobile 390×844; GET/HEAD/OPTIONS-only guard. No creation, model calls, run writes, or deployments. Source was read only after initial screenshots. Questions skipped: parent requested bounded independent assessment without human questions.
+
+**Verdict: the interface exposes useful evidence but does not provide a usable primary inspection journey.** It is specific to simulation in its concepts, but its composition is assembled around implementation outputs: Picture, Network, causal details, refusal matrix, and raw input records. The most prominent custom element—the animated picture—makes this run harder to understand. The clearer state-change list is subordinate to it. This is a hierarchy and interaction problem, not a request for cosmetic polish.
+
+The first screen tells me this is a replay and nothing is being decided now. It does not tell me the scenario question, who these people are, or what outcome to track. Its headline instead asks me to create a small world. On desktop the thought cards overlap; on mobile the stage is largely unreadable. Initial-view evidence: `desktop-initial.png`, `mobile-initial.png`, `desktop-full.png`.
+
+## Priority repairs, in router repair order
+
+1. **P1 — Orient the saved-run page around its actual question.** Now the first screen says “Simulate any small world” and “Say who is involved…” over an already-playing saved recording. Ari/Bo/Mara, repair, assent and pump activation arrive without scenario orientation. Recommend a scenario-specific identity, recorded-run status, initial condition and outcome of interest before playback; keep creation as a secondary action. This is the router's question-title repair, not a copywriting prescription. Evidence: initial screenshots; `title-states-what-this-is-and-for-whom`. Suggested command: `$impeccable clarify`.
+
+2. **P1 — Put one selected round and its consequences together, with direct temporal control.** Now playback advances automatically while the reader is orienting. Pause and Watch again are available, but the visible controls contain no previous/next round or seek control. To revisit round 2, the reader must replay and stop at the right time. The desktop page puts Picture, Network and round history far apart in a narrow center column. Recommend one timeline/event selector, a persistent selected round, and its attempt/result/before→after together in the main working area. Mobile should show one chosen event at readable size with the round control still reachable. Evidence: `visible-controls-end.json`, `desktop-full.png`, `paused.png`; `whole-design-visible-on-one-screen-at-the-target-viewport`. Suggested command: `$impeccable layout`.
+
+3. **P1 — Replace the crowded stage with a focused explanation of the selected event.** Now the round badge covers cards, cards cover each other, tiny object labels overlap, and the bottom action caption truncates. Phone rendering compresses the same composition instead of changing it. These are visible failures, not inferred detector warnings. Recommend a selected actor/attempt and only the objects it changed, with readable callouts and explicit before/after. Use a relationship drawing when branching/knock-on effects justify one; use compact ordered content for a simple action. Keep the world network as a secondary alternate, not a second mandatory reading stop. Evidence: `desktop-initial.png`, `mobile-initial.png`; `no-clipped-required-labels`, `no-unreadable-generated-overlap`, `overlapping-views-merged-into-one-view-with-forms-not-thinned`. Suggested commands: `$impeccable distill`, `$impeccable adapt`.
+
+4. **P1 — Keep actor information in the same selected-event context.** Now selecting Actor replaces the world/action context with a list of input records. Opening one reveals a large JSON object containing prompts, model name, schema, memory, visible state and action choices. It is exact evidence but is not an understandable answer to “what did Ari know before doing this?” Recommend a master-detail inspector bound to person AND round, separating supplied observations, prior memory, attempted action and expected outcome, with exact retained source still available. Do not equate supplied input with proof of belief, and do not replace evidence with an unverified generated summary. Evidence: `actor-ari.png`, `actor-ari-open.txt`, source lines 1335–1370. Suggested command: `$impeccable clarify`.
+
+5. **P1 — Make causal history select the event rather than merely expand a separate receipt.** Clicking Recorded position of ari in the network exposes current fields below it: holder, assent, stance and assent weight. Expanding round 3's knock-on effects shows an event-id cause, while the picture/network remain on round 6. The reader must reconstruct the link between actor, action, rule, actual effect and supplied information. Recommend one selection shared across timeline, state delta and inspector, with the exact trace one click deeper. Evidence: `network-selection.png`, `round3-cause.png`, `round3-cause.txt`; `picking-an-item-lights-its-counterparts-in-every-open-view-and-can-be-cleared`. Suggested command: `$impeccable layout`.
+
+All consequences above are evaluator predictions from interface observations, not measured user behavior. No human comprehension success rate was measured.
+
+## Concrete task walkthrough
+
+Starting state: saved run automatically playing. Intended completion: trace one action to its change, then inspect the same actor's pre-action information.
+
+- Paused the saved run with the visible Pause button. This did pause, and the button became Play.
+- The initial round-2 picture's list says Ari changed Technical condition to passing yes, previously no. That is a useful direct delta, but the stage and network do not hold the complete explanation together.
+- At round 6, selected Recorded position of ari in the graph. The inspector shows `assent: true`, `stance: supportive`, `assent weight: 0`. The picture's delta says assent changed no→yes. This supports reading a local state change, not concluding why the entire pump remained inactive.
+- Expanded round 3's knock-on effects. The visible receipt says validation passes (`r3-e00002`) caused by `r3-e00001`. The screen stayed on round 6. This is the first decisive tracing failure: selecting evidence of an earlier event does not restore its world state.
+- Switched to Actor and chose Ari. Exact retained input can be opened, and includes the private sensor detail and public procedure. The action and world state vanish from the working view. Understanding the actor requires reading prompt/schema JSON and remembering the other screen.
+
+This walkthrough diagnoses presentation and navigation only. It does not diagnose the simulation, rule validity, or cognition pipeline; full retained request/response trace analysis remains with the parent investigation.
+
+## Recommended primary workflow and tradeoff
+
+**Open saved run → understand its scenario and present outcome → select a round → select an attempted action → see actual before/after and refusal or knock-on effects → inspect that person's supplied information and exact evidence.** Start paused, or retain an obvious replay action after orientation. The timeline is the primary navigation; the selected transition and inspector are the main content. Show the complete world network on demand.
+
+Router outputs are retained alongside this report:
+
+- `saved-run-recommendation.json`: primary scroll-linked explainer; alternatives timeline, sequence diagram, staged explanatory machine. Choose **timeline** for repeatable seeking and revisiting evidence. A scroll narrative suits a fixed teaching story, but a saved run needs direct round access.
+- `action-effect-recommendation.json`: primary **state-machine view**. Use a local transition with actual before/after and applied rule; do not invent a complete state machine from partial evidence. A staged explainer is an alternative for teaching a mechanism, less useful for arbitrary recorded-event inspection.
+- `actor-input-recommendation.json`: primary **master-detail**. Person/round selection plus structured input detail preserves evidence and repeatable lookup. An answer card may help orientation but is insufficient as the evidence inspector.
+
+Tradeoff: this reduces the prominence of an animated “world” and the all-world network. It improves the user's ability to verify cause and state at the cost of less ambient spectacle and one extra action to browse the whole model. The picture can remain when spatial location actually explains the event; this pump example does not visibly justify it as the front door.
+
+Router gap: the generic catalog emits chat and training checks for this simple replay inspector. Those are marked not applicable, not reasons to add a chat or tutorial product. It also cannot establish that retained actor input is a person's belief; preserve that distinction in the source contract.
+
+## Nielsen heuristic assessment
+
+Scores use the skill's 0–4 quality scale, where 4 is best. They are expert judgments, not empirical user measurements.
+
+| Heuristic | Score | Evidence |
+|---|---:|---|
+| Status visibility | 2 | Replay/no-AI status and round counters are explicit, but scenario outcome is not prominent and actor mode loses world context. |
+| Match to real-world language | 2 | “Changed this round” and “Why things were refused” help; `decision.action`, `wave 1`, and raw schemas require specialist translation. |
+| Control and freedom | 1 | Pause/replay works; no direct round seek/back/step in visible controls. |
+| Consistency | 2 | Outer controls are coherent; the light picture, dark network and JSON viewer use unrelated representations of the same subjects. |
+| Error prevention | N/A | Read-only saved-run path; creation and destructive operations were explicitly out of scope. |
+| Recognition over recall | 1 | User must remember an event while changing mode, inspecting JSON or moving down the page. |
+| Flexibility/efficiency | 1 | Graph focus helps, but replay timing is the only visible return-to-earlier-round route. No keyboard accelerator claim verified. |
+| Aesthetic/minimalist design | 1 | Large stage contains overlapping details; high-value deltas and history are below it. |
+| Error recovery | N/A | No application error was induced; simulation refusals are domain outcomes, not UI error-recovery tests. |
+| Help/documentation | 2 | Legends and contextual explanations exist; no guided trace of the principal inspection task. |
+| **Total** | **12/32 (37.5%, Poor)** | Eight applicable heuristics. |
+
+## Cognitive load and emotional journey
+
+High extraneous cognitive load: six of eight checklist items fail for the critical trace task—single focus, chunking, hierarchy, one decision at a time, working-memory support, and purposeful progressive disclosure. Basic grouping and the small number of top-level mode choices are strengths. This is not principally a giant navigation-menu problem. Specific crowded decision/content areas: 8 simultaneously presented graph objects in the initial round-2 view; the exact actor input contains 19 offered-action entries in the retained round-1 context. These are measured counts from captured content, not claims of a universal four-item usability law.
+
+The expected journey is curiosity → confusion during unsolicited motion → effort to pause → partial relief from a concrete delta → frustration when tracing requires another screen. This is a predicted emotional trajectory, not observed participant behavior. The end state clearly says the recording ended, but provides no similarly prominent explanation of the world outcome.
+
+## Strengths to preserve
+
+- Honest replay status: “nothing is being decided now” and explicit end-of-recording state prevent confusing replay with paid/live execution.
+- Actual before/after values in “Changed this round” make real changes inspectable. Keep these prominent.
+- Exact retained actor inputs are available, and focused network subsets reduce full-world clutter. Improve their presentation without hiding provenance.
+
+## Persona risks and smaller observations
+
+- First-timer: cannot identify the pump decision from the first headline; must decode names and action terms before understanding the task.
+- Power user: cannot jump straight back to round 2 after finishing; historical receipts do not restore historical focus.
+- Mobile reader: thought cards and object labels become a collision of text in a tiny stage. This is directly observed, not a predicted responsive bug.
+- Two different “More” disclosures offer little prediction of destination. Native-looking select controls contrast with the custom buttons. These are secondary to the workflow failures.
+- Rule refusal and words-not-matched are distinguishable in detailed text, but the single refused total and orange state need care: do not make the reader infer that every refusal was a rule decision.
+
+## Evidence and verification limits
+
+All artifacts are scratch evidence under `/tmp/ws-ui-critique-A`; the parent owns durable notes. `browser_capture.py`, `interactions.py`, and `detail_capture.py` completed with exit 0 after setup corrections. Initial captures cover 2 viewport contexts. Interaction captures cover Pause, Actor/Ari/input disclosure, resumed replay, refusal disclosure, graph selection and round-3 cause disclosure. Browser processes were closed; no local server was started.
+
+Three use-case JSON files and three recommendation JSON files were produced with `npm run --silent recommend` from the router repository, exit 0. Strict disposition commands each exited 3 because the reviewed surface fails checks, not because coverage is missing: saved-run 30 required + 85 advisory answered; action-effect 13 + 60; actor-input 15 + 56. Across their deduplicated quality checks: 107 dispositioned, 58 failed, 17 satisfied, 20 not applicable, 12 explicitly unverified/skipped. These counts are checklist accounting, not a design score. `check-dispositions.json` gives each reason; the recommendation-specific records retain choice justification. The tool prints “Built timeline” for an alternative selection; no artifact was built—this is solely a proposed repair.
+
+Not verified: keyboard/screen-reader conformance, measured contrast, exhaustive geometry/tooltip timing, untested run shapes, creation/live execution, paid-model behavior, complete engine/request-response trace semantics, human comprehension or stakeholder acceptance. Those checks are explicitly skipped rather than silently passed. No detector was read. No product files were changed.
+
+Feedback: the first scratch script was named `inspect.py`, shadowing Python's standard `inspect` module and preventing Playwright import; renamed it to `browser_capture.py`, then capture passed. Router composition defaults also prescribe unrelated chat/training patterns for a replay inspector; treating these as optional and recording explicit non-applicability avoids scope inflation.

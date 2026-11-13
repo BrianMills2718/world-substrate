@@ -1,0 +1,75 @@
+{
+  "stakeholder": "Brian or a newcomer inspecting a saved small-world simulation",
+  "intent": [
+    "inspect",
+    "understand"
+  ],
+  "informationStructure": [
+    "list",
+    "document"
+  ],
+  "tasks": [
+    "select",
+    "inspect",
+    "lookup"
+  ],
+  "itemDetail": "in-page",
+  "scale": {
+    "items": 3,
+    "density": "low"
+  },
+  "interaction": {
+    "mode": "exploratory",
+    "dynamics": "interactive"
+  },
+  "audience": {
+    "expertise": "mixed",
+    "domainFamiliarity": "novice",
+    "notationFamiliarity": "novice",
+    "frequency": "occasional"
+  },
+  "consequence": {
+    "risk": "low",
+    "reversibility": "reversible"
+  },
+  "constraints": {
+    "mobile": true,
+    "viewports": [
+      {
+        "width": 1440,
+        "height": 1000
+      },
+      {
+        "width": 390,
+        "height": 844
+      }
+    ],
+    "accessibility": "high",
+    "provenance": true
+  },
+  "surfaceContext": {
+    "medium": "application"
+  },
+  "representationRole": "explanatory",
+  "abstractionLevel": "overview",
+  "id": "actor-input",
+  "title": "What information did this person receive?",
+  "concern": "Inspect retained inputs supplied to one actor before the selected round without mistaking world truth or generated analysis for that actor knowledge.",
+  "entities": [
+    "actor",
+    "input record"
+  ],
+  "relationships": [
+    "actor receives input record"
+  ],
+  "relationshipEnds": [
+    {
+      "relationship": "actor receives input record",
+      "from": "actor",
+      "to": "input record"
+    }
+  ],
+  "successCriteria": [
+    "The reader distinguishes supplied information from world truth and can open exact retained evidence."
+  ]
+}

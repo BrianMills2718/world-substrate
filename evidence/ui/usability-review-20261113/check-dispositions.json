@@ -1,0 +1,430 @@
+{
+  "a-changed-default-is-visible-to-a-returning-reader": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "agent-adds-to-the-readers-choices-unless-asked-to-replace-verified-with-live-asks": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "chat-led-page-has-conversation-plus-view-panel-and-a-non-empty-first-screen": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "chat-suggestions-are-chips-below-the-input-and-ask-in-one-click": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "comparisons-use-identical-small-frames": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "direct-manipulation-produces-an-explanatory-consequence": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "every-standard-code-labels-a-pure-view-and-custom-views-say-so": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "if-constructive-practice-is-present-actions-come-from-semantic-model": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "if-constructive-practice-is-present-feedback-explains-the-governing-rule": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "if-prediction-is-used-state-does-not-change-before-commit": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "if-scaffolding-fade-is-present-core-accessibility-controls-remain-available": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "if-transfer-assessment-is-present-at-least-one-task-uses-an-unseen-state-route-or-example": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "if-transfer-assessment-is-present-feedback-occurs-after-commitment": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "if-transfer-assessment-is-present-guidance-does-not-give-away-the-answer": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "manipulation-consequence-legibility": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "non-specialist-front-door-is-a-question-with-views-delivered-and-catalog-secondary": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "one-new-semantic-distinction-per-instructional-step": {
+    "status": "na",
+    "why": "Saved recording inspection: no changed-default migration, agent-led navigation, chat, comparative variants, constructive practice, standards notation, or transfer assessment is in this scoped workflow. Do not add these capabilities merely to satisfy router defaults."
+  },
+  "a-person-would-pin-it-on-a-wall": {
+    "status": "na",
+    "why": "An interactive run inspector is not a wall-poster artifact; pin-up preference is not a useful acceptance question here."
+  },
+  "arrowhead-clearance": {
+    "status": "skipped",
+    "why": "Not verified by this independent UX pass: exhaustive geometry, focus/keyboard, timing, implementation/layout stability, source-level tests and contrast are outside the inspected action path. Screenshots are evidence of visible layout only; no conformance claim."
+  },
+  "checks-measure-painted-geometry-after-fonts-load-at-each-supported-viewport": {
+    "status": "skipped",
+    "why": "Not verified by this independent UX pass: exhaustive geometry, focus/keyboard, timing, implementation/layout stability, source-level tests and contrast are outside the inspected action path. Screenshots are evidence of visible layout only; no conformance claim."
+  },
+  "drawing-laid-out-by-engine-with-content-and-optional-motion-layers": {
+    "status": "skipped",
+    "why": "Not verified by this independent UX pass: exhaustive geometry, focus/keyboard, timing, implementation/layout stability, source-level tests and contrast are outside the inspected action path. Screenshots are evidence of visible layout only; no conformance claim."
+  },
+  "edge-label-clearance": {
+    "status": "skipped",
+    "why": "Not verified by this independent UX pass: exhaustive geometry, focus/keyboard, timing, implementation/layout stability, source-level tests and contrast are outside the inspected action path. Screenshots are evidence of visible layout only; no conformance claim."
+  },
+  "hovering-or-focusing-every-control-in-a-real-browser-shows-a-styled-tooltip-within-200ms-and-tap-works-on-phones": {
+    "status": "skipped",
+    "why": "Not verified by this independent UX pass: exhaustive geometry, focus/keyboard, timing, implementation/layout stability, source-level tests and contrast are outside the inspected action path. Screenshots are evidence of visible layout only; no conformance claim."
+  },
+  "keyboard-reachable-controls": {
+    "status": "skipped",
+    "why": "Not verified by this independent UX pass: exhaustive geometry, focus/keyboard, timing, implementation/layout stability, source-level tests and contrast are outside the inspected action path. Screenshots are evidence of visible layout only; no conformance claim."
+  },
+  "observed-user-confusions-become-regression-cases": {
+    "status": "skipped",
+    "why": "Not verified by this independent UX pass: exhaustive geometry, focus/keyboard, timing, implementation/layout stability, source-level tests and contrast are outside the inspected action path. Screenshots are evidence of visible layout only; no conformance claim."
+  },
+  "persistent-object-continuity": {
+    "status": "skipped",
+    "why": "Not verified by this independent UX pass: exhaustive geometry, focus/keyboard, timing, implementation/layout stability, source-level tests and contrast are outside the inspected action path. Screenshots are evidence of visible layout only; no conformance claim."
+  },
+  "persistent-visual-object-retains-identity-across-steps": {
+    "status": "skipped",
+    "why": "Not verified by this independent UX pass: exhaustive geometry, focus/keyboard, timing, implementation/layout stability, source-level tests and contrast are outside the inspected action path. Screenshots are evidence of visible layout only; no conformance claim."
+  },
+  "stable-generated-layout": {
+    "status": "skipped",
+    "why": "Not verified by this independent UX pass: exhaustive geometry, focus/keyboard, timing, implementation/layout stability, source-level tests and contrast are outside the inspected action path. Screenshots are evidence of visible layout only; no conformance claim."
+  },
+  "stable-layout-across-steps": {
+    "status": "skipped",
+    "why": "Not verified by this independent UX pass: exhaustive geometry, focus/keyboard, timing, implementation/layout stability, source-level tests and contrast are outside the inspected action path. Screenshots are evidence of visible layout only; no conformance claim."
+  },
+  "theme-contrast": {
+    "status": "skipped",
+    "why": "Not verified by this independent UX pass: exhaustive geometry, focus/keyboard, timing, implementation/layout stability, source-level tests and contrast are outside the inspected action path. Screenshots are evidence of visible layout only; no conformance claim."
+  },
+  "balanced-panel-sizing": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "balanced-whitespace": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "context-quiet-subject-loud": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "details-do-not-obscure-context": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "diagram-text-is-dom-or-svg-and-no-label-overlaps-a-box-or-another-label": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "each-concept-drawn-in-a-shape-that-mirrors-its-behaviour": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "each-drawing-shows-relations-a-list-cannot-linear-sequences-are-lists": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "each-element-encodes-its-answer-visually-text-only-where-no-visual-form-fits": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "embedded-tool-has-no-label-clashing-with-host-full-area-and-honest-status": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "every-diagram-has-a-full-page-mode-whose-labels-are-readable": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "every-drawing-fits-its-frame-on-load-and-zooms-and-pans-within-it": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "every-mark-carries-information": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "first-frame-legibility": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "focal-hierarchy": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "minimum-readable-font-size": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "no-block-of-prose-longer-than-the-drawing-it-explains": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "no-clipped-labels": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "no-clipped-required-labels": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "no-critical-text-node-overlap": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "no-critical-text-text-overlap": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "no-ellipsis-or-clipped-text-in-rendered-page": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "no-required-controls-offscreen": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "no-unreadable-generated-overlap": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "one-element-dominates-by-size-weight-or-contrast": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "one-primary-drawing-with-callouts-not-parallel-columns-of-text": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "phone-and-laptop-each-have-a-layout-that-uses-their-width": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "reasonable-line-length": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "white-space-separates-groups-and-carries-hierarchy": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "whole-design-visible-on-one-screen-at-the-target-viewport": {
+    "status": "failed",
+    "why": "desktop-initial.png and mobile-initial.png: the embedded picture overlaps thought cards, central round label and object labels; mobile scales this into a cramped stage. desktop-full.png: the narrow centered column leaves large outer space while action, delta, graph and history span multiple screens. Required information is clipped, small or separated."
+  },
+  "abstraction-levels-remain-linked-to-the-same-semantic-object": {
+    "status": "failed",
+    "why": "network-selection.png and actor-ari.png: graph selection reveals only current fields below the graph; picture, history and exact actor input remain separate. Actor mode replaces the action/world context. Selecting historical knock-on details does not select that round in the picture. Same subjects have unrelated marks and no shared visible focus."
+  },
+  "every-named-element-opens-its-subject-on-click-or-tap": {
+    "status": "failed",
+    "why": "network-selection.png and actor-ari.png: graph selection reveals only current fields below the graph; picture, history and exact actor input remain separate. Actor mode replaces the action/world context. Selecting historical knock-on details does not select that round in the picture. Same subjects have unrelated marks and no shared visible focus."
+  },
+  "every-object-reveals-more-on-click-nothing-is-a-dead-end": {
+    "status": "failed",
+    "why": "network-selection.png and actor-ari.png: graph selection reveals only current fields below the graph; picture, history and exact actor input remain separate. Actor mode replaces the action/world context. Selecting historical knock-on details does not select that round in the picture. Same subjects have unrelated marks and no shared visible focus."
+  },
+  "every-pane-resizable-by-drag-and-keyboard-and-one-inspector-holds-click-details": {
+    "status": "failed",
+    "why": "network-selection.png and actor-ari.png: graph selection reveals only current fields below the graph; picture, history and exact actor input remain separate. Actor mode replaces the action/world context. Selecting historical knock-on details does not select that round in the picture. Same subjects have unrelated marks and no shared visible focus."
+  },
+  "every-section-rolls-up-and-its-header-names-the-current-selection-and-the-controls-fit-one-pass": {
+    "status": "failed",
+    "why": "network-selection.png and actor-ari.png: graph selection reveals only current fields below the graph; picture, history and exact actor input remain separate. Actor mode replaces the action/world context. Selecting historical knock-on details does not select that round in the picture. Same subjects have unrelated marks and no shared visible focus."
+  },
+  "every-view-stays-listed-in-sight-while-others-are-open-and-views-open-from-it-or-the-agent": {
+    "status": "failed",
+    "why": "network-selection.png and actor-ari.png: graph selection reveals only current fields below the graph; picture, history and exact actor input remain separate. Actor mode replaces the action/world context. Selecting historical knock-on details does not select that round in the picture. Same subjects have unrelated marks and no shared visible focus."
+  },
+  "overlapping-views-merged-into-one-view-with-forms-not-thinned": {
+    "status": "failed",
+    "why": "network-selection.png and actor-ari.png: graph selection reveals only current fields below the graph; picture, history and exact actor input remain separate. Actor mode replaces the action/world context. Selecting historical knock-on details does not select that round in the picture. Same subjects have unrelated marks and no shared visible focus."
+  },
+  "persistent-selection-visible": {
+    "status": "failed",
+    "why": "network-selection.png and actor-ari.png: graph selection reveals only current fields below the graph; picture, history and exact actor input remain separate. Actor mode replaces the action/world context. Selecting historical knock-on details does not select that round in the picture. Same subjects have unrelated marks and no shared visible focus."
+  },
+  "picking-an-item-lights-its-counterparts-in-every-open-view-and-can-be-cleared": {
+    "status": "failed",
+    "why": "network-selection.png and actor-ari.png: graph selection reveals only current fields below the graph; picture, history and exact actor input remain separate. Actor mode replaces the action/world context. Selecting historical knock-on details does not select that round in the picture. Same subjects have unrelated marks and no shared visible focus."
+  },
+  "reader-can-point-to-where-any-one-fact-lives": {
+    "status": "failed",
+    "why": "network-selection.png and actor-ari.png: graph selection reveals only current fields below the graph; picture, history and exact actor input remain separate. Actor mode replaces the action/world context. Selecting historical knock-on details does not select that round in the picture. Same subjects have unrelated marks and no shared visible focus."
+  },
+  "relationships-drawn-not-implied-by-adjacency-or-links": {
+    "status": "failed",
+    "why": "network-selection.png and actor-ari.png: graph selection reveals only current fields below the graph; picture, history and exact actor input remain separate. Actor mode replaces the action/world context. Selecting historical knock-on details does not select that round in the picture. Same subjects have unrelated marks and no shared visible focus."
+  },
+  "same-object-same-mark-across-every-view": {
+    "status": "failed",
+    "why": "network-selection.png and actor-ari.png: graph selection reveals only current fields below the graph; picture, history and exact actor input remain separate. Actor mode replaces the action/world context. Selecting historical knock-on details does not select that round in the picture. Same subjects have unrelated marks and no shared visible focus."
+  },
+  "same-role-same-treatment-everywhere": {
+    "status": "failed",
+    "why": "network-selection.png and actor-ari.png: graph selection reveals only current fields below the graph; picture, history and exact actor input remain separate. Actor mode replaces the action/world context. Selecting historical knock-on details does not select that round in the picture. Same subjects have unrelated marks and no shared visible focus."
+  },
+  "sources-listed-beside-views-and-picking-one-highlights-what-rests-on-it": {
+    "status": "failed",
+    "why": "network-selection.png and actor-ari.png: graph selection reveals only current fields below the graph; picture, history and exact actor input remain separate. Actor mode replaces the action/world context. Selecting historical knock-on details does not select that round in the picture. Same subjects have unrelated marks and no shared visible focus."
+  },
+  "structure-earned-by-content-not-imposed-taxonomy": {
+    "status": "failed",
+    "why": "network-selection.png and actor-ari.png: graph selection reveals only current fields below the graph; picture, history and exact actor input remain separate. Actor mode replaces the action/world context. Selecting historical knock-on details does not select that round in the picture. Same subjects have unrelated marks and no shared visible focus."
+  },
+  "clear-primary-action": {
+    "status": "failed",
+    "why": "desktop-initial.png starts with generic creation instructions above an already-playing saved run, without a scenario goal or a question about this result. Round details use internal event ids and action names. Diagnostic cold read could identify replay but could not explain the world question from headline and picture. No timed human comprehension acceptance is claimed."
+  },
+  "cold-reader-gets-the-mechanism-in-sixty-seconds": {
+    "status": "failed",
+    "why": "desktop-initial.png starts with generic creation instructions above an already-playing saved run, without a scenario goal or a question about this result. Round details use internal event ids and action names. Diagnostic cold read could identify replay but could not explain the world question from headline and picture. No timed human comprehension acceptance is claimed."
+  },
+  "expert-reference-mode-is-separate-from-guided-onboarding": {
+    "status": "failed",
+    "why": "desktop-initial.png starts with generic creation instructions above an already-playing saved run, without a scenario goal or a question about this result. Round details use internal event ids and action names. Diagnostic cold read could identify replay but could not explain the world question from headline and picture. No timed human comprehension acceptance is claimed."
+  },
+  "first-run-does-not-require-expert-exploration": {
+    "status": "failed",
+    "why": "desktop-initial.png starts with generic creation instructions above an already-playing saved run, without a scenario goal or a question about this result. Round details use internal event ids and action names. Diagnostic cold read could identify replay but could not explain the world question from headline and picture. No timed human comprehension acceptance is claimed."
+  },
+  "form-matches-job-lists-scan-tables-compare-flows-transition-maps-connect": {
+    "status": "failed",
+    "why": "desktop-initial.png starts with generic creation instructions above an already-playing saved run, without a scenario goal or a question about this result. Round details use internal event ids and action names. Diagnostic cold read could identify replay but could not explain the world question from headline and picture. No timed human comprehension acceptance is claimed."
+  },
+  "headline-and-picture-alone-convey-the-point-since-that-is-all-most-people-read": {
+    "status": "failed",
+    "why": "desktop-initial.png starts with generic creation instructions above an already-playing saved run, without a scenario goal or a question about this result. Round details use internal event ids and action names. Diagnostic cold read could identify replay but could not explain the world question from headline and picture. No timed human comprehension acceptance is claimed."
+  },
+  "likely-wrong-readings-are-explicitly-disambiguated": {
+    "status": "failed",
+    "why": "desktop-initial.png starts with generic creation instructions above an already-playing saved run, without a scenario goal or a question about this result. Round details use internal event ids and action names. Diagnostic cold read could identify replay but could not explain the world question from headline and picture. No timed human comprehension acceptance is claimed."
+  },
+  "novice-can-read-a-simple-example-before-seeing-the-full-model": {
+    "status": "failed",
+    "why": "desktop-initial.png starts with generic creation instructions above an already-playing saved run, without a scenario goal or a question about this result. Round details use internal event ids and action names. Diagnostic cold read could identify replay but could not explain the world question from headline and picture. No timed human comprehension acceptance is claimed."
+  },
+  "reading-order-is-obvious-without-instructions": {
+    "status": "failed",
+    "why": "desktop-initial.png starts with generic creation instructions above an already-playing saved run, without a scenario goal or a question about this result. Round details use internal event ids and action names. Diagnostic cold read could identify replay but could not explain the world question from headline and picture. No timed human comprehension acceptance is claimed."
+  },
+  "terms-are-defined-before-first-use": {
+    "status": "failed",
+    "why": "desktop-initial.png starts with generic creation instructions above an already-playing saved run, without a scenario goal or a question about this result. Round details use internal event ids and action names. Diagnostic cold read could identify replay but could not explain the world question from headline and picture. No timed human comprehension acceptance is claimed."
+  },
+  "title-states-what-this-is-and-for-whom": {
+    "status": "failed",
+    "why": "desktop-initial.png starts with generic creation instructions above an already-playing saved run, without a scenario goal or a question about this result. Round details use internal event ids and action names. Diagnostic cold read could identify replay but could not explain the world question from headline and picture. No timed human comprehension acceptance is claimed."
+  },
+  "elements-share-a-small-set-of-edges": {
+    "status": "satisfied",
+    "why": "Scoped evidence: desktop-full.png shows aligned outer blocks and genuine collapsible groups, explicit legend words and focused subset (8 of 28 boxes); mobile-initial.png outer controls wrap without visible page overflow; actor-ari-open.txt exposes retained source. No repeated superseded version observed. Picture-label failures are recorded separately; this does not certify whole-page readability."
+  },
+  "enclosure-nesting-at-most-two-levels": {
+    "status": "satisfied",
+    "why": "Scoped evidence: desktop-full.png shows aligned outer blocks and genuine collapsible groups, explicit legend words and focused subset (8 of 28 boxes); mobile-initial.png outer controls wrap without visible page overflow; actor-ari-open.txt exposes retained source. No repeated superseded version observed. Picture-label failures are recorded separately; this does not certify whole-page readability."
+  },
+  "every-encoding-explained-on-the-same-screen": {
+    "status": "satisfied",
+    "why": "Scoped evidence: desktop-full.png shows aligned outer blocks and genuine collapsible groups, explicit legend words and focused subset (8 of 28 boxes); mobile-initial.png outer controls wrap without visible page overflow; actor-ari-open.txt exposes retained source. No repeated superseded version observed. Picture-label failures are recorded separately; this does not certify whole-page readability."
+  },
+  "every-navigation-item-has-content-and-stays-or-shows-its-way-back": {
+    "status": "satisfied",
+    "why": "Scoped evidence: desktop-full.png shows aligned outer blocks and genuine collapsible groups, explicit legend words and focused subset (8 of 28 boxes); mobile-initial.png outer controls wrap without visible page overflow; actor-ari-open.txt exposes retained source. No repeated superseded version observed. Picture-label failures are recorded separately; this does not certify whole-page readability."
+  },
+  "gap-between-groups-larger-than-gap-within": {
+    "status": "satisfied",
+    "why": "Scoped evidence: desktop-full.png shows aligned outer blocks and genuine collapsible groups, explicit legend words and focused subset (8 of 28 boxes); mobile-initial.png outer controls wrap without visible page overflow; actor-ari-open.txt exposes retained source. No repeated superseded version observed. Picture-label failures are recorded separately; this does not certify whole-page readability."
+  },
+  "no-control-overlap": {
+    "status": "satisfied",
+    "why": "Scoped evidence: desktop-full.png shows aligned outer blocks and genuine collapsible groups, explicit legend words and focused subset (8 of 28 boxes); mobile-initial.png outer controls wrap without visible page overflow; actor-ari-open.txt exposes retained source. No repeated superseded version observed. Picture-label failures are recorded separately; this does not certify whole-page readability."
+  },
+  "no-generated-defaults-cream-serif-card-kit-caps-labels-middle-dots": {
+    "status": "satisfied",
+    "why": "Scoped evidence: desktop-full.png shows aligned outer blocks and genuine collapsible groups, explicit legend words and focused subset (8 of 28 boxes); mobile-initial.png outer controls wrap without visible page overflow; actor-ari-open.txt exposes retained source. No repeated superseded version observed. Picture-label failures are recorded separately; this does not certify whole-page readability."
+  },
+  "no-page-level-horizontal-overflow": {
+    "status": "satisfied",
+    "why": "Scoped evidence: desktop-full.png shows aligned outer blocks and genuine collapsible groups, explicit legend words and focused subset (8 of 28 boxes); mobile-initial.png outer controls wrap without visible page overflow; actor-ari-open.txt exposes retained source. No repeated superseded version observed. Picture-label failures are recorded separately; this does not certify whole-page readability."
+  },
+  "no-superseded-version-shown-beside-its-replacement-and-alternatives-are-one-view-with-a-switch": {
+    "status": "satisfied",
+    "why": "Scoped evidence: desktop-full.png shows aligned outer blocks and genuine collapsible groups, explicit legend words and focused subset (8 of 28 boxes); mobile-initial.png outer controls wrap without visible page overflow; actor-ari-open.txt exposes retained source. No repeated superseded version observed. Picture-label failures are recorded separately; this does not certify whole-page readability."
+  },
+  "object-count-within-density-budget-or-aggregated": {
+    "status": "satisfied",
+    "why": "Scoped evidence: desktop-full.png shows aligned outer blocks and genuine collapsible groups, explicit legend words and focused subset (8 of 28 boxes); mobile-initial.png outer controls wrap without visible page overflow; actor-ari-open.txt exposes retained source. No repeated superseded version observed. Picture-label failures are recorded separately; this does not certify whole-page readability."
+  },
+  "one-highlighted-state-not-several": {
+    "status": "satisfied",
+    "why": "Scoped evidence: desktop-full.png shows aligned outer blocks and genuine collapsible groups, explicit legend words and focused subset (8 of 28 boxes); mobile-initial.png outer controls wrap without visible page overflow; actor-ari-open.txt exposes retained source. No repeated superseded version observed. Picture-label failures are recorded separately; this does not certify whole-page readability."
+  },
+  "source-remains-reviewable": {
+    "status": "satisfied",
+    "why": "Scoped evidence: desktop-full.png shows aligned outer blocks and genuine collapsible groups, explicit legend words and focused subset (8 of 28 boxes); mobile-initial.png outer controls wrap without visible page overflow; actor-ari-open.txt exposes retained source. No repeated superseded version observed. Picture-label failures are recorded separately; this does not certify whole-page readability."
+  },
+  "structural-devices-encode-information-not-decoration": {
+    "status": "satisfied",
+    "why": "Scoped evidence: desktop-full.png shows aligned outer blocks and genuine collapsible groups, explicit legend words and focused subset (8 of 28 boxes); mobile-initial.png outer controls wrap without visible page overflow; actor-ari-open.txt exposes retained source. No repeated superseded version observed. Picture-label failures are recorded separately; this does not certify whole-page readability."
+  },
+  "every-page-renders-the-shared-anatomy-with-body-content-only-inside-block-containers": {
+    "status": "na",
+    "why": "Only one canonical application page was reviewed; cross-site anatomy is outside this surface."
+  },
+  "every-representation-switch-is-labelled-and-visible-on-arrival-and-each-name-has-one-destination": {
+    "status": "satisfied",
+    "why": "desktop-initial.png and actor-ari.png: Context view selector is visible on arrival, names Analyst and Actor, and switches to the named mode. This says nothing about the loss of comparison context, recorded separately."
+  },
+  "groups-the-page-filters-by-have-one-view-relating-them-with-unlinked-groups-named": {
+    "status": "na",
+    "why": "No group-level filter taxonomy is used in this saved-run workflow."
+  },
+  "narrative-and-visual-state-remain-synchronized": {
+    "status": "satisfied",
+    "why": "end.txt: outer Round 6 and iframe Round 6 agree, and the iframe gives Recorded position of ari assent yes (was no). Time and state coexist, although no persistent seek control is offered."
+  },
+  "narrative-visual-synchronization": {
+    "status": "satisfied",
+    "why": "end.txt: outer Round 6 and iframe Round 6 agree, and the iframe gives Recorded position of ari assent yes (was no). Time and state coexist, although no persistent seek control is offered."
+  },
+  "space-and-time-shown-together-when-the-subject-changes-over-time": {
+    "status": "satisfied",
+    "why": "end.txt: outer Round 6 and iframe Round 6 agree, and the iframe gives Recorded position of ari assent yes (was no). Time and state coexist, although no persistent seek control is offered."
+  },
+  "page-carries-its-date-and-version": {
+    "status": "failed",
+    "why": "desktop-initial.png and end.txt carry round/end status but no visible recorded date or source revision for this saved run."
+  },
+  "size-and-weight-follow-importance": {
+    "status": "failed",
+    "why": "desktop-initial.png: the generic creation headline and large decorative stage outrank the actual saved-run state changes. Importance is not reflected by visual size."
+  },
+  "transient-explanations-are-at-most-five-short-points": {
+    "status": "failed",
+    "why": "actor-ari-open.txt: opening an input exposes a long JSON record with full prompts, schema and duplicated contextual material instead of a short reading layer with exact source behind it."
+  }
+}

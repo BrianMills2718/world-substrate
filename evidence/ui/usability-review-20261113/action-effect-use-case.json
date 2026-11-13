@@ -1,0 +1,92 @@
+{
+  "stakeholder": "Brian or a newcomer inspecting a saved small-world simulation",
+  "intent": [
+    "understand",
+    "trace"
+  ],
+  "informationStructure": [
+    "process",
+    "network"
+  ],
+  "tasks": [
+    "trace",
+    "inspect"
+  ],
+  "itemDetail": "in-page",
+  "scale": {
+    "items": 4,
+    "links": 3,
+    "density": "low"
+  },
+  "interaction": {
+    "mode": "exploratory",
+    "dynamics": "interactive"
+  },
+  "audience": {
+    "expertise": "mixed",
+    "domainFamiliarity": "novice",
+    "notationFamiliarity": "novice",
+    "frequency": "occasional"
+  },
+  "consequence": {
+    "risk": "low",
+    "reversibility": "reversible"
+  },
+  "constraints": {
+    "mobile": true,
+    "viewports": [
+      {
+        "width": 1440,
+        "height": 1000
+      },
+      {
+        "width": 390,
+        "height": 844
+      }
+    ],
+    "accessibility": "high",
+    "provenance": true
+  },
+  "surfaceContext": {
+    "medium": "application"
+  },
+  "representationRole": "explanatory",
+  "abstractionLevel": "overview",
+  "id": "action-effect",
+  "title": "What did this action change?",
+  "concern": "Trace one actor attempt through the applied rule to the exact before-and-after world state, including refused or blocked effects.",
+  "entities": [
+    "actor",
+    "attempt",
+    "rule",
+    "change"
+  ],
+  "relationships": [
+    "actor makes attempt",
+    "rule permits attempt",
+    "attempt causes change"
+  ],
+  "relationshipEnds": [
+    {
+      "relationship": "actor makes attempt",
+      "from": "actor",
+      "to": "attempt"
+    },
+    {
+      "relationship": "rule permits attempt",
+      "from": "rule",
+      "to": "attempt"
+    },
+    {
+      "relationship": "attempt causes change",
+      "from": "attempt",
+      "to": "change"
+    }
+  ],
+  "explanatoryFocus": [
+    "causality"
+  ],
+  "successCriteria": [
+    "The selected action, result, rule and state delta stay visible together."
+  ]
+}
