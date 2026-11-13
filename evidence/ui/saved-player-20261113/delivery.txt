@@ -1,0 +1,10 @@
+Saved-run player delivery, 2026-11-13
+Implementation merged PR392; runtime frontend/backend 0496afefeecbd90e43c13e4f0be1093bbd2616b9; llm_client 4ee0cf800587598672dfacfed99ea2954c2e01e6.
+FinalHTML SHA256: a8ec3dd66aad3e77fc1b549b9d78a684d19867e68ecb3225741b13ccd9e4b503. Cloudflare Version 19b44f03-fec2-40c1-aa30-d51ea1790f6b.
+Test-first browser failed as expected before implementation; settlement/administrative/object-alias unit failures retained. Finalfocusedhome tests 31 passed,exit0.
+Local browser 38 checks,exit0 at documented source 8920ca5; one subsequent CSS selection-style change preserved script bytes.
+Final public browser 41 checks,exit0; desktop1440x1000 and phone390x844; zero page errors/unexpectedfailedrequests; 4 analytics POSTs intentionally blocked. Recorded rounds/actor_inputs/world_fingerprint equal retained share. No new model call or simulation.
+Command: uv run --no-project --with playwright python evidence/ui/saved-player-20261113/browser_check.py --live --output /tmp/ws-saved-player-live (retained here as live-browser).
+Normal makecheck via ship: 1102passed,2skipped,229subtests;13 specspassed;exit0. Deployment exact frontend bytes/backendbuildcommit verified,exit0; oldimagesretained.
+Independent code review confirmed object-value immutability and refreshed Network detail; cold task walkthrough confirmed failed-check wording and historical focus on desktop/phone. Reports retained under walkthrough. Human comprehension and broader simulation fidelity remain unverified.
+Documentation sweep:0 brokenentrylinks; product/design context and wiki route now point to current roadmap. Other agent lanes retained.
