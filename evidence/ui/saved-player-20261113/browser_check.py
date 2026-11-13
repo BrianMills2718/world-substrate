@@ -55,18 +55,25 @@ class Run:
             "els => els.map(el => ({value:el.value,text:el.textContent,round:el.dataset.round}))"
         )
         # Known UI labels are checked here, never inferred as simulation meaning.
-        matches = [x for x in options if x.get("round") == str(number) or x["text"].strip() in {str(number), f"Round {number}"} or x["text"].strip().startswith(f"Round {number} ")]
+        matches = [x for x in options if x.get("round") == str(number) or x["text"].strip() in {str(number), f"Round {number}"} or x["text"].strip().startswith(f"Round {number} ") or x["text"].strip().startswith(f"{number} of ")]
         assert len(matches) == 1, (number, options)
         await page.locator("#saved-round-select").select_option(matches[0]["value"])
         await expect(page.locator("#saved-player")).to_have_attribute("data-round", str(number))
 
     async def select_event(self, page, event_id: str, historical: bool = False):
-        scope = page if historical else page.locator("#saved-events")
-        button = scope.locator(f'button[data-event-id="{event_id}"]').first
-        await expect(button).to_be_attached()
-        await button.evaluate("el => { for(let p=el.parentElement;p;p=p.parentElement) if(p.tagName==='DETAILS')p.open=true; }")
-        await button.focus()
-        await button.press("Enter")
+        if historical:
+            button = page.locator(f'button[data-saved-history-event="true"][data-event-id="{event_id}"]').first
+            await expect(button).to_be_attached()
+            await button.evaluate("el => { for(let p=el.parentElement;p;p=p.parentElement) if(p.tagName==='DETAILS')p.open=true; }")
+            await button.focus()
+            await button.press("Enter")
+        else:
+            button = page.locator(f'#saved-events button[data-event-id="{event_id}"]').first
+            if await button.is_visible():
+                await button.focus()
+                await button.press("Enter")
+            else:
+                await page.locator("#saved-event-select").select_option(event_id)
         await expect(page.locator("#saved-event-detail")).to_have_attribute("data-event-id", event_id)
 
     async def state(self, page, path: str, value: Any):
@@ -103,39 +110,50 @@ class Run:
 
     async def playback(self, page, width: int):
         await page.evaluate("""() => {
-          const player = document.querySelector('#saved-player');
-          window.__savedPlayerObservedRounds = [player.dataset.round];
-          window.__savedPlayerRoundObserver = new MutationObserver(() => {
-            const round = player.dataset.round;
-            const observed = window.__savedPlayerObservedRounds;
-            if (round !== observed[observed.length - 1]) observed.push(round);
+          const detail = document.querySelector('#saved-event-detail');
+          window.__savedPlayerObservedEvents = [detail.dataset.eventId];
+          window.__savedPlayerEventObserver = new MutationObserver(() => {
+            const event = detail.dataset.eventId;
+            const observed = window.__savedPlayerObservedEvents;
+            if (event !== observed[observed.length - 1]) observed.push(event);
           });
-          window.__savedPlayerRoundObserver.observe(player, {attributes:true, attributeFilter:['data-round']});
+          window.__savedPlayerEventObserver.observe(detail, {attributes:true, attributeFilter:['data-event-id']});
         }""")
+        await expect(page.locator("#saved-event-detail")).to_have_attribute("data-event-id", "r1-e00001")
         await page.locator("#play-btn").click()
         await expect(page.locator("#play-btn")).to_have_text(re.compile("Pause"))
-        # The recorded player uses a 2000ms interval. 3500ms permits one interval
-        # plus scheduling margin, while detecting an accidental duplicate first round.
-        await page.wait_for_function("window.__savedPlayerObservedRounds.length > 1", timeout=3500)
-        rounds = await page.evaluate("window.__savedPlayerObservedRounds")
-        assert rounds[:2] == ["1", "2"], rounds
-        await expect(page.locator("#saved-player")).to_have_attribute("data-round", "2")
+        # One recorded-event interval is 2000ms; allow one interval plus scheduling margin.
+        await page.wait_for_function("window.__savedPlayerObservedEvents.length > 1", timeout=3500)
+        events = await page.evaluate("window.__savedPlayerObservedEvents")
+        assert events[:2] == ["r1-e00001", "r1-e00002"], events
         await page.locator("#play-btn").click()
-        await expect(page.locator("#play-btn")).to_have_text(re.compile("Play|Replay"))
+        await expect(page.locator("#play-btn")).to_have_text(re.compile("Play"))
         await page.wait_for_timeout(2300)
-        await expect(page.locator("#saved-player")).to_have_attribute("data-round", "2")
-        self.passed(f"{width}: Play advances once from round1 to round2 and Pause holds that round beyond the playback interval")
+        await expect(page.locator("#saved-event-detail")).to_have_attribute("data-event-id", "r1-e00002")
+        self.passed(f"{width}: Play advances Ari to Bo within round1 and Pause holds the exact event")
+        await page.locator("#play-btn").click()
+        await page.wait_for_function("window.__savedPlayerObservedEvents.length >= 4", timeout=6500)
+        events = await page.evaluate("window.__savedPlayerObservedEvents")
+        assert events[:4] == ["r1-e00001", "r1-e00002", "r1-e00004", "r2-e00001"], events
+        await page.locator("#play-btn").click()
+        await expect(page.locator("#saved-event-detail")).to_have_attribute("data-event-id", "r2-e00001")
+        self.passed(f"{width}: resumed playback visits every recorded round1 event in order before round2")
 
         await self.select_round(page, 6)
+        await expect(page.locator("#play-btn")).to_have_text("Play")
+        final_id = await page.locator("#saved-event-select option").last.get_attribute("value")
+        assert final_id
+        await self.select_event(page, final_id)
         await expect(page.locator("#play-btn")).to_have_text(re.compile("Replay|Watch again"))
         await page.locator("#play-btn").click()
         await expect(page.locator("#saved-player")).to_have_attribute("data-round", "1")
+        await expect(page.locator("#saved-event-detail")).to_have_attribute("data-event-id", "r1-e00001")
         await expect(page.locator("#play-btn")).to_have_text(re.compile("Pause"))
         await page.locator("#play-btn").click()
         await page.wait_for_timeout(2300)
-        await expect(page.locator("#saved-player")).to_have_attribute("data-round", "1")
-        self.passed(f"{width}: Replay from final round returns to round1 and can immediately be paused")
-        await page.evaluate("window.__savedPlayerRoundObserver.disconnect()")
+        await expect(page.locator("#saved-event-detail")).to_have_attribute("data-event-id", "r1-e00001")
+        self.passed(f"{width}: final round alone stays playable; Replay from its last event returns to first event and can pause")
+        await page.evaluate("window.__savedPlayerEventObserver.disconnect()")
 
     async def pump(self, context, width: int):
         page = await context.new_page()
@@ -208,6 +226,20 @@ class Run:
             assert (await page.locator("#tip-bubble").inner_text()).strip(), selector
             await page.mouse.move(0, 0)
         self.passed(f"{width}: main navigation controls have at least44px targets and styled hover tooltips")
+        tooltip_count = 0
+        controls = page.locator("#saved-player button, #saved-player input, #saved-player select, #saved-player summary, #saved-setup-toggle, #play-btn")
+        for index in range(await controls.count()):
+            control = controls.nth(index)
+            if not await control.is_visible() or not await control.is_enabled():
+                continue
+            tip = (await control.get_attribute("data-tip")) or (await control.get_attribute("title"))
+            assert tip and tip.strip(), await control.evaluate("el=>el.outerHTML")
+            await page.mouse.move(0, 0)
+            await control.hover()
+            await expect(page.locator("#tip-bubble")).to_be_visible(timeout=1000)
+            await expect(page.locator("#tip-bubble")).to_have_text(tip)
+            tooltip_count += 1
+        self.passed(f"{width}: every visible enabled player control has a styled tooltip ({tooltip_count} controls)")
         next_control = page.locator("#saved-round-next")
         await next_control.focus()
         await expect(page.locator("#tip-bubble")).to_be_visible(timeout=1000)
@@ -244,6 +276,13 @@ class Run:
             if selector != "#replay":
                 await expect(locator).to_be_visible()
         self.passed(f"{width}: preserved picture, network and refusal inspection remain reachable")
+        await page.locator("#new-btn").click()
+        await expect(page.locator("#stage-describe")).to_be_visible()
+        await expect(page.locator("main h1")).to_be_visible()
+        await expect(page.locator("#build-btn")).to_have_count(1)
+        await expect(page.locator("#build-btn")).to_be_visible()
+        assert not await page.locator("body").evaluate("el=>el.classList.contains('saved-view')")
+        self.passed(f"{width}: Edit and run again restores the original one-box creation UI without creating a new simulation")
         await page.close()
 
     async def legacy(self, context, width: int):
