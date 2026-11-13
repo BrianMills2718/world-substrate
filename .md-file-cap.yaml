@@ -1,4 +1,4 @@
-limit: 206
+limit: 207
 reason: 'Measured at 544c086: 183 tracked Markdown files, including required per-run
   TRACE_READ records and historical OpenSpec change records. Preserve that evidence;
   current authority remains docs/index.md and roadmap/README.md. New authored documents
@@ -14,7 +14,7 @@ reason: 'Measured at 544c086: 183 tracked Markdown files, including required per
   preserved and reviewed rather than erased to satisfy the cap. Add one required
   TRACE_READ for integration-2 defect discovery and four required OpenSpec archive
   files for actor-authored report exposure and source-grounded initial-input review;
-  these repair observed I0/I1 failures through existing seams, not a new roadmap. Add two required trace-read records for production request validation and the actual deployed integration; preserve failures alongside acceptance evidence. Add one required TRACE_READ for the deployed two-round run, preserving its scoped success and observed source-authority defects rather than overwriting it with a later run. Add the required TRACE_READ for production5, preserving all prior failures and the observed compound-intent limit alongside the scoped boundary evidence. Add three required OpenSpec archive documents for the bounded whole-attempt coverage correction, preserving its adoption separately from runtime evidence. Add one required TRACE_READ retaining all three native interpreter replies, including the malformed compound assessment, and model-free engine replay limits.'
+  these repair observed I0/I1 failures through existing seams, not a new roadmap. Add two required trace-read records for production request validation and the actual deployed integration; preserve failures alongside acceptance evidence. Add one required TRACE_READ for the deployed two-round run, preserving its scoped success and observed source-authority defects rather than overwriting it with a later run. Add the required TRACE_READ for production5, preserving all prior failures and the observed compound-intent limit alongside the scoped boundary evidence. Add three required OpenSpec archive documents for the bounded whole-attempt coverage correction, preserving its adoption separately from runtime evidence. Add one required TRACE_READ retaining all three native interpreter replies, including the malformed compound assessment, and model-free engine replay limits. Add one required TRACE_READ for Brian’s approved fresh six-round production run, preserving both negation inversions, the rejected first draft and the observed outcome.'
 unlinked_ok:
 - path: openspec/changes/archive/
   reason: Historical change proposals and deltas; current required behavior is openspec/specs/,
