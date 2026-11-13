@@ -428,6 +428,27 @@ class WorldNetworkTests(unittest.TestCase):
             f" applyRound(entities, {json_dumps(turn)}); return entities[0].components.decision.review; }})()")
         self.assertEqual(result, "archived")
 
+    @pytest.mark.req("world-builder-page/earlier-event-selection-restores-the-corresponding-historical-state")
+    def test_selected_settlement_is_a_separate_step_before_later_events(self):
+        # A ruling's settlement is nested in the original attempt, not necessarily
+        # repeated in world_events. It must still be selectable at its own state.
+        turn = {"turn": 1, "actors": {"sam": {
+            "event_id": "r1-e00001", "status": "unsupported_action", "changes": [],
+            "judge": {"disposition": {"settled": {
+                "event_id": "r1-e00002", "status": "accepted", "changes": [
+                    {"path": "entities.vote.components.decision.review", "before": "requested", "after": "completed"}
+                ]}}}}}, "world_events": [{
+            "event_id": "r1-e00003", "changes": [
+                {"path": "entities.vote.components.decision.review", "before": "completed", "after": "reopened"}
+            ]}], "reactions": []}
+        result = self.run_page_functions(
+            f"(() => {{ const t = {json_dumps(turn)}; const entities = [{{id:'vote', components:{{decision:{{review:'requested'}}}}}}];"
+            " return recordedEvents(t).map(event => { applyRound(entities, {world_events:[event]});"
+            " return [event.event_id, entities[0].components.decision.review]; }); })()")
+        self.assertEqual(result, [["r1-e00001", "requested"],
+                                  ["r1-e00002", "completed"],
+                                  ["r1-e00003", "reopened"]])
+
     @pytest.mark.req("living-scene/frames-come-from-a-projection-and-a-profile", existing=True)
     def test_reaction_only_entities_and_processes_are_touched(self):
         result = self.run_page_functions(
