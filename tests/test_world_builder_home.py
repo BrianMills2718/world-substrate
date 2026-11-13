@@ -448,6 +448,18 @@ class WorldNetworkTests(unittest.TestCase):
         self.assertEqual(result, [["r1-e00001", "requested"],
                                   ["r1-e00002", "completed"],
                                   ["r1-e00003", "reopened"]])
+        # A held ruling is settled by a later administrative decision, whose
+        # event is stored separately from this round's policy attempts.
+        import copy
+        held = copy.deepcopy(turn)
+        settled = held["actors"]["sam"].pop("judge")["disposition"]["settled"]
+        settled.update({"ruling_id": "R1", "actor": "sam", "result": "accepted"})
+        held["ruling_events"] = [settled]
+        administrative = self.run_page_functions(
+            f"(() => {{ const t = {json_dumps(held)}; const entities = [{{id:'vote', components:{{decision:{{review:'requested'}}}}}}];"
+            " return recordedEvents(t).map(event => { applyRound(entities, {world_events:[event]});"
+            " return [event.event_id, entities[0].components.decision.review]; }); })()")
+        self.assertEqual(administrative, result)
 
     @pytest.mark.req("living-scene/frames-come-from-a-projection-and-a-profile", existing=True)
     def test_reaction_only_entities_and_processes_are_touched(self):

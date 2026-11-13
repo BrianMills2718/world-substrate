@@ -1,0 +1,57 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ WorldNetworkTests.test_selected_settlement_is_a_separate_step_before_later_events _
+
+self = <test_world_builder_home.WorldNetworkTests testMethod=test_selected_settlement_is_a_separate_step_before_later_events>
+
+    @pytest.mark.req("world-builder-page/earlier-event-selection-restores-the-corresponding-historical-state")
+    def test_selected_settlement_is_a_separate_step_before_later_events(self):
+        # A ruling's settlement is nested in the original attempt, not necessarily
+        # repeated in world_events. It must still be selectable at its own state.
+        turn = {"turn": 1, "actors": {"sam": {
+            "event_id": "r1-e00001", "status": "unsupported_action", "changes": [],
+            "judge": {"disposition": {"settled": {
+                "event_id": "r1-e00002", "status": "accepted", "changes": [
+                    {"path": "entities.vote.components.decision.review", "before": "requested", "after": "completed"}
+                ]}}}}}, "world_events": [{
+            "event_id": "r1-e00003", "changes": [
+                {"path": "entities.vote.components.decision.review", "before": "completed", "after": "reopened"}
+            ]}], "reactions": []}
+        result = self.run_page_functions(
+            f"(() => {{ const t = {json_dumps(turn)}; const entities = [{{id:'vote', components:{{decision:{{review:'requested'}}}}}}];"
+            " return recordedEvents(t).map(event => { applyRound(entities, {world_events:[event]});"
+            " return [event.event_id, entities[0].components.decision.review]; }); })()")
+        self.assertEqual(result, [["r1-e00001", "requested"],
+                                  ["r1-e00002", "completed"],
+                                  ["r1-e00003", "reopened"]])
+        # A held ruling is settled by a later administrative decision, whose
+        # event is stored separately from this round's policy attempts.
+        import copy
+        held = copy.deepcopy(turn)
+        settled = held["actors"]["sam"].pop("judge")["disposition"]["settled"]
+        settled.update({"ruling_id": "R1", "actor": "sam", "result": "accepted"})
+        held["ruling_events"] = [settled]
+        administrative = self.run_page_functions(
+            f"(() => {{ const t = {json_dumps(held)}; const entities = [{{id:'vote', components:{{decision:{{review:'requested'}}}}}}];"
+            " return recordedEvents(t).map(event => { applyRound(entities, {world_events:[event]});"
+            " return [event.event_id, entities[0].components.decision.review]; }); })()")
+>       self.assertEqual(administrative, result)
+E       AssertionError: Lists differ: [['r1[15 chars]ested'], ['r1-e00003', 'reopened']] != [['r1[15 chars]ested'], ['r1-e00002', 'completed'], ['r1-e00003', 'reopened']]
+E       
+E       First differing element 1:
+E       ['r1-e00003', 'reopened']
+E       ['r1-e00002', 'completed']
+E       
+E       Second list contains 1 additional elements.
+E       First extra element 2:
+E       ['r1-e00003', 'reopened']
+E       
+E       - [['r1-e00001', 'requested'], ['r1-e00003', 'reopened']]
+E       + [['r1-e00001', 'requested'],
+E       +  ['r1-e00002', 'completed'],
+E       +  ['r1-e00003', 'reopened']]
+
+tests/test_world_builder_home.py:462: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_world_builder_home.py::WorldNetworkTests::test_selected_settlement_is_a_separate_step_before_later_events
+1 failed, 29 deselected in 0.20s
