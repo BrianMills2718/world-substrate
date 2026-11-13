@@ -1355,7 +1355,7 @@ views = { home = "shown", build = "shown", play = "missing", round_replay = "sho
 
 [[coverage]]
 element = "AttemptReading"
-views = { home = "missing", build = "n/a", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown", scenario_replay = "n/a", scenario_state_panel = "n/a" }
+views = { home = "shown", build = "n/a", play = "n/a", round_replay = "n/a", living_scene = "n/a", composed_living_scene = "n/a", owner_run_log = "shown", scenario_replay = "n/a", scenario_state_panel = "n/a" }
 
 [[coverage]]
 element = "RuleChange"
@@ -1465,5 +1465,5 @@ status = "fixed"
 [[gaps]]
 id = "G17"
 title = "The run page does not show what a person tried in their own words or that an attempt matched nothing"
-reproduced = "no"
-status = "open"
+reproduced = "yes"
+status = "fixed"
