@@ -19,6 +19,8 @@ Navigation and plan-status summary reconciled 2026-11-12 against `544c086`; hist
 Agent instructions: [root](../AGENTS.md), [docs](AGENTS.md), [roadmap](../roadmap/AGENTS.md),
 [reference worlds](../reference_worlds/AGENTS.md), [tests](../tests/AGENTS.md).
 
+UI work also reads [product context](../PRODUCT.md) and the [saved-player design](../DESIGN.md). Architecture, OpenSpec and accepted decisions retain their authority.
+
 ## 2. What the code must do (OpenSpec capability specs)
 
 Each spec keeps the wording of the contract it was folded from on 2026-11-09 and names its source.
