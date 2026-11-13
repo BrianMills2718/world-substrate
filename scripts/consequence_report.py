@@ -113,12 +113,24 @@ def _check_independent_writers(bundle: dict[str, Any], causal: dict[str, Any]) -
     state = decision["components"]["validation_decision"]
     condition = next(e for e in entities if e["id"] == state["condition_id"])["components"]["technical_condition"]
     roles = [e["components"]["technical_role"] for e in entities if "technical_role" in e.get("components", {})]
+    positions = [e["components"]["actor_position"] for e in entities if "actor_position" in e.get("components", {})]
+    all_actor_stances = any(c["name"] == "actor_position" and any(f["name"] == "assent_weight" for f in c["fields"])
+                            for c in bundle.get("components", []))
+    if all_actor_stances:
+        members = {e["id"] for e in entities if "actor" in e.get("categories", [])}
+        holders = [p.get("holder_id") for p in positions]
+        if (set(holders) != members or len(holders) != len(set(holders))
+                or any(type(p.get("assent_weight")) is not int or p["assent_weight"] not in (0, 1) for p in positions)):
+            raise IndependentRuleAuthorityError("each actor requires one position with a compiler-owned binary assent weight")
+    required = [p["holder_id"] for p in positions if not all_actor_stances or p["assent_weight"] == 1]
+    if not required:
+        raise IndependentRuleAuthorityError("an independent procedure requires at least one required assent")
     procedure = SimpleNamespace(decision_id=decision["id"], question=decision["label"],
-        required_actor_ids=[e["components"]["actor_position"]["holder_id"] for e in entities if "actor_position" in e.get("components", {})],
+        required_actor_ids=required,
         validator_ids=[r["holder_id"] for r in roles if r["validator"]],
         repairer_ids=[r["holder_id"] for r in roles if r["repairer"]],
         condition_initially_passing=condition["passing"], initial_validation=state["validation"])
-    _, mechanics, processes = compiler._independent_family(SimpleNamespace(independent_decision=procedure), [], [])
+    _, mechanics, processes = compiler._independent_family(SimpleNamespace(independent_decision=procedure), [], [], all_actor_stances=all_actor_stances)
     import json
     mechanics = [json.loads(compiler.COORDINATION_CAUSAL.read_text())["mechanics"][0], *mechanics]
     for declarations, allowed in ((causal.get("mechanics", []), mechanics), (causal.get("processes", []), processes)):

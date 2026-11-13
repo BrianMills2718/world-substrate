@@ -42,7 +42,10 @@ SPEC_SYSTEM = (
     "A failed validation creates the hold; authorized passing revalidation clears only that hold. Repair is a declared effective technical intervention, "
     "never the passing of time. Reports never alter the technical condition or force agreement or assent. "
     "Use legacy decision only for explicitly stipulated scripted conditional-support fixtures, not as a model of persuasion. "
-    "Do not duplicate compiled decision, condition, stance or assent records as world_records. "
+    "Do not duplicate compiled decision, condition, stance or assent records as world_records, even under semantic aliases. "
+    "The compiled technical_condition owns current actual condition; keep only additional nonduplicated facts in world_records. "
+    "Dated historical measurements and immutable reports may retain past failures after repair; label them as past evidence "
+    "rather than assertions about the current actual condition. "
     "Regular meetings/deadlines may be scheduled_moments. Behaviors state possibilities, never prescribed actor responses. "
     "Use lowercase underscore ids. List omitted unsupported details and invented fidelity assumptions explicitly. "
     "No ending, social reaction, timer cure or recurrent conflict is required. Actors may disagree, ignore evidence or retain support."
@@ -71,11 +74,16 @@ class ActionSignatures(BaseModel):
 
 
 def scenario_spec(text: str, *, model: str, trace_id: str, max_budget: float = 0.20, reasoning_effort: str = "medium",
-                  route_policy: Any = None):
+                  route_policy: Any = None, feedback: str = ""):
     """``route_policy`` is an llm_client OpenRouterRoutePolicyV1 (the World Builder asks for the fastest provider)."""
     from llm_client import call_llm_structured
+    messages = [{"role": "system", "content": SPEC_SYSTEM}, {"role": "user", "content": text}]
+    if feedback:
+        messages.append({"role": "user", "content": (
+            "Repair the previous source draft using this independent review feedback. The original description "
+            "above remains the source of authority; feedback is corrective guidance, not new scenario facts.\n" + feedback)})
     spec, result = call_llm_structured(
-        model, [{"role": "system", "content": SPEC_SYSTEM}, {"role": "user", "content": text}], ScenarioSpecV1,
+        model, messages, ScenarioSpecV1,
         task="world-substrate-scenario-spec", trace_id=trace_id, max_budget=max_budget, reasoning_effort=reasoning_effort,
         num_retries=1, model_justification=SPEC_MODEL_WHY,
         **({"openrouter_route_policy": route_policy} if route_policy else {}))

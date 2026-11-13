@@ -41,7 +41,7 @@ from scripts.run_authored_world import (MEMORY_ITEM_CHARS, MEMORY_ITEMS, actor_i
 from scripts.run_stop import DEFAULT_RUN_STOP, MAX_QUIET_ROUNDS, parse_run_stop
 from scripts import rulings as rulings_mod
 from scripts.run_native_coordination import run_native_coordination
-from scripts.review_rules import MISSING as MISSING_RULE, review_rules
+from scripts.review_rules import MISSING as MISSING_RULE, SourceDraftReviewError, review_rules
 from scripts.scaffold_world import BundleError, validate_bundle
 from world_substrate.action_authoring import ActionDeclarationError, CausalModel
 from world_substrate.engine import recorded_reaction_limit
@@ -571,6 +571,8 @@ def _record_response(status: int, value: dict[str, Any]) -> None:
         "request": request["summary"],
         "result": _result_summary(request["path"], int(status), value),
     }
+    if request.get("source_draft_reviews"):
+        entry["result"]["source_draft_reviews"] = request["source_draft_reviews"]
     if request.get("actor_inputs"):
         entry["result"]["actor_inputs"] = request["actor_inputs"]
     if request.get("engine_events") is not None and status < 400:
@@ -2213,31 +2215,49 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             if budget is None:
                 return
             try:
-                try:
-                    prepared = prepare_people_world(description, trace_id=trace_id, max_budget=budget,
-                                                    progress=self._progress)
-                except Exception as error:
-                    if type(error).__name__ == "LLMBudgetExceededError":  # llm_client is imported lazily
-                        raise ValueError(_budget_message(error)) from None
-                    raise
-                # The world's own laws over the counts it keeps (declared-laws plan, piece 1), the same contract as a
-                # world of things: s4 Waltzman (2026-10-30) was built with none because only that path asked.
-                self._progress("doing", "Working out which counts this world must keep")
-                try:
-                    declared, law_notes = declare_people_laws(description, prepared, trace_id=trace_id,
-                                                              max_budget=budget)
-                except Exception as error:
-                    if type(error).__name__ == "LLMBudgetExceededError":
-                        raise ValueError(_budget_message(error)) from None
-                    declared, law_notes = {"resources": [], "laws": []}, [f"laws not declared: {type(error).__name__}: {error}"[:300]]
-                if declared["resources"] or declared["laws"]:
-                    prepared["bundle"].update(declared)
-                if declared["laws"]:
-                    self._progress("note", "Laws this world keeps", "",
-                                   [str(law.get("says", "")).rstrip(". ") for law in declared["laws"]])
-                for note in law_notes:
-                    self._progress("note", "A law was left out", note[:160])
+                def prepare_source(feedback: str = ""):
+                    try:
+                        prepared = prepare_people_world(description, trace_id=trace_id, max_budget=budget,
+                                                        progress=self._progress, **({"feedback": feedback} if feedback else {}))
+                    except Exception as error:
+                        if type(error).__name__ == "LLMBudgetExceededError":  # llm_client is imported lazily
+                            raise ValueError(_budget_message(error)) from None
+                        raise
+                    # The world's own laws over the counts it keeps (declared-laws plan, piece 1), the same contract as a
+                    # world of things: s4 Waltzman (2026-10-30) was built with none because only that path asked.
+                    self._progress("doing", "Working out which counts this world must keep")
+                    try:
+                        declared, law_notes = declare_people_laws(description, prepared, trace_id=trace_id,
+                                                                  max_budget=budget)
+                    except Exception as error:
+                        if type(error).__name__ == "LLMBudgetExceededError":
+                            raise ValueError(_budget_message(error)) from None
+                        declared, law_notes = {"resources": [], "laws": []}, [f"laws not declared: {type(error).__name__}: {error}"[:300]]
+                    if declared["resources"] or declared["laws"]:
+                        prepared["bundle"].update(declared)
+                    if declared["laws"]:
+                        self._progress("note", "Laws this world keeps", "",
+                                       [str(law.get("says", "")).rstrip(". ") for law in declared["laws"]])
+                    for note in law_notes:
+                        self._progress("note", "A law was left out", note[:160])
+                    return prepared, law_notes
+
+                prepared, law_notes = prepare_source()
                 guidance, attempts = "", []
+                def retain_source_rejection(error: SourceDraftReviewError, candidate: dict[str, Any],
+                                            result: dict[str, Any]) -> str:
+                    rejected = {**result, "ok": False,
+                                "source_review_error": f"{type(error).__name__}: {error}",
+                                "source_review": getattr(error, "full_review", error.review),
+                                "source_repair_feedback": error.feedback,
+                                "source_repairable": error.repairable,
+                                "rejected_candidate": candidate}
+                    attempts.append(rejected)
+                    request = _REQUEST.get()
+                    if request is not None:
+                        request.setdefault("source_draft_reviews", []).append(rejected)
+                    return error.feedback
+
                 best: tuple[int, dict[str, Any], dict[str, Any]] | None = None
                 for attempt in range(2):
                     try:
@@ -2346,7 +2366,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     # No rewrite can follow this try: the last one, the budget nearly spent, or the wait too long.
                     last_try = (attempt == 1 or _trace_cost(trace_id) >= budget - 0.15
                                 or time.monotonic() - started > PEOPLE_REWRITE_BY_S)
-                    if dry_row.get("ok") and (score >= 4 or last_try):
+                    if dry_row.get("ok") and (score >= 4 or last_try or "actor_information" in built["bundle"]):
                         # The independent review (declared-laws plan S3) reads a try the build would keep; its
                         # findings go first in the one rewrite. The people path had none until s4 (2026-10-30).
                         # s4w2 Waltzman (2026-10-31): a first try scoring 3 was kept unreviewed when the test run
@@ -2364,6 +2384,16 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                             if found:
                                 guidance = _review_findings_first(guidance, found)
                         except Exception as error:
+                            if isinstance(error, SourceDraftReviewError):
+                                feedback = retain_source_rejection(error, built, dry_row)
+                                best = None  # An invalid source draft can never become the kept fallback.
+                                if error.repairable and attempt == 0 and _trace_cost(trace_id) < budget - 0.15:
+                                    self._progress("doing", "Repairing the world definition from the independent check",
+                                                   str(error), [feedback])
+                                    prepared, law_notes = prepare_source(feedback)
+                                    guidance = ""
+                                    continue  # Reuse the existing second attempt and the same reservation and trace.
+                                raise
                             if "actor_information" in built["bundle"]:
                                 raise  # Do not execute residents on an unreviewed or unsafe actor profile.
                             # A failed review is recorded and the build goes on without it, visibly.
@@ -2393,7 +2423,11 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 _, built, dry_row = best
                 bundle, causal = built["bundle"], built["causal_model"]
                 if "actor_information" in bundle and not dry_row.get("actor_inputs_reviewed"):
-                    found, _ = review_rules(description, bundle, causal, trace_id=trace_id, max_budget=budget)
+                    try:
+                        found, _ = review_rules(description, bundle, causal, trace_id=trace_id, max_budget=budget)
+                    except SourceDraftReviewError as error:
+                        retain_source_rejection(error, built, dry_row)
+                        raise  # The existing attempt loop is exhausted; retain the rejection without another retry.
                     dry_row["review_findings"] = found
                     dry_row["actor_inputs_reviewed"] = True
                 review = CausalModel.from_dict(causal, bundle=bundle).as_review()

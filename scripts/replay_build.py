@@ -79,7 +79,7 @@ def replay(folder: Path, follow_record: bool = False) -> dict[str, Any]:
     asked: list[dict[str, Any]] = []
     stub = recorded_llm_client(calls, asked, follow_record)
     import scripts.world_builder_service as service
-    from scripts.review_rules import ActorInputPrivacyError
+    from scripts.review_rules import SourceDraftReviewError
     out: dict[str, Any] = {"kept": None, "stopped": None, "asked": asked}
 
     class Replay(service.WorldBuilderHandler):
@@ -109,11 +109,11 @@ def replay(folder: Path, follow_record: bool = False) -> dict[str, Any]:
             Replay()._generate_world("replay", build["request"])
     except Unrecorded as error:
         out["stopped"] = str(error)
-    except ActorInputPrivacyError as error:
-        # Old replies may lack today's privacy verdict. Preserve that rejection
+    except SourceDraftReviewError as error:
+        # Old replies may lack today's required source verdict. Preserve that rejection
         # as a stopped replay, never manufacture approval or abort later worlds.
-        out["stopped"] = f"ActorInputPrivacyError: {error}"
-        out["actor_input_review"] = error.review
+        out["stopped"] = f"{type(error).__name__}: {error}"
+        out["source_draft_review"] = error.review
     finally:
         service.RULES_SIDE_BY_SIDE = side_by_side
         if real is None:
