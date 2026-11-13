@@ -1,0 +1,40 @@
+# Shared six-round browser verification
+
+Source: https://brianmills.dev/world-builder/?run=T-e9dYLdIi61
+Browser: isolated headless cached Chromium 1254, Python Playwright.
+Viewports: 1440×1000 desktop; 390×844 phone.
+Scope: public shared recording, native GET response, no fulfilled/intercepted fixture. Every non-GET/HEAD/OPTIONS request aborted. No generation/run/readout/paid action invoked. No repository edits.
+Execution: `uv run --offline --with playwright python /tmp/ws-visible-browser-20261113/interactive.py`, exit 0. The interactive commands and resulting check record are retained in interactive.py/checks.json; rendered evidence and requests are retained below.
+
+## Observed checks
+
+- PASS recording reaches its stated end: 6 rounds, 12 allowed, 6 refused. Picture and Network visibly render at round 1 and round 6.
+- PASS Actor/Analyst switching: all 3 people (ari, bo, mara) expose exactly 6 recorded input details (18 total); Analyst disables Person, Actor enables it and hides the Analyst world surface.
+- PASS original attempt access, desktop and phone: choose Context view → Actor: authorized inputs; Person → bo; expand Input before round 1 and scroll the code panel to bottom. output.attempt says `I withhold assent to activation by recording my position as not assenting.` Expand round 2 and scroll code panel bottom: output.attempt says `I withdraw my assent to activation from my recorded position, Bo's position on the pump activation decision.` Its belief explicitly acknowledges assent=true despite prior withholding. Input panels wrap phone text; page clientWidth and scrollWidth both 390, no whole-page horizontal overflow.
+- PASS keyboard: Enter opens Analyst Round 1 Bo attempt square and Actor round 1/2 native details. Visible focus ring appears on phone summaries.
+- OBSERVED disclosure limitation: Analyst → Why things were refused → Round 1 Bo square says `record assent. Allowed: every check held.` and displays belief/expected effect, but does not display original negative attempt. Exact comparison requires the Actor input JSON. This browser result corroborates the reported negative-wording/positive-assent mismatch, not a claim that behavior is corrected.
+- PASS current final state from selected Network decision box: validation=passed, hold=false, review=requested, assents=0, active=false. Picture Not changed this round also shows passed validation, hold=no, assents=0, technical condition passing=yes, Mara concerned, Bo concerned and assent=no. Changed this round shows Ari assent=yes. Ari assent_weight=0 is a canonical source claim independently checked by parent, not separately asserted from this screen.
+- OBSERVED existing picture clipping: speech bubbles overlap each other and round heading on desktop; at 390px picture speech text and labels overlap heavily. The essential retained Actor inputs and textual state panels remain readable. No UI changes were made in this scope.
+- PASS network: 5 GET responses, all HTTP 200 (page, analytics script, /api/health, /api/share/T-e9dYLdIi61, graph-viewer.js). Exactly 1 POST attempted and intentionally aborted: /cdn-cgi/rum. No application POST/run/readout/generation request. Exactly 1 console error is the corresponding ERR_FAILED; 0 pageerror events; 0 unexplained request failures.
+
+## Artifacts
+
+- initial-desktop.png: first-round Picture and Network render.
+- final-picture-desktop.png and final-picture-phone.png: final picture and expanded textual state.
+- final-network-desktop.png: selected decision box and full canonical state line.
+- final-phone-top.png: 390px recording header, end status and start of picture.
+- actor-bo-desktop.png: Actor input list and opened R1.
+- bo-r1-detail-desktop.png: Analyst accepted-action detail.
+- bo-r1-original-phone.png and bo-r2-original-phone.png: exact negative attempt then explicit withdrawal, visible focus rings.
+- actor-bo-r1.txt, actor-bo-r2.txt, attempts-aria.txt, final-picture-state.txt, final-network-state.txt: rendered text evidence.
+- checks.json, network.json, console.json: machine receipts.
+
+## Limits
+
+This is a bounded read-only technical interface check, not a comprehension study or broad accessibility audit. No automated accessibility scanner, live mutation, private login, graph-node keyboard suite or tooltip matrix was run. Original content was not repaired and no new recording was generated.
+
+Feedback:
+- obs: The accepted-action square for Bo round 1 omits the original withholding attempt; the original words are retained in the Actor code panel [bo-r1-detail.txt] [actor-bo-r1.txt].
+- obs: The 390px picture overlaps speech text and labels, while the textual state and Actor evidence remain readable [final-picture-phone.png] [bo-r1-original-phone.png].
+- obs (control): A temporary browser helper named inspect.py shadowed Python's inspect module and failed import; renaming it browser_probe.py fixed execution [browser_probe.py].
+- obs (control): RTK buffered the interactive helper's stdout until exit, so intermediate observations were read from local artifact files [interactive.py] [live-aria.txt].
