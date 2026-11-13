@@ -8,7 +8,7 @@ Mode: operate/read. Preserve the World Builder name, existing neutral dark surfa
 
 ## Composition
 
-Lead with the retained scenario description and truthful recorded-run status. The player starts paused. Visible previous/next, round choice and scrub controls make time deliberate.
+Lead with the retained scenario description and truthful recorded-run status. The player starts paused. Visible previous/next, round choice and scrub controls make time deliberate. Playback steps through every recorded event before moving to the next round, so other actors and immediate consequences are not silently skipped.
 
 The working area contains a chronological event list, readable world state and contextual event detail. A desktop layout keeps the event list and explanation together; narrow screens stack readable regions and keep navigation reachable. Use explicit width budgets and a contextual inspector, following the pinned Astryx scaffold/structure/side-panel/responsive references in the [source receipt](evidence/ui/usability-review-20261113/astryx-sources.json).
 
