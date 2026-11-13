@@ -1,11 +1,12 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>World Substrate: actor information and independent concern</title><style>
-body { font: 16px/1.5 system-ui, sans-serif; margin: 0 16px; color: #1b1f24; background: #fff; }
+* { box-sizing: border-box; }
+body { overflow-wrap: anywhere; font: 16px/1.5 system-ui, sans-serif; margin: 0 16px; color: #1b1f24; background: #fff; }
 main { max-width: 1140px; min-width: 0; margin: 0 auto; padding: 20px 0 64px; }
 h1 { font-size: 26px; margin: 8px 0; } h2 { font-size: 21px; margin-top: 40px; border-bottom: 2px solid #0b3d6b; padding-bottom: 6px; }
 h2 .n { color: #0b3d6b; margin-right: 6px; } h2 .sub { font-weight: 400; } h3 { font-size: 17px; margin-top: 24px; }
-.wide { overflow-x: auto; max-width: 100%; } .doc, pre { overflow-x: auto; max-width: 100%; } img, svg { max-width: 100%; }
+.wide { overflow-x: auto; max-width: 100%; min-width: 0; } .doc, pre { overflow-x: auto; max-width: 100%; min-width: 0; } img, svg { max-width: 100%; }
 table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
 th, td { border: 1px solid #c9ced4; padding: 6px 8px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
 th { background: #eef1f4; } code { font-size: 13px; word-break: break-all; }
@@ -25,7 +26,7 @@ th { background: #eef1f4; } code { font-size: 13px; word-break: break-all; }
 .mermaid svg { max-width: none !important; }
 .mermaid:focus-visible { outline: 2px solid #0b3d6b; outline-offset: 2px; }
 .doc { border: 1px solid #c9ced4; border-radius: 6px; padding: 2px 16px; margin: 8px 0 16px; }
-details { margin: 10px 0; border: 1px solid #c9ced4; border-radius: 6px; padding: 2px 12px; }
+details { min-width: 0; margin: 10px 0; border: 1px solid #c9ced4; border-radius: 6px; padding: 2px 12px; }
 details > summary { cursor: pointer; font-weight: 600; padding: 8px 0; }
 nav.top { font-size: 14px; line-height: 1.9; padding: 8px 0; border-bottom: 1px solid #c9ced4; }
 .note { color: #3d4450; font-size: 14px; } .smallnote { margin-top: 0; color: #7a3300; }
@@ -35,19 +36,20 @@ table.ladder td:first-child { font-weight: 700; text-align: center; width: 3em; 
 .adr .who { font-size: 14px; color: #3d4450; margin: 2px 0; }
 .matrix td, .matrix th { text-align: center; padding: 4px 5px; font-size: 12px; white-space: nowrap; overflow-wrap: normal; }
 .m-yes { background: #d6e6f7; color: #0b3d6b; font-weight: 600; } .m-part { background: #fde3c4; color: #7a3300; font-weight: 600; }
-.hub { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin: 18px 0; }
-.card { border: 1px solid #c9ced4; border-radius: 8px; padding: 10px 16px; }
+.hub { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px; margin: 18px 0; }
+.card { min-width: 0; border: 1px solid #c9ced4; border-radius: 8px; padding: 10px 16px; }
 .card h2 { border: 0; margin: 4px 0 6px; font-size: 18px; }
 .card ul { padding-left: 18px; margin: 6px 0; } .card li { margin: 4px 0; }
-.full { position: fixed; inset: 0; } .full .bar { height: 44px; display: flex; align-items: center; gap: 14px; padding: 0 16px 0 150px; background: #0b3d6b; color: #fff; font-size: 15px; overflow: hidden; white-space: nowrap; }
-.full .bar a { color: #fff; } .full #graph { position: absolute; top: 44px; left: 0; right: 0; bottom: 0; }
+.full { position: fixed; inset: 0; display: flex; flex-direction: column; } .full .bar { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 16px; background: #0b3d6b; color: #fff; font-size: 15px; }
+.full .bar .graph-help { flex-basis: 100%; }
+.full .bar b { flex: 1 1 24rem; min-width: 0; } .full .bar a { color: #fff; } .full #graph { position: relative; flex: 1; min-height: 0; }
 .fulldoc .bar { position: sticky; top: 0; z-index: 2; padding-left: 16px; }
-@media (max-width: 700px) { .full .bar { padding-left: 110px; font-size: 13px; } td { min-width: 6em; } }
+@media (max-width: 700px) { .full .bar { font-size: 13px; } td { min-width: 6em; } }
 </style></head><body>
-<main><p><strong>Polarity/reference repair checks:</strong> <a href="polarity-bo.html">Bo’s non-assent stays non-assent</a>; <a href="polarity-ari.html">Ari uses his separate authority object</a>. These are recorded-policy native replays; the original autonomous run above remains unchanged.</p><p><strong>Whole-attempt correction:</strong> <a href="coverage-compound.html">inspect a compound attempt carried out in no part</a>, then <a href="coverage-mara.html">compare recording concern with assent</a>. These are retained-input interpreter and installed-rule replays; the original autonomous recording remains separate. <a href="https://github.com/BrianMills2718/world-substrate/blob/main/evidence/open-attempt/whole-attempt-coverage/TRACE_READ.md">Evidence and limitations</a>.</p>
+<main>
 <h1>World Substrate: actor information and independent concern</h1>
-<p class="status"><span class="tag ok">complete</span> <b>Complete, pending your review. 43 other open questions (Q1, Q3, Q14, Q26, Q30, Q31, Q32, Q33, Q34, Q36, Q37, Q38, Q45, Q48, Q49, Q51, Q52, Q54, Q55, Q56, Q57, Q58, Q59, Q61, Q62, Q64, Q65, Q66, Q67, Q68, Q69, Q71, Q72, Q77, Q82, Q85, Q86, Q88, Q92, Q93, Q94, Q95, Q96) do not block it.</b></p>
-<p class="star"><strong>No action required; inspect the actual run:</strong> <a href="https://brianmills.dev/world-builder/?run=T-e9dYLdIi61">Open the fresh six-round Ari/Mara/Bo simulation</a>. Ari repairs and revalidates; Mara and Bo end concerned and the pump stays inactive. <strong>Known serious defect:</strong> Bo says he is not assenting, but the interpreter records assent twice; he withdraws both. These failures are preserved in the recording and trace. Actor/Analyst views show the actual inputs and canonical outcome. The earlier two-round run and bounded interpreter replays remain separate historical evidence.</p>
+<p class="status"><span class="tag ok">complete</span> <b>Complete, pending your review. 42 other open questions (Q1, Q3, Q14, Q30, Q31, Q32, Q33, Q34, Q36, Q37, Q38, Q45, Q48, Q49, Q51, Q52, Q54, Q55, Q56, Q57, Q58, Q59, Q61, Q62, Q64, Q65, Q66, Q67, Q68, Q69, Q71, Q72, Q77, Q82, Q85, Q86, Q88, Q92, Q93, Q94, Q95, Q96) do not block it.</b></p>
+<p class="star">I0/I1 have a deployed, retained two-round recording and separate Actor/Analyst views. Compare the actual inputs, technical condition, stance, assent and hold. Technical checks pass; natural-language interpretation limits remain explicit and human judgment is unobserved. The adopted planning review remains passed. <b>What you do:</b> Read the I0/I1 acceptance entries and their evidence, then inspect the World Builder Actor/Analyst controls. The implementation is already approved; no further plan approval is requested here. Report a concrete mismatch or modeling concern: start at <a href="review.html">the review page</a>.</p>
 <div class="hub">
 <div class="card"><h2>Should I approve this plan?</h2><ul>
 <li><a href="review.html">Review the plan</a>: goal, capabilities, requirements, decisions, architecture, semantic spectrum, plan, evidence, checks</li>
@@ -55,7 +57,7 @@ table.ladder td:first-child { font-weight: 700; text-align: center; width: 3em; 
 <li><a href="review.html#requirements">How I judge it</a>: your words, the requirements and the acceptance criteria</li>
 <li><a href="review.html#decisions">What was decided, and by whom</a></li></ul></div>
 <div class="card"><h2>What is still open?</h2><ul>
-<li><a href="open-questions.html">Open questions</a>: 0 yours, 43 the agent's, each with what it blocks</li></ul></div>
+<li><a href="open-questions.html">Open questions</a>: 0 yours, 42 the agent's, each with what it blocks</li></ul></div>
 <div class="card"><h2>What does it look like? (each diagram on its own full page)</h2><ul><li><a href="diagram-odd.html">What is inside World Substrate and what talks to it? (context and container views, section 3)</a></li><li><a href="diagram-domain.html">Which ideas are substrate code every world gets, which an AI writes per world, and how do they relate?</a></li><li><a href="diagram-open-questions.html">Which concepts carry the unsettled questions, and whose call is each?</a></li><li><a href="diagram-metamodel.html">What kinds of things can any world&#x27;s rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?</a></li>
 <li><a href="review.html#architecture">Architecture: system model and domain model</a></li>
 <li><a href="review.html#spectrum">Semantic spectrum ladder</a></li></ul></div>
@@ -103,8 +105,11 @@ function sized(el) {
 for (const [id, item] of Object.entries(D.md || {})) renderMd(id, item);
 for (const [id, g] of Object.entries(D.graphs || {})) {
   const el = document.getElementById(id); if (!el || !window.GraphViewer) continue;
-  const v = GraphViewer.mount(el, {graph: g, onLayout: D.full ? undefined : sized(el)});
-  if (D.full && v && v.fullPage) setTimeout(() => v.fullPage(true), 300);
+  let v;
+  // The standalone host already fills the window. Wait for the actual layout
+  // before fitting; a timer can run before a large graph has finished laying out.
+  const onLayout = D.full ? () => requestAnimationFrame(() => v?.fit()) : sized(el);
+  v = GraphViewer.mount(el, {graph: g, onLayout});
 }
 if (window.mermaid) {
   mermaid.initialize({startOnLoad: false, theme: 'neutral', securityLevel: 'strict'});

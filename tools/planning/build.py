@@ -1,6 +1,9 @@
 """Build the planning package model files from domain_src.py and questions_src.py: docs/model/domain.graph.json,
 docs/model/DOMAIN.md, docs/planning/open-questions.json and docs/model/open-questions.graph.json, then rebuild every
-review page from them (the repository package page and each plan page), so no page is left stale.
+legacy review-page data from them (the repository package page and each plan page).
+Afterwards run Company Planning's shared build_review_page.py for the repository
+and open-attempt manifests: their hub, review and questions HTML embed package
+data and are owned by the shared template, not these legacy data builders.
 
   python3 tools/planning/build.py
 """
