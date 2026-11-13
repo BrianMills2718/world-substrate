@@ -45,6 +45,7 @@ from scripts.review_rules import MISSING as MISSING_RULE, SourceDraftReviewError
 from scripts.scaffold_world import BundleError, validate_bundle
 from world_substrate.action_authoring import ActionDeclarationError, CausalModel
 from world_substrate.engine import recorded_reaction_limit
+from scripts.world_catalog import WorldCatalog, CatalogError, CatalogConflict, CatalogUnavailable
 
 API_PREFIX = "/world-builder/api"
 # Raised from 512,000 for the ai-judge plan's J0 (2026-11-10): Brian's example world, 50 chains of 100 links, is
@@ -601,6 +602,102 @@ def _share_db() -> Path:
     return Path(os.environ.get("WORLD_BUILDER_SHARE_DB") or _run_log_dir().parent / "shares.sqlite")
 
 
+def _catalog() -> WorldCatalog:
+    return WorldCatalog(os.environ.get("WORLD_BUILDER_CATALOG_DB") or _share_db())
+
+
+_CATALOG_LOCK_GUARD = threading.Lock()
+_CATALOG_RUN_LOCKS: dict[str, Any] = {}
+
+
+def _catalog_run_lock(run_id: str):
+    with _CATALOG_LOCK_GUARD:
+        return _CATALOG_RUN_LOCKS.setdefault(run_id, threading.Lock())
+
+
+def _catalog_response(status: int, value: dict[str, Any]) -> tuple[int, dict[str, Any]]:
+    """Durability is part of success, including asynchronous job completion."""
+    request = _REQUEST.get() or {}
+    step = request.pop("catalog_step", None)
+    if status != 200 or not value.get("ok"):
+        return status, value
+    try:
+        if step:
+            _mark_refused_world_changes((value.get("trace") or {}).get("transcript") or [], request.get("engine_events") or [])
+            checkpoint = _catalog().append(step["run_id"], step["expected"], step["body"], value)
+            value = {**value, "catalog_world_id": step["world_id"], "catalog_run_id": step["run_id"],
+                     "checkpoint_id": checkpoint["id"]}
+        elif (request.get("path") == "/generate-world" and _is_owner()
+              and isinstance(value.get("bundle"), dict) and isinstance(value.get("causal_model"), dict)):
+            definition = {**value, "description": (request.get("summary") or {}).get("description", value.get("description", ""))}
+            world = _catalog().save_world(definition, _world_fingerprint(value["bundle"], value["causal_model"]),
+                                          build_trace_id=value.get("trace_id"))
+            value = {**value, "catalog_world_id": world["id"]}
+        return status, value
+    except CatalogError as error:
+        return error.status, {"ok": False, "error": str(error)}
+    except Exception:
+        return 500, {"ok": False, "error": "The catalog could not save this result. No success was recorded; reload the run before retrying."}
+
+
+def _catalog_scene(record: dict[str, Any]) -> dict[str, Any]:
+    from scripts.world_scene_bridge import render_world_scene
+    return {"ok": True, **render_world_scene(record["world"], record.get("rounds") or [],
+                                           run_id=record.get("catalog_run_id"), driven=True)}
+
+
+def _catalog_backfill() -> dict[str, Any]:
+    """Add owner builds and exact-matching public recordings; never guess ancestry."""
+    import gzip
+    catalog = _catalog()
+    rows = []
+    for path in sorted(_run_log_dir().glob("runs_*.jsonl")):
+        with path.open() as handle:
+            for line in handle:
+                try:
+                    row = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if row.get("status") == 200 and row.get("who") == "owner":
+                    rows.append(row)
+    builds = 0
+    for row in rows:
+        result = row.get("result") or {}
+        if row.get("path") != "/generate-world" or not isinstance(result.get("bundle"), dict) or not isinstance(result.get("causal_model"), dict):
+            continue
+        definition = {**result, "description": (row.get("request") or {}).get("description", ""), "trace_id": row.get("trace_id")}
+        catalog.save_world(definition, _world_fingerprint(result["bundle"], result["causal_model"]), row.get("trace_id"))
+        builds += 1
+    worlds = {world["fingerprint"]: world for world in catalog.worlds()}
+    recovered = 0
+    with _share_connect() as db:
+        for share_id, blob in db.execute("SELECT id,record FROM shares"):
+            record = json.loads(gzip.decompress(blob))
+            world = record.get("world") or {}
+            fingerprint = _world_fingerprint(world.get("bundle"), world.get("causal_model"))
+            if fingerprint in worlds:
+                catalog.import_share(worlds[fingerprint]["id"], share_id, record)
+                recovered += 1
+    initial_segments = 0
+    for row in rows:
+        request, result = row.get("request") or {}, row.get("result") or {}
+        if row.get("path") != "/run" or request.get("continued") is not False or not isinstance(request.get("bundle"), dict):
+            continue
+        fingerprint = _world_fingerprint(request["bundle"], request.get("causal_model"))
+        if fingerprint not in worlds or not result.get("transcript"):
+            continue
+        response = {"ok": True, "trace": result, "summary": result.get("summary"), "trace_id": row.get("trace_id"),
+                    "approval": result.get("approval"), **({"actor_state": result["actor_state"]} if result.get("actor_state") else {})}
+        if not isinstance(result.get("actor_state"), dict):
+            response["_catalog_replay_only_reason"] = "The historical log did not retain complete actor continuation state; replay is available."
+        catalog.import_initial_run(worlds[fingerprint]["id"], row["trace_id"], request, response)
+        initial_segments += 1
+    # Later log segments omit authenticated parent identity. They stay historical
+    # evidence rather than being stitched together from consecutive round numbers.
+    return {"ok": True, "owner_builds_found": builds, "public_recordings_matched": recovered, "initial_segments_found": initial_segments,
+            "worlds": catalog.worlds(), "limitations": ["Recovered public recordings are replay-only; historical parentage and actor checkpoints are not inferred."]}
+
+
 def _share_connect():
     import sqlite3
     path = _share_db()
@@ -855,6 +952,7 @@ class _JobResponder:
         self.job_id = job_id
 
     def _json(self, status: int, value: dict[str, Any]) -> None:
+        status, value = _catalog_response(status, value)
         with _JOBS_LOCK:
             job = _JOBS.get(self.job_id)
             if job is not None:
@@ -1430,6 +1528,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         """Build steps are only visible to background jobs, which the page polls."""
 
     def _json(self, status: int, value: dict[str, Any]) -> None:
+        status, value = _catalog_response(status, value)
         _record_response(status, value)
         data = json.dumps(value, separators=(",", ":")).encode()
         self.send_response(status)
@@ -1483,6 +1582,45 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             self._json(HTTPStatus.OK, payload)
             return
         path = self._path()
+        if path == "/worlds" or path.startswith("/worlds/"):
+            if self._owner_check() is not True:
+                self._error(HTTPStatus.FORBIDDEN, "the private world library needs the owner password")
+                return
+            try:
+                parts = path.strip("/").split("/")
+                catalog = _catalog()
+                if len(parts) == 1:
+                    payload = {"ok": True, "worlds": catalog.worlds()}
+                elif len(parts) == 2:
+                    payload = catalog.world(parts[1])
+                elif len(parts) == 3 and parts[2] == "scene":
+                    payload = _catalog_scene({"world": catalog.world(parts[1])["world"]["definition"], "rounds": []})
+                elif len(parts) in (4, 5) and parts[2] == "runs":
+                    payload = catalog.run(parts[1], parts[3])
+                    if len(parts) == 5:
+                        if parts[4] != "scene":
+                            self._error(404, "not found")
+                            return
+                        payload = _catalog_scene(payload["record"])
+                else:
+                    self._error(404, "not found")
+                    return
+                self._json(200, payload)
+            except CatalogError as error:
+                self._error(error.status, str(error))
+            except Exception:
+                self._error(500, "the private world library is unavailable")
+            return
+        if path.startswith("/share/") and path.endswith("/scene"):
+            record = _open_share(path[len("/share/"):-len("/scene")])
+            if record is None:
+                self._error(404, "shared run not found")
+            else:
+                try:
+                    self._json(200, _catalog_scene(record))
+                except Exception:
+                    self._error(503, "the spatial scene is unavailable")
+            return
         if path == "/runs" or path.startswith("/runs?"):
             if self._owner_check() is not True:
                 self._error(HTTPStatus.FORBIDDEN, "the run log needs the owner password")
@@ -1547,6 +1685,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             _REQUEST.set(request)
             try:
                 target(responder, client, body)
+            except CatalogError as error:
+                responder._error(error.status, str(error))
             except (BundleError, ActionDeclarationError, ValueError, TypeError) as error:
                 responder._error(HTTPStatus.UNPROCESSABLE_ENTITY, str(error)[:500])
             except Exception as error:  # final job boundary
@@ -1604,6 +1744,25 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             self._start_job(client, path, body)
             return
         try:
+            if path == "/worlds/import-logs":
+                if not _is_owner():
+                    self._error(403, "the private world library needs the owner password")
+                    return
+                with _catalog_run_lock("__backfill__"):
+                    payload = _catalog_backfill()
+                self._json(200, payload)
+                return
+            if path.startswith("/worlds/"):
+                if not _is_owner():
+                    self._error(403, "the private world library needs the owner password")
+                    return
+                parts = path.strip("/").split("/")
+                if len(parts) == 3 and parts[2] == "runs":
+                    self._json(200, _catalog().create_run(parts[1], name=body.get("name"),
+                               parent_run_id=body.get("parent_run_id"), checkpoint_id=body.get("checkpoint_id")))
+                else:
+                    self._error(404, "not found")
+                return
             if path == "/generate-draft":
                 self._generate_draft(client, body)
                 return
@@ -1632,6 +1791,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 self._readout(client, body)
                 return
             self._error(HTTPStatus.NOT_FOUND, "not found")
+        except CatalogError as error:
+            self._error(error.status, str(error))
         except (BundleError, ActionDeclarationError, ValueError, TypeError) as error:
             self._error(HTTPStatus.UNPROCESSABLE_ENTITY, str(error)[:500])
         except Exception as error:  # final process boundary
@@ -2603,8 +2764,14 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
 
     def _readout(self, client: str, body: dict[str, Any]) -> None:
         """The "What happened" readout of a finished run, read from this server's own run log (one light AI call)."""
-        runs, build = self._run_ids(body)
-        record = _assemble_share(build, runs)
+        if body.get("catalog_run_id") is not None:
+            if not _is_owner():
+                self._error(403, "reading a private catalog run needs the owner password")
+                return
+            record = _catalog().run_by_id(body["catalog_run_id"])["record"]
+        else:
+            runs, build = self._run_ids(body)
+            record = _assemble_share(build, runs)
         from scripts.run_readout import read_run
         model = _requested_model(body)
 
@@ -2619,6 +2786,16 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
 
     def _share(self, client: str, body: dict[str, Any]) -> None:
         """Save a finished run for a link. No AI call: the rounds come from this server's own run log."""
+        if body.get("catalog_run_id") is not None:
+            if not _is_owner():
+                self._error(403, "sharing a private catalog run needs the owner password")
+                return
+            record = _catalog().run_by_id(body["catalog_run_id"])["record"]
+            if not record.get("rounds"):
+                raise ValueError("run at least one round before sharing")
+            share_id = _save_share(_fingerprint(client), record)
+            self._json(200, {"ok": True, "share_id": share_id, "rounds": len(record["rounds"])})
+            return
         runs, build = self._run_ids(body)
         readout_id = body.get("readout_trace_id")
         if readout_id is not None and not (isinstance(readout_id, str) and _TRACE_PATTERN.fullmatch(readout_id)):
@@ -2638,6 +2815,59 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         self._json(HTTPStatus.OK, {"ok": True, "share_id": share_id, "rounds": len(record["rounds"])})
 
     def _run(self, client: str, body: dict[str, Any]) -> None:
+        run_id = body.get("catalog_run_id")
+        if run_id is None:
+            return WorldBuilderHandler._run_native(self, client, body)
+        if not _is_owner():
+            self._error(403, "private world runs need the owner password")
+            return
+        if not isinstance(run_id, str) or "expected_checkpoint_id" not in body:
+            raise CatalogConflict("catalog_run_id and expected_checkpoint_id are required")
+        if body.get("turns", 1) != 1:
+            raise CatalogConflict("catalog runs advance one saved round at a time")
+        with _catalog_run_lock(run_id):
+            saved = _catalog().resume(run_id, body["expected_checkpoint_id"])
+            definition = saved["world"]["definition"]
+            hydrated = {key: definition[key] for key in ("bundle", "causal_model", "briefs", "run_stop", "judge_rulings") if key in definition}
+            # Runtime choices do not grant authority to replace rules, memory or snapshots.
+            hydrated.update({key: body[key] for key in ("approved", "policy", "model", "decisions") if key in body})
+            hydrated["turns"] = 1
+            if saved["checkpoint"]:
+                response = saved["response"]
+                trace = response["trace"]
+                for key in ("policy", "model", "execution_mode"):
+                    if key not in hydrated and key in saved["request"]:
+                        hydrated[key] = saved["request"][key]
+                hydrated.update(continue_from=trace["final_snapshot"], approval=response["approval"],
+                                rulings=trace.get("rulings") or [], stop_history=trace.get("stop_history"),
+                                run_spent_usd=trace.get("run_spent_usd", 0), turn_offset=saved["checkpoint"]["round"])
+                if response.get("actor_state") is not None:
+                    hydrated["actor_state"] = response["actor_state"]
+                else:
+                    for key in ("resident_memory", "underway"):
+                        hydrated[key] = trace.get(key) or ({} if key == "resident_memory" else [])
+                    recent = list(saved["request"].get("recent") or [])
+                    for turn in trace.get("transcript") or []:
+                        for actor, row in (turn.get("actors") or {}).items():
+                            if row.get("status") == "accepted" and row.get("did"):
+                                recent.append({"actor": actor, "action": str(row["did"]["kind"])[:80]})
+                    hydrated["recent"] = recent[-MAX_RECENT_MOVES:]
+                hydrated["continue_seal"] = _snapshot_seal(hydrated["continue_from"], hydrated["bundle"],
+                    hydrated["causal_model"], hydrated["approval"], hydrated["rulings"], hydrated.get("actor_state"))
+            request = _REQUEST.get()
+            if request is None:
+                request = {"path": "/run"}
+                _REQUEST.set(request)
+            request["catalog_step"] = {"run_id": run_id, "world_id": saved["world"]["id"],
+                                       "expected": body["expected_checkpoint_id"], "body": hydrated}
+            request["summary"] = {**_request_summary("/run", hydrated), "catalog_run_id": run_id,
+                                  "expected_checkpoint_id": body["expected_checkpoint_id"]}
+            try:
+                WorldBuilderHandler._run_native(self, client, hydrated)
+            finally:
+                request.pop("catalog_step", None)
+
+    def _run_native(self, client: str, body: dict[str, Any]) -> None:
         if body.get("approved") is not True:
             self._error(HTTPStatus.CONFLICT, "mechanics must be explicitly approved before a run")
             return
