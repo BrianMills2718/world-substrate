@@ -100,7 +100,7 @@ class OpenAttemptTests(unittest.TestCase):
             self.assertEqual(kwargs["task"], open_attempt.TASK)
             self.assertEqual(sent["prompt"], "attempt_interpreter.yaml")
             calls["interpreter"].append(sent["attempt"])
-            return READINGS[sent["attempt"]], types.SimpleNamespace(cost=0.0005)
+            return {**READINGS[sent["attempt"]], "coverage": {"status": "complete", "action_spans": [sent["attempt"]], "unrepresented_spans": []}}, types.SimpleNamespace(cost=0.0005)
 
         fake.call_llm_json_schema = call_llm_json_schema
         import scripts.concordia_residents  # noqa: F401  (Concordia imported outside patch.dict)
@@ -123,7 +123,7 @@ class OpenAttemptTests(unittest.TestCase):
         self.assertEqual(rows[2]["refused_because"], [])
         self.assertEqual(trace["summary"]["unmatched_attempts"], [
             {"round": 3, "actor": "sam", "attempt": ATTEMPTS[2], "nearest_kind": "none",
-             "why": "no kind is about weather", "event_id": rows[2]["event_id"]}])
+             "why": "no kind is about weather", "coverage": {"status": "complete", "action_spans": [ATTEMPTS[2]], "unrepresented_spans": []}, "event_id": rows[2]["event_id"]}])
         # Its pass 1 (ai-judge plan J1): it names no one, so only Sam's own moves and values.
         self.assertEqual(list(rows[2]["consequence"]["pass_one"]["moves"]), ["sam"])
         self.assertTrue(any("nothing came of it" in n for n in trace["resident_memory"]["sam"]))
@@ -160,7 +160,7 @@ class OpenAttemptTests(unittest.TestCase):
                          "work": "none", "reasoning": "my goal"}, types.SimpleNamespace(cost=0.001))
             if sent["attempt"] == ATTEMPTS[1]:
                 raise getattr(fake, error_name)("Empty content from LLM (native JSON schema structured)")
-            return READINGS[sent["attempt"]], types.SimpleNamespace(cost=0.0005)
+            return {**READINGS[sent["attempt"]], "coverage": {"status": "complete", "action_spans": [sent["attempt"]], "unrepresented_spans": []}}, types.SimpleNamespace(cost=0.0005)
 
         fake.call_llm_json_schema = call_llm_json_schema
         import scripts.concordia_residents  # noqa: F401
@@ -325,7 +325,7 @@ class RequestTests(unittest.TestCase):
             if kwargs["task"] == open_attempt.TASK:
                 self.assertIn("asks", schema["required"])
                 return ({"kind": "none", "fields": [], "nearest_kind": "buy-boxes", "asks": asks,
-                         "why": "no kind is placing an order"}, types.SimpleNamespace(cost=0.0))
+                         "why": "no kind is placing an order", "coverage": {"status": "complete", "action_spans": [self.ORDER], "unrepresented_spans": []}}, types.SimpleNamespace(cost=0.0))
             # Everyone waits, except the shop's round-1 order below.
             return ({"belief": "b", "attempt": "wait", "expected_effect": "e", "work": "none", "reasoning": "r"},
                     types.SimpleNamespace(cost=0.0))

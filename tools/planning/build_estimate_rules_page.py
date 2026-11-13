@@ -16,7 +16,9 @@ SOURCE = oa.REPO / "proposals" / "open-attempt" / "review-page" / "index.html"
 
 def main() -> None:
     oa.PAGE, oa.PACKAGE = PAGE, "docs/planning/estimate-rules/planning-package.json"
-    src = SOURCE.read_text(encoding="utf-8")
+    # The active open-attempt page now uses its own document renderer. Preserve
+    # this legacy page's scaffold while refreshing its governed package sections.
+    src = (PAGE / "index.html").read_text(encoding="utf-8")
     style = src[src.index("<style>"):src.index("</style>") + len("</style>")]
     viewer = src[src.index('<script src="../../planning-package/review-page/graph-viewer.js">'):src.index("</body>")]
     text = ("<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"

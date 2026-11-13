@@ -407,7 +407,7 @@ def _read_attempt(engine: Engine, actor: str, text: str | None, signatures: list
     except llm_error as exc:
         # One person's words the reader could not read change nothing and are listed, like a try that fits no rule;
         # pencil nEEW93EirxNe lost 4 whole rounds to one unread attempt (500 "internal world-builder error").
-        return {"unmatched": True, "unread": True, "nearest_kind": open_attempt.NONE,
+        return {"unmatched": True, "unread": True, "interpretation_rejection": "unread", "nearest_kind": open_attempt.NONE,
                 "why": f"the attempt could not be read: {exc}"[:300]}, 0.0
 
     def value_of(entity_id: str, path: str) -> Any:
@@ -1036,7 +1036,8 @@ def run_world(
                 continue
             # An attempt read as the kind of a held or rejected ruling does not reach the engine (J3): it joins the held
             # ruling and waits, or is refused naming the rejected one. The judge is not asked again.
-            waiting = book.covering(str(wanted.get("kind"))) if book is not None else None
+            interpretation_feedback = open_attempt.rejection_message(readings.get(actor) or wanted)
+            waiting = book.covering(str(wanted.get("kind"))) if book is not None and not interpretation_feedback else None
             if waiting is not None:
                 outcome = {"status": "pending_ruling" if waiting["status"] == rulings_mod.HELD else "refused_ruling",
                            "event": {"checks": []}}
@@ -1125,6 +1126,8 @@ def run_world(
                 "event_id": _run_event_id(turn + turn_offset, (outcome.get("event") or {}).get("event_id")),
                 "changes": _state_changes(outcome.get("event") or {}) if outcome.get("status") == "accepted" else [],
             }
+            if interpretation_feedback:
+                row["interpretation_feedback"] = interpretation_feedback
             if said_retry is not None:
                 row["said_on_retry"] = said_retry
             if waiting is not None:
@@ -1153,12 +1156,13 @@ def run_world(
                     # the world now is the world it was tried in.
                     named = did.get("names") or ([did["asks"]] if did.get("asks") else [])
                     row["consequence"] = {"pass_one": consequence_report.pass_one(engine, actor, named, people=actors)}
-                    if judge:
+                    if judge and not interpretation_feedback:
                         to_judge.append((actor, row, judge_rule.frozen(engine)))
                     unmatched.append({"round": turn + turn_offset, "actor": actor, "attempt": did.get("attempt"),
                                       "nearest_kind": did.get("nearest_kind"), "why": did.get("why"),
                                       **({"asks": did["asks"]} if did.get("asks") in actors else {}),
                                       **({"names": list(did["names"])} if did.get("names") else {}),
+                                      **{key: did[key] for key in ("interpretation_rejection", "coverage") if key in did},
                                       "event_id": row["event_id"]})
             rows[actor] = row
         if to_judge:
@@ -1250,6 +1254,10 @@ def run_world(
             for actor in actors:
                 row, attempt = rows[actor], beliefs.get(actor) or {}
                 row["belief"], row["expects"] = attempt.get("belief"), attempt.get("expected_effect")
+                if row.get("interpretation_feedback"):
+                    residents.observe(actor, f"Round {turn + turn_offset}: you tried: {attempt.get('attempt')}. "
+                                      + row["interpretation_feedback"])
+                    continue
                 if _boundary_bundle(engine):
                     # Own attempt and public interface result only; internal blockers,
                     # task details and judge diagnostics remain in analyst evidence.
@@ -1749,13 +1757,15 @@ def _picture_story(bundle: dict[str, Any], trace: dict[str, Any]) -> dict[str, A
                 unread = wanted.get("kind") == "unmatched-attempt"
                 move = wanted.get("nearest_kind") if unread else (rec.get("did" if state == "acted" else "wanted") or {}).get("kind")
                 more = ["Changed: " + "; ".join(mine) + "."] if mine else []
-                if unread:
+                if rec.get("interpretation_feedback"):
+                    more.insert(0, f"It tried: “{wanted.get('attempt', '')}” {rec['interpretation_feedback']}")
+                elif unread:
                     # Not the world saying no: nothing judged this move, because the words were not understood.
                     more.insert(0, f"It tried: \u201c{wanted.get('attempt', '')}\u201d The system could not match these words to a move, so the rules never judged it.")
                 elif state == "refused":
                     more.insert(0, "Refused. It needed, and did not have: " + "; ".join(map(str, rec.get("refused_because") or [_words(status)])) + ".")
                 people[actor] = {"state": state, "more": more,
-                                 "did": _words(move) if state == "acted" else "waited" if state == "waited" else ("not understood" if unread else "refused") + (": " + _words(move) if move else "")}
+                                 "did": _words(move) if state == "acted" else "waited" if state == "waited" else ("needs clarification" if rec.get("interpretation_feedback") else "not understood" if unread else "refused") + (": " + _words(move) if move else "")}
         changed = []
         for eid in who:
             # Only what moved: a row repeating every unchanged value hides the one that changed.

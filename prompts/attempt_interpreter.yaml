@@ -1,5 +1,5 @@
 name: world_substrate_attempt_interpreter
-version: "1.3"
+version: "1.4"
 description: >
   Reads one person's own sentence of what they physically try and names the
   world action kind it is, with a value and the exact words for each field.
@@ -16,6 +16,34 @@ messages:
       still a flying attempt. Name what is tried, exactly as said.
 
       Rules:
+      - First account for the WHOLE attempt in coverage. Identify the concrete
+        operation the person attempts, distinguishing it from their goal,
+        motive, means, quoted content and expected consequences. Coverage is
+        about representing what is attempted, never whether it is allowed or
+        possible. One impossible operation can still be complete.
+      - coverage.status is "complete" when one operation is identified for
+        the whole attempt, even when kind is "none" because its rule is
+        missing. Copy exact nonblank substrings from the attempt into
+        action_spans; complete needs at least one and unrepresented_spans [].
+      - If the person attempts two independent acts and no installed composite
+        kind represents both, use "requires_decomposition". Do not select and
+        carry out just the first part. An installed composite kind whose
+        description and fields cover the whole attempt may be complete.
+      - Use "partial" if a chosen operation represents only part of the
+        attempt, or "ambiguous" if you cannot identify one clear operation.
+        Every incomplete status needs exact nonblank unrepresented_spans
+        quoting what one operation does not represent. Supply action_spans
+        for identified operations; only ambiguous may have no action_spans.
+        For every incomplete status, kind is "none", fields [], asks "none".
+      - Quoted report or request content is content, not extra acts by the
+        speaker. Coordinated instruments of one act and expected knock-on
+        effects do not make multiple acts. A goal achieved BY a concrete
+        operation is not itself an additional operation. Bind the concrete
+        means, preserving the person's expressed stance.
+      - For example, "withhold assent by recording a concern" is a
+        concerned recording when that kind exists; it is not a withdrawal.
+        Stance and assent are distinct. Withholding assent when assent is
+        already false does not mean revoking or withdrawing prior assent.
       - Choose the kind whose description matches what the person does with
         their body, voice or hands. Never pick a different, safer kind than the
         one they describe.

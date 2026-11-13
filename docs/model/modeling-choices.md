@@ -304,3 +304,10 @@ These routes into the [existing ledger](../planning/open-questions.json) are not
 | Q88: replacement by bands | Small-case agreement does not establish preserved interventions or boundaries. Define applicability before replacement. |
 
 Review notes, November 12: source inventory found strong execution vocabulary but no unified modeling guide. Newer approved constraint/decision/norm distinctions and the existing consent counterexample are incorporated here. Remaining risks concern whether composed models preserve relevant causal and informational distinctions within their resource envelope.
+
+
+### Attempt, operation, goal and coverage
+
+An **utterance** is all the actor's attempted-action text. An **operation** is what it concretely tries to do through an installed action interface. A **goal** is what it hopes that operation achieves; an **expected consequence** is what it predicts follows. These do not grant additional effects. “Withhold assent by recording concern” identifies recording as the concrete means; concern is not revocation of assent. A **compound attempt** tries independent operations; an **installed composite** is one reviewed interface whose mechanics cover their combination atomically. Quoted report content and coordinated instruments can belong to a single operation.
+
+**Coverage** is the interpreter's assessment that the chosen operation accounts for the whole utterance, retained with exact action and unrepresented quotes. It is model evidence, not a semantic proof. Fresh invalid or incomplete assessments produce an **interpretation rejection**: no partial action, rule creation or request delivery, and actor-safe clarification. A complete but unsupported operation is instead a **missing-rule case**, eligible for the existing judge path. Historical missing assessments mean **unassessed**, never complete. See [semantic-binding](../../openspec/specs/semantic-binding/spec.md) and the [bounded Q36 plan](../plans/open_attempt.md#whole-attempt-coverage-follow-up-q36).
