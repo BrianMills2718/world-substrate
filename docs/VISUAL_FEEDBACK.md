@@ -1,12 +1,23 @@
 ---
 role: living-feedback-log
 status: active
-reviewed_through: 2026-10-05
+reviewed_through: 2026-11-13
 ---
 
 # World Builder visual and usability feedback
 
 Living record of critiques of World Builder pages. Owner critiques become rules here; rules that apply beyond this project are promoted to Representation Router heuristics (named in the right-hand column).
+
+## Saved-run usability review — 2026-11-13
+
+Brian: “the ui is bascially unusuable”; asked whether the linked Reddit design library helps. Independent live design and mechanical/browser assessments confirm a broken primary inspection journey despite the earlier bounded inspector checks passing. This is feedback and a proposed direction, not an adopted redesign.
+
+- Scene cards, round badge and object labels overlap; the phone stage clips its content. Replay advances before scenario orientation and offers no visible direct round seek.
+- Opening round 3’s causal receipt leaves the picture/network at round 6. Actor information replaces the world context with exact-input JSON. These views require the reader to reconstruct one event across separate contexts.
+- Recommend one selected round/event shared by the readable event list, before/after state, rule/refusal/knock-on explanation and actor-input inspector; keep exact trace and full graph available. Give saved recordings scenario orientation before playback and explicitly compose the phone layout. Preserve the approved one-box creation flow.
+- The relevant Meta project is [Astryx](https://github.com/meta/astryx): selected scaffold, row, side-panel and responsive guidance helps. Whole-component adoption entails React 19 migration for the vanilla outer viewer. No library/skill was installed; choose components after a reviewable retained-data layout. Reddit-to-video attribution remains inferred; the official source is verified and pinned.
+
+[Full assessment and proposed repair order](../.impeccable/critique/2026-11-13T20-43-27Z__scripts-world-builder-home-html.md). [Evidence and pinned source receipt](../evidence/ui/usability-review-20261113/): fresh desktop 1440×1000/phone 390×844 screenshots, historical-selection failure, independent reports and router dispositions. Nielsen 12/32 is expert judgment, not measured human comprehension. Detector returned 3 findings (exit 2), including 2 false positives; it misses the major viewing failures. No new simulation/model call or product change. Human usability acceptance remains unverified.
 
 ## Rules
 
