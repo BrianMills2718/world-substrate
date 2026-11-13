@@ -212,7 +212,7 @@ rules:
       Typed gate tests establish that unsafe or absent verdicts are rejected, not that the model always detects
       unauthorized disclosures. Generated verdicts and actual prompts require trace inspection.
     owner: scripts/review_rules.py
-    reviewed_at: 2fa9b86f4bef279cfb7b6541fd38132806a1455a
+    reviewed_at: e4ea994f2aee8bd31eda182d52a0fe7c3c986bae
     checks:
       - tests/test_initial_actor_knowledge.py::test_missing_malformed_or_disallowed_review_never_approves
       - tests/test_initial_actor_knowledge.py::test_existing_review_call_reads_actual_contexts_and_rejects_narrator_negative_knowledge
@@ -228,7 +228,7 @@ rules:
       These are declared procedural assumptions with a bounded effective repair action; they establish neither
       scientific fidelity of the condition nor calibrated human responses or a required social ending.
     owner: spikes/any-scenario-2026-10/compile_spec.py
-    reviewed_at: 2fa9b86f4bef279cfb7b6541fd38132806a1455a
+    reviewed_at: e4ea994f2aee8bd31eda182d52a0fe7c3c986bae
     checks:
       - tests/test_scenario_spec.py::test_delivery_review_repair_and_assent_remain_distinct
       - tests/test_scenario_spec.py::test_no_forced_support_timer_or_claim_truth_and_safe_metadata
