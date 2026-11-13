@@ -324,7 +324,7 @@ window.MAPS = {
     "id": "attempt-reading",
     "label": "Attempt reading",
     "kind": "Substrate",
-    "explain": "The interpreter's typed reading of an attempt: one move kind and its field rows (field, value, quoted_span: the words in the attempt behind that value), or the kind 'wait'; read as unmatched if it names an unknown kind or entity, misses a field, or quotes words not said. Code: src/world_substrate/attempt.py:92."
+    "explain": "The interpreter's typed reading of the whole attempt: one operation kind and quoted field rows, or wait; fresh readings include a quoted coverage assessment. Invalid/incomplete/unread assessments are interpretation rejections with safe clarification and no partial action, judge or request delivery. Complete unsupported operations remain missing-rule cases; historical absent assessments remain unassessed. Coverage is model evidence, not proof of semantic truth. Code: src/world_substrate/attempt.py:92."
    },
    {
     "id": "unmatched-attempt",
@@ -1785,7 +1785,7 @@ window.MAPS = {
     "id": "attempt-reading",
     "label": "Attempt reading",
     "kind": "Concept",
-    "explain": "The interpreter's typed reading of an attempt: one move kind and its field rows (field, value, quoted_span: the words in the attempt behind that value), or the kind 'wait'; read as unmatched if it names an unknown kind or entity, misses a field, or quotes words not said."
+    "explain": "The interpreter's typed reading of the whole attempt: one operation kind and quoted field rows, or wait; fresh readings include a quoted coverage assessment. Invalid/incomplete/unread assessments are interpretation rejections with safe clarification and no partial action, judge or request delivery. Complete unsupported operations remain missing-rule cases; historical absent assessments remain unassessed. Coverage is model evidence, not proof of semantic truth."
    },
    {
     "id": "build",

@@ -30,7 +30,8 @@
       "A4: preserve an unmatched no-state-change event; later checked rulings are separately attributable.",
       "A5/A6: inspectable same-moment causal chains, once per process/entity pair and recorded legacy limits.",
       "A7: the scenario declares its skill scale and roll rule; pool differences do not guarantee different outcomes.",
-      "A8/A9: retained semantics, no fresh inference on replay, and full trace visibility."
+      "A8/A9: retained semantics, no fresh inference on replay, and full trace visibility.",
+      "A4 bounded coverage follow-up: concrete means differ from goals; incomplete readings execute no part, judge no new rule and deliver no request, with safe clarification. Source: Brian 2026-11-13 approval; technical contract inferred by agent."
     ]
   },
   "status_basis": "Statuses concern the complete user-inspectable demonstration specified here. Existing mechanism/fixture/retained-run evidence is stated per entry; no judged pass or fabricated coverage is recorded. Planned inspectors and the full S3 run are not claimed delivered.",
@@ -121,9 +122,10 @@
       "demonstration": [
         "Open the retained S1 airfield record linked in evidence and read round 1's unmatched invitation (r1-e00002).",
         "In the planned attempt inspector, open the same event and its unmatched-attempt list entry.",
-        "Compare the displayed before/after state and the reason no installed action matched."
+        "Compare the displayed before/after state and the reason no installed action matched.",
+        "Open the retained whole-attempt coverage recording from the review page. Select the compound attempt and compare the complete words, clarification and unchanged state; inspect its linked native and engine evidence. Compare the separately labeled Mara replay: her concrete recording changes stance only."
       ],
-      "expected": "The original attempt and unmatched reason are visible; the S1 fallback records no changes and identical world hashes. On later judged runs, any proposed ruling is shown separately and changes require an installed rule; a later judge outcome must not be mislabeled as the original no-rule event.",
+      "expected": "The original attempt and unmatched reason are visible; the S1 fallback records no changes and identical world hashes. On later judged runs, any proposed ruling is shown separately and changes require an installed rule; a later judge outcome must not be mislabeled as the original no-rule event. An interpretation rejection explicitly says no part was carried out and asks for one concrete operation. It reaches neither rule creation nor another actor. Analyst evidence retains the original utterance and valid coverage, or links the raw malformed assessment. Complete missing-rule attempts retain their existing separate judge path.",
       "failure_example": "Broken: an unmatched attempt disappears, mutates state without a rule or is presented as a successful action. Working: a visible unmatched event with no changes and any subsequent ruling separately attributable.",
       "representation": {
         "view": "composite-linked-view: original attempt, interpreted action, world result and event evidence with shared event focus",
@@ -131,12 +133,15 @@
       },
       "entrypoint": "planned",
       "status": "not built",
-      "status_note": "Retained S1 trace reports A4 passing for the no-rule fallback. Q26 still tracks the full own-words/list display, so the complete demonstration is not marked built or judged pass.",
+      "status_note": "Retained S1 trace reports A4 passing for the no-rule fallback. Q26 still tracks the full own-words/list display, so the complete demonstration is not marked built or judged pass. The bounded coverage correction has native interpreter and model-free engine evidence plus a retained renderer recording; this does not complete the older full A4 inspector criterion or claim a fresh autonomous resident run.",
       "evidence": [
         "docs/plans/open_attempt.md:225",
         "evidence/open-attempt/s1-airfield/TRACE_READ.md:18",
         "evidence/open-attempt/s1-airfield/run-log.jsonl",
-        "docs/plans/ai_judge.md"
+        "docs/plans/ai_judge.md",
+        "openspec/specs/semantic-binding/spec.md",
+        "tests/test_compound_attempt_flow.py",
+        "evidence/open-attempt/whole-attempt-coverage/TRACE_READ.md"
       ]
     },
     {
