@@ -1,0 +1,1744 @@
+{
+  "case": "compound",
+  "status": "unsupported_action",
+  "judge_calls": 0,
+  "replay": {
+    "ok": true,
+    "steps": 2,
+    "expected": "d329840b21f9f5337d31918360375580ee66cb068905dd2f77bed156b3e9a222",
+    "actual": "d329840b21f9f5337d31918360375580ee66cb068905dd2f77bed156b3e9a222",
+    "event_match": true
+  },
+  "trace": {
+    "schema_version": "world-substrate-contested-run/v3",
+    "world": "prototype-pump-validation",
+    "actors": [
+      "ari",
+      "bo",
+      "mara"
+    ],
+    "model": "llm-resident (Concordia) recorded-native-interpretation",
+    "cost_usd": 0.0,
+    "mechanic_profile_id": "49a60fa4280781d3",
+    "reaction_limit": null,
+    "engine_events": [
+      {
+        "event_id": "r2-e00001",
+        "causal_bearer": {
+          "kind": "actor",
+          "id": "ari",
+          "controller": "live:resident"
+        },
+        "semantic_binding": null,
+        "observation": {
+          "world_id": "prototype-pump-validation-live",
+          "revision": 2,
+          "tick": 0,
+          "actor_id": "ari",
+          "entities": {
+            "activate-prototype-pump": {
+              "entity_id": "activate-prototype-pump",
+              "label": "Whether to activate the pump safely",
+              "category_ids": [
+                "validation-decision"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "activate-prototype-pump",
+              "last_cause_event_id": "e00005",
+              "components": {
+                "validation_decision": {
+                  "validation": "failed",
+                  "hold": true,
+                  "review": "requested",
+                  "assents": 0,
+                  "active": false,
+                  "condition_id": "condition-activate-prototype-pump"
+                }
+              }
+            },
+            "ari": {
+              "entity_id": "ari",
+              "label": "Ari",
+              "category_ids": [
+                "actor",
+                "member"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "ari",
+              "components": {
+                "member": {
+                  "role": "Validation engineer",
+                  "authorized": false,
+                  "approved": false,
+                  "aware": false
+                },
+                "report_log": {
+                  "entries": []
+                }
+              }
+            },
+            "bo": {
+              "entity_id": "bo",
+              "label": "Bo",
+              "category_ids": [
+                "actor",
+                "member"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "bo",
+              "components": {
+                "member": {
+                  "role": "Prototype pump operator",
+                  "authorized": false,
+                  "approved": false,
+                  "aware": false
+                },
+                "report_log": {
+                  "entries": []
+                }
+              }
+            },
+            "condition-activate-prototype-pump": {
+              "entity_id": "condition-activate-prototype-pump",
+              "label": "Technical condition",
+              "category_ids": [
+                "technical-condition"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "condition-activate-prototype-pump",
+              "last_cause_event_id": "e00001",
+              "components": {
+                "technical_condition": {
+                  "passing": true
+                }
+              }
+            },
+            "mara": {
+              "entity_id": "mara",
+              "label": "Mara",
+              "category_ids": [
+                "actor",
+                "member"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "mara",
+              "components": {
+                "member": {
+                  "role": "Coordinator",
+                  "authorized": false,
+                  "approved": false,
+                  "aware": false
+                },
+                "report_log": {
+                  "entries": []
+                }
+              }
+            },
+            "position-ari": {
+              "entity_id": "position-ari",
+              "label": "Recorded position of ari",
+              "category_ids": [
+                "actor-position"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "position-ari",
+              "components": {
+                "actor_position": {
+                  "holder_id": "ari",
+                  "assent": false,
+                  "stance": "unexpressed",
+                  "assent_weight": 0
+                }
+              }
+            },
+            "position-bo": {
+              "entity_id": "position-bo",
+              "label": "Recorded position of bo",
+              "category_ids": [
+                "actor-position"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "position-bo",
+              "components": {
+                "actor_position": {
+                  "holder_id": "bo",
+                  "assent": false,
+                  "stance": "unexpressed",
+                  "assent_weight": 1
+                }
+              }
+            },
+            "position-mara": {
+              "entity_id": "position-mara",
+              "label": "Recorded position of mara",
+              "category_ids": [
+                "actor-position"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "position-mara",
+              "components": {
+                "actor_position": {
+                  "holder_id": "mara",
+                  "assent": false,
+                  "stance": "unexpressed",
+                  "assent_weight": 1
+                }
+              }
+            },
+            "prototype-pump": {
+              "entity_id": "prototype-pump",
+              "label": "Prototype pump",
+              "category_ids": [
+                "equipment",
+                "prototype-pump"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "prototype-pump",
+              "components": {
+                "prototype_pump": {
+                  "equipment_type": "prototype pump"
+                }
+              }
+            },
+            "public-procedure": {
+              "entity_id": "public-procedure",
+              "label": "Public validation procedure",
+              "category_ids": [
+                "procedure",
+                "public-procedure"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "public-procedure",
+              "components": {
+                "public_procedure": {
+                  "filing_validation_hold_reveals": "failed validation",
+                  "filing_validation_hold_reveals_private_test_details": false
+                }
+              }
+            },
+            "technical-role-ari": {
+              "entity_id": "technical-role-ari",
+              "label": "Technical authority of ari",
+              "category_ids": [
+                "technical-role"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "technical-role-ari",
+              "components": {
+                "technical_role": {
+                  "holder_id": "ari",
+                  "validator": true,
+                  "repairer": true
+                }
+              }
+            },
+            "unspecified-source-short-validation-failure-report": {
+              "entity_id": "unspecified-source-short-validation-failure-report",
+              "label": "Unspecified report source",
+              "category_ids": [
+                "information-source"
+              ],
+              "location": {
+                "location_id": "scenario"
+              },
+              "source_pack_id": "world-substrate-prototype-pump-validation@1",
+              "source_entity_id": "unspecified-source-short-validation-failure-report"
+            }
+          }
+        },
+        "tick": 0,
+        "world_revision": 2,
+        "rule_id": "unsupported.unmatched-attempt",
+        "rule_version": "0",
+        "cause": "c00001",
+        "status": "unsupported_action",
+        "checks": [
+          {
+            "label": "Base revision is current",
+            "ok": true,
+            "actual": 2,
+            "required": 2
+          },
+          {
+            "label": "Registered action rule",
+            "ok": false,
+            "actual": "unmatched-attempt",
+            "required": null
+          }
+        ],
+        "declared_read_paths": [],
+        "declared_write_paths": [],
+        "changes": [],
+        "hash_before": "d329840b21f9f5337d31918360375580ee66cb068905dd2f77bed156b3e9a222",
+        "hash_after": "d329840b21f9f5337d31918360375580ee66cb068905dd2f77bed156b3e9a222"
+      }
+    ],
+    "summary": {
+      "turns": 1,
+      "terminal_reached": false,
+      "accepted_actions": 0,
+      "world_changes": 0,
+      "active_at_end": false,
+      "idle_actors": [
+        "ari",
+        "bo",
+        "mara"
+      ],
+      "stalled_actors": [
+        "ari",
+        "bo",
+        "mara"
+      ],
+      "moves_at_end": [],
+      "never_offered": {
+        "send-report": "it was never put to anyone"
+      },
+      "unmatched_attempts": [
+        {
+          "round": 2,
+          "actor": "ari",
+          "attempt": "I repair the technical condition for the prototype pump using my technical authority and send Mara a report saying the repair is complete.",
+          "nearest_kind": "none",
+          "why": "No part of this attempt was carried out. Choose one concrete operation and try again.",
+          "interpretation_rejection": "invalid_coverage",
+          "event_id": "r2-e00001"
+        }
+      ],
+      "first_turn": 2,
+      "last_turn": 2
+    },
+    "transcript": [
+      {
+        "turn": 2,
+        "world_changes": [],
+        "world_events": [],
+        "revision_when_decided": 2,
+        "underway": [],
+        "committed_first": "ari",
+        "actors": {
+          "ari": {
+            "wanted": {
+              "actor": "ari",
+              "base_revision": 2,
+              "controller": "live:resident",
+              "kind": "unmatched-attempt",
+              "attempt": "I repair the technical condition for the prototype pump using my technical authority and send Mara a report saying the repair is complete.",
+              "nearest_kind": "none",
+              "why": "No part of this attempt was carried out. Choose one concrete operation and try again.",
+              "interpretation_rejection": "invalid_coverage"
+            },
+            "did": {
+              "actor": "ari",
+              "base_revision": 2,
+              "controller": "live:resident",
+              "kind": "unmatched-attempt",
+              "attempt": "I repair the technical condition for the prototype pump using my technical authority and send Mara a report saying the repair is complete.",
+              "nearest_kind": "none",
+              "why": "No part of this attempt was carried out. Choose one concrete operation and try again.",
+              "interpretation_rejection": "invalid_coverage"
+            },
+            "status": "unsupported_action",
+            "retried": false,
+            "said": "Recorded-input replay.",
+            "refused_because": [],
+            "lost_what_it_wanted": false,
+            "changed": false,
+            "blocked_by_rules": [],
+            "event_id": "r2-e00001",
+            "changes": [],
+            "interpretation_feedback": "No part of this attempt was carried out. Choose one concrete operation and try again.",
+            "attempt": {
+              "text": "I repair the technical condition for the prototype pump using my technical authority and send Mara a report saying the repair is complete.",
+              "reading": {
+                "unmatched": true,
+                "nearest_kind": "none",
+                "why": "No part of this attempt was carried out. Choose one concrete operation and try again.",
+                "interpretation_rejection": "invalid_coverage",
+                "names": []
+              }
+            },
+            "consequence": {
+              "pass_one": {
+                "actor": "ari",
+                "named": [],
+                "moves": {
+                  "ari": {
+                    "available": [
+                      {
+                        "action_id": "507c274e16db",
+                        "action": {
+                          "actor": "ari",
+                          "kind": "complete-validation",
+                          "base_revision": 2,
+                          "controller": "unselected",
+                          "authority": "technical-role-ari",
+                          "decision": "activate-prototype-pump"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the authority named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the authority named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the actor owns this authority",
+                            "ok": true,
+                            "actual": "ari",
+                            "required": "ari"
+                          },
+                          {
+                            "label": "the actor is an authorized validator",
+                            "ok": true,
+                            "actual": true,
+                            "required": true
+                          }
+                        ]
+                      },
+                      {
+                        "action_id": "f116c253d0db",
+                        "action": {
+                          "actor": "ari",
+                          "kind": "record-assent",
+                          "base_revision": 2,
+                          "controller": "unselected",
+                          "decision": "activate-prototype-pump",
+                          "position": "position-ari"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the actor owns this position",
+                            "ok": true,
+                            "actual": "ari",
+                            "required": "ari"
+                          },
+                          {
+                            "label": "the recorded assent changes",
+                            "ok": true,
+                            "actual": false,
+                            "required": false
+                          }
+                        ]
+                      },
+                      {
+                        "action_id": "2703c8f1bc3b",
+                        "action": {
+                          "actor": "ari",
+                          "kind": "repair-condition",
+                          "base_revision": 2,
+                          "controller": "unselected",
+                          "authority": "technical-role-ari",
+                          "condition": "condition-activate-prototype-pump"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the authority named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the authority named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the condition named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the condition named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the actor owns this authority",
+                            "ok": true,
+                            "actual": "ari",
+                            "required": "ari"
+                          },
+                          {
+                            "label": "the actor is an authorized repairer",
+                            "ok": true,
+                            "actual": true,
+                            "required": true
+                          }
+                        ]
+                      },
+                      {
+                        "action_id": "660b1c218ace",
+                        "action": {
+                          "actor": "ari",
+                          "kind": "send-report",
+                          "base_revision": 2,
+                          "controller": "unselected",
+                          "recipient": "ari",
+                          "content": "Report content supplied by the sender."
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the sender supplies words",
+                            "ok": true,
+                            "actual": "Report content supplied by the sender.",
+                            "required": ""
+                          },
+                          {
+                            "label": "the recipient's components.report_log.entries holds a list of text records",
+                            "ok": true,
+                            "actual": "list",
+                            "required": "list of strings"
+                          },
+                          {
+                            "label": "the report content is nonempty text",
+                            "ok": true,
+                            "actual": "str",
+                            "required": "nonempty string"
+                          }
+                        ]
+                      },
+                      {
+                        "action_id": "d017685f43ec",
+                        "action": {
+                          "actor": "ari",
+                          "kind": "send-report",
+                          "base_revision": 2,
+                          "controller": "unselected",
+                          "recipient": "bo",
+                          "content": "Report content supplied by the sender."
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the sender supplies words",
+                            "ok": true,
+                            "actual": "Report content supplied by the sender.",
+                            "required": ""
+                          },
+                          {
+                            "label": "the recipient's components.report_log.entries holds a list of text records",
+                            "ok": true,
+                            "actual": "list",
+                            "required": "list of strings"
+                          },
+                          {
+                            "label": "the report content is nonempty text",
+                            "ok": true,
+                            "actual": "str",
+                            "required": "nonempty string"
+                          }
+                        ]
+                      },
+                      {
+                        "action_id": "462de8ccc4b0",
+                        "action": {
+                          "actor": "ari",
+                          "kind": "send-report",
+                          "base_revision": 2,
+                          "controller": "unselected",
+                          "recipient": "mara",
+                          "content": "Report content supplied by the sender."
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the sender supplies words",
+                            "ok": true,
+                            "actual": "Report content supplied by the sender.",
+                            "required": ""
+                          },
+                          {
+                            "label": "the recipient's components.report_log.entries holds a list of text records",
+                            "ok": true,
+                            "actual": "list",
+                            "required": "list of strings"
+                          },
+                          {
+                            "label": "the report content is nonempty text",
+                            "ok": true,
+                            "actual": "str",
+                            "required": "nonempty string"
+                          }
+                        ]
+                      },
+                      {
+                        "action_id": "4147e844144d",
+                        "action": {
+                          "actor": "ari",
+                          "kind": "state-concerned",
+                          "base_revision": 2,
+                          "controller": "unselected",
+                          "position": "position-ari"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the actor owns this position",
+                            "ok": true,
+                            "actual": "ari",
+                            "required": "ari"
+                          }
+                        ]
+                      },
+                      {
+                        "action_id": "05f3448e7aed",
+                        "action": {
+                          "actor": "ari",
+                          "kind": "state-supportive",
+                          "base_revision": 2,
+                          "controller": "unselected",
+                          "position": "position-ari"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the actor owns this position",
+                            "ok": true,
+                            "actual": "ari",
+                            "required": "ari"
+                          }
+                        ]
+                      },
+                      {
+                        "action_id": "40e7622c38f5",
+                        "action": {
+                          "actor": "ari",
+                          "kind": "state-undecided",
+                          "base_revision": 2,
+                          "controller": "unselected",
+                          "position": "position-ari"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the actor owns this position",
+                            "ok": true,
+                            "actual": "ari",
+                            "required": "ari"
+                          }
+                        ]
+                      }
+                    ],
+                    "blocked": [
+                      {
+                        "action_id": "7861700a85cf",
+                        "action": {
+                          "actor": "ari",
+                          "kind": "activate",
+                          "base_revision": 2,
+                          "controller": "unselected",
+                          "decision": "activate-prototype-pump"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "validation has passed",
+                            "ok": false,
+                            "actual": "failed",
+                            "required": "passed"
+                          },
+                          {
+                            "label": "there is no technical hold",
+                            "ok": false,
+                            "actual": true,
+                            "required": false
+                          },
+                          {
+                            "label": "every required actor recorded assent",
+                            "ok": false,
+                            "actual": 0,
+                            "required": 2
+                          },
+                          {
+                            "label": "activation has not occurred",
+                            "ok": true,
+                            "actual": false,
+                            "required": false
+                          }
+                        ],
+                        "reason": "validation has passed; there is no technical hold; every required actor recorded assent"
+                      },
+                      {
+                        "action_id": "86a6f8b347b2",
+                        "action": {
+                          "actor": "ari",
+                          "kind": "communicate",
+                          "base_revision": 2,
+                          "controller": "unselected",
+                          "delivery": "delivery-info-short-validation-failure-report-to-mara",
+                          "information": "info-short-validation-failure-report-to-mara",
+                          "recipient": "ari"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the delivery named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the delivery named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the information named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the information named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "Actor is the represented information source",
+                            "ok": false,
+                            "actual": "unspecified-source-short-validation-failure-report",
+                            "required": "ari"
+                          },
+                          {
+                            "label": "Delivery names the represented information",
+                            "ok": true,
+                            "actual": "info-short-validation-failure-report-to-mara",
+                            "required": "info-short-validation-failure-report-to-mara"
+                          },
+                          {
+                            "label": "Delivery names the represented recipient",
+                            "ok": false,
+                            "actual": "mara",
+                            "required": "ari"
+                          },
+                          {
+                            "label": "Delivery channel agrees with information channel",
+                            "ok": true,
+                            "actual": "validation_reporting",
+                            "required": "validation_reporting"
+                          },
+                          {
+                            "label": "Information is not active yet",
+                            "ok": false,
+                            "actual": true,
+                            "required": false
+                          },
+                          {
+                            "label": "Delivery is pending",
+                            "ok": false,
+                            "actual": "delivered",
+                            "required": "pending"
+                          }
+                        ],
+                        "reason": "Actor is the represented information source; Delivery names the represented recipient; Information is not active yet; Delivery is pending"
+                      },
+                      {
+                        "action_id": "917ee064600b",
+                        "action": {
+                          "actor": "ari",
+                          "kind": "communicate",
+                          "base_revision": 2,
+                          "controller": "unselected",
+                          "delivery": "delivery-info-short-validation-failure-report-to-mara",
+                          "information": "info-short-validation-failure-report-to-mara",
+                          "recipient": "bo"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the delivery named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the delivery named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the information named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the information named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "Actor is the represented information source",
+                            "ok": false,
+                            "actual": "unspecified-source-short-validation-failure-report",
+                            "required": "ari"
+                          },
+                          {
+                            "label": "Delivery names the represented information",
+                            "ok": true,
+                            "actual": "info-short-validation-failure-report-to-mara",
+                            "required": "info-short-validation-failure-report-to-mara"
+                          },
+                          {
+                            "label": "Delivery names the represented recipient",
+                            "ok": false,
+                            "actual": "mara",
+                            "required": "bo"
+                          },
+                          {
+                            "label": "Delivery channel agrees with information channel",
+                            "ok": true,
+                            "actual": "validation_reporting",
+                            "required": "validation_reporting"
+                          },
+                          {
+                            "label": "Information is not active yet",
+                            "ok": false,
+                            "actual": true,
+                            "required": false
+                          },
+                          {
+                            "label": "Delivery is pending",
+                            "ok": false,
+                            "actual": "delivered",
+                            "required": "pending"
+                          }
+                        ],
+                        "reason": "Actor is the represented information source; Delivery names the represented recipient; Information is not active yet; Delivery is pending"
+                      },
+                      {
+                        "action_id": "eed7b70864fc",
+                        "action": {
+                          "actor": "ari",
+                          "kind": "communicate",
+                          "base_revision": 2,
+                          "controller": "unselected",
+                          "delivery": "delivery-info-short-validation-failure-report-to-mara",
+                          "information": "info-short-validation-failure-report-to-mara",
+                          "recipient": "mara"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the delivery named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the delivery named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the information named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the information named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the recipient named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "Actor is the represented information source",
+                            "ok": false,
+                            "actual": "unspecified-source-short-validation-failure-report",
+                            "required": "ari"
+                          },
+                          {
+                            "label": "Delivery names the represented information",
+                            "ok": true,
+                            "actual": "info-short-validation-failure-report-to-mara",
+                            "required": "info-short-validation-failure-report-to-mara"
+                          },
+                          {
+                            "label": "Delivery names the represented recipient",
+                            "ok": true,
+                            "actual": "mara",
+                            "required": "mara"
+                          },
+                          {
+                            "label": "Delivery channel agrees with information channel",
+                            "ok": true,
+                            "actual": "validation_reporting",
+                            "required": "validation_reporting"
+                          },
+                          {
+                            "label": "Information is not active yet",
+                            "ok": false,
+                            "actual": true,
+                            "required": false
+                          },
+                          {
+                            "label": "Delivery is pending",
+                            "ok": false,
+                            "actual": "delivered",
+                            "required": "pending"
+                          }
+                        ],
+                        "reason": "Actor is the represented information source; Information is not active yet; Delivery is pending"
+                      },
+                      {
+                        "action_id": "c549aec4b67a",
+                        "action": {
+                          "actor": "ari",
+                          "kind": "request-review",
+                          "base_revision": 2,
+                          "controller": "unselected",
+                          "decision": "activate-prototype-pump"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "a review is not already requested",
+                            "ok": false,
+                            "actual": "requested",
+                            "required": "requested"
+                          }
+                        ],
+                        "reason": "a review is not already requested"
+                      },
+                      {
+                        "action_id": "906c53a12755",
+                        "action": {
+                          "actor": "ari",
+                          "kind": "withdraw-assent",
+                          "base_revision": 2,
+                          "controller": "unselected",
+                          "decision": "activate-prototype-pump",
+                          "position": "position-ari"
+                        },
+                        "checks": [
+                          {
+                            "label": "Actor exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the one acting is allowed to make this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the decision named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named exists",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the position named is the right kind of thing for this move",
+                            "ok": true,
+                            "actual": null,
+                            "required": null
+                          },
+                          {
+                            "label": "the actor owns this position",
+                            "ok": true,
+                            "actual": "ari",
+                            "required": "ari"
+                          },
+                          {
+                            "label": "the recorded assent changes",
+                            "ok": false,
+                            "actual": false,
+                            "required": true
+                          }
+                        ],
+                        "reason": "the recorded assent changes"
+                      }
+                    ]
+                  }
+                },
+                "values": {
+                  "ari": {
+                    "label": "Ari",
+                    "categories": [
+                      "actor",
+                      "member"
+                    ],
+                    "location": "scenario",
+                    "components": {
+                      "member": {
+                        "role": "Validation engineer",
+                        "authorized": false,
+                        "approved": false,
+                        "aware": false
+                      },
+                      "report_log": {
+                        "entries": []
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "belief": "Recorded-input engine replay, not a fresh resident decision.",
+            "expects": "Replay installed mechanics."
+          },
+          "bo": {
+            "wanted": null,
+            "did": null,
+            "status": "no_action",
+            "retried": false,
+            "said": "Recorded-input replay.",
+            "refused_because": [],
+            "lost_what_it_wanted": false,
+            "blocked_by_rules": [],
+            "attempt": {
+              "text": "wait",
+              "reading": {
+                "kind": "wait",
+                "fields": {}
+              }
+            },
+            "belief": "Recorded-input engine replay, not a fresh resident decision.",
+            "expects": "Replay installed mechanics."
+          },
+          "mara": {
+            "wanted": null,
+            "did": null,
+            "status": "no_action",
+            "retried": false,
+            "said": "Recorded-input replay.",
+            "refused_because": [],
+            "lost_what_it_wanted": false,
+            "blocked_by_rules": [],
+            "attempt": {
+              "text": "wait",
+              "reading": {
+                "kind": "wait",
+                "fields": {}
+              }
+            },
+            "belief": "Recorded-input engine replay, not a fresh resident decision.",
+            "expects": "Replay installed mechanics."
+          }
+        },
+        "progress": {}
+      }
+    ],
+    "final_snapshot": {
+      "schema_version": "world-substrate-snapshot/v1",
+      "world": {
+        "world_id": "prototype-pump-validation-live",
+        "revision": 2,
+        "tick": 0,
+        "entities": {
+          "activate-prototype-pump": {
+            "entity_id": "activate-prototype-pump",
+            "label": "Whether to activate the pump safely",
+            "category_ids": [
+              "validation-decision"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "activate-prototype-pump",
+            "last_cause_event_id": "e00005",
+            "components": {
+              "validation_decision": {
+                "validation": "failed",
+                "hold": true,
+                "review": "requested",
+                "assents": 0,
+                "active": false,
+                "condition_id": "condition-activate-prototype-pump"
+              }
+            }
+          },
+          "ari": {
+            "entity_id": "ari",
+            "label": "Ari",
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "ari",
+            "components": {
+              "member": {
+                "role": "Validation engineer",
+                "authorized": false,
+                "approved": false,
+                "aware": false
+              },
+              "report_log": {
+                "entries": []
+              }
+            }
+          },
+          "bo": {
+            "entity_id": "bo",
+            "label": "Bo",
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "bo",
+            "components": {
+              "member": {
+                "role": "Prototype pump operator",
+                "authorized": false,
+                "approved": false,
+                "aware": false
+              },
+              "report_log": {
+                "entries": []
+              }
+            }
+          },
+          "condition-activate-prototype-pump": {
+            "entity_id": "condition-activate-prototype-pump",
+            "label": "Technical condition",
+            "category_ids": [
+              "technical-condition"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "condition-activate-prototype-pump",
+            "last_cause_event_id": "e00001",
+            "components": {
+              "technical_condition": {
+                "passing": true
+              }
+            }
+          },
+          "delivery-info-short-validation-failure-report-to-mara": {
+            "entity_id": "delivery-info-short-validation-failure-report-to-mara",
+            "label": "Delivery to mara",
+            "category_ids": [
+              "delivery"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "delivery-info-short-validation-failure-report-to-mara",
+            "components": {
+              "delivery": {
+                "info_id": "info-short-validation-failure-report-to-mara",
+                "recipient_id": "mara",
+                "channel_id": "validation_reporting",
+                "status": "delivered"
+              }
+            }
+          },
+          "info-short-validation-failure-report-to-mara": {
+            "entity_id": "info-short-validation-failure-report-to-mara",
+            "label": "Validation failed. (to mara)",
+            "category_ids": [
+              "information"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "info-short-validation-failure-report-to-mara",
+            "components": {
+              "claim_provenance": {
+                "apparent_source": "Validation report; specific transmitting person unspecified.",
+                "source_lineage": "initial_validation_failure",
+                "hidden_origin": "[{\"key\": \"underlying_test_detail\", \"value\": \"Sensor channel C drifted 8 units in validation batch V17.\"}]"
+              },
+              "information": {
+                "content": "Validation failed.",
+                "source_id": "unspecified-source-short-validation-failure-report",
+                "channel_id": "validation_reporting",
+                "visibility": "direct",
+                "topic": "short_validation_failure_report",
+                "active": true
+              }
+            }
+          },
+          "mara": {
+            "entity_id": "mara",
+            "label": "Mara",
+            "category_ids": [
+              "actor",
+              "member"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "mara",
+            "components": {
+              "member": {
+                "role": "Coordinator",
+                "authorized": false,
+                "approved": false,
+                "aware": false
+              },
+              "report_log": {
+                "entries": []
+              }
+            }
+          },
+          "position-ari": {
+            "entity_id": "position-ari",
+            "label": "Recorded position of ari",
+            "category_ids": [
+              "actor-position"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "position-ari",
+            "components": {
+              "actor_position": {
+                "holder_id": "ari",
+                "assent": false,
+                "stance": "unexpressed",
+                "assent_weight": 0
+              }
+            }
+          },
+          "position-bo": {
+            "entity_id": "position-bo",
+            "label": "Recorded position of bo",
+            "category_ids": [
+              "actor-position"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "position-bo",
+            "components": {
+              "actor_position": {
+                "holder_id": "bo",
+                "assent": false,
+                "stance": "unexpressed",
+                "assent_weight": 1
+              }
+            }
+          },
+          "position-mara": {
+            "entity_id": "position-mara",
+            "label": "Recorded position of mara",
+            "category_ids": [
+              "actor-position"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "position-mara",
+            "components": {
+              "actor_position": {
+                "holder_id": "mara",
+                "assent": false,
+                "stance": "unexpressed",
+                "assent_weight": 1
+              }
+            }
+          },
+          "prototype-pump": {
+            "entity_id": "prototype-pump",
+            "label": "Prototype pump",
+            "category_ids": [
+              "equipment",
+              "prototype-pump"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "prototype-pump",
+            "components": {
+              "prototype_pump": {
+                "equipment_type": "prototype pump"
+              }
+            }
+          },
+          "public-procedure": {
+            "entity_id": "public-procedure",
+            "label": "Public validation procedure",
+            "category_ids": [
+              "procedure",
+              "public-procedure"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "public-procedure",
+            "components": {
+              "public_procedure": {
+                "filing_validation_hold_reveals": "failed validation",
+                "filing_validation_hold_reveals_private_test_details": false
+              }
+            }
+          },
+          "technical-role-ari": {
+            "entity_id": "technical-role-ari",
+            "label": "Technical authority of ari",
+            "category_ids": [
+              "technical-role"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "technical-role-ari",
+            "components": {
+              "technical_role": {
+                "holder_id": "ari",
+                "validator": true,
+                "repairer": true
+              }
+            }
+          },
+          "unspecified-source-short-validation-failure-report": {
+            "entity_id": "unspecified-source-short-validation-failure-report",
+            "label": "Unspecified report source",
+            "category_ids": [
+              "information-source"
+            ],
+            "location": {
+              "location_id": "scenario"
+            },
+            "source_pack_id": "world-substrate-prototype-pump-validation@1",
+            "source_entity_id": "unspecified-source-short-validation-failure-report"
+          }
+        },
+        "engine_id": "world-substrate-core@1",
+        "content_id": "world-substrate-prototype-pump-validation@1",
+        "rule_versions": {
+          "coordination.action.communicate": "1",
+          "decision.action.activate": "1",
+          "decision.action.complete-validation": "1",
+          "decision.action.record-assent": "1",
+          "decision.action.repair-condition": "1",
+          "decision.action.request-review": "1",
+          "decision.action.send-report": "1",
+          "decision.action.state-concerned": "1",
+          "decision.action.state-supportive": "1",
+          "decision.action.state-undecided": "1",
+          "decision.action.withdraw-assent": "1",
+          "validation-fails": "1",
+          "validation-passes": "1"
+        }
+      }
+    },
+    "resident_memory": {
+      "ari": [
+        "Round 2. What just happened: nothing new.",
+        "Round 2: you tried: I repair the technical condition for the prototype pump using my technical authority and send Mara a report saying the repair is complete.. No part of this attempt was carried out. Choose one concrete operation and try again."
+      ],
+      "bo": [
+        "Round 2. What just happened: nothing new.",
+        "Round 2: you believed: Recorded-input engine replay, not a fresh resident decision. You tried: wait. Result: not carried out."
+      ],
+      "mara": [
+        "Round 2. What just happened: nothing new.",
+        "Round 2: you believed: Recorded-input engine replay, not a fresh resident decision. You tried: wait. Result: not carried out."
+      ]
+    },
+    "actor_inputs": {},
+    "actor_information_mode": "declared-v1",
+    "judge_rulings": "create",
+    "underway": []
+  }
+}

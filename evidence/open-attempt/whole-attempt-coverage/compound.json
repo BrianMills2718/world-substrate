@@ -1,0 +1,15 @@
+{
+  "source_call_id": 23455,
+  "variation": true,
+  "actor": "ari",
+  "attempt": "I repair the technical condition for the prototype pump using my technical authority and send Mara a report saying the repair is complete.",
+  "reading": {
+    "unmatched": true,
+    "nearest_kind": "none",
+    "why": "No part of this attempt was carried out. Choose one concrete operation and try again.",
+    "interpretation_rejection": "invalid_coverage",
+    "names": []
+  },
+  "cost": 0.00023628,
+  "trace_id": "world-substrate-interpreter-replay-e609d37b"
+}
