@@ -13,6 +13,10 @@ reviewed_through: 2026-11-13
 **Recent work (#323 to #345, 2026-10-31 to 2026-11-09):** requests reach the person asked (#326); a shared run shows its picture and can be watched (#328, #329, #331); refusals say what really happened (#333); the Network shows one round and uses the fast layout (#338, #344); the Waltzman rebuild was recorded (#339); the planning package caught up (#340); model routes were renamed (#341); the Waltzman lineage review was written, its recommendations not adopted (#342); Brian's scale reason for rules over an AI judge was recorded (#345).
 **Deployment boundary:** the World Builder backend runs on the personal VPS and its pages on Cloudflare; shipping is `scripts/deploy_world_builder.sh`. The donor-backed `/waltzman/` demo stays a fallback and must not be presented as a native run.
 
+## Saved-run player — approved implementation (2026-11-13)
+
+Brian approved rebuilding the viewer after the independent usability review. The retained six-round run now has a paused player with direct round/event selection, playback through every retained event, event-specific world state and contextual actor input. Historical cause selection restores that event’s state and brings its detail into view. Phone composition uses a readable event picker; the retained round scene, full network and exact evidence remain available deeper. [Design](../DESIGN.md), [browser and review evidence](../evidence/ui/saved-player-20261113/). Local browser38/38 and31 home tests pass; code and task walkthrough reviews pass after diagnosed corrections. Deployment and final live evidence are recorded below when verified. No new simulation or model call.
+
 ## Latest run to inspect — six rounds (2026-11-13)
 
 [Open the fresh autonomous run](https://brianmills.dev/world-builder/?run=T-e9dYLdIi61). Start with Bo in round1, then round2: he explicitly says he is not assenting, the interpreter records assent anyway, and he notices and withdraws it. The inversion repeats in rounds3/4. This is a serious Q36 defect, preserved rather than hidden by a replacement run.

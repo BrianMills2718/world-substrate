@@ -4,7 +4,7 @@ The reading order for this repository, and a link to every document a reader is 
 top to bottom the first time; later, jump to the section you need. Instruction files (`AGENTS.md`)
 load for agents without a link and are listed only for completeness.
 
-Navigation and plan-status summary reconciled 2026-11-12 against `544c086`; historical evidence retains its original dates. Current work: the roadmap’s preimplementation readiness review.
+Current work and delivery status live in the [roadmap](../roadmap/README.md); historical evidence retains its original dates. UI product and design context are linked below.
 
 ## 1. Start here
 

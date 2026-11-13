@@ -1,0 +1,76 @@
+World Builder
+Prototype Pump Validation
+
+Ari is the validation engineer, Mara the coordinator, and Bo a member operating a prototype pump. There is one concern: whether it is safe to activate. Keep actual technical condition, reports/provenance, each recipient's exposure, personal interpretation/support, recorded assent, and institutional activation hold distinct. Initially the pump genuinely fails validation. Only Ari knows the private detail: sensor channel C drifted 8 units in validation batch V17. Mara knows the public procedure and receives a short report saying validation failed, without the private channel/batch detail. Bo knows the procedure but has received no failure report. Give each person their own profile and memory. They can independently request evidence, investigate, ignore a claim, retain support, dissent or record assent. Attributable reports are delivered to named recipients; undelivered reports reveal nothing. Ari may choose whether and whom to tell. Under the public procedure, filing a validation hold publicly reveals failed validation but never private test details. A false warning cannot change the pump's actual condition. Completing a review may confirm failure; neither review completion nor waiting repairs anything. Ari can perform an explicit technical repair and then authorized revalidation. Passing revalidation clears only the technical hold; activation still requires Mara's own recorded assent and Bo's own recorded assent. No message or rule forces persuasion, support change, assent or a particular ending. Limit the scenario to these three people, one pump, one concern, reports, repair/revalidation and activation.
+
+Read full setup
+
+Saved recording · paused. Choose a round or press Play.
+
+View
+Whole recording
+Actor inputs only
+Play
+Prev
+1 of 6
+2 of 6
+3 of 6
+4 of 6
+5 of 6
+6 of 6
+Next
+What happened
+
+Select an attempt or a consequence.
+
+Event
+Ari — repair condition · Refused by a rule
+Bo — record assent · Allowed
+Mara — request review · Allowed
+Ari — repair condition
+
+Refused by a rule
+
+Original words
+I try to perform a technical repair on the prototype pump’s technical condition.
+Interpretation
+repair condition
+Result
+The installed rule refused this move. Required checks that did not hold: the authority named is the right kind of thing for this move; the actor owns this authority; the actor is an authorized repairer.
+
+No recorded state changes.
+
+Exact event, interpretation and checks
+Information supplied to Ari
+
+Before the choice in round 1. These are supplied inputs, not proof of what the person believed.
+
+Situation supplied
+Profile and prior knowledge
+Own observed state
+Other visible information
+Remembered history supplied
+Known action forms (not guaranteed to work)
+Exact input and response record
+Response after receiving these inputs
+World state
+
+After the selected event in round 1. Later events in this round have not been applied.
+
+Ari
+role
+Validation engineer
+authorized
+false
+approved
+false
+aware
+false
+entries
+[]
+Technical condition
+passing
+false
+All world objects (15)
+More ways to inspect this recording
+More
