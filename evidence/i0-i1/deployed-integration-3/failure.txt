@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/tmp/ws-prod-i0-i1.py", line 36, in <module>
+    build=run_job(request,'/generate-world',{'description':source['description'],**source['build']},report=lambda value:print(value,flush=True))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/brian/code2/worktrees/world-substrate-i0-i1/scripts/probe_actor_information.py", line 59, in run_job
+    value = request("/jobs/" + job_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/ws-prod-i0-i1.py", line 32, in request
+    if status>=400: raise RuntimeError(f'{path} HTTP {status}: {value.get("error")}')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: /jobs/9ad284ff31884d9e8e9f6a5fc89223ea HTTP 422: generated candidate discloses unauthorized actor information

@@ -1,0 +1,13 @@
+{
+  "status": "failed",
+  "revision": "f4b7afab183691df0e364a624a275876bcddb9ba",
+  "started_utc": "2026-11-13T04:39:46.936822+00:00",
+  "error": "RuntimeError: /jobs/9ad284ff31884d9e8e9f6a5fc89223ea HTTP 422: generated candidate discloses unauthorized actor information",
+  "trace_roots": [
+    "world-builder-live/people/21747e81ed814b06a133f258d87cbcc6"
+  ],
+  "llm_calls": 14,
+  "tool_calls": 0,
+  "elapsed_s": 151.9253332549997,
+  "exit_status": 1
+}

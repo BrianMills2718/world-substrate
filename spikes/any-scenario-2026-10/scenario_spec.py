@@ -76,6 +76,7 @@ class InformationItem(_Strict):
     recipient_ids: list[str] = Field(min_length=1)
     hidden_provenance: list[StateEntry] = Field(default_factory=list)
     source_lineage: str = Field(default="", description="Common originating claim identity, not an independent corroboration.")
+    lineage_visible_to_actor_ids: list[str] = Field(default_factory=list, description="People explicitly authorized to know the originating claim identity when they see this item. Canonical lineage is private by default.")
     initially_delivered: bool = Field(default=False, description="Explicit initial exposure, not a pending invitation to send. Does not imply belief or assent.")
     source_id: str | None = Field(default=None, description="Actual transmitting person for an already delivered item; null explicitly means unspecified, never invent the holder as sender.")
 
@@ -167,6 +168,8 @@ class ScenarioSpecV1(_Strict):
                 raise ValueError(f"information item {i.representation_id} is held by undeclared person {i.holder_id}")
             if missing := set(i.recipient_ids) - people:
                 raise ValueError(f"information item {i.representation_id} names undeclared recipients {sorted(missing)}")
+            if missing := set(i.lineage_visible_to_actor_ids) - people:
+                raise ValueError(f"information item {i.representation_id} grants lineage to undeclared people {sorted(missing)}")
             if i.initially_delivered:
                 if i.source_id is not None and i.source_id not in people:
                     raise ValueError(f"initially delivered item {i.representation_id} names an undeclared source_id")

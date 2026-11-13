@@ -375,7 +375,9 @@ INDEPENDENT_GUIDANCE = (
     "Residents choose their responses. No rule may force a stance or assent from evidence, require conflict or agreement, "
     "or turn elapsed time into successful repair. The compiled independent procedure owns technical intervention, "
     "authorized validation, hold, public positions and assent; do not duplicate or write those components. "
-    "Additional actions express choices or practical tasks explicitly requested by the scenario. Waiting is permitted."
+    "The compiled send-report delivers statements, questions, requests for evidence and warnings in the actor's own words. "
+    "Private consideration, interpretation and ignoring are resident-policy choices and memory, not additional rule actions. "
+    "Additional actions must change an explicitly requested material or institutional record beyond a private done flag. Waiting is permitted."
 )
 
 
@@ -460,8 +462,39 @@ def assemble_people_world(prepared: dict[str, Any], generated: dict[str, Any]) -
     generated["mechanics"] = compile_spec.limit_to_work_cycle(generated["mechanics"], prepared.get("work_cycle"))
     causal, dropped = sp.merge_causal(compiled, generated)
     causal, copies = sp.drop_decision_copies(causal)
+    isolated = []
+    if spec.independent_decision and prepared.get("work_cycle"):
+        flags = prepared["work_cycle"]["flags"]
+        information = bundle.get("actor_information", {})
+        exposed = {f"components.{path}" for row in information.get("public_entities", []) for path in row.get("fields", [])}
+        exposed.update(f"components.{path}" for profile in information.get("actors", {}).values()
+                       for row in profile.get("observable_fields", []) for path in row["paths"])
+        private_resets = set()
+        def reads(value, path):
+            if isinstance(value, list):
+                return any(reads(item, path) for item in value)
+            if isinstance(value, dict):
+                ref = value.get("participant")
+                return ((isinstance(ref, dict) and ref.get("path") == path)
+                        or any(reads(item, path) for item in value.values()))
+            return False
+        for mechanic in causal["mechanics"]:
+            flag = flags.get(mechanic["action_kind"])
+            path = f"components.work.{flag}" if flag else None
+            effects = mechanic.get("effects") or []
+            resets = [p for p in causal.get("processes", []) if p.get("effects") and all(
+                e.get("participant") == "it" and e.get("path") == path and e.get("op") == "set"
+                and e.get("value") == {"literal": False} for e in p["effects"])]
+            others = [m for m in causal["mechanics"] if m is not mechanic] + [p for p in causal.get("processes", []) if p not in resets]
+            terminal_reads = any(c.get("path") == path for c in (causal.get("terminal") or {}).get("checks", []))
+            if (path and path not in exposed and effects and all(e.get("participant") == "actor" and e.get("path") == path for e in effects)
+                    and not reads(others, path) and not terminal_reads):
+                isolated.append(mechanic["action_kind"])
+                private_resets.update(p["process_id"] for p in resets)
+        causal["mechanics"] = [m for m in causal["mechanics"] if m["action_kind"] not in isolated]
+        causal["processes"] = [p for p in causal.get("processes", []) if p["process_id"] not in private_resets]
     causal["mechanics"] = [m for m in causal["mechanics"] if m.get("effects")]
-    dropped = impossible + dropped + copies
+    dropped = impossible + dropped + copies + [f"action {kind} removed: only isolated private work bookkeeping; no delivered request or material consequence" for kind in isolated]
     # An action whose whole generated rule was dropped (every effect wrote a compiled component) leaves the world, so
     # bundle and rules still match. 2026-10-16 inc15j (luna): reconsider-settled-issue only set a concern's status,
     # the merge removed it, and the build failed with "action kinds must exactly match the authoring bundle".
@@ -469,7 +502,7 @@ def assemble_people_world(prepared: dict[str, Any], generated: dict[str, Any]) -
     unruled = [a["kind"] for a in bundle["actions"] if a["kind"] not in ruled]
     if unruled:
         bundle = _with_action_subset(bundle, [a for a in bundle["actions"] if a["kind"] in ruled])
-        dropped = dropped + [f"action {k} removed: its rule only wrote what compiled rules own" for k in unruled]
+        dropped = dropped + [f"action {k} removed: its rule only wrote what compiled rules own" for k in unruled if k not in isolated]
         # The declared laws must name only moves the world still has: a pairing law on a removed move goes, and a
         # total law stops listing it (nothing can make that move any more).
         laws = []

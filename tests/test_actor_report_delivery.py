@@ -77,3 +77,19 @@ def test_absent_generated_mapping_does_not_claim_compiled_behavior_is_missing():
     result = behavior_coverage(spec, [], causal, {"rows": [{"request_id": "assent", "classification": "to_generate"}]})
     assert result["rows"][0]["classification"] == "unverified"
     assert result["rows"][0]["by"] is None
+
+
+@pytest.mark.req("information-delivery/complete-actor-input-boundary")
+def test_canonical_lineage_does_not_disclose_private_batch_inside_an_identifier():
+    raw = received_spec()
+    raw["information_items"][0]["source_lineage"] = "validation_batch_v17"
+    def context(value):
+        bundle, causal, _ = compile_spec(ScenarioSpecV1.model_validate(value))
+        engine, _, _ = build_engine(bundle, causal)
+        return actor_context(engine, bundle, "country-b")
+    before = context(raw)
+    assert "validation_batch_v17" not in json.dumps(before)
+    raw["information_items"][0]["source_lineage"] = "validation_batch_v18"
+    assert context(raw) == before
+    raw["information_items"][0]["lineage_visible_to_actor_ids"] = ["country_b"]
+    assert "validation_batch_v18" in json.dumps(context(raw))

@@ -698,6 +698,7 @@ def _independent_family(spec, entities, components):
 def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     """Return (bundle, causal, coverage). Ids in the world are the spec ids with '_' turned into '-'."""
     entities: list[dict[str, Any]] = []
+    lineage_grants: dict[str, list[str]] = {}
     components = [MEMBER, INFORMATION, DELIVERY]
     if spec.independent_decision:
         components.append({"name": "report_log", "fields": [{"name": "entries", "type": "string_list", "default": []}]})
@@ -719,6 +720,7 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
             entities.append({"id": source, "label": "Unspecified report source", "categories": ["information-source"], "components": {}})
         for r in item.recipient_ids:
             info_id = f"info-{_eid(item.representation_id)}-to-{_eid(r)}"
+            lineage_grants[info_id] = [_eid(actor) for actor in item.lineage_visible_to_actor_ids]
             entities.append({"id": info_id, "label": f"{item.content[:60]} (to {r})", "categories": ["information"],
                              "components": {"information": {"content": item.content, "source_id": source,
                                                             "channel_id": item.channel_id, "visibility": "direct",
@@ -807,7 +809,9 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
                 fields = ["member.role"]
             elif "information" in comps:
                 fields = [f"information.{k}" for k in comps["information"]]
-                fields += ["claim_provenance.apparent_source", "claim_provenance.source_lineage"]
+                fields += ["claim_provenance.apparent_source"]
+                for actor in lineage_grants.get(e["id"], []):
+                    actors[actor]["observable_fields"].append({"entity": e["id"], "paths": ["claim_provenance.source_lineage"]})
             elif "delivery" in comps:
                 fields = [f"delivery.{k}" for k in comps["delivery"]]
             elif "validation_decision" in comps or "actor_position" in comps or "technical_role" in comps:
