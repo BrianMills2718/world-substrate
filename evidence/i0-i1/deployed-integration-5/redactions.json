@@ -1,0 +1,8 @@
+{
+  "redacted_field": "openrouter_key_fingerprint",
+  "omitted_server_metadata": [
+    "client"
+  ],
+  "model_inputs_outputs_unchanged": true,
+  "originals": "private production native ledger"
+}

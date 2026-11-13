@@ -1,0 +1,51 @@
+{
+  "resident_input_checks": [
+    {
+      "actor": "ari",
+      "round": 1,
+      "native_call": 23453,
+      "messages_equal": true,
+      "output_equal": true
+    },
+    {
+      "actor": "bo",
+      "round": 1,
+      "native_call": 23452,
+      "messages_equal": true,
+      "output_equal": true
+    },
+    {
+      "actor": "mara",
+      "round": 1,
+      "native_call": 23454,
+      "messages_equal": true,
+      "output_equal": true
+    },
+    {
+      "actor": "ari",
+      "round": 2,
+      "native_call": 23460,
+      "messages_equal": true,
+      "output_equal": true
+    },
+    {
+      "actor": "bo",
+      "round": 2,
+      "native_call": 23458,
+      "messages_equal": true,
+      "output_equal": true
+    },
+    {
+      "actor": "mara",
+      "round": 2,
+      "native_call": 23459,
+      "messages_equal": true,
+      "output_equal": true
+    }
+  ],
+  "continuation_checks": 4,
+  "completed_native_calls": 18,
+  "tool_calls": 0,
+  "measured_cost_usd": "0.05697485",
+  "status": "pass"
+}

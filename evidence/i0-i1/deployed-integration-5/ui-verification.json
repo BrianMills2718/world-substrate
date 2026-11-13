@@ -1,0 +1,35 @@
+{
+  "url": "https://brianmills.dev/world-builder/?run=q88DLJnu6w-l",
+  "views": [
+    {
+      "actor": "ari",
+      "exact_records": 2,
+      "analyst_hidden": true
+    },
+    {
+      "actor": "mara",
+      "exact_records": 2,
+      "analyst_hidden": true
+    },
+    {
+      "actor": "bo",
+      "exact_records": 2,
+      "analyst_hidden": true
+    }
+  ],
+  "console_errors": [],
+  "failed_requests": [],
+  "blocked_writes": [],
+  "tooltip": "Inspect the exact messages, context, memory and model schema supplied to this person.",
+  "mobile": {
+    "viewport": 390,
+    "document": 390
+  },
+  "outcome_unchanged": true,
+  "analyst_records": {
+    "ari": 2,
+    "bo": 2,
+    "mara": 2
+  },
+  "status": "pass"
+}

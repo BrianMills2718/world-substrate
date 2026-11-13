@@ -111,7 +111,7 @@ rules:
       continuation reconstructs that effective set before freezing a new profile. The originally supplied bundle
       remains the approval identity. See openspec/specs/ai-judge/spec.md for the additional installation contract.
     owner: scripts/run_authored_world.py
-    reviewed_at: f4b7afab183691df0e364a624a275876bcddb9ba  # source review I0/I1: run_world resolves effective Rulebook then build_engine validates/installs all rules and freezes before policy construction; continuation validates world/rule identities; new actor-input sink does not change profile authority
+    reviewed_at: 1edb4a5fe9e5f063801eccca33b53326a2daed25  # re-read build_engine install/freeze and run_world entry: display-only recorded-event projection repair changes no profile authority; source review I0/I1: run_world resolves effective Rulebook then build_engine validates/installs all rules and freezes before policy construction; continuation validates world/rule identities; new actor-input sink does not change profile authority
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime

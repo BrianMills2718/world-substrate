@@ -1,0 +1,16 @@
+{
+  "request": {
+    "build_trace_id": "world-builder-live/people/6c1e29662bbb4371b4e13de34cce91c8",
+    "run_trace_ids": [
+      "world-builder-live/run/1dd9780384864ac2a15e9d254aba33ed",
+      "world-builder-live/run/de13c00b52614b98b8385f25aa234d79"
+    ]
+  },
+  "response": {
+    "ok": true,
+    "share_id": "q88DLJnu6w-l",
+    "rounds": 2
+  },
+  "url": "https://brianmills.dev/world-builder/?run=q88DLJnu6w-l",
+  "privacy_review": "publish:16files2090682bytes;18nativecalls;gitleaks exit0; no private findings"
+}
