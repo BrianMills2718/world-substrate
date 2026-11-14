@@ -100,7 +100,7 @@ def validate_actor_information(bundle: dict[str, Any]) -> None:
     if not isinstance(forms, list):
         raise ActorInformationError("public_actions must be a list")
     for form in forms:
-        _object(form, {"kind", "description", "fields"})
+        _object(form, {"kind", "description", "fields"}, {"unobserved_refs", "not_self"})
         _text(form["description"])
         if not isinstance(form["kind"], str) or form["kind"] not in actions or not isinstance(form["fields"], dict):
             raise ActorInformationError("invalid public action form")
@@ -115,6 +115,10 @@ def validate_actor_information(bundle: dict[str, Any]) -> None:
                      (kind == "boolean" and type(value) is bool))
             if not valid or (kind == "entity_ref" and value not in known):
                 raise ActorInformationError("invalid public action field")
+        for key in ("unobserved_refs", "not_self"):
+            names = form.get(key, [])
+            if not isinstance(names, list) or any(declared.get(n) != "entity_ref" for n in names):
+                raise ActorInformationError(f"{key} must name entity_ref fields of the form")
 
 
 def _declaration(bundle: dict[str, Any], actor: str) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -198,7 +202,11 @@ def actor_page(engine: Any, bundle: dict[str, Any], actor: str) -> dict[str, Any
     for form in declaration.get("public_actions", []):
         # A represented message's identity is not available before delivery.
         refs = {f["name"] for a in bundle["actions"] if a["kind"] == form["kind"] for f in a["fields"] if f["type"] == "entity_ref"}
-        if any(form["fields"][name] not in observation["entities"] for name in refs):
+        # `unobserved_refs`: fields the actor names without perceiving them (the far side of a door it stands at);
+        # `not_self`: fields that must not be the actor (telling yourself something).
+        if any(form["fields"][name] not in observation["entities"] for name in refs - set(form.get("unobserved_refs", []))):
+            continue
+        if any(form["fields"][name] == actor for name in form.get("not_self", [])):
             continue
         identity = {"actor": actor, "kind": form["kind"], **form["fields"]}
         digest = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:20]
@@ -233,7 +241,8 @@ def actor_context(engine: Any, bundle: dict[str, Any], actor: str, round_no: int
                                  [f"Delivered to you from {m['from']}: {m['content']}" for m in observation.get("messages", [])] +
                                  [f"{row['label']} ({eid}): {render(row)}" for eid, row in sorted(entities.items()) if eid != actor]),
             "progress": "", "actions": [{"number": i, "action_id": row["action_id"], "description": row["description"] + " (" + ", ".join(
-                f"{name}={entities[value]['label']} ({value})" if isinstance(value, str) and value in entities
+                f"{name}={entities[value]['label'] if value in entities else declared_label(declaration, value, engine)} ({value})"
+                if isinstance(value, str) and (value in entities or any(r["id"] == value for r in declaration["public_entities"]))
                 else f"{name}={json.dumps(value, ensure_ascii=False)}"
                 for name, value in sorted(row["action"].items()) if name not in {"actor", "kind", "base_revision", "controller"}) + ") [executability unknown]"} for i, row in enumerate(page["available"], 1)],
             "world_summary": declaration["public_summary"], "brief": profile["brief"] + ("\n" + knowledge if knowledge else ""), "recent": []}

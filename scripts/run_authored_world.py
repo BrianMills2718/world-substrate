@@ -1057,7 +1057,7 @@ def run_world(
             if outcome["status"] == "stale_revision" and _boundary_bundle(engine):
                 wanted = {**wanted, "base_revision": engine.world.revision}
                 did = wanted
-                outcome = engine.submit(wanted)
+                outcome = engine.submit({**wanted, "controller": f"live:{policy}"})
             if outcome["status"] == "stale_revision":
                 retried = True
                 page = _without_no_ops(engine, engine.discover(actor), bookkeeping=bookkeeping, law_refusals=preview_law_refusals)
