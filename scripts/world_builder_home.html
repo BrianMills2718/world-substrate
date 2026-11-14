@@ -2043,7 +2043,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const target=catalog; if(target)catalogPending++; let run;
     try{run=await apiJob("/run",payload,1000);}finally{if(target)catalogPending--;updateWorkspaceControls();}
     if(target&&run.checkpoint_id){target.checkpointId=run.checkpoint_id;target.run.checkpoint_id=run.checkpoint_id;target.run.latest_round=run.summary.last_turn;
-      if(run.summary.terminal_reached || (run.summary.stopped && STOP_REASONS.includes(run.summary.stopped.reason))){target.run.can_continue=false;target.run.reason=run.summary.stopped?.why || "This run reached its finish line.";}target.checkpoints.push({id:run.checkpoint_id,round:run.summary.last_turn});if(catalog===target)refreshScene();}
+      if(run.summary.terminal_reached || (run.summary.stopped && STOP_REASONS.includes(run.summary.stopped.reason))){target.run.can_continue=false;target.run.reason=run.summary.stopped?.why || "This run reached its finish line.";}const cp={id:run.checkpoint_id,round:run.summary.last_turn,can_branch:target.run.can_continue!==false,reason:target.run.reason};const ci=target.checkpoints.findIndex(c=>checkpointId(c)===run.checkpoint_id);if(ci<0)target.checkpoints.push(cp);else target.checkpoints[ci]=cp;if(catalog===target)refreshScene();}
     run.sentDecisions = sentDecisions;
     return run;
   }

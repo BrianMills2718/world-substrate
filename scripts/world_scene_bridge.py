@@ -13,6 +13,8 @@ from typing import Any
 
 from scripts.render_composed_living_scene import render_html
 from world_substrate.living_scene import LIVING_SCENE_SCHEMA_VERSION
+from world_substrate.action_authoring import _selector_matches
+from world_substrate.model import Entity
 
 ROOT = Path(__file__).resolve().parents[1]
 ART = ROOT / 'reference_worlds/waltzman/assets-v2'
@@ -117,7 +119,11 @@ def build_scene_inputs(world: dict, rounds: list, *, run_id: str | None = None) 
         point = [x+w/2, y+h/2]
         profile['zones'][row['id']] = {'label':row.get('label',row['id']), 'rect':[x,y,w,h], 'anchor':point, 'mobile_rect':[3,17+i*76/max(1,len(places)),94,72/max(1,len(places))], 'mobile_anchor':[50,17+(i+.5)*76/max(1,len(places))]}
         anchors[row['id']] = point
-    actors = [r for r in rows if 'actor' in r.get('categories', [])]
+    # The runner selects agents by mechanics, not by a mandatory category name.
+    # A generated orchard worker is an actor even when its category is 'worker'.
+    selectors = [m['actor_selector'] for m in (world.get('causal_model') or {}).get('mechanics', []) if isinstance(m.get('actor_selector'), dict)]
+    actors = [r for r in rows if 'actor' in r.get('categories', []) or any(
+        _selector_matches(Entity(entity_id=r['id'], label=r.get('label',r['id']), category_ids=tuple(r.get('categories',[])), components=entities[r['id']]['components']), selector) for selector in selectors)]
     objects = [r for r in rows if r not in actors and r not in places]
     profile['scene']['mobile_min_height'] = max(720, (math.ceil(len(objects)/3)+math.ceil(len(actors)/3)+2)*110)
     if not places:
@@ -136,10 +142,10 @@ def build_scene_inputs(world: dict, rounds: list, *, run_id: str | None = None) 
         local = group_rows.index(row)
         cols = min(5, max(1,len(group_rows)))
         nrows = max(1,math.ceil(len(group_rows)/cols))
-        home = [(50 if cols==1 else 12+(local%cols)*76/(cols-1)), (81 if is_actor else 30)+(local//cols)*(42/max(1,nrows))]
+        home = [(50 if cols==1 else 12+(local%cols)*76/(cols-1)), (28 if is_actor else (58 if actors else 28))+(local//cols)*((20 if is_actor else (28 if actors else 56))/max(1,nrows-1))]
         mobile_cols = min(3,max(1,len(group_rows)))
         mobile_rows = max(1,math.ceil(len(group_rows)/mobile_cols))
-        mobile_home = [(50 if mobile_cols==1 else 17+(local%mobile_cols)*66/(mobile_cols-1)), (85 if is_actor else 23)+(local//mobile_cols)*50/mobile_rows]
+        mobile_home = [(50 if mobile_cols==1 else 17+(local%mobile_cols)*66/(mobile_cols-1)), (23 if is_actor else (48 if actors else 23))+(local//mobile_cols)*((18 if is_actor else (38 if actors else 63))/max(1,mobile_rows-1))]
         mobile_positions = {}
         if places:
             loc = row.get('location') or spec.get('location') or ''

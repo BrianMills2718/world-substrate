@@ -1,0 +1,10 @@
+{
+  "basis": "Read-only renderer of original orchard fixture; no simulation or provider call",
+  "checks": 2,
+  "passed": 2,
+  "page_errors": [],
+  "viewport": [
+    390,
+    844
+  ]
+}

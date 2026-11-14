@@ -20,7 +20,7 @@ World Substrate is a persistent, observable world engine in which people (AI, sc
 
 ## Where this stands
 
-State on 2026-11-09 (`main` at `0e66a98`). The prototype substrate phase is complete; the World Builder is the live product surface; Waltzman Coordination Lab is the showcase world.
+State through 2026-11-13; delivery evidence and current release status are in the [roadmap](roadmap/README.md). The prototype substrate phase is complete; the World Builder is the live product surface; Waltzman Coordination Lab is the showcase world.
 
 | Capability | Current state |
 | --- | --- |
