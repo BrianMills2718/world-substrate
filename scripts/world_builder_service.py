@@ -641,6 +641,22 @@ def _catalog_response(status: int, value: dict[str, Any]) -> tuple[int, dict[str
         return 500, {"ok": False, "error": "The catalog could not save this result. No success was recorded; reload the run before retrying."}
 
 
+def _catalog_view(payload: dict[str, Any]) -> dict[str, Any]:
+    """Restore compiler-derived display metadata omitted by historical build logs.
+
+    These payloads are detached reads; original stored definitions/rules are unchanged.
+    This is the same authority summary used by the existing share assembler, not
+    a new independent model review or a simulation.
+    """
+    definitions = [(payload.get("world") or {}).get("definition"), (payload.get("record") or {}).get("world")]
+    for definition in definitions:
+        if isinstance(definition, dict) and not isinstance(definition.get("review"), dict):
+            definition["review"] = CausalModel.from_dict(definition["causal_model"],
+                bundle=validate_bundle(definition["bundle"])).as_review()
+            definition["review_origin"] = "compiler-derived-from-retained-rules"
+    return payload
+
+
 def _catalog_scene(record: dict[str, Any]) -> dict[str, Any]:
     from scripts.world_scene_bridge import render_world_scene
     return {"ok": True, **render_world_scene(record["world"], record.get("rounds") or [],
@@ -1609,7 +1625,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 else:
                     self._error(404, "not found")
                     return
-                self._json(200, payload)
+                self._json(200, _catalog_view(payload))
             except CatalogError as error:
                 self._error(error.status, str(error))
             except Exception:
@@ -1762,8 +1778,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     return
                 parts = path.strip("/").split("/")
                 if len(parts) == 3 and parts[2] == "runs":
-                    self._json(200, _catalog().create_run(parts[1], name=body.get("name"),
-                               parent_run_id=body.get("parent_run_id"), checkpoint_id=body.get("checkpoint_id")))
+                    self._json(200, _catalog_view(_catalog().create_run(parts[1], name=body.get("name"),
+                               parent_run_id=body.get("parent_run_id"), checkpoint_id=body.get("checkpoint_id"))))
                 else:
                     self._error(404, "not found")
                 return
@@ -2802,6 +2818,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             record = _catalog().run_by_id(body["catalog_run_id"])["record"]
             if not record.get("rounds"):
                 raise ValueError("run at least one round before sharing")
+            _catalog_view({"record": record})
             readout_id = body.get("readout_trace_id")
             if readout_id is not None and not (isinstance(readout_id, str) and _TRACE_PATTERN.fullmatch(readout_id)):
                 raise ValueError("readout_trace_id must be a readout id from this service")
