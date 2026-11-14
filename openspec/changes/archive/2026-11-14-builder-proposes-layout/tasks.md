@@ -1,0 +1,5 @@
+- [x] layout_proposal.py and the build step in both build paths
+- [x] Always-open doorways
+- [x] Tests; one live check of the call on the pump world and a non-spatial world ($0.0004 measured)
+- [x] publish-checker (verdict: publish)
+- [ ] deploy, one live build, share, room map
