@@ -208,7 +208,7 @@ state.
 
 ## Human-reviewable artifacts
 
-- <https://brianmills.dev/world-builder/>: the World Builder (one box, Create simulation, live play).
+- <https://brianmills.dev/world-builder/>: the World Builder: natural-language creation, private owner world library, spatial studio, play/replay and completed-round branches.
 - <https://brianmills.dev/waltzman/world-substrate>: the native composed Coordination Hall.
 - <https://brianmills.dev/world-builder/play/>: Replay Studio over retained traces.
 - <https://brianmills.dev/world-builder/build/>: the advanced form editor.
