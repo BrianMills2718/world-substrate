@@ -288,3 +288,32 @@ def test_a_builder_made_world_with_other_actions_exports_and_its_doors_open_when
     assert replay["map"] == "public-hub-3" and len(replay["rules"]) >= 4
     opened = {c["door"] for c in replay["door_changes"] if c["state"] == "open"}
     assert "reception-exam-door" in opened  # Cho and Dr. Bell walk through it in round 1
+
+
+# --- whole-system graph -------------------------------------------------------------------------------------------
+from scripts.world_graph import graph_replay, world_graph  # noqa: E402
+
+WALTZMAN = json.loads((ROOT / "tests/fixtures/waltzman-share-20261104.json").read_text())
+
+
+@pytest.mark.req("scene-viewer/world-graph")
+def test_the_waltzman_graph_has_every_box_and_link_the_network_shows():
+    graph = world_graph(WALTZMAN["world"]["bundle"], WALTZMAN["world"]["causal_model"])
+    kinds = {}
+    for n in graph["nodes"]:
+        kinds[n["kind"]] = kinds.get(n["kind"], 0) + 1
+    assert (len(graph["nodes"]), len(graph["edges"])) == (70, 411)
+    assert kinds == {"actor": 10, "action": 17, "thing": 17, "process": 26}
+
+
+@pytest.mark.req("scene-viewer/world-graph")
+def test_a_round_lights_each_try_with_its_status_and_refusal_reason_and_no_words():
+    replay = graph_replay(WALTZMAN["world"]["bundle"], WALTZMAN["world"]["causal_model"], WALTZMAN["rounds"])
+    first = replay["rounds"][0]
+    assert len(first["tries"]) == 10 and first["fired"]
+    refused = [t for r in replay["rounds"] for t in r["tries"] if t["status"] == "precondition_failed"]
+    assert refused and all(t["because"] for t in refused)
+    ids = {n["id"] for n in replay["graph"]["nodes"]}
+    assert all(t["actor"] in ids and (t["move"] is None or t["move"] in ids) and set(t["uses"]) <= ids
+               for r in replay["rounds"] for t in r["tries"])
+    assert "said" not in json.dumps(replay)

@@ -1,0 +1,4 @@
+- [x] world_graph.py and tests (Waltzman and clinic fixtures)
+- [x] /share/<id>/graph route
+- [x] graph.html page, copied by the Pages build
+- [ ] link from the shared-run view; deploy; live check
