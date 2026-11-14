@@ -90,3 +90,20 @@ def resolve(bundle: dict[str, Any]) -> dict[str, Any]:
             "people": {p: labels[p] for p in layout["people"]},
             "start_rooms": {p: row["start"] for p, row in layout["people"].items()},
             "labels": labels, "doors": layout["doors"], "sprites": sprites, "map": layout["map"], "title": bundle["world"]["label"], "tiles": prepared["tiles"], "prepared": prepared}
+
+
+def public_layout(layout: dict[str, Any]) -> dict[str, Any]:
+    """A copy of `layout` moved onto the smallest generated map that holds the rooms it uses, with no private sprites.
+
+    Implements: scene-viewer/public-generated-map"""
+    out = json.loads(json.dumps(layout))
+    used = set(out.get("rooms", {}).values())
+    maps = prepared_maps()
+    if maps.get(out.get("map"), {}).get("kind") == "generated":
+        return out
+    out["map"] = "public-hub-3" if used <= {"hub", "a", "b"} else "public-hub-5"
+    if not used <= set(maps[out["map"]]["slots"]):
+        raise LayoutError("no public room map fits this layout")
+    for person in (out.get("people") or {}).values():
+        person.pop("sprite", None)
+    return out
