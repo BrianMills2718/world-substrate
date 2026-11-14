@@ -122,7 +122,7 @@ When a replay carries the world's rules, the viewer SHALL offer a switch that sh
 
 Source: Brian, 2026-11-14: "i approve" (Decision 1, layouts yes); mechanism inferred by agent.
 
-After building a world's structure and rules, the Builder SHALL make one optional extra call that places the world's places on a prepared public map, and SHALL attach the result as the world's `layout` only when it passes `validate_layout`. The step SHALL NOT fail the build, SHALL NOT run when the build has under one cent of budget left, and SHALL NOT replace a layout the world already has. A door declared with no halves SHALL be drawn as an always-open doorway.
+After building a world's structure and rules, the Builder SHALL make one optional extra call that places the world's places on a prepared public map, and SHALL attach the result as the world's `layout` only when it passes `validate_layout`. The step SHALL NOT fail the build, SHALL have its own small spending allowance on top of what the build spent (the build uses nearly all of its own), SHALL log why a layout was skipped, and SHALL NOT replace a layout the world already has. A door declared with no halves SHALL be drawn as an always-open doorway.
 
 #### Scenario: A spatial world gets a layout
 

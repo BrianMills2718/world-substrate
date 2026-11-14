@@ -249,16 +249,19 @@ def test_a_world_with_no_places_gets_no_layout_and_a_bad_layout_is_repaired_once
 
 
 @pytest.mark.req("scene-viewer/builder-proposes-layout")
-def test_the_build_step_never_fails_the_build(monkeypatch):
-    from scripts import world_builder_service as service
+def test_the_build_step_never_fails_the_build_and_has_its_own_allowance(monkeypatch, capsys):
+    from scripts import layout_proposal, world_builder_service as service
     bundle = _bundle_without_layout()
     monkeypatch.setattr(service, "_trace_cost", lambda trace_id: 0.0)
     _fake_llm(monkeypatch, ["not json at all"])
     assert service._with_layout(bundle, "t", 0.2) == bundle  # unparseable reply: world kept as built
-    monkeypatch.setattr(service, "_trace_cost", lambda trace_id: 0.199)
-    assert service._with_layout(bundle, "t", 0.2) == bundle  # no budget left: no call made
-    monkeypatch.setattr(service, "_trace_cost", lambda trace_id: 0.0)
+    assert "layout step" in capsys.readouterr().err  # and the skip is logged, not hidden
     assert service._with_layout(deepcopy(BUNDLE), "t", 0.2) == BUNDLE  # already has a layout: left alone
+    seen = {}
+    monkeypatch.setattr(service, "_trace_cost", lambda trace_id: 0.199)  # the build used nearly all of its budget
+    monkeypatch.setattr(layout_proposal, "propose_layout", lambda b, **kw: seen.update(kw) or None)
+    service._with_layout(bundle, "t", 0.2)
+    assert seen["max_budget"] == pytest.approx(0.199 + layout_proposal.MAX_BUDGET)  # its own allowance on top
 
 
 @pytest.mark.req("scene-viewer/builder-proposes-layout")
