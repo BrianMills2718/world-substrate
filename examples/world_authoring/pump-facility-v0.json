@@ -281,21 +281,24 @@
         "label": "Ari",
         "fields": [
           "person.role"
-        ]
+        ],
+        "scope": "place"
       },
       {
         "id": "mara",
         "label": "Mara",
         "fields": [
           "person.role"
-        ]
+        ],
+        "scope": "place"
       },
       {
         "id": "bo",
         "label": "Bo",
         "fields": [
           "person.role"
-        ]
+        ],
+        "scope": "place"
       },
       {
         "id": "laboratory",
@@ -410,7 +413,10 @@
         "fields": {
           "way": "lab-door-out",
           "partner": "lab-door-in"
-        }
+        },
+        "unobserved_refs": [
+          "partner"
+        ]
       },
       {
         "kind": "move",
@@ -426,7 +432,10 @@
         "fields": {
           "way": "lab-door-in",
           "partner": "lab-door-out"
-        }
+        },
+        "unobserved_refs": [
+          "partner"
+        ]
       },
       {
         "kind": "move",
@@ -442,7 +451,10 @@
         "fields": {
           "way": "control-door-out",
           "partner": "control-door-in"
-        }
+        },
+        "unobserved_refs": [
+          "partner"
+        ]
       },
       {
         "kind": "move",
@@ -458,7 +470,10 @@
         "fields": {
           "way": "control-door-in",
           "partner": "control-door-out"
-        }
+        },
+        "unobserved_refs": [
+          "partner"
+        ]
       },
       {
         "kind": "move",
@@ -481,7 +496,10 @@
         "fields": {
           "recipient": "ari",
           "content": "The pump is calibrated."
-        }
+        },
+        "not_self": [
+          "recipient"
+        ]
       },
       {
         "kind": "send-report",
@@ -489,7 +507,10 @@
         "fields": {
           "recipient": "mara",
           "content": "The pump is calibrated."
-        }
+        },
+        "not_self": [
+          "recipient"
+        ]
       },
       {
         "kind": "send-report",
@@ -497,7 +518,10 @@
         "fields": {
           "recipient": "bo",
           "content": "The pump is calibrated."
-        }
+        },
+        "not_self": [
+          "recipient"
+        ]
       }
     ]
   }

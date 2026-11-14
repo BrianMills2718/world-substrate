@@ -120,14 +120,16 @@ def build() -> tuple[dict, dict]:
     ]
     forms = []
     for did, (label, a, b, partner) in DOORS.items():
-        forms.append({"kind": "open-door", "description": f"Open the {label.lower()}.", "fields": {"way": did, "partner": partner}})
+        forms.append({"kind": "open-door", "description": f"Open the {label.lower()}.", "fields": {"way": did, "partner": partner},
+                      "unobserved_refs": ["partner"]})
         forms.append({"kind": "move", "description": f"Walk through the {label.lower()} to the {PLACES[b].lower()}.",
                       "fields": {"to": b, "way": did}})
     forms.append({"kind": "calibrate-pump", "description": "Calibrate the prototype pump.", "fields": {"pump": "prototype-pump"}})
     for other in ("ari", "mara", "bo"):
         forms.append({"kind": "send-report", "description": f"Tell {PEOPLE[other][0]} the pump is calibrated.",
-                      "fields": {"recipient": other, "content": "The pump is calibrated."}})
-    public = [{"id": pid, "label": label, "fields": ["person.role"]} for pid, (label, *_ ) in PEOPLE.items()]
+                      "fields": {"recipient": other, "content": "The pump is calibrated."},
+                      "not_self": ["recipient"]})
+    public = [{"id": pid, "label": label, "fields": ["person.role"], "scope": "place"} for pid, (label, *_ ) in PEOPLE.items()]
     public += [{"id": pid, "label": label, "fields": []} for pid, label in PLACES.items()]
     public += [{"id": did, "label": label, "fields": ["boundary.state"], "scope": "place"} for did, (label, *_ ) in DOORS.items()]
     public.append({"id": "prototype-pump", "label": "Prototype pump", "fields": ["pump.status"], "scope": "place"})

@@ -147,6 +147,21 @@ class InhabitedFacilityTests(unittest.TestCase):
         self.assertNotIn("memories", info.actor_context(engine, bundle, "bo", 4))
 
     @pytest.mark.req("information-delivery/place-scoped-perception-with-distinct-inputs")
+    def test_offered_actions_follow_place_and_people_are_seen_only_when_present(self):
+        """A resident run showed open-door never offered and everyone seen from every room (2026-11-13)."""
+        engine, _, _ = runner.build_engine(BUNDLE, CAUSAL)
+        bundle = validate_bundle(copy.deepcopy(BUNDLE))
+        bo = info.actor_page(engine, bundle, "bo")
+        offered = {(r["action"]["kind"], r["action"].get("way"), r["action"].get("recipient")) for r in bo["available"]}
+        self.assertIn(("open-door", "control-door-in", None), offered)  # the far half is named, not perceived
+        self.assertNotIn(("open-door", "lab-door-out", None), offered)  # a door in another room is not offered
+        self.assertNotIn(("send-report", None, "bo"), offered)  # no report to oneself
+        self.assertEqual({"ari", "mara"} & set(bo["observation"]["entities"]), set())  # others are in other rooms
+        context = info.actor_context(engine, bundle, "bo", 1)
+        self.assertNotIn("Ari (ari)", context["visible"])
+        self.assertIn("partner=Control room door (corridor side) (control-door-out)", json.dumps(context["actions"]))
+
+    @pytest.mark.req("information-delivery/place-scoped-perception-with-distinct-inputs")
     def test_replay_and_branch_show_the_same_facts(self):
         catalog = service._catalog()
         rid = catalog.create_run(self.world["id"])["run"]["id"]
