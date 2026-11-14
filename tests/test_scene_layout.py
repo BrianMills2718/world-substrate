@@ -274,3 +274,17 @@ def test_a_doorway_with_no_halves_is_always_open_in_the_replay():
     rows = [json.loads(line) for line in (ROOT / "evidence/ui/inhabited-facility-20261113/scripted-run-log.jsonl").read_text().splitlines() if line.strip()]
     replay = export_from_rows(rows, validate_bundle(bundle), Path("/nope"))
     assert {c["state"] for c in replay["door_changes"] if c["step"] == 0} == {"open"}
+
+
+@pytest.mark.req("scene-viewer/builder-proposes-layout")
+def test_a_builder_made_world_with_other_actions_exports_and_its_doors_open_when_walked_through():
+    """The clinic (a live build on 2026-11-14, layout proposed by the Builder, run scripted and shared): actions the exporter was
+    not written for ('check-in', 'unlock-lab-door', 'examine') still show, and a door nobody 'opens' opens when someone walks through."""
+    from scripts.world_builder_service import _public_replay
+    share = json.loads((ROOT / "tests/fixtures/clinic-share-20261114.json").read_text())
+    replay = _public_replay(share)
+    said = {f[w]["description"] for f in replay["steps"].values() for w in f}
+    assert any(x.startswith("check in") for x in said) and any("examine" in x for x in said)
+    assert replay["map"] == "public-hub-3" and len(replay["rules"]) >= 4
+    opened = {c["door"] for c in replay["door_changes"] if c["state"] == "open"}
+    assert "reception-exam-door" in opened  # Cho and Dr. Bell walk through it in round 1

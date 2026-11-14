@@ -1,0 +1,3 @@
+- [x] Generic action words, neutral icon, moves into laid-out rooms only, doors open when walked through
+- [x] Test on the real clinic share (fixture)
+- [ ] deploy, view the live share room map
