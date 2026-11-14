@@ -103,7 +103,7 @@ def build_scene_inputs(world: dict, rounds: list, *, run_id: str | None = None) 
                   'events':events}
     places = [row for row in rows if 'place' in row.get('categories', [])]
     profile = {'schema_version':LIVING_SCENE_SCHEMA_VERSION, 'scene_id':spec['id']+'-composed',
-               'world':world_id, 'title':spec.get('label',spec['id']), 'subtitle':SEMANTICS,
+               'world':world_id, 'title':spec.get('label',spec['id']), 'subtitle':'Recorded world · layout and artwork are illustrative.',
                'scene':{'background':'#263840','shell_background':'#101b24', 'mobile_min_height':max(720, len(rows)*48)},
                'assets':{'object':{'kind':'image','path':'package.svg'}},
                'zones':{}, 'actors':{}, 'entities':{}, 'activities':{}, 'institutions':{},
@@ -121,7 +121,7 @@ def build_scene_inputs(world: dict, rounds: list, *, run_id: str | None = None) 
     objects = [r for r in rows if r not in actors and r not in places]
     profile['scene']['mobile_min_height'] = max(720, (math.ceil(len(objects)/3)+math.ceil(len(actors)/3)+2)*110)
     if not places:
-        profile['zones']['schematic'] = {'label':'Schematic world · no physical geography authored', 'rect':[3,16,94,78], 'anchor':[50,50]}
+        profile['zones']['schematic'] = {'label':'Schematic world', 'rect':[3,16,94,78], 'anchor':[50,50]}
         limitations.append('This world has no authored place entities; the view is a schematic arrangement of its actors and state-bearing entities.')
     # Spread each location's inhabitants within its illustrative region. Offsets
     # are stable per entity, not inferred physical coordinates.
