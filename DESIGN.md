@@ -25,3 +25,5 @@ Inherit World Builder’s neutral dark controls, readable type, blue/orange/grey
 Use actual retained native data for scene/projection checks and a controlled persistent HTTP catalog for creation/resume/branch integration. Verify no mutation on merely opening a world, durable save acknowledgement, stale checkpoint rejection, parent immutability, exact state/memory restoration, and clear inability to branch from an incomplete historical recording. New simulations are unnecessary for renderer/catalog mechanics; any native model call must follow the existing free-first and budget rules.
 
 Natural-language interventions and starting-condition configuration are future features. There are no enabled controls implying those capabilities in this implementation.
+
+Inhabited worlds: a place-scoped entity is perceived only from its place; delivered reports, global knowledge and memories are separate from what a person physically sees. The scene shows each person’s recorded place and each door’s recorded state; room layout stays illustrative (topology, not coordinates).

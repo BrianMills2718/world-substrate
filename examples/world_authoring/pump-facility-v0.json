@@ -1,0 +1,504 @@
+{
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+    "id": "pump-facility",
+    "label": "Pump Facility",
+    "summary": "Ari, Mara and Bo work in a small pump facility: a laboratory with the prototype pump, a corridor, and a control room. The laboratory door and the control room door start closed. Everyone knows the layout.",
+    "location": "corridor",
+    "content_version": 1
+  },
+  "components": [
+    {
+      "name": "person",
+      "fields": [
+        {
+          "name": "role",
+          "type": "string",
+          "default": "worker"
+        }
+      ]
+    },
+    {
+      "name": "report_log",
+      "fields": [
+        {
+          "name": "entries",
+          "type": "string_list",
+          "default": []
+        }
+      ]
+    },
+    {
+      "name": "boundary",
+      "fields": [
+        {
+          "name": "place_a",
+          "type": "entity_ref",
+          "default": "corridor"
+        },
+        {
+          "name": "place_b",
+          "type": "entity_ref",
+          "default": "laboratory"
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "default": "closed"
+        }
+      ]
+    },
+    {
+      "name": "pump",
+      "fields": [
+        {
+          "name": "calibrated",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "default": "uncalibrated"
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "laboratory",
+      "label": "Laboratory",
+      "categories": [
+        "place"
+      ],
+      "components": {}
+    },
+    {
+      "id": "corridor",
+      "label": "Corridor",
+      "categories": [
+        "place"
+      ],
+      "components": {}
+    },
+    {
+      "id": "control-room",
+      "label": "Control room",
+      "categories": [
+        "place"
+      ],
+      "components": {}
+    },
+    {
+      "id": "lab-door-out",
+      "label": "Laboratory door",
+      "categories": [
+        "boundary"
+      ],
+      "location": "laboratory",
+      "components": {
+        "boundary": {
+          "place_a": "laboratory",
+          "place_b": "corridor",
+          "state": "closed"
+        }
+      }
+    },
+    {
+      "id": "lab-door-in",
+      "label": "Laboratory door (corridor side)",
+      "categories": [
+        "boundary"
+      ],
+      "location": "corridor",
+      "components": {
+        "boundary": {
+          "place_a": "corridor",
+          "place_b": "laboratory",
+          "state": "closed"
+        }
+      }
+    },
+    {
+      "id": "control-door-out",
+      "label": "Control room door (corridor side)",
+      "categories": [
+        "boundary"
+      ],
+      "location": "corridor",
+      "components": {
+        "boundary": {
+          "place_a": "corridor",
+          "place_b": "control-room",
+          "state": "closed"
+        }
+      }
+    },
+    {
+      "id": "control-door-in",
+      "label": "Control room door",
+      "categories": [
+        "boundary"
+      ],
+      "location": "control-room",
+      "components": {
+        "boundary": {
+          "place_a": "control-room",
+          "place_b": "corridor",
+          "state": "closed"
+        }
+      }
+    },
+    {
+      "id": "prototype-pump",
+      "label": "Prototype pump",
+      "categories": [
+        "equipment",
+        "pump"
+      ],
+      "location": "laboratory",
+      "components": {
+        "pump": {
+          "calibrated": false,
+          "status": "uncalibrated"
+        }
+      }
+    },
+    {
+      "id": "ari",
+      "label": "Ari",
+      "categories": [
+        "actor"
+      ],
+      "location": "laboratory",
+      "components": {
+        "person": {
+          "role": "validation engineer"
+        },
+        "report_log": {
+          "entries": []
+        }
+      }
+    },
+    {
+      "id": "mara",
+      "label": "Mara",
+      "categories": [
+        "actor"
+      ],
+      "location": "corridor",
+      "components": {
+        "person": {
+          "role": "coordinator"
+        },
+        "report_log": {
+          "entries": []
+        }
+      }
+    },
+    {
+      "id": "bo",
+      "label": "Bo",
+      "categories": [
+        "actor"
+      ],
+      "location": "control-room",
+      "components": {
+        "person": {
+          "role": "pump operator"
+        },
+        "report_log": {
+          "entries": []
+        }
+      }
+    }
+  ],
+  "actions": [
+    {
+      "kind": "open-door",
+      "description": "Open a door you are standing at, which opens both of its sides.",
+      "fields": [
+        {
+          "name": "way",
+          "type": "entity_ref"
+        },
+        {
+          "name": "partner",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "move",
+      "description": "Walk through a door that is open into the next room.",
+      "fields": [
+        {
+          "name": "to",
+          "type": "entity_ref"
+        },
+        {
+          "name": "way",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "calibrate-pump",
+      "description": "Calibrate the prototype pump while standing in the laboratory.",
+      "fields": [
+        {
+          "name": "pump",
+          "type": "entity_ref"
+        }
+      ]
+    },
+    {
+      "kind": "send-report",
+      "description": "Send your own words to one person, wherever they are.",
+      "fields": [
+        {
+          "name": "recipient",
+          "type": "entity_ref"
+        },
+        {
+          "name": "content",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "presentation": {
+    "assets": {},
+    "category_assets": {},
+    "station_roles": {}
+  },
+  "actor_information": {
+    "version": 1,
+    "public_summary": "Ari, Mara and Bo work in a small pump facility: a laboratory with the prototype pump, a corridor, and a control room. The laboratory door and the control room door start closed. Everyone knows the layout.",
+    "public_entities": [
+      {
+        "id": "ari",
+        "label": "Ari",
+        "fields": [
+          "person.role"
+        ]
+      },
+      {
+        "id": "mara",
+        "label": "Mara",
+        "fields": [
+          "person.role"
+        ]
+      },
+      {
+        "id": "bo",
+        "label": "Bo",
+        "fields": [
+          "person.role"
+        ]
+      },
+      {
+        "id": "laboratory",
+        "label": "Laboratory",
+        "fields": []
+      },
+      {
+        "id": "corridor",
+        "label": "Corridor",
+        "fields": []
+      },
+      {
+        "id": "control-room",
+        "label": "Control room",
+        "fields": []
+      },
+      {
+        "id": "lab-door-out",
+        "label": "Laboratory door",
+        "fields": [
+          "boundary.state"
+        ],
+        "scope": "place"
+      },
+      {
+        "id": "lab-door-in",
+        "label": "Laboratory door (corridor side)",
+        "fields": [
+          "boundary.state"
+        ],
+        "scope": "place"
+      },
+      {
+        "id": "control-door-out",
+        "label": "Control room door (corridor side)",
+        "fields": [
+          "boundary.state"
+        ],
+        "scope": "place"
+      },
+      {
+        "id": "control-door-in",
+        "label": "Control room door",
+        "fields": [
+          "boundary.state"
+        ],
+        "scope": "place"
+      },
+      {
+        "id": "prototype-pump",
+        "label": "Prototype pump",
+        "fields": [
+          "pump.status"
+        ],
+        "scope": "place"
+      }
+    ],
+    "actors": {
+      "ari": {
+        "brief": "You are Ari, the validation engineer. You work in the laboratory with the prototype pump and report to Bo.",
+        "initial_knowledge": [
+          {
+            "id": "ari-knows",
+            "text": "The pump needs calibration before anyone starts it.",
+            "source": "own experience"
+          }
+        ],
+        "observable_fields": [
+          {
+            "entity": "ari",
+            "paths": [
+              "report_log.entries"
+            ]
+          }
+        ]
+      },
+      "mara": {
+        "brief": "You are Mara, the coordinator. You walk the corridor and relay what people tell you.",
+        "initial_knowledge": [],
+        "observable_fields": [
+          {
+            "entity": "mara",
+            "paths": [
+              "report_log.entries"
+            ]
+          }
+        ]
+      },
+      "bo": {
+        "brief": "You are Bo, the pump operator. You stay at the control room console and decide whether to start the pump.",
+        "initial_knowledge": [
+          {
+            "id": "bo-knows",
+            "text": "The pump was last started two weeks ago and has not been calibrated since.",
+            "source": "own experience"
+          }
+        ],
+        "observable_fields": [
+          {
+            "entity": "bo",
+            "paths": [
+              "report_log.entries"
+            ]
+          }
+        ]
+      }
+    },
+    "public_actions": [
+      {
+        "kind": "open-door",
+        "description": "Open the laboratory door.",
+        "fields": {
+          "way": "lab-door-out",
+          "partner": "lab-door-in"
+        }
+      },
+      {
+        "kind": "move",
+        "description": "Walk through the laboratory door to the corridor.",
+        "fields": {
+          "to": "corridor",
+          "way": "lab-door-out"
+        }
+      },
+      {
+        "kind": "open-door",
+        "description": "Open the laboratory door (corridor side).",
+        "fields": {
+          "way": "lab-door-in",
+          "partner": "lab-door-out"
+        }
+      },
+      {
+        "kind": "move",
+        "description": "Walk through the laboratory door (corridor side) to the laboratory.",
+        "fields": {
+          "to": "laboratory",
+          "way": "lab-door-in"
+        }
+      },
+      {
+        "kind": "open-door",
+        "description": "Open the control room door (corridor side).",
+        "fields": {
+          "way": "control-door-out",
+          "partner": "control-door-in"
+        }
+      },
+      {
+        "kind": "move",
+        "description": "Walk through the control room door (corridor side) to the control room.",
+        "fields": {
+          "to": "control-room",
+          "way": "control-door-out"
+        }
+      },
+      {
+        "kind": "open-door",
+        "description": "Open the control room door.",
+        "fields": {
+          "way": "control-door-in",
+          "partner": "control-door-out"
+        }
+      },
+      {
+        "kind": "move",
+        "description": "Walk through the control room door to the corridor.",
+        "fields": {
+          "to": "corridor",
+          "way": "control-door-in"
+        }
+      },
+      {
+        "kind": "calibrate-pump",
+        "description": "Calibrate the prototype pump.",
+        "fields": {
+          "pump": "prototype-pump"
+        }
+      },
+      {
+        "kind": "send-report",
+        "description": "Tell Ari the pump is calibrated.",
+        "fields": {
+          "recipient": "ari",
+          "content": "The pump is calibrated."
+        }
+      },
+      {
+        "kind": "send-report",
+        "description": "Tell Mara the pump is calibrated.",
+        "fields": {
+          "recipient": "mara",
+          "content": "The pump is calibrated."
+        }
+      },
+      {
+        "kind": "send-report",
+        "description": "Tell Bo the pump is calibrated.",
+        "fields": {
+          "recipient": "bo",
+          "content": "The pump is calibrated."
+        }
+      }
+    ]
+  }
+}

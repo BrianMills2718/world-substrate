@@ -1,0 +1,311 @@
+{
+  "schema_version": "world-substrate-causal-model/v0",
+  "mechanics": [
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "facility.open-door",
+      "version": "1",
+      "action_kind": "open-door",
+      "rationale": "Opening a door makes both of its directed halves passable; you must be at the door.",
+      "actor_selector": {
+        "categories": [
+          "actor"
+        ],
+        "components": []
+      },
+      "participants": {
+        "way": {
+          "categories": [
+            "boundary"
+          ],
+          "components": [
+            "boundary"
+          ]
+        },
+        "partner": {
+          "categories": [
+            "boundary"
+          ],
+          "components": [
+            "boundary"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "you are at the door",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "way",
+              "path": "location.location_id"
+            }
+          }
+        },
+        {
+          "label": "the partner is the same door's other side",
+          "left": {
+            "participant": {
+              "name": "partner",
+              "path": "components.boundary.place_a"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "way",
+              "path": "components.boundary.place_b"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "way",
+          "path": "components.boundary.state",
+          "op": "set",
+          "value": {
+            "literal": "open"
+          }
+        },
+        {
+          "participant": "partner",
+          "path": "components.boundary.state",
+          "op": "set",
+          "value": {
+            "literal": "open"
+          }
+        }
+      ],
+      "limits": [
+        "No key, lock or force is modeled; a closed door only needs someone at it to open it."
+      ],
+      "tests": [
+        "tests/test_inhabited_facility.py"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "facility.move",
+      "version": "1",
+      "action_kind": "move",
+      "rationale": "Movement changes the actor's room only through a passable door whose near side they stand in.",
+      "actor_selector": {
+        "categories": [
+          "actor"
+        ],
+        "components": []
+      },
+      "participants": {
+        "to": {
+          "categories": [
+            "place"
+          ],
+          "components": []
+        },
+        "way": {
+          "categories": [
+            "boundary"
+          ],
+          "components": [
+            "boundary"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "the door is open",
+          "left": {
+            "participant": {
+              "name": "way",
+              "path": "components.boundary.state"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "literal": "open"
+          }
+        },
+        {
+          "label": "you are in the room this door leaves",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "way",
+              "path": "components.boundary.place_a"
+            }
+          }
+        },
+        {
+          "label": "the destination is the room this door enters",
+          "left": {
+            "action_field": "to"
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "way",
+              "path": "components.boundary.place_b"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "actor",
+          "path": "location.location_id",
+          "op": "set",
+          "value": {
+            "action_field": "to"
+          }
+        }
+      ],
+      "limits": [
+        "Rooms are topology: no distance, travel time or collision is modeled."
+      ],
+      "tests": [
+        "tests/test_inhabited_facility.py"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "facility.calibrate-pump",
+      "version": "1",
+      "action_kind": "calibrate-pump",
+      "rationale": "Calibrating needs the actor in the room where the pump stands.",
+      "actor_selector": {
+        "categories": [
+          "actor"
+        ],
+        "components": []
+      },
+      "participants": {
+        "pump": {
+          "categories": [
+            "pump"
+          ],
+          "components": [
+            "pump"
+          ]
+        }
+      },
+      "parameters": {},
+      "checks": [
+        {
+          "label": "you are where it is",
+          "left": {
+            "participant": {
+              "name": "actor",
+              "path": "location.location_id"
+            }
+          },
+          "op": "eq",
+          "right": {
+            "participant": {
+              "name": "pump",
+              "path": "location.location_id"
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "pump",
+          "path": "components.pump.calibrated",
+          "op": "set",
+          "value": {
+            "literal": true
+          }
+        },
+        {
+          "participant": "pump",
+          "path": "components.pump.status",
+          "op": "set",
+          "value": {
+            "literal": "calibrated"
+          }
+        }
+      ],
+      "limits": [
+        "Calibration is binary; no measurement quality is modeled."
+      ],
+      "tests": [
+        "tests/test_inhabited_facility.py"
+      ],
+      "semantic_bindings": []
+    },
+    {
+      "schema_version": "world-substrate-action-mechanic/v0",
+      "mechanic_id": "facility.send-report",
+      "version": "1",
+      "action_kind": "send-report",
+      "rationale": "Words reach the recipient's own log wherever they stand; this is a delivered communication, not something the recipient could see or hear in a room.",
+      "actor_selector": {
+        "categories": [
+          "actor"
+        ],
+        "components": []
+      },
+      "participants": {
+        "recipient": {
+          "categories": [
+            "actor"
+          ],
+          "components": [
+            "report_log"
+          ]
+        }
+      },
+      "parameters": {
+        "content": [
+          "Report content supplied by the sender."
+        ]
+      },
+      "checks": [
+        {
+          "label": "the sender supplies words",
+          "left": {
+            "action_field": "content"
+          },
+          "op": "ne",
+          "right": {
+            "literal": ""
+          }
+        }
+      ],
+      "effects": [
+        {
+          "participant": "recipient",
+          "path": "components.report_log.entries",
+          "op": "append_report",
+          "value": {
+            "action_field": "content"
+          }
+        }
+      ],
+      "limits": [
+        "Delivery is instant and certain; channel delay or loss is not modeled."
+      ],
+      "tests": [
+        "tests/test_inhabited_facility.py"
+      ],
+      "semantic_bindings": []
+    }
+  ]
+}
