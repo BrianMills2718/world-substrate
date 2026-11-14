@@ -37,8 +37,9 @@ def test_rounds_become_walking_steps_and_refusals_and_reports_stay_visible():
             {"turn": 2, "actors": {"ari": row("move", to="right"), "bo": row()}}]}},
         {"result": {"transcript": [
             {"turn": 3, "actors": {"ari": row("send-report", recipient="bo", content="Ready."), "bo": row()}}]}}]
-    steps, meta = ex.export(rows, maze(), rooms={"left": "hall|left", "right": "hall|right"}, people={"ari": "Ari", "bo": "Bo"},
+    replay = ex.export(rows, maze(), rooms={"left": "hall|left", "right": "hall|right"}, people={"ari": "Ari", "bo": "Bo"},
                             start_rooms={"ari": "left", "bo": "right"}, labels={"right": "right room", "bo": "Bo"}, hold=1)
+    steps, meta = replay["steps"], replay["meta"]
     first = steps["1"]["Ari"]
     assert first["pronunciatio"] == ex.EMOJI["refused"] and "refused: the door must be open" in first["description"]
     assert first["movement"] == steps["0"]["Ari"]["movement"]  # a refused walk does not move
@@ -58,3 +59,19 @@ def test_an_unreachable_room_fails_loudly():
     m["collision"][2][3] = "32125"
     with pytest.raises(ValueError, match="no walkable path"):
         ex.walk(m, ex.anchor(m, "hall|left"), ex.anchor(m, "hall|right"))
+
+
+@pytest.mark.req("scene-viewer/smallville-replay-export")
+def test_doors_open_when_opened_and_people_in_one_room_do_not_stack():
+    m = maze()
+    m["collision"][1][4] = "0"
+    rows = [{"result": {"transcript": [{"turn": 1, "actors": {"ari": row("open-door", way="d-in", partner="d-out"), "bo": row()}}]}},
+            {"result": {"transcript": [{"turn": 2, "actors": {"ari": row("move", to="right"), "bo": row()}}]}}]
+    replay = ex.export(rows, m, rooms={"left": "hall|left", "right": "hall|right"}, people={"ari": "Ari", "bo": "Bo"},
+                       start_rooms={"ari": "left", "bo": "right"}, labels={}, hold=1,
+                       doors={"door": {"between": ["left", "right"], "halves": ["d-in", "d-out"]}})
+    assert replay["doors"]["door"]["tiles"] == [[3, 2]]
+    assert replay["door_changes"] == [{"step": 0, "door": "door", "state": "closed"}, {"step": 1, "door": "door", "state": "open"}]
+    last = replay["steps"][str(replay["meta"]["step"])]
+    assert last["Ari"]["movement"] != last["Bo"]["movement"]  # both in the right room, on different tiles
+    assert [r["round"] for r in replay["rounds"]] == [1, 2]

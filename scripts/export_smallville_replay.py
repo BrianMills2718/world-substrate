@@ -70,6 +70,35 @@ def walk(maze: dict[str, Any], start: tuple[int, int], goal: tuple[int, int]) ->
     raise ValueError(f"no walkable path from {start} to {goal}")
 
 
+def spots(maze: dict[str, Any], arena_name: str, count: int) -> list[tuple[int, int]]:
+    """`count` distinct tiles of a room nearest its centre, so people sent to one room do not stack."""
+    tiles = room_tiles(maze, arena_name)
+    if len(tiles) < count:
+        raise ValueError(f"{arena_name!r} has fewer than {count} walkable tiles")
+    cx, cy = sum(t[0] for t in tiles) / len(tiles), sum(t[1] for t in tiles) / len(tiles)
+    return sorted(tiles, key=lambda t: ((t[0] - cx) ** 2 + (t[1] - cy) ** 2, t))[:count]
+
+
+def doorway(maze: dict[str, Any], path: list[tuple[int, int]], max_width: int = 2) -> list[tuple[int, int]]:
+    """The first run of at most `max_width` walkable tiles that a path squeezes through (a doorway in a wall).
+
+    Looks across the direction of travel at each tile of the path; open floor is wider and is skipped."""
+    def free(x: int, y: int) -> bool:
+        return 0 <= x < maze["w"] and 0 <= y < maze["h"] and maze["collision"][y][x] == "0"
+
+    for before, tile in zip(path, path[1:]):
+        px, py = (0, 1) if tile[0] != before[0] else (1, 0)
+        run = [tile]
+        for sign in (1, -1):
+            x, y = tile[0] + sign * px, tile[1] + sign * py
+            while free(x, y) and len(run) <= max_width:
+                run.append((x, y))
+                x, y = x + sign * px, y + sign * py
+        if len(run) <= max_width:
+            return sorted(run)
+    raise ValueError("path never passes through a doorway")
+
+
 def describe(actor: str, row: dict[str, Any], labels: dict[str, str]) -> tuple[str, str, str | None]:
     """(emoji, description, chat line) for one person's attempt in a round, from the recorded did/status."""
     did = row.get("did") or {}
@@ -88,24 +117,43 @@ def describe(actor: str, row: dict[str, Any], labels: dict[str, str]) -> tuple[s
 
 
 def export(rows: list[dict[str, Any]], maze: dict[str, Any], rooms: dict[str, str], people: dict[str, str],
-           start_rooms: dict[str, str], labels: dict[str, str], hold: int = 2) -> tuple[dict[str, Any], dict[str, Any]]:
-    """`rows` are server run-log rows (one saved round each); `rooms` maps room id to a map arena name; `people` maps person id to the persona name shown."""
-    anchors = {room: anchor(maze, arena) for room, arena in rooms.items()}
-    pos = {p: anchors[start_rooms[p]] for p in people}
-    where = dict(start_rooms)
+           start_rooms: dict[str, str], labels: dict[str, str], doors: dict[str, dict[str, Any]] | None = None,
+           sprites: dict[str, str] | None = None, hold: int = 2) -> dict[str, Any]:
+    """The replay as one dict: `steps` (Smallville's master_movement shape), `meta`, `doors`, `door_changes`, `rounds`, `view`, `sprites`.
+
+    `rows` are server run-log rows (one saved round each); `rooms` maps room id to "<sector>|<arena>" on the map;
+    `people` maps person id to the persona name shown; `doors` maps a door id to {"between": [room, room], "halves":
+    [entity ids that open together]} (the doorway tiles are found on the path between the two rooms)."""
+    order = list(people)
+    spot = {room: spots(maze, arena, len(order)) for room, arena in rooms.items()}
+    place = lambda room, person: spot[room][order.index(person)]
+    pos = {p: place(start_rooms[p], p) for p in people}
+    door_rows: dict[str, Any] = {}
+    for door_id, door in (doors or {}).items():
+        a, b = door["between"]
+        centre = lambda room: anchor(maze, rooms[room])
+        door_rows[door_id] = {"tiles": [list(t) for t in doorway(maze, [centre(a)] + walk(maze, centre(a), centre(b)))],
+                              "between": [a, b], "halves": list(door["halves"])}
+    half_of = {h: d for d, row in door_rows.items() for h in row["halves"]}
     steps: dict[str, Any] = {}
+    changes: list[dict[str, Any]] = [{"step": 0, "door": d, "state": "closed"} for d in door_rows]
+    round_index: list[dict[str, int]] = []
     n = 0
     rounds = sorted(((t["turn"], t) for r in rows for t in r["result"]["transcript"]), key=lambda x: x[0])
-    steps[str(n)] = {people[p]: {"movement": list(pos[p]), "pronunciatio": EMOJI["wait"], "description": "waiting", "chat": None} for p in people}
-    for _, turn in rounds:
+    steps["0"] = {people[p]: {"movement": list(pos[p]), "pronunciatio": EMOJI["wait"], "description": "waiting", "chat": None} for p in people}
+    for number, turn in rounds:
         info = {p: describe(p, turn["actors"].get(p, {}), labels) for p in people}
         paths: dict[str, list[tuple[int, int]]] = {}
         for p in people:
             did = (turn["actors"].get(p) or {}).get("did") or {}
             if did.get("kind") == "move" and turn["actors"][p].get("status") == "accepted":
-                paths[p] = walk(maze, pos[p], anchors[did["to"]])
-                where[p] = did["to"]
+                paths[p] = walk(maze, pos[p], place(did["to"], p))
         length = max([len(v) for v in paths.values()] + [0]) + hold
+        start = n + 1
+        for p in people:
+            did = (turn["actors"].get(p) or {}).get("did") or {}
+            if did.get("kind") == "open-door" and turn["actors"][p].get("status") == "accepted" and did.get("way") in half_of:
+                changes.append({"step": start, "door": half_of[did["way"]], "state": "open"})
         for i in range(length):
             n += 1
             frame = {}
@@ -114,11 +162,16 @@ def export(rows: list[dict[str, Any]], maze: dict[str, Any], rooms: dict[str, st
                     pos[p] = paths[p][i]
                 emoji, text, chat = info[p]
                 frame[people[p]] = {"movement": list(pos[p]), "pronunciatio": emoji, "description": text,
-                                    "chat": [[people[p], chat]] if chat and i == length - 1 else None}
+                                    "chat": [[people[p], chat]] if chat else None}
             steps[str(n)] = frame
+        round_index.append({"round": number, "start": start, "end": n})
     meta = {"fork_sim_code": "world-substrate", "start_date": "February 13, 2023", "curr_time": "February 13, 2023, 00:00:00",
             "sec_per_step": 1, "maze_name": "the_ville", "persona_names": list(people.values()), "step": n}
-    return steps, meta
+    xs = [t[0] for r in rooms.values() for t in room_tiles(maze, r)] + [t[0] for d in door_rows.values() for t in d["tiles"]]
+    ys = [t[1] for r in rooms.values() for t in room_tiles(maze, r)] + [t[1] for d in door_rows.values() for t in d["tiles"]]
+    view = {"x": min(xs) - 1, "y": min(ys) - 1, "w": max(xs) - min(xs) + 3, "h": max(ys) - min(ys) + 3}
+    return {"steps": steps, "meta": meta, "doors": door_rows, "door_changes": changes, "rounds": round_index, "view": view,
+            "sprites": sprites or {}}
 
 
 def main() -> int:
@@ -129,18 +182,22 @@ def main() -> int:
     args = ap.parse_args()
     rows = [json.loads(line) for line in args.run_log.read_text().splitlines() if line.strip()]
     maze = load_maze(args.maze_dir)
-    steps, meta = export(
+    dorm = "Dorm for Oak Hill College|"
+    replay = export(
         rows, maze,
-        rooms={"laboratory": "Dorm for Oak Hill College|Maria Lopez's room", "corridor": "Dorm for Oak Hill College|common room",
-               "control-room": "Dorm for Oak Hill College|Klaus Mueller's room"},
+        rooms={"laboratory": dorm + "Maria Lopez's room", "corridor": dorm + "common room", "control-room": dorm + "Klaus Mueller's room"},
         people={"ari": "Ari", "mara": "Mara", "bo": "Bo"},
         start_rooms={"ari": "laboratory", "mara": "corridor", "bo": "control-room"},
         labels={"laboratory": "laboratory", "corridor": "corridor", "control-room": "control room", "ari": "Ari", "mara": "Mara", "bo": "Bo",
-                "lab-door-out": "Laboratory door", "lab-door-in": "Laboratory door", "control-door-in": "Control room door", "control-door-out": "Control room door"})
+                "lab-door-out": "Laboratory door", "lab-door-in": "Laboratory door", "control-door-in": "Control room door", "control-door-out": "Control room door"},
+        doors={"laboratory-door": {"between": ["laboratory", "corridor"], "halves": ["lab-door-out", "lab-door-in"]},
+               "control-room-door": {"between": ["control-room", "corridor"], "halves": ["control-door-in", "control-door-out"]}},
+        sprites={"Ari": "Abigail_Chen", "Mara": "Tom_Moreno", "Bo": "Klaus_Mueller"})
     args.out_dir.mkdir(parents=True, exist_ok=True)
-    (args.out_dir / "master_movement.json").write_text(json.dumps(steps))
-    (args.out_dir / "meta.json").write_text(json.dumps(meta))
-    print(f"{len(steps)} steps, {len(meta['persona_names'])} people -> {args.out_dir}")
+    (args.out_dir / "master_movement.json").write_text(json.dumps(replay["steps"]))
+    (args.out_dir / "meta.json").write_text(json.dumps(replay["meta"]))
+    (args.out_dir / "replay.json").write_text(json.dumps(replay))
+    print(f"{len(replay['steps'])} steps, {len(replay['meta']['persona_names'])} people, {len(replay['doors'])} doors -> {args.out_dir}")
     return 0
 
 

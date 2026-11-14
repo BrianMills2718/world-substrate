@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pump Facility Replay</title>
+<style>
+:root{--bg:#eef1f4;--fg:#16212b;--mute:#586573;--panel:#fff;--line:#c9d2db;--blue:#1f5fa8;--orange:#b4540a}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,sans-serif;display:flex;flex-direction:column;padding:10px max(12px,env(safe-area-inset-left,0px)) 10px}
+h1{font-size:18px;margin:0 0 8px}
+#game{flex:1 1 auto;min-height:320px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#222}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button,select{font:inherit;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 11px;min-height:40px}
+button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+input[type=range]{flex:1 1 160px;min-width:120px}
+#label{color:var(--mute);min-width:9em;font-variant-numeric:tabular-nums}
+#people{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0}
+.card b{display:block}
+.card .say{color:var(--blue);margin-top:2px;overflow-wrap:anywhere}
+.card .no{color:var(--orange)}
+#err{color:var(--orange);display:none;margin:8px 0}
+</style></head><body>
+<h1>Pump Facility Replay</h1>
+<div id="err"></div>
+<div id="game"></div>
+<div class="bar">
+<button id="play" class="on">Pause</button><button id="prev">Previous round</button><button id="next">Next round</button>
+<select id="speed" aria-label="Speed"><option value="1">1 step/s</option><option value="3" selected>3 steps/s</option><option value="8">8 steps/s</option></select>
+<input id="slider" type="range" min="0" value="0" aria-label="Step"><span id="label"></span>
+</div>
+<div id="people"></div>
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+<script src="viewer.js"></script>
+</body></html>
