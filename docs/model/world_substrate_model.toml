@@ -159,6 +159,24 @@ schema = "world-builder-share/v1"
 state = ["id", "created", "client fingerprint (never returned)", "record (gzip JSON)"]
 
 [[entities]]
+name = "CatalogWorld"
+what = "Private owner-saved original generated definition; catalog identity is distinct from immutable simulation content identity."
+source = "scripts/world_catalog.py:33"
+state = ["id", "definition", "fingerprint", "build_trace_id", "created", "updated"]
+
+[[entities]]
+name = "CatalogRun"
+what = "Logical run and independent branch ancestry, spanning native request segments. Incomplete historical imports remain replay-only."
+source = "scripts/world_catalog.py:143"
+state = ["id", "world_id", "parent_run_id", "fork_checkpoint_id", "checkpoint_id", "finish metadata", "can_continue and reason"]
+
+[[entities]]
+name = "CatalogCheckpoint"
+what = "Complete end-round continuation state: snapshot, actor cognition, rulings, approvals and stop/budget history; parent links retain the exact recorded prefix."
+source = "scripts/world_catalog.py:230"
+state = ["id", "run_id", "parent_checkpoint_id", "round", "request", "response"]
+
+[[entities]]
 name = "Job"
 what = "In-memory background job for long requests (build, AI run) so the page can poll past the 100-second proxy limit. Lost on restart."
 source = "scripts/world_builder_service.py:564"
@@ -372,7 +390,7 @@ source = "src/world_substrate/projection.py:44"
 routes = []
 changes = ["LiveProjection"]
 writes = ["world-substrate-live-projection/v0", "world-substrate-snapshot/v1"]
-schedule = "native-coordination runs and reference-world builds; not on the authored-world /run path"
+schedule = "native-coordination runs, reference-world builds and owner/public retained scene reads via world_scene_bridge; no simulation on scene reads"
 
 [[processes]]
 name = "render"
@@ -393,6 +411,15 @@ writes = ["world-substrate-native-coordination-comparison-change/v0"]
 schedule = "on request; deterministic; no LLM"
 
 [[processes]]
+name = "catalog"
+what = "Owner-only library, logical runs and saved-round branches. Durable writes precede success; stale checkpoints are refused, saved cognition is server-hydrated, exhausted stop checkpoints are unavailable, and recovery uses only proven owner/build records. GET scene routes reuse the composed renderer without simulation."
+source = "scripts/world_catalog.py:33; scripts/world_builder_service.py:605"
+routes = ["GET /worlds", "GET /worlds/*", "POST /worlds/*", "POST /worlds/import-logs"]
+changes = ["CatalogWorld", "CatalogRun", "CatalogCheckpoint"]
+writes = ["world-builder-share/v1"]
+schedule = "on owner request; successful owner generation saves a definition, successful native segment appends one completed-round checkpoint; no new scheduler"
+
+[[processes]]
 name = "observe"
 what = "Service observability: health, owner-only run-log reader, job polling, the per-request run log and the budget ledger."
 source = "scripts/world_builder_service.py:512"
@@ -408,11 +435,11 @@ source = "scripts/world_builder_service.py:474"
 routes = ["POST /share", "GET /share/*"]
 changes = ["SharedRun"]
 writes = ["world-builder-share/v1"]
-schedule = "on request; no LLM; at most 30 shares per visitor per day"
+schedule = "on request; no LLM; at most 30 shares per visitor per day; authenticated catalog_run_id reads the exact durable prefix instead of recent logs"
 
 [[processes]]
 name = "readout"
-what = "\"What happened\" readout: POST /readout names a build id and run ids; the server rebuilds the run from its own run log (as share does), and one light LLM call reads every recorded event that changed the world through a lens (the four coordination mechanisms of the Waltzman paper, data in scripts/run_readout.py). Every cited event id is checked against the recording; a mechanism called present without a real event id is reported missing. The result is logged and travels with a later share of exactly those rounds (readout_trace_id), so a replay shows it with no AI call. Detachable analysis: never changes the world."
+what = "\"What happened\" readout: POST /readout names a build id and run ids; the server rebuilds the run from its own run log (as share does), and one light LLM call reads every recorded event that changed the world through a lens (the four coordination mechanisms of the Waltzman paper, data in scripts/run_readout.py). Every cited event id is checked against the recording; a mechanism called present without a real event id is reported missing. The result is logged and travels with a later share of exactly those rounds (readout_trace_id), so a replay shows it with no AI call. Authenticated catalog_run_id instead reads the durable prefix; readout sharing is bound to its exact server-selected checkpoint. Detachable analysis: never changes the world."
 source = "scripts/run_readout.py:122"
 routes = ["POST /readout"]
 changes = ["SharedRun"]
@@ -671,7 +698,7 @@ writers = [{ file = "src/world_substrate/action_authoring.py", function = "<modu
 name = "world-substrate-snapshot/v1"
 scope = "product"
 written_by = ["project"]
-writers = [{ file = "src/world_substrate/model.py", function = "<module>", line = 65 }]
+writers = [{ file = "src/world_substrate/model.py", function = "<module>", line = 65 }, { file = "scripts/world_scene_bridge.py", function = "build_scene_inputs", line = 103 }]
 
 [[records]]
 name = "world-substrate-contested-run/v3"
@@ -696,8 +723,8 @@ writers = [{ file = "scripts/world_builder_service.py", function = "<module>", l
 [[records]]
 name = "world-builder-share/v1"
 scope = "product"
-written_by = ["share"]
-writers = [{ file = "scripts/world_builder_service.py", function = "<module>", line = 433 }]
+written_by = ["share", "catalog"]
+writers = [{ file = "scripts/world_builder_service.py", function = "<module>", line = 593 }, { file = "scripts/world_catalog.py", function = "_detail", line = 160 }]
 
 [[records]]
 name = "world-builder-readout/v1"
@@ -709,7 +736,7 @@ writers = [{ file = "scripts/run_readout.py", function = "<module>", line = 15 }
 name = "world-substrate-live-projection/v0"
 scope = "product"
 written_by = ["project"]
-writers = [{ file = "src/world_substrate/projection.py", function = "<module>", line = 9 }]
+writers = [{ file = "src/world_substrate/projection.py", function = "<module>", line = 9 }, { file = "scripts/world_scene_bridge.py", function = "build_scene_inputs", line = 101 }]
 
 [[records]]
 name = "world-substrate-living-scene/v1"

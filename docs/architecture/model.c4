@@ -74,6 +74,8 @@ model {
   service -> scene_bridge 'render requested retained context'
   scene_bridge -> replay 'reuse composed renderer'
   scene_bridge -> projection 'reconstruct retained event state'
+  scene_bridge -> compiler 'reuse actor selector semantics'
+  scene_bridge -> canonical 'read entity categories and components'
   service -> generation 'propose structure and rules'
   service -> peopleworld 'worlds about people'
   service -> driver 'install and run'
