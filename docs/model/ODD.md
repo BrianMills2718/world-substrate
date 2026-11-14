@@ -27,6 +27,8 @@ Questions the system is built to answer, for a person or an investigating agent:
 9. For a scenario described in plain words (any-scenario pipeline): what conceptual model was written, which checks failed and which repairs were kept, what each resident believed, attempted and expected, and which rules were written mid-run? (`model.json`, `checks.json`, `attempts.jsonl`, `summary.json`)
 10. Which kinds of things can a world represent at all, and which path can produce each? (section 4.1)
 
+The 2026-11-13 world workspace adds a private owner catalog outside canonical simulation state: saved definitions, logical runs and complete end-round checkpoints. Continue hydrates exact actor/material/authority state on the server; branches link an unchanged parent prefix. Scene reads bridge retained authored data into the existing composed renderer, with illustrative geometry. Replay-only historical records never acquire invented actor memories. Natural-language fork interventions and configuring saved starting conditions remain future features ([product scope](../../PRODUCT.md)).
+
 ## 2. Expected observable patterns (if the system works)
 
 Each pattern is something a check or a person could observe. VIEW_COVERAGE.md records where a view breaks one.
