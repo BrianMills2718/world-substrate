@@ -1,4 +1,4 @@
-limit: 222
+limit: 223
 reason: 'Measured at 544c086: 183 tracked Markdown files, including required per-run
   TRACE_READ records and historical OpenSpec change records. Preserve that evidence;
   current authority remains docs/index.md and roadmap/README.md. New authored documents
@@ -29,3 +29,6 @@ unlinked_ok:
 # Five required world-workspace OpenSpec records: proposal, tasks, two archived
 # deltas and the new current world-catalog spec. PRODUCT/DESIGN and roadmap
 # remain the existing authorities; no parallel plan or handoff document.
+
+# One required TRACE_READ preserves the actual integrated UI run and the
+# unintended resident-call harness failure, including measured cost and correction.
