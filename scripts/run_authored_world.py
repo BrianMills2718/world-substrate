@@ -393,6 +393,13 @@ def _read_attempt(engine: Engine, actor: str, text: str | None, signatures: list
     labels = ({eid: row["label"] for eid, row in known_page["observation"]["entities"].items()}
               if known_page else {eid: entity.label for eid, entity in sorted(engine.world.entities.items())})
     if boundary:
+        # Entities the actor's own known forms name without perceiving them (the far half of a door it stands at) are
+        # known to it: without them the reader refused every "open the door" (2026-11-13 workspace run).
+        declared = {row["id"] for row in boundary["actor_information"]["public_entities"]}
+        for row in known_page["available"]:
+            for value in row["action"].values():
+                if isinstance(value, str) and value in declared and value not in labels:
+                    labels[value] = actor_info.declared_label(boundary["actor_information"], value, engine)
         # Implements: semantic-binding/preserve-operation-and-referents
         # Use the same visibility-filtered public forms the actor receives. Raw
         # declarations may name a report or capability this actor cannot know.

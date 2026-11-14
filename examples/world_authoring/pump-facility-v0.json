@@ -45,6 +45,11 @@
           "name": "state",
           "type": "string",
           "default": "closed"
+        },
+        {
+          "name": "other_side",
+          "type": "entity_ref",
+          "default": "lab-door-in"
         }
       ]
     },
@@ -100,7 +105,8 @@
         "boundary": {
           "place_a": "laboratory",
           "place_b": "corridor",
-          "state": "closed"
+          "state": "closed",
+          "other_side": "lab-door-in"
         }
       }
     },
@@ -115,7 +121,8 @@
         "boundary": {
           "place_a": "corridor",
           "place_b": "laboratory",
-          "state": "closed"
+          "state": "closed",
+          "other_side": "lab-door-out"
         }
       }
     },
@@ -130,7 +137,8 @@
         "boundary": {
           "place_a": "corridor",
           "place_b": "control-room",
-          "state": "closed"
+          "state": "closed",
+          "other_side": "control-door-in"
         }
       }
     },
@@ -145,7 +153,8 @@
         "boundary": {
           "place_a": "control-room",
           "place_b": "corridor",
-          "state": "closed"
+          "state": "closed",
+          "other_side": "control-door-out"
         }
       }
     },

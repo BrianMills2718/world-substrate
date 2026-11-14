@@ -53,16 +53,13 @@
           "label": "the partner is the same door's other side",
           "left": {
             "participant": {
-              "name": "partner",
-              "path": "components.boundary.place_a"
+              "name": "way",
+              "path": "components.boundary.other_side"
             }
           },
           "op": "eq",
           "right": {
-            "participant": {
-              "name": "way",
-              "path": "components.boundary.place_b"
-            }
+            "entity_id": "partner"
           }
         }
       ],

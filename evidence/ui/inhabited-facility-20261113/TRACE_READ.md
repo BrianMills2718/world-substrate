@@ -1,65 +1,49 @@
-# Trace read — resident run in the pump facility (2026-11-13)
+# Trace read — resident run through the world workspace service (2026-11-13)
 
-Run: `policy=resident`, 6 rounds, model openrouter/openai/gpt-6-luna, world `examples/world_authoring/pump-facility-v0.json`
-(three people, three rooms, four directed door halves). Budget: the World Builder default cap, $0.12 a run.
-Spend measured in `~/projects/data/llm_observability.db`: 18 calls, $0.003268 for the run below (trace id
-`world-builder-live-run-549b1b6d176a4566baa4d9344eeffba7`: 18 resident calls, one per person per round; I opened
-`actor-inputs.json` and read the assembled prompt and output for every call of Bo, Mara and Ari, and the 22 engine events).
+How it ran: the real `WorldBuilderHandler` HTTP service (the workspace's own `/run` and `/worlds/<id>/runs/<id>/scene` routes) on a temporary
+catalog, `policy=resident` (Concordia residents with free-text attempts read by the interpreter, the path the workspace always uses),
+one saved round per request because catalog runs advance one round at a time, model openrouter/openai/gpt-6-luna. `run-log.jsonl` is that service's
+own `GET /runs?full=1` output (six rows, one per round), not assembled by hand. Measured cost from the six rows: $0.006423 against the $0.12
+World Builder cap per run. Scene HTML was fetched from the service's scene route and screenshotted (`workspace-*.png`, desktop 1280px and phone 390px, all viewed).
+Earlier direct-harness run and its trace read: `direct-harness/` (it first exposed the three defects, fixed in PR #400).
 
-An earlier first run on the same world, before three fixes, is kept in `run1-before-fixes/` (trace id
-`world-builder-live-run-0fb6e6f236e643078ceebc999115fd13`, $0.003375). Its trace showed the defects below; this read is of the second run.
+Two earlier service attempts on this world ended after round 1 or 2 with every open-door attempt "unmatched" (trace ids
+`world-builder-live/run/8392666156d343ceaf1eed915baef6de`, `d533a47dd4084234af8030fcc49634a4`, `e49604ad1b244c06985a07df6f8ad8a5`, `c9450554dd174da89c9f2deb0e91eec2`);
+that is finding 1 below.
 
 ## Findings
 
-1. **The first run exposed three defects, all fixed, then re-run.** (a) The people were declared public without a place
-   scope, so each person was told the others were "here" and believed "I am in the laboratory with Bo" while Bo was in the
-   control room (run 1, Ari round 1). Fix: people are `scope: place`. (b) `open-door` was never offered to anyone
-   (`never_offered: open-door`) because its form named the far side of the door (`partner`), which the actor cannot
-   perceive, and the form builder drops forms naming an unperceived entity. Fix: a form may list `unobserved_refs`.
-   (c) After a same-round stale revision, the retry for boundary worlds was sent without its controller and refused as
-   `invalid_action: controller must be a nonempty string` (run 1: r1-e00003, r1-e00005, r6-e00013). Fix in `run_authored_world.py`.
-   Run 1 also offered each person "Tell <themselves>"; fixed with `not_self`.
-2. **Run 2 behaves as an inhabited place.** 14 accepted actions, no idle or stalled person, no refusal. Mara opens the
-   laboratory door (r1-e00003), Bo opens his own door (r2-e00004), people walk through and return (r2-e00006, r2-e00008,
-   r3-e00009 and on). Beliefs agree with the world: in round 5 Mara says "I cannot see either room's occupants from here",
-   and her prompt lists only the two corridor-side door halves as in her place.
-3. **Delivered messages are separate from perception.** Mara reports to Bo from the corridor (r4-e00016) while Bo is in
-   the laboratory (Bo arrived r4-e00014); Bo's round 5 prompt shows the report in `report_log.entries`, and his belief says
-   "Mara has also told me it is calibrated". Final state: Bo holds two reports (Mara, Ari), Ari one (Bo), Mara none.
-4. **Memory and global knowledge stay available.** Bo's brief says the pump was last started two weeks ago and
-   uncalibrated; he weighs that against the reports in rounds 5 and 6 ("I remember it had not been calibrated since its last start").
-5. **No refusal of a closed door occurred in run 2**, because residents opened doors first. The door refusal is in run 1
-   (r3-e00007 and r3-e00008, "the door must be open") and in the scripted catalog test.
-6. **Rough edges, not fixed.** The recipient's raw report record (`delivery_status`, `lineage_status`, `source_revision`)
-   is printed as JSON inside "Your represented state" as well as in the "Delivered to you" line, which is duplicate noise.
-   Two people (Bo and Ari) repeat "The pump is calibrated." back and forth in round 5; the world has no other fixed message.
-   Stale-revision retries happen after almost every same-round commit (8 of 22 events) and are resolved by the retry path.
-7. **What this does not show:** one 6-round run of one model on one world; not a measure of how faithful the personalities are.
+1. **Root cause found only through the workspace path.** The typed path (direct harness) offered `open-door`, but the free-text reader refused
+   every "open the door" with `partner='lab-door-in' names no entity in this world`: the reader's entity list was the actor's perceived
+   entities, and the far half of the door is not perceived. Each such round ended with nothing accepted and the catalog marked the run
+   non-continuable ("no active moves"). Fix (`_read_attempt`): entities named by the actor's own known forms are known to it. After the fix the same
+   world ran six rounds.
+2. **The run is an inhabited place.** 15 accepted moves in six rounds across three people: opening doors (r1-e00003 Bo, r1-e00005 Mara), calibrating (r1-e00001), walking between rooms, and reports (r3-e00001 Ari to Bo, r4-e00001 Ari to Mara,
+   r4-e00005 Mara to Ari, r5-e00003 Mara to Bo). Beliefs match place: Mara in the lab (r3): "I cannot see either of them here"; Bo in the corridor (round 5) sees "Ari, Control room door (corridor side), Laboratory door (corridor side), Mara".
+3. **Bo's own observation, separated inputs** (`bo-observation-round5.txt`, verbatim model input): memory block (rounds 1 to 4 in his own words), represented state "You are in the Corridor" with his own report log, "In this place with you: Ari, ... Mara", "Delivered to you from ari: The pump is calibrated.", and brief/global knowledge ("last started two weeks ago ...") in a separate block. His round 4 belief ("Ari has told me the pump is calibrated, and I can see its status is calibrated") shows the delivered report and the perceived pump together.
+4. **The branch** (`workspace-branch-diverged.png`, scripted catalog run through the same service, a different test on the same world, not LLM evidence): forked from the door-opened checkpoint, Ari stays in the laboratory with the door open and the pump calibrated, while the parent run has Ari walking out; the parent keeps its rounds.
+5. **Rough edges, not fixed.** Report records print as raw JSON in "Your represented state" as well as in the "Delivered to you" line; Ari, Bo and Mara repeat the one fixed message to each other; in round 5 Bo walks back to the control room instead of staying near the news. One run of one model; no claim about personality fidelity.
 
 ## Round 1
 
-ari (Ari) tried calibrate-pump (r1-e00001), accepted. mara tried open-door on the laboratory door (r1-e00002 stale after Ari's
-commit, then r1-e00003 accepted). bo waited: his door was closed and he had no new information.
+Per-round trace id `world-builder-live/run/12211af49fd3431b9aaeea5c620dd4ee`: ari tried to calibrate the pump (r1-e00001), bo opened the control room door (r1-e00003) and mara opened the laboratory door (r1-e00005), all accepted. Beliefs match the closed doors.
 
 ## Round 2
 
-bo tried open-door on the control room door (r2-e00004, accepted). mara walked into the laboratory (r2-e00005 stale,
-r2-e00006 accepted). ari walked out to the corridor (r2-e00007 stale, r2-e00008 accepted).
+Trace `world-builder-live/run/a1e3fbb5e8104ed5ad828c5cf33f5dcf`: ari walked to the corridor (r2-e00001), bo walked to the corridor (r2-e00003), mara walked into the laboratory (r2-e00005); all accepted.
 
 ## Round 3
 
-mara returned to the corridor (r3-e00009). ari walked back into the laboratory (r3-e00010 stale, r3-e00011 accepted).
-bo walked into the corridor (r3-e00012 stale, r3-e00013 accepted).
+Trace `world-builder-live/run/c63e2c75910942d6bdc5a12dc10b051e`: ari told bo "The pump is calibrated." (r3-e00001), bo walked into the laboratory (r3-e00003), mara walked back to the corridor (r3-e00005).
 
 ## Round 4
 
-bo walked into the laboratory (r4-e00014). mara sent Bo the report from the corridor (r4-e00015 stale, r4-e00016
-accepted). ari waited.
+Trace `world-builder-live/run/3ca8aafe759a450ea72c4bd6ea1c714c`: ari told mara (r4-e00001), bo walked to the corridor (r4-e00003), mara told ari (r4-e00005). Bo's belief cites Ari's delivered report.
 
 ## Round 5
 
-bo sent ari the report (r5-e00017). mara walked to the control room (r5-e00018 stale, r5-e00019 accepted). ari sent bo the report (r5-e00020 stale, r5-e00021 accepted).
+Trace `world-builder-live/run/26f400721a7043cb81d30d783c6fe1a0`: ari waited; bo walked into the control room (r5-e00001); mara told bo (r5-e00003).
 
 ## Round 6
 
-mara walked back to the corridor (r6-e00022). Ari and bo waited, both believing the pump calibrated.
+Trace `world-builder-live/run/db77f00fc8ec4d7fb6ab72437386d3f5`: ari walked to the control room (r6-e00001); bo and mara waited, Bo believing the pump calibrated from two delivered reports.
