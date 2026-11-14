@@ -102,7 +102,6 @@ def round_lit(turn: dict[str, Any]) -> dict[str, Any]:
                     entry["uses"].append("e:" + value)
         elif isinstance(move, dict):
             entry["nearest"] = move.get("nearest_kind")
-            entry["why"] = move.get("why")
         if status == "accepted":
             for change in row.get("changes") or []:
                 changed = _entity_of(change.get("path"))
