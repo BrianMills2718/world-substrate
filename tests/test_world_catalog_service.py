@@ -191,15 +191,16 @@ class CatalogServiceTests(unittest.TestCase):
         logdir.mkdir(exist_ok=True)
         owner = {'status': 200, 'who': 'owner', 'path': '/generate-world', 'trace_id': 'owned-build',
                  'request': {'description': 'Owner world'}, 'result': WORLD}
+        agent = {**owner, 'who': 'agent:script', 'allowance': 'owner', 'trace_id': 'owner-agent-build'}
         guest = {**owner, 'who': 'visitor', 'trace_id': 'guest-build', 'request': {'description': 'Guest private prompt'}}
-        (logdir / 'runs_2026-11-13.jsonl').write_text('\n'.join(json.dumps(row) for row in [owner, guest]))
+        (logdir / 'runs_2026-11-13.jsonl').write_text('\n'.join(json.dumps(row) for row in [owner, agent, guest]))
         self.assertEqual(self.request('/worlds/import-logs', {}, owner=False)[0], 403)
         first = self.request('/worlds/import-logs', {})
         second = self.request('/worlds/import-logs', {})
         self.assertEqual(first[0], 200, first)
         self.assertEqual(second[0], 200, second)
-        self.assertEqual(len(service._catalog().worlds()), 2)
-        self.assertEqual(first[1]['owner_builds_found'], 1)
+        self.assertEqual(len(service._catalog().worlds()), 3)
+        self.assertEqual(first[1]['owner_builds_found'], 2)
         self.assertNotIn('Guest private prompt', json.dumps(second))
 
     def test_declared_branch_restores_exact_cognition_and_ignores_client_replacements(self):

@@ -658,7 +658,7 @@ def _catalog_backfill() -> dict[str, Any]:
                     row = json.loads(line)
                 except json.JSONDecodeError:
                     continue
-                if row.get("status") == 200 and row.get("who") == "owner":
+                if row.get("status") == 200 and (row.get("who") == "owner" or row.get("allowance") == "owner"):
                     rows.append(row)
     builds = 0
     for row in rows:
