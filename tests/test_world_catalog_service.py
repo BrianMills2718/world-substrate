@@ -186,6 +186,19 @@ class CatalogServiceTests(unittest.TestCase):
         with patch.object(service.WorldBuilderHandler, '_run_native', side_effect=AssertionError('must not run')):
             self.assertEqual(self.step(run, checkpoint)[0], 422)
 
+    def test_stopped_checkpoint_cannot_offer_a_branch_that_cannot_advance(self):
+        definition = copy.deepcopy(WORLD)
+        definition['run_stop'] = {'mode': 'every_round', 'max_rounds': 1}
+        wid = service._catalog().save_world(definition, 'round-limited')['id']
+        rid = service._catalog().create_run(wid)['run']['id']
+        status, first = self.step(rid)
+        self.assertEqual(status, 200, first)
+        detail = service._catalog().run_by_id(rid)
+        self.assertFalse(detail['run']['can_continue'])
+        self.assertFalse(detail['checkpoints'][0]['can_branch'])
+        self.assertIn('earlier checkpoint', detail['checkpoints'][0]['reason'])
+        self.assertEqual(self.request('/worlds/' + wid + '/runs', {'parent_run_id': rid, 'checkpoint_id': first['checkpoint_id']})[0], 422)
+
     def test_backfill_is_owner_only_and_does_not_import_guest_builds(self):
         logdir = Path(self.tmp.name) / 'runs'
         logdir.mkdir(exist_ok=True)
