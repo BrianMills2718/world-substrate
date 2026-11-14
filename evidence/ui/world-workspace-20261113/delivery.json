@@ -1,0 +1,65 @@
+{
+  "runtime_commit": "aadccb5dd460618d96de702ae3c554dd5855026e",
+  "merged_prs": [
+    394,
+    395,
+    396
+  ],
+  "deployment": {
+    "backend_revision_matches": true,
+    "frontend_build_hash_matches": true,
+    "prior_images_retained": true
+  },
+  "checks": {
+    "make_check": {
+      "passed": 1134,
+      "skipped": 2,
+      "subtests_passed": 229,
+      "exit": 0
+    },
+    "openspec_capabilities": {
+      "passed": 14,
+      "failed": 0
+    },
+    "local_http_sqlite_native_browser": {
+      "passed": 27,
+      "viewports": [
+        1440,
+        390
+      ],
+      "provider_calls": 0
+    },
+    "additional_actor_role_render": {
+      "passed": 2,
+      "page_errors": 0
+    },
+    "live_public_replay": {
+      "passed": 41,
+      "page_errors": 0,
+      "unexpected_failed_requests": 0,
+      "provider_calls": 0
+    },
+    "live_private_owner_readonly": {
+      "library_nonempty": true,
+      "search_open_scene_desktop_phone_passed": true,
+      "api_responses_all_200": true,
+      "page_errors": 0,
+      "api_mutations": 0,
+      "unauthenticated_catalog_status": 403
+    }
+  },
+  "privacy": "Real private catalog names, contents, IDs and screenshots remain outside published evidence.",
+  "limits": [
+    "Incomplete historical continuations remain replay-only.",
+    "Screen geometry and artwork are illustrative unless the world authors physical constraints.",
+    "Natural-language fork interventions and saved initial-condition configuration remain future features."
+  ],
+  "evidence": [
+    "report.json",
+    "TRACE_READ.md",
+    "live-public-checks.json",
+    "recovery-repair.json",
+    "source-after-repair.json",
+    "round-cap-before.txt"
+  ]
+}
