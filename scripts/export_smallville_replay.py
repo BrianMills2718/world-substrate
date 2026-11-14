@@ -20,7 +20,7 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-EMOJI = {"calibrate-pump": "🔧", "open-door": "🚪", "move": "🚶", "send-report": "💬", "wait": "💤", "refused": "⛔"}
+EMOJI = {"other": "🔹", "calibrate-pump": "🔧", "open-door": "🚪", "move": "🚶", "send-report": "💬", "wait": "💤", "refused": "⛔"}
 
 
 def load_maze(maze_dir: Path) -> dict[str, Any]:
@@ -102,6 +102,12 @@ def doorway(maze: dict[str, Any], path: list[tuple[int, int]], max_width: int = 
     raise ValueError("path never passes through a doorway")
 
 
+def _generic(kind: str, did: dict[str, Any], labels: dict[str, str]) -> str:
+    """Any other action in words: its name, then the things it names (people, places, doors) by their labels."""
+    named = [labels[v] for k, v in did.items() if k not in ("actor", "kind", "base_revision", "controller") and isinstance(v, str) and v in labels]
+    return kind.replace("-", " ") + (" (" + ", ".join(named) + ")" if named else "")
+
+
 def describe(actor: str, row: dict[str, Any], labels: dict[str, str]) -> tuple[str, str, str | None]:
     """(emoji, description, chat line) for one person's attempt in a round, from the recorded did/status."""
     did = row.get("did") or {}
@@ -111,12 +117,12 @@ def describe(actor: str, row: dict[str, Any], labels: dict[str, str]) -> tuple[s
     name = lambda key: labels.get(did.get(key), did.get(key))
     what = {"move": lambda: f"walking to the {name('to')}", "open-door": lambda: f"opening the {str(name('way')).lower()}",
             "calibrate-pump": lambda: "calibrating the pump",
-            "send-report": lambda: f"telling {name('recipient')} the pump status"}.get(kind, lambda: str(kind))()
+            "send-report": lambda: f"telling {name('recipient')} the pump status"}.get(kind, lambda: _generic(kind, did, labels))()
     if row.get("status") != "accepted":
         why = "; ".join(row.get("refused_because") or []) or row.get("status")
         return EMOJI["refused"], f"{what.replace('walking', 'trying to walk')} - refused: {why}", None
     chat = f"to {name('recipient')}: {did.get('content')}" if kind == "send-report" else None
-    return EMOJI[kind], what, chat
+    return EMOJI.get(kind, EMOJI["other"]), what, chat
 
 
 def _effect_words(effect: dict[str, Any]) -> str:
@@ -174,7 +180,7 @@ def export(rows: list[dict[str, Any]], maze: dict[str, Any], rooms: dict[str, st
         paths: dict[str, list[tuple[int, int]]] = {}
         for p in people:
             did = (turn["actors"].get(p) or {}).get("did") or {}
-            if did.get("kind") == "move" and turn["actors"][p].get("status") == "accepted":
+            if did.get("kind") == "move" and turn["actors"][p].get("status") == "accepted" and did.get("to") in spot:
                 paths[p] = walk(maze, pos[p], place(did["to"], p))
         length = max([len(v) for v in paths.values()] + [0]) + hold
         start = n + 1
@@ -182,6 +188,12 @@ def export(rows: list[dict[str, Any]], maze: dict[str, Any], rooms: dict[str, st
             did = (turn["actors"].get(p) or {}).get("did") or {}
             if did.get("kind") == "open-door" and turn["actors"][p].get("status") == "accepted" and did.get("way") in half_of:
                 changes.append({"step": start, "door": half_of[did["way"]], "state": "open"})
+        opened = {c["door"] for c in changes if c["state"] == "open"}
+        for p, path in paths.items():  # a world with no open-door action: a door someone walks through is open from that step
+            for door_id, door in door_rows.items():
+                if door_id not in opened and door["halves"] and any(list(t) in door["tiles"] for t in path):
+                    changes.append({"step": start, "door": door_id, "state": "open"})
+                    opened.add(door_id)
         for i in range(length):
             n += 1
             frame = {}
