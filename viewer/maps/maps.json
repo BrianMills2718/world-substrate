@@ -9,8 +9,32 @@
       "c": "Dorm for Oak Hill College|Ayesha Khan's room",
       "d": "Dorm for Oak Hill College|Wolfgang Schulz's room"
     },
-    "connections": [["hub", "a"], ["hub", "b"], ["hub", "c"], ["hub", "d"]],
-    "sprites": ["Abigail_Chen", "Tom_Moreno", "Klaus_Mueller", "Maria_Lopez", "Ayesha_Khan", "Wolfgang_Schulz"]
+    "connections": [
+      [
+        "hub",
+        "a"
+      ],
+      [
+        "hub",
+        "b"
+      ],
+      [
+        "hub",
+        "c"
+      ],
+      [
+        "hub",
+        "d"
+      ]
+    ],
+    "sprites": [
+      "Abigail_Chen",
+      "Tom_Moreno",
+      "Klaus_Mueller",
+      "Maria_Lopez",
+      "Ayesha_Khan",
+      "Wolfgang_Schulz"
+    ]
   },
   "ville-college": {
     "label": "Oak Hill College (Smallville Ville): a hallway with a classroom and a library off it",
@@ -20,7 +44,89 @@
       "a": "Oak Hill College|classroom",
       "b": "Oak Hill College|library"
     },
-    "connections": [["hub", "a"], ["hub", "b"]],
-    "sprites": ["Latoya_Williams", "Rajiv_Patel", "Hailey_Johnson", "Francisco_Lopez", "Jennifer_Moore", "Sam_Moore"]
+    "connections": [
+      [
+        "hub",
+        "a"
+      ],
+      [
+        "hub",
+        "b"
+      ]
+    ],
+    "sprites": [
+      "Latoya_Williams",
+      "Rajiv_Patel",
+      "Hailey_Johnson",
+      "Francisco_Lopez",
+      "Jennifer_Moore",
+      "Sam_Moore"
+    ]
+  },
+  "public-hub-3": {
+    "label": "Public scene: a hub room with two rooms above it (generated, CC0 tiles)",
+    "tiles": "generated",
+    "kind": "generated",
+    "slots": {
+      "hub": "public-hub-3|hub",
+      "a": "public-hub-3|a",
+      "b": "public-hub-3|b"
+    },
+    "connections": [
+      [
+        "hub",
+        "a"
+      ],
+      [
+        "hub",
+        "b"
+      ]
+    ],
+    "sprites": [
+      "td-85",
+      "td-99",
+      "td-97",
+      "td-100",
+      "td-86",
+      "td-98"
+    ]
+  },
+  "public-hub-5": {
+    "label": "Public scene: a hub room with two rooms above it and two below (generated, CC0 tiles)",
+    "tiles": "generated",
+    "kind": "generated",
+    "slots": {
+      "hub": "public-hub-5|hub",
+      "a": "public-hub-5|a",
+      "b": "public-hub-5|b",
+      "c": "public-hub-5|c",
+      "d": "public-hub-5|d"
+    },
+    "connections": [
+      [
+        "hub",
+        "a"
+      ],
+      [
+        "hub",
+        "b"
+      ],
+      [
+        "hub",
+        "c"
+      ],
+      [
+        "hub",
+        "d"
+      ]
+    ],
+    "sprites": [
+      "td-85",
+      "td-99",
+      "td-97",
+      "td-100",
+      "td-86",
+      "td-98"
+    ]
   }
 }

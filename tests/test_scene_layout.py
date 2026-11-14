@@ -70,7 +70,7 @@ def test_a_world_without_a_layout_still_validates_and_a_second_map_accepts_the_s
 
 @pytest.mark.req("scene-viewer/world-layout-declaration")
 @pytest.mark.skipif(not VILLE.exists(), reason="needs the local Smallville clone (art and map are not in this repository)")
-@pytest.mark.parametrize("map_id", sorted(scene_layout.prepared_maps()))
+@pytest.mark.parametrize("map_id", sorted(k for k, v in scene_layout.prepared_maps().items() if v.get("kind") != "generated"))
 def test_every_connection_a_prepared_map_declares_is_walkable_with_a_doorway(map_id):
     from scripts import export_smallville_replay as ex
     maze = ex.load_maze(VILLE)
@@ -104,3 +104,35 @@ def test_the_owner_export_reproduces_the_viewer_replay():
     chain, bundle = viewer.pick_run(rows, None)
     got = export_from_rows(chain, bundle, VILLE)
     assert got == json.loads((ROOT / "viewer/smallville/replay.json").read_text())
+
+
+@pytest.mark.req("scene-viewer/public-generated-map")
+@pytest.mark.parametrize("map_id", ["public-hub-3", "public-hub-5"])
+def test_a_generated_map_connects_every_declared_slot_through_a_two_tile_doorway(map_id):
+    from scripts import export_smallville_replay as ex
+    from scripts.generated_map import build
+    prepared = scene_layout.prepared_maps()[map_id]
+    built = build(map_id, list(prepared["slots"]))
+    maze = built["maze"]
+    for a, b in prepared["connections"]:
+        start, goal = ex.anchor(maze, prepared["slots"][a]), ex.anchor(maze, prepared["slots"][b])
+        gap = ex.doorway(maze, [start] + ex.walk(maze, start, goal))
+        assert len(gap) == 2
+    assert all(0 <= t < 132 for row in built["grid"]["data"] for t in row)  # inside the 12 x 11 Tiny Dungeon sheet
+    assert all(0 <= t < 132 for _, _, t in built["grid"]["props"])
+
+
+@pytest.mark.req("scene-viewer/public-generated-map")
+def test_the_pump_story_exports_on_a_generated_map_with_no_clone_and_no_private_art():
+    from scripts.export_smallville_replay import export_from_rows
+    bundle = deepcopy(BUNDLE)
+    bundle["layout"]["map"] = "public-hub-3"
+    bundle["layout"]["rooms"] = {"laboratory": "a", "corridor": "hub", "control-room": "b"}
+    for person in bundle["layout"]["people"].values():
+        person.pop("sprite")
+    rows = [json.loads(line) for line in (ROOT / "evidence/ui/inhabited-facility-20261113/scripted-run-log.jsonl").read_text().splitlines() if line.strip()]
+    replay = export_from_rows(rows, validate_bundle(bundle), Path("/does/not/exist"))
+    assert replay["grid"]["sheet"] == "tinydungeon.png" and set(replay["sprites"].values()) <= {"td-85", "td-99", "td-97"}
+    assert len(replay["doors"]["laboratory-door"]["tiles"]) == 2
+    walk = [replay["steps"][k]["Ari"]["movement"] for k in sorted(replay["steps"], key=int)]
+    assert all(abs(a[0] - b[0]) + abs(a[1] - b[1]) <= 1 for a, b in zip(walk, walk[1:]))

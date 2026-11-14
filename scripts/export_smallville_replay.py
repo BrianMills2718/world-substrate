@@ -182,9 +182,15 @@ def export_from_rows(rows: list[dict[str, Any]], bundle: dict[str, Any], maze_di
     from scripts.scene_layout import resolve
 
     layout = resolve(bundle)
-    replay = export(rows, load_maze(maze_dir), rooms=layout["rooms"], people=layout["people"], start_rooms=layout["start_rooms"],
+    generated = None
+    if layout["prepared"].get("kind") == "generated":  # a map made from code: no clone, no private art
+        from scripts.generated_map import build
+        generated = build(layout["map"], list(layout["prepared"]["slots"]))
+    replay = export(rows, generated["maze"] if generated else load_maze(maze_dir), rooms=layout["rooms"], people=layout["people"], start_rooms=layout["start_rooms"],
                     labels=layout["labels"], doors=layout["doors"], sprites=layout["sprites"])
     replay["map"], replay["title"] = layout["map"], layout["title"]
+    if generated:
+        replay["grid"] = generated["grid"]
     return replay
 
 

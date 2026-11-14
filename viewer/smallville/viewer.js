@@ -7,13 +7,17 @@ const $ = id => document.getElementById(id);
 const fail = msg => { $("err").style.display = "block"; $("err").textContent = msg; };
 
 const REPLAY = new URLSearchParams(location.search).get("replay");  // ?replay=scripted opens replay-scripted.json
-Promise.all([fetch(REPLAY ? "replay-" + REPLAY + ".json" : "replay.json").then(r => r.json()), fetch(A + "map.json").then(r => r.json())])
-  .then(([R, M]) => start(R, M))
-  .catch(e => fail("Could not load the replay or map assets. Run scripts/setup_smallville_viewer.py first. " + e));
+// A replay with a `grid` is a map made from code, drawn with the CC0 Tiny Dungeon sheet (assets-cc0/); any other replay uses
+// Smallville's own map and art (private use; copied by scripts/setup_smallville_viewer.py).
+const CC0 = "assets-cc0/";
+const replayUrl = (REPLAY && /^https?:|^\//.test(REPLAY)) ? REPLAY : (REPLAY ? "replay-" + REPLAY + ".json" : "replay.json");
+fetch(replayUrl).then(r => r.json())
+  .then(R => R.grid ? start(R, null) : fetch(A + "map.json").then(r => r.json()).then(M => start(R, M)))
+  .catch(e => fail("Could not load the replay or map assets. For Smallville maps run scripts/setup_smallville_viewer.py first. " + e));
 
 function start(R, M) {
   if (R.title) { document.getElementById("title").textContent = R.title + " replay"; document.title = R.title + " Replay"; }
-  const names = R.meta.persona_names, last = R.meta.step;
+  const names = R.meta.persona_names, last = R.meta.step, GEN = !!R.grid;
   const q = new URLSearchParams(location.search);  // ?step=N&paused=1 opens a given step (for links and tests)
   let step = Math.min(+q.get("step") || 0, last), playing = !q.has("paused"), timer = null, scene = null;
   if (!playing) { $("play").textContent = "Play"; $("play").classList.remove("on"); }
@@ -24,20 +28,29 @@ function start(R, M) {
 
   class Replay extends Phaser.Scene {
     preload() {
+      if (GEN) { this.load.spritesheet("td", CC0 + R.grid.sheet, { frameWidth: 16, frameHeight: 16 }); return; }
       M.tilesets.forEach(t => this.load.image(t.name, A + "tiles/" + t.image.split("/").pop()));
       this.load.tilemapTiledJSON("map", A + "map.json");
       names.forEach(n => this.load.atlas(n, A + "characters/" + R.sprites[n] + ".png", A + "characters/atlas.json"));
     }
     create() {
       scene = this;
-      const map = this.make.tilemap({ key: "map" });
-      const sets = M.tilesets.map(t => map.addTilesetImage(t.name, t.name));
-      LAYERS.forEach(n => { const l = map.createLayer(n, sets, 0, 0); if (n.startsWith("Foreground")) l.setDepth(5); });
+      if (GEN) {
+        const map = this.make.tilemap({ data: R.grid.data, tileWidth: 16, tileHeight: 16 });
+        map.createLayer(0, map.addTilesetImage("td", "td", 16, 16, 0, 0), 0, 0).setScale(T / 16);
+        (R.grid.props || []).forEach(([x, y, f]) => this.add.sprite(x * T, y * T, "td", f).setOrigin(0, 0).setScale(T / 16).setDepth(1));
+      } else {
+        const map = this.make.tilemap({ key: "map" });
+        const sets = M.tilesets.map(t => map.addTilesetImage(t.name, t.name));
+        LAYERS.forEach(n => { const l = map.createLayer(n, sets, 0, 0); if (n.startsWith("Foreground")) l.setDepth(5); });
+      }
       Object.entries(R.doors).forEach(([id, d]) => { doorGfx[id] = this.add.graphics().setDepth(2); });
       names.forEach(n => {
-        ["left", "right", "down", "up"].forEach(dir => this.anims.create({ key: n + "-" + dir, frameRate: 6, repeat: -1,
+        if (!GEN) ["left", "right", "down", "up"].forEach(dir => this.anims.create({ key: n + "-" + dir, frameRate: 6, repeat: -1,
           frames: this.anims.generateFrameNames(n, { prefix: dir + "-walk.", start: 0, end: 3, zeroPad: 3 }) }));
-        const sprite = this.add.sprite(0, 0, n, "down").setOrigin(0.5, 1).setDepth(4); sprite.setScale(40 / 32);
+        const sprite = GEN ? this.add.sprite(0, 0, "td", +R.sprites[n].split("-")[1]).setOrigin(0.5, 1).setDepth(4).setScale(T / 16)
+                           : this.add.sprite(0, 0, n, "down").setOrigin(0.5, 1).setDepth(4);
+        if (!GEN) sprite.setScale(40 / 32);
         const emoji = this.add.text(0, 0, "", { font: "20px sans-serif", color: "#000", backgroundColor: "#ffffff", padding: { x: 4, y: 2 } }).setOrigin(0.5, 1).setDepth(6);
         const chat = this.add.text(0, 0, "", { font: "13px sans-serif", color: "#0b2f5b", backgroundColor: "#ffffff", padding: { x: 6, y: 4 },
           wordWrap: { width: 210 } }).setOrigin(0.5, 1).setDepth(7);
@@ -75,12 +88,13 @@ function start(R, M) {
       const p = people[n], f = frame[n], [x, y] = px(f.movement), prev = p.tile; p.tile = f.movement;
       const place = (xx, yy) => { p.sprite.setPosition(xx, yy); p.emoji.setPosition(xx, yy - 52); p.chat.setPosition(xx, yy - 52 - 30 * L); };
       scene.tweens.killTweensOf(p.sprite); p.sprite.anims.stop();
+      const still = () => { if (!GEN) p.sprite.setFrame("down"); };
       if (dur > 0 && prev && (prev[0] !== f.movement[0] || prev[1] !== f.movement[1])) {
         const dx = f.movement[0] - prev[0], dy = f.movement[1] - prev[1];
-        p.sprite.anims.play(n + "-" + (Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up")));
+        if (!GEN) p.sprite.anims.play(n + "-" + (Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up")));
         scene.tweens.add({ targets: p.sprite, x, y, duration: dur, onUpdate: () => place(p.sprite.x, p.sprite.y),
-          onComplete: () => { p.sprite.anims.stop(); p.sprite.setFrame("down"); } });
-      } else { p.sprite.setFrame("down"); place(x, y); }
+          onComplete: () => { p.sprite.anims.stop(); still(); } });
+      } else { still(); place(x, y); }
       p.emoji.setText(f.pronunciatio);
       const line = f.chat && f.chat[0] ? f.chat[0][1] : ""; p.chat.setText(line).setVisible(!!line);
     });
