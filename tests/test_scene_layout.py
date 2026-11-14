@@ -202,3 +202,72 @@ def test_the_published_demo_replays_are_what_the_builder_script_makes():
     subprocess.run([sys.executable, str(ROOT / "scripts/build_public_demos.py")], check=True, capture_output=True)
     assert before == {n: (ROOT / f"viewer/smallville/replay-{n}.json").read_bytes() for n in ("public", "resident")}
     assert "(words not shown)" in before["resident"].decode() and "Is the pump ready" not in before["resident"].decode()
+
+
+class _Reply:
+    def __init__(self, content):
+        self.content = content
+
+
+def _fake_llm(monkeypatch, replies):
+    import types
+    calls = []
+
+    def call_llm(model, messages, **kw):
+        calls.append(messages)
+        return _Reply(replies[min(len(calls) - 1, len(replies) - 1)])
+    module = types.SimpleNamespace(call_llm=call_llm, safe_json_loads=json.loads)
+    monkeypatch.setitem(sys.modules, "llm_client", module)
+    return calls
+
+
+def _bundle_without_layout():
+    bundle = deepcopy(BUNDLE)
+    bundle.pop("layout")
+    return bundle
+
+
+@pytest.mark.req("scene-viewer/builder-proposes-layout")
+def test_a_valid_proposed_layout_is_attached(monkeypatch):
+    from scripts.layout_proposal import propose_layout
+    layout = {"version": 1, "map": "public-hub-3", "rooms": {"laboratory": "a", "corridor": "hub", "control-room": "b"},
+              "doors": {"d1": {"between": ["laboratory", "corridor"], "halves": []}, "d2": {"between": ["corridor", "control-room"], "halves": []}},
+              "people": {"ari": {"start": "corridor"}}}
+    _fake_llm(monkeypatch, [json.dumps({"layout": layout})])
+    out = propose_layout(_bundle_without_layout(), trace_id="t")
+    assert out["layout"] == layout and "layout" not in _bundle_without_layout()
+
+
+@pytest.mark.req("scene-viewer/builder-proposes-layout")
+def test_a_world_with_no_places_gets_no_layout_and_a_bad_layout_is_repaired_once_then_dropped(monkeypatch):
+    from scripts.layout_proposal import propose_layout
+    _fake_llm(monkeypatch, [json.dumps({"layout": None})])
+    assert propose_layout(_bundle_without_layout(), trace_id="t") is None
+    calls = _fake_llm(monkeypatch, [json.dumps({"layout": {"version": 1, "map": "nowhere", "rooms": {}, "doors": {}, "people": {}}})])
+    assert propose_layout(_bundle_without_layout(), trace_id="t") is None
+    assert len(calls) == 2 and "rejected" in calls[1][-1]["content"]  # one repair, with the validator's reason
+
+
+@pytest.mark.req("scene-viewer/builder-proposes-layout")
+def test_the_build_step_never_fails_the_build(monkeypatch):
+    from scripts import world_builder_service as service
+    bundle = _bundle_without_layout()
+    monkeypatch.setattr(service, "_trace_cost", lambda trace_id: 0.0)
+    _fake_llm(monkeypatch, ["not json at all"])
+    assert service._with_layout(bundle, "t", 0.2) == bundle  # unparseable reply: world kept as built
+    monkeypatch.setattr(service, "_trace_cost", lambda trace_id: 0.199)
+    assert service._with_layout(bundle, "t", 0.2) == bundle  # no budget left: no call made
+    monkeypatch.setattr(service, "_trace_cost", lambda trace_id: 0.0)
+    assert service._with_layout(deepcopy(BUNDLE), "t", 0.2) == BUNDLE  # already has a layout: left alone
+
+
+@pytest.mark.req("scene-viewer/builder-proposes-layout")
+def test_a_doorway_with_no_halves_is_always_open_in_the_replay():
+    from scripts.export_smallville_replay import export_from_rows
+    bundle = deepcopy(BUNDLE)
+    bundle["layout"] = scene_layout.public_layout(bundle["layout"])
+    for door in bundle["layout"]["doors"].values():
+        door["halves"] = []
+    rows = [json.loads(line) for line in (ROOT / "evidence/ui/inhabited-facility-20261113/scripted-run-log.jsonl").read_text().splitlines() if line.strip()]
+    replay = export_from_rows(rows, validate_bundle(bundle), Path("/nope"))
+    assert {c["state"] for c in replay["door_changes"] if c["step"] == 0} == {"open"}

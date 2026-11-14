@@ -164,7 +164,7 @@ def export(rows: list[dict[str, Any]], maze: dict[str, Any], rooms: dict[str, st
                               "between": [a, b], "halves": list(door["halves"])}
     half_of = {h: d for d, row in door_rows.items() for h in row["halves"]}
     steps: dict[str, Any] = {}
-    changes: list[dict[str, Any]] = [{"step": 0, "door": d, "state": "closed"} for d in door_rows]
+    changes: list[dict[str, Any]] = [{"step": 0, "door": d, "state": "closed" if row["halves"] else "open"} for d, row in door_rows.items()]  # no halves: always open
     round_index: list[dict[str, int]] = []
     n = 0
     rounds = sorted(((t["turn"], t) for r in rows for t in r["result"]["transcript"]), key=lambda x: x[0])

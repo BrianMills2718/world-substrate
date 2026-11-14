@@ -55,7 +55,7 @@ def validate_layout(bundle: dict[str, Any]) -> None:
         _need(a in layout["rooms"] and b in layout["rooms"] and a != b, f"layout door {door!r} joins places that are not laid out")
         _need(frozenset((layout["rooms"][a], layout["rooms"][b])) in joined,
               f"layout door {door!r} joins {a} and {b}, whose slots {layout['rooms'][a]} and {layout['rooms'][b]} are not connected on map {layout['map']}")
-        _need(row["halves"] and all(h in public for h in row["halves"]), f"layout door {door!r} halves must be declared public entities")
+        _need(isinstance(row["halves"], list) and all(h in public for h in row["halves"]), f"layout door {door!r} halves must be declared public entities (none means a doorway that is always open)")
     _need(isinstance(layout["people"], dict) and layout["people"], "layout.people must name at least one actor")
     _need(len(layout["people"]) <= len(prepared["sprites"]), "more people than the map has sprites")
     for person, row in layout["people"].items():

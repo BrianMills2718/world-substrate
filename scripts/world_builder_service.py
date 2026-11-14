@@ -641,6 +641,20 @@ def _catalog_response(status: int, value: dict[str, Any]) -> tuple[int, dict[str
         return 500, {"ok": False, "error": "The catalog could not save this result. No success was recorded; reload the run before retrying."}
 
 
+def _with_layout(bundle: dict[str, Any], trace_id: str, budget: float) -> dict[str, Any]:
+    """The built world with a room-map layout when a small extra call can place its places; otherwise the world as built.
+
+    Never fails a build and never spends beyond the build's own budget (scripts/layout_proposal.py)."""
+    from scripts.layout_proposal import MAX_BUDGET, propose_layout
+    try:
+        room = budget - _trace_cost(trace_id)
+        if room < 0.01 or "layout" in bundle:
+            return bundle
+        return propose_layout(bundle, trace_id=trace_id, max_budget=min(MAX_BUDGET, room)) or bundle
+    except Exception:
+        return bundle
+
+
 def _catalog_view(payload: dict[str, Any]) -> dict[str, Any]:
     """Restore compiler-derived display metadata omitted by historical build logs.
 
@@ -2368,6 +2382,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     found, _ = review_rules(description, bundle, causal, trace_id=trace_id, max_budget=budget)
                     best_row["review_findings"] = found
                     best_row["actor_inputs_reviewed"] = True
+                bundle = _with_layout(bundle, trace_id, budget)
                 trace_cost = _trace_cost(trace_id)
             except Exception:
                 _settle_failed_call(budget, trace_id)
@@ -2641,6 +2656,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     dry_row["review_findings"] = found
                     dry_row["actor_inputs_reviewed"] = True
                 review = CausalModel.from_dict(causal, bundle=bundle).as_review()
+                bundle = _with_layout(bundle, trace_id, budget)
                 trace_cost = _trace_cost(trace_id)
             except Exception:
                 _settle_failed_call(budget, trace_id)
