@@ -134,6 +134,10 @@ class WorldCatalog:
             state = response.get("actor_state")
             if not isinstance(state, dict) or set(state) != {"resident_memory", "recent", "briefs", "underway", "turn_offset"}:
                 return False, "This recording has no complete saved actor cognition; replay remains available."
+        stopped = (response.get("summary") or {}).get("stopped")
+        if stopped:
+            why = stopped.get("why") if isinstance(stopped, dict) else None
+            return False, (why or "The saved run stop setting was reached.") + " A branch preserves this stop setting; choose an earlier checkpoint or New run."
         if (response.get("summary") or {}).get("active_at_end") is False:
             return False, "This world has no active moves at this saved round."
         return True, None
