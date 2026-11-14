@@ -30,6 +30,7 @@ Each spec keeps the wording of the contract it was folded from on 2026-11-09 and
 | [transition-engine](../openspec/specs/transition-engine/spec.md) | commit or refuse each transition; write scopes enforced, read scopes recorded only |
 | [causal-model-authoring](../openspec/specs/causal-model-authoring/spec.md) | the reviewable rule language, its compiler, and approval |
 | [mechanic-installation](../openspec/specs/mechanic-installation/spec.md) | mechanic packages and the installer checks that freeze them |
+| [scene-viewer](../openspec/specs/scene-viewer/spec.md) | export a retained run as a Smallville-style replay without coordinates in the rules |
 | [world-authoring-bundle](../openspec/specs/world-authoring-bundle/spec.md) | represented world structure with no consequence authority |
 | [cvs-situation-import](../openspec/specs/cvs-situation-import/spec.md) | the bounded CVS Situation IR adapter |
 | [semantic-binding](../openspec/specs/semantic-binding/spec.md) | Linguistic Core senses and roles, with meaning never implying an effect |
