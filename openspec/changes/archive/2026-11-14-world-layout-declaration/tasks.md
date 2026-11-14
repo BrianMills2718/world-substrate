@@ -1,0 +1,5 @@
+- [x] Add `scripts/scene_layout.py`, `viewer/maps/maps.json` and the schema key
+- [x] Validate layout in `validate_bundle`; refuse unknown map, slot clash, unconnected door, unknown people
+- [x] Exporter reads the bundle layout; replays reproduced identically
+- [x] Second prepared map (Oak Hill College) exported and rendered
+- [x] Tests in `tests/test_scene_layout.py`

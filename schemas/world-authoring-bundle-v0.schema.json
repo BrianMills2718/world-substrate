@@ -338,6 +338,77 @@
         "actors"
       ],
       "additionalProperties": false
+    },
+    "layout": {
+      "type": "object",
+      "description": "Optional scene layout: places to prepared-map slots, doors to the places they join, people to starting places (scripts/scene_layout.py).",
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "map": {
+          "type": "string"
+        },
+        "rooms": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "doors": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "between": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "halves": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "between",
+              "halves"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "people": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "type": "string"
+              },
+              "sprite": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "start"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "version",
+        "map",
+        "rooms",
+        "doors",
+        "people"
+      ],
+      "additionalProperties": false
     }
   },
   "additionalProperties": false

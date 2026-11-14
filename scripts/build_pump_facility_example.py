@@ -143,7 +143,13 @@ def build() -> tuple[dict, dict]:
               "components": components, "entities": entities, "actions": actions,
               "presentation": {"assets": {}, "category_assets": {}, "station_roles": {}},
               "actor_information": {"version": 1, "public_summary": SHARED, "public_entities": public,
-                                    "actors": actors, "public_actions": forms}}
+                                    "actors": actors, "public_actions": forms},
+              "layout": {"version": 1, "map": "ville-dorm",
+                         "rooms": {"laboratory": "a", "corridor": "hub", "control-room": "b"},
+                         "doors": {"laboratory-door": {"between": ["laboratory", "corridor"], "halves": ["lab-door-out", "lab-door-in"]},
+                                   "control-room-door": {"between": ["control-room", "corridor"], "halves": ["control-door-in", "control-door-out"]}},
+                         "people": {"ari": {"start": "laboratory", "sprite": "Abigail_Chen"}, "mara": {"start": "corridor", "sprite": "Tom_Moreno"},
+                                    "bo": {"start": "control-room", "sprite": "Klaus_Mueller"}}}}
     return bundle, {"schema_version": "world-substrate-causal-model/v0", "mechanics": mechanics}
 
 
