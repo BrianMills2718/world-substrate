@@ -1,0 +1,11 @@
+{
+  "observation": "The first attempted scripted adapter overrode a subclass method, but catalog dispatch explicitly called the base method; four unintended resident rounds executed before this was noticed.",
+  "root_cause": "The harness assumption was not checked at the actual dispatch seam.",
+  "measured_cost_usd": 0.00136536,
+  "cost_basis": "Sum of llm_client call IDs 9687843 through 9687850, matched to all four run-log cost_usd values.",
+  "calls": 8,
+  "rounds": 4,
+  "provider_model": "openrouter/openai/gpt-6-luna",
+  "correction": "Patch the exact base-class dispatch seam and set LLM_CLIENT_NO_SPEND=1. The final six-round scripted walkthrough has zero matching llm_client calls and run-log cost sum 0.0.",
+  "trace_read": "Every resident and interpreter input/output was read; system prompts were verified identical by SHA-256 across repeated calls; all eight finished normally. Ava attempted apples 1,2,3,4, which the interpreter bound to pick with the named fruit. This does not establish model quality."
+}
