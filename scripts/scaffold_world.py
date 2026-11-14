@@ -199,6 +199,9 @@ def validate_bundle(value: object) -> dict[str, Any]:
         if role not in {"source", "workstation", "surface", "goal"}: raise BundleError(f"category {category} has unsupported station role {role}")
     from scripts.actor_information import validate_actor_information
     validate_actor_information(value)
+    from scripts.scene_layout import LayoutError, validate_layout
+    try: validate_layout(value)
+    except LayoutError as exc: raise BundleError(str(exc)) from exc
     return deepcopy(value)
 
 def load_bundle(path: Path) -> dict[str, Any]:

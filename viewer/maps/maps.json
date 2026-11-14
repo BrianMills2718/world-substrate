@@ -1,0 +1,26 @@
+{
+  "ville-dorm": {
+    "label": "Oak Hill College dorm (Smallville Ville): a common room with four rooms off it",
+    "tiles": "the_ville",
+    "slots": {
+      "hub": "Dorm for Oak Hill College|common room",
+      "a": "Dorm for Oak Hill College|Maria Lopez's room",
+      "b": "Dorm for Oak Hill College|Klaus Mueller's room",
+      "c": "Dorm for Oak Hill College|Ayesha Khan's room",
+      "d": "Dorm for Oak Hill College|Wolfgang Schulz's room"
+    },
+    "connections": [["hub", "a"], ["hub", "b"], ["hub", "c"], ["hub", "d"]],
+    "sprites": ["Abigail_Chen", "Tom_Moreno", "Klaus_Mueller", "Maria_Lopez", "Ayesha_Khan", "Wolfgang_Schulz"]
+  },
+  "ville-college": {
+    "label": "Oak Hill College (Smallville Ville): a hallway with a classroom and a library off it",
+    "tiles": "the_ville",
+    "slots": {
+      "hub": "Oak Hill College|hallway",
+      "a": "Oak Hill College|classroom",
+      "b": "Oak Hill College|library"
+    },
+    "connections": [["hub", "a"], ["hub", "b"]],
+    "sprites": ["Latoya_Williams", "Rajiv_Patel", "Hailey_Johnson", "Francisco_Lopez", "Jennifer_Moore", "Sam_Moore"]
+  }
+}

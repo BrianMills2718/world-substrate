@@ -12,6 +12,7 @@ Promise.all([fetch(REPLAY ? "replay-" + REPLAY + ".json" : "replay.json").then(r
   .catch(e => fail("Could not load the replay or map assets. Run scripts/setup_smallville_viewer.py first. " + e));
 
 function start(R, M) {
+  if (R.title) { document.getElementById("title").textContent = R.title + " replay"; document.title = R.title + " Replay"; }
   const names = R.meta.persona_names, last = R.meta.step;
   const q = new URLSearchParams(location.search);  // ?step=N&paused=1 opens a given step (for links and tests)
   let step = Math.min(+q.get("step") || 0, last), playing = !q.has("paused"), timer = null, scene = null;

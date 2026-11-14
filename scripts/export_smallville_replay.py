@@ -13,9 +13,12 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import sys
 from collections import deque
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 EMOJI = {"calibrate-pump": "🔧", "open-door": "🚪", "move": "🚶", "send-report": "💬", "wait": "💤", "refused": "⛔"}
 
@@ -175,24 +178,20 @@ def export(rows: list[dict[str, Any]], maze: dict[str, Any], rooms: dict[str, st
 
 
 def main() -> int:
+    from scripts.scene_layout import resolve
+
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("run_log", type=Path)
+    ap.add_argument("bundle", type=Path, help="the world's authoring bundle JSON (carries the `layout` declaration)")
     ap.add_argument("maze_dir", type=Path, help="the Smallville the_ville matrix folder")
     ap.add_argument("out_dir", type=Path)
     args = ap.parse_args()
     rows = [json.loads(line) for line in args.run_log.read_text().splitlines() if line.strip()]
-    maze = load_maze(args.maze_dir)
-    dorm = "Dorm for Oak Hill College|"
-    replay = export(
-        rows, maze,
-        rooms={"laboratory": dorm + "Maria Lopez's room", "corridor": dorm + "common room", "control-room": dorm + "Klaus Mueller's room"},
-        people={"ari": "Ari", "mara": "Mara", "bo": "Bo"},
-        start_rooms={"ari": "laboratory", "mara": "corridor", "bo": "control-room"},
-        labels={"laboratory": "laboratory", "corridor": "corridor", "control-room": "control room", "ari": "Ari", "mara": "Mara", "bo": "Bo",
-                "lab-door-out": "Laboratory door", "lab-door-in": "Laboratory door", "control-door-in": "Control room door", "control-door-out": "Control room door"},
-        doors={"laboratory-door": {"between": ["laboratory", "corridor"], "halves": ["lab-door-out", "lab-door-in"]},
-               "control-room-door": {"between": ["control-room", "corridor"], "halves": ["control-door-in", "control-door-out"]}},
-        sprites={"Ari": "Abigail_Chen", "Mara": "Tom_Moreno", "Bo": "Klaus_Mueller"})
+    layout = resolve(json.loads(args.bundle.read_text()))
+    replay = export(rows, load_maze(args.maze_dir), rooms=layout["rooms"], people=layout["people"], start_rooms=layout["start_rooms"],
+                    labels=layout["labels"], doors=layout["doors"], sprites=layout["sprites"])
+    replay["map"] = layout["map"]
+    replay["title"] = layout["title"]
     args.out_dir.mkdir(parents=True, exist_ok=True)
     (args.out_dir / "master_movement.json").write_text(json.dumps(replay["steps"]))
     (args.out_dir / "meta.json").write_text(json.dumps(replay["meta"]))
