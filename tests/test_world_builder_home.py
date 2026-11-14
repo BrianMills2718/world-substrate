@@ -29,7 +29,9 @@ class WorldBuilderHomeTests(unittest.TestCase):
         # 2026-10-15, Brian: one box and one Create simulation button; pressing it is the approval.
         self.assertIn('apiJob("/generate-world"', self.page)
         self.assertIn("approved: true", self.page)
-        self.assertIn("if (data.dry_run.ok) startLive();", self.page)
+        self.assertIn("if(data.dry_run.ok)", self.page)
+        self.assertIn("data.catalog_world_id", self.page)
+        self.assertIn("loadCatalogRecord(created,\"continue\")", self.page)
         # Runs are requested only by the live-play loop.
         self.assertEqual(self.page.count('apiJob("/run"'), 1)
         # Every move is chosen by an AI (Brian, 2026-10-26), so there is no instant scripted request any more.
@@ -39,7 +41,8 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('policy: "resident"', self.page)
         # The rules stay one click away, and rerunning from them is still possible.
         self.assertIn(">See how it works</button>", self.page)
-        self.assertIn('$("approve-btn").addEventListener("click", () => { if (world) delete world.shared; startLive(); });', self.page)
+        self.assertIn('if(catalog){createCatalogRun();return;}', self.page)
+        self.assertIn('if(world)delete world.shared;startLive();', self.page)
         self.assertIn("Run with these rules", self.page)
 
     def test_one_screen_has_one_primary_action(self):

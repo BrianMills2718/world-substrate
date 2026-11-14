@@ -207,6 +207,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 
 .world-library{margin-top:32px;padding-top:24px;border-top:1px solid var(--line)}.world-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:16px}.world-card{border:1px solid var(--line);border-radius:8px;padding:16px}.world-card p{font-size:14px;color:var(--muted)}.workspace-controls{padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:20px}.workspace-controls .row{margin-top:12px}.workspace-controls button,.world-library button{min-height:44px}.workspace-controls select,.world-library input{min-height:44px;max-width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:7px;padding:9px;font:inherit}.world-scene-panel{margin:18px 0 24px}.world-scene-panel iframe{width:100%;height:540px;border:1px solid var(--line);border-radius:10px;background:#0b1013;display:block}.world-scene-panel p{font-size:14px;color:var(--muted)}body.workspace-view main{max-width:1320px}body.workspace-view main>h1,body.workspace-view main>.lede{display:none}
 @media(max-width:720px){.workspace-controls .row{display:grid;grid-template-columns:1fr 1fr}.workspace-controls select,.workspace-controls label{grid-column:1/-1;width:100%}.world-scene-panel iframe{height:420px}.world-cards{grid-template-columns:1fr}.world-library input{width:100%}}
+@media(max-width:720px){body.workspace-view main{padding:12px 12px 30px}body.workspace-view #stage-run{padding:16px}.workspace-controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:12px}.workspace-controls>button{font-size:14px;padding:8px 10px}.workspace-controls>div{flex:1}.workspace-controls details{margin:0}.workspace-controls summary{min-height:44px;padding:10px;font-size:14px}.workspace-controls details[open]{min-width:100%}.workspace-controls:has(details[open])>div{flex-basis:100%}#workspace-status{width:100%;margin:0;font-size:12px}#workspace-continue-note:empty{display:none}#saved-scenario:not(.expanded){display:none}#saved-intro{float:right}#saved-setup-toggle{font-size:12px;padding:8px;min-height:36px}#live-status{font-size:12px;margin:8px 0}#stage-run>.row{gap:6px}#stage-run>.row label{font-size:13px}#world-scene-status:not([data-error=true]){display:none}.saved-navigation{margin-top:10px}.world-scene-panel{margin-top:10px}.world-scene-panel h3{margin:8px 0}#world-scene-panel iframe{height:420px!important}}
 </style>
 </head>
 <body>
@@ -312,7 +313,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   </section>
 
   <section class="panel" id="stage-run" hidden aria-labelledby="run-h">
-    <nav class="workspace-controls" aria-label="World workspace"><button type="button" class="secondary" id="workspace-home" title="Return to creation and your saved world library.">← Your worlds</button><div id="catalog-controls" hidden><div class="row"><label for="workspace-run">Run</label><select id="workspace-run" title="Open a saved run without calling a model."></select><button type="button" class="secondary" id="workspace-new-run" title="Start an independent run from the original starting state and rules.">New run</button><button type="button" class="primary" id="workspace-continue" title="Continue the latest saved state, preserving actor memories.">Continue</button><button type="button" class="secondary" id="workspace-replay" title="Replay saved events without calling a model.">Replay</button></div><div class="row"><label for="workspace-checkpoint">Branch after round</label><select id="workspace-checkpoint" title="Choose a completed saved round; its rules, state and actor memories carry into the branch."></select><button type="button" class="secondary" id="workspace-preview-checkpoint" title="Show the completed round state before branching. This selects the last recorded event of the round.">Preview round end</button><button type="button" class="secondary" id="workspace-branch" title="Create a separate run from this completed saved round.">Branch from this checkpoint</button></div><p class="small muted" id="workspace-branch-note"></p></div><p id="workspace-status" class="small muted" role="status"></p></nav><h2 id="run-h">Your world is running</h2>
+    <nav class="workspace-controls" aria-label="World workspace"><button type="button" class="secondary" id="workspace-home" title="Return to creation and your saved world library.">← Your worlds</button><div id="catalog-controls" hidden><details id="workspace-run-tools" open><summary title="Open run selection, new-run, continuation and saved-round branching controls.">Run controls</summary><div class="row"><label for="workspace-run">Run</label><select id="workspace-run" title="Open a saved run without calling a model."></select><button type="button" class="secondary" id="workspace-new-run" title="Start an independent run from the original starting state and rules.">New run</button><button type="button" class="primary" id="workspace-continue" title="Continue the latest saved state, preserving actor memories.">Continue</button><button type="button" class="secondary" id="workspace-replay" title="Replay saved events without calling a model.">Replay</button></div><div class="row"><label for="workspace-checkpoint">Branch after round</label><select id="workspace-checkpoint" title="Choose a completed saved round; its rules, state and actor memories carry into the branch."></select><button type="button" class="secondary" id="workspace-preview-checkpoint" title="Show the completed round state before branching. This selects the last recorded event of the round.">Preview round end</button><button type="button" class="secondary" id="workspace-branch" title="Create a separate run from this completed saved round.">Branch from this checkpoint</button></div><p class="small muted" id="workspace-branch-note"></p></details></div><p id="workspace-status" class="small muted" role="status"></p><p id="workspace-continue-note" class="small muted"></p></nav><h2 id="run-h">Your world is running</h2>
     <div id="saved-intro" hidden><p id="saved-scenario" class="saved-scenario"></p><button type="button" class="secondary small" id="saved-setup-toggle" aria-expanded="false" aria-controls="saved-scenario" title="Expand the complete original scenario description, without a generated summary.">Read full setup</button></div>
         <div class="row live-controls" id="play-controls">
       <button class="primary" type="button" id="play-btn" title="Stop after the current round; the world waits exactly where it is until you press Play">⏸ Pause</button>
@@ -430,6 +431,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       catalog = null;
       sharedSceneId = null;
       world = null;
+      live = null;
       sceneKey = "";
       sceneGeneration++;
       $("world-scene").srcdoc = "";
@@ -500,6 +502,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         $("workspace-checkpoint").replaceChildren();
         ["workspace-run", "workspace-continue", "workspace-replay", "workspace-checkpoint", "workspace-preview-checkpoint", "workspace-branch"].forEach(id => $(id).disabled = true);
         $("workspace-new-run").disabled = false;
+        $("workspace-continue-note").textContent="";
         $("workspace-branch-note").textContent = "No runs yet. New run starts from this world's original state.";
         return;
       }
@@ -508,14 +511,14 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       catalog.runs.forEach(r => {
         const o = document.createElement("option");
         o.value = r.id;
-        o.textContent = `${r.name||"Run"} · round ${r.latest_round||0}${r.parent_run_id?" · branch":""}`;
+        o.textContent = `${r.name||"Run"} ${r.id.slice(0,6)} · round ${r.latest_round||0}${r.parent_run_id?" · branch":""}`;
         runs.append(o);
       });
       runs.value = catalog.run.id;
       const cp = $("workspace-checkpoint"),
         previous = cp.value;
       cp.replaceChildren();
-      catalog.checkpoints.filter(c => checkpointRound(c) > 0).forEach(c => {
+      catalog.checkpoints.filter(c => checkpointRound(c) > 0 && c.can_branch !== false).forEach(c => {
         const o = document.createElement("option");
         o.value = checkpointId(c);
         o.textContent = `Round ${checkpointRound(c)} — completed state`;
@@ -532,8 +535,10 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       $("workspace-branch").disabled = pending || !cp.options.length || !atCheckpoint;
       $("workspace-preview-checkpoint").disabled = pending || !cp.options.length;
       $("workspace-checkpoint").disabled = pending || !cp.options.length;
-      $("workspace-continue").disabled = pending || !catalog.checkpointId;
-      $("workspace-branch-note").textContent = cp.options.length ? (atCheckpoint ? "Viewing the completed round checkpoint. Branch preserves this state and actor memories." : "Preview the completed round state before branching; a mid-round event is not a saved checkpoint.") + " Natural-language interventions are a future feature." : "Branch unavailable: no completed-round checkpoint. Older recordings may not retain restorable state.";
+      $("workspace-continue").disabled = pending || catalog.run.can_continue === false;
+      setTip($("workspace-continue"),catalog.run.can_continue === false ? catalog.run.reason || "This run cannot continue; replay remains available." : "Continue from the latest saved state, preserving actor memories.");
+      $("workspace-continue-note").textContent=catalog.run.can_continue === false ? "Continue unavailable: "+(catalog.run.reason || "No restorable checkpoint.") : "";
+      $("workspace-branch-note").textContent = cp.options.length ? (atCheckpoint ? "Viewing the completed round checkpoint. Branch preserves this state and actor memories." : "Preview the completed round state before branching; a mid-round event is not a saved checkpoint.") + " Natural-language interventions are a future feature." : "Branch unavailable: "+(catalog.checkpoints.find(c=>c.can_branch===false)?.reason || "No completed-round checkpoint. Older recordings may not retain restorable state.");
     }
     async function openCatalogWorld(id, runId) {
       const gen = ++selectionGeneration;
@@ -577,6 +582,11 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 
     function loadCatalogRecord(data, mode) {
       catalog.run = data.run;
+      const savedStop=(data.record.runs||[]).at(-1)?.stopped;
+      if(savedStop && STOP_REASONS.includes(savedStop.reason)){
+        catalog.run.can_continue=false;
+        catalog.run.reason=(savedStop.why || "The saved stop setting was reached.")+" Stop-setting overrides are not supported for saved runs; use New run to start again.";
+      }
       catalog.checkpoints = data.checkpoints || [];
       catalog.checkpointId = data.record.checkpoint_id || data.run.checkpoint_id;
       if (!catalog.runs.some(r => r.id === data.run.id)) catalog.runs.push(data.run);
@@ -586,7 +596,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       });
       sceneKey = "";
       history.replaceState({}, "", location.pathname + "?world=" + encodeURIComponent(catalog.worldId) + "&worldRun=" + encodeURIComponent(data.run.id));
-      $("workspace-status").textContent = `${data.run.name||"Run"}${data.run.parent_run_id?" · branched from a saved round":""}`;
+      const forkRound=(data.checkpoints||[]).find(c=>c.id===data.run.fork_checkpoint_id)?.round;
+      $("workspace-status").textContent = `${data.run.name||"Run"} ${data.run.id.slice(0,6)}${data.run.parent_run_id?" · parent "+data.run.parent_run_id.slice(0,6)+" · after round "+(forkRound??"unknown"):""}`;
       if (mode === "replay") {
         world.shared = data.record;
         startLive({
@@ -653,6 +664,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       }
       sceneKey = key;
       const gen = ++sceneGeneration;
+      $("world-scene-status").dataset.error="false";
       $("world-scene-status").textContent = "Opening the world scene…";
       try {
         const data = await api(path);
@@ -665,6 +677,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         if (gen !== sceneGeneration) return;
         sceneKey = "";
         $("world-scene").hidden = true;
+        $("world-scene-status").dataset.error="true";
         $("world-scene-status").textContent = "World scene unavailable: " + plainError(err) + " Recorded event and state tools remain below.";
       }
     }
@@ -2029,7 +2042,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const payload=catalog?{catalog_run_id:catalog.run.id,expected_checkpoint_id:catalog.checkpointId,approved:true,policy:"resident",turns:1,...(request.decisions?{decisions:request.decisions}:{})}:request;
     const target=catalog; if(target)catalogPending++; let run;
     try{run=await apiJob("/run",payload,1000);}finally{if(target)catalogPending--;updateWorkspaceControls();}
-    if(target&&run.checkpoint_id){target.checkpointId=run.checkpoint_id;target.run.checkpoint_id=run.checkpoint_id;target.run.latest_round=run.summary.last_turn;target.checkpoints.push({id:run.checkpoint_id,round:run.summary.last_turn});if(catalog===target)refreshScene();}
+    if(target&&run.checkpoint_id){target.checkpointId=run.checkpoint_id;target.run.checkpoint_id=run.checkpoint_id;target.run.latest_round=run.summary.last_turn;
+      if(run.summary.terminal_reached || (run.summary.stopped && STOP_REASONS.includes(run.summary.stopped.reason))){target.run.can_continue=false;target.run.reason=run.summary.stopped?.why || "This run reached its finish line.";}target.checkpoints.push({id:run.checkpoint_id,round:run.summary.last_turn});if(catalog===target)refreshScene();}
     run.sentDecisions = sentDecisions;
     return run;
   }
@@ -2146,6 +2160,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   // The world's stop setting ended the run. Play carries on: quiet rounds are counted afresh, and a round or spending
   // limit that fired is not applied again in this run.
   function stopHere() {
+    if(catalog){live.why=live.stopsAt.why+" This saved run reached its stop setting. Use New run to start again; stop-setting changes are not supported for saved runs yet.";live.finished=true;live.stopsAt=null;return;}
     live.why = live.stopsAt.why + " Press Play to run more rounds anyway.";
     const lift = LIFTS[live.stopsAt.reason];
     if (lift) live.lifted = (live.lifted || []).concat([lift]);
@@ -2217,8 +2232,11 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 
   // Share link (increment 5 of the retired best-of-all-worlds goal, git show e332eb7:docs/plans/best-of-all-worlds.goal.md): the server rebuilds the run from its own log
   // of the rounds it answered, so a link always shows a real run, and opening one makes no AI call.
+  let shareGeneration=0,readoutGeneration=0;
   $("share-btn").addEventListener("click", async () => {
     if (!live || live.replay) return;
+    const generation=++shareGeneration,originLive=live,originCatalog=catalog,originCheckpoint=catalog?.checkpointId;
+    const current=()=>generation===shareGeneration&&live===originLive&&catalog===originCatalog&&catalog?.checkpointId===originCheckpoint;
     const out = $("share-out"); out.innerHTML = "";
     if (!live.runIds.length) { out.textContent = "Play at least one round first."; return; }
     pause();
@@ -2228,6 +2246,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       // The readout goes with the link only if it read exactly these rounds.
       if (live.readout && live.readout.rounds === live.runIds.length) request.readout_trace_id = live.readout.trace_id;
       const r = await api("/share", request);
+      if(!current())return;
       const url = location.origin + location.pathname + "?run=" + encodeURIComponent(r.share_id);
       const box = document.createElement("input"); box.type = "text"; box.readOnly = true; box.value = url; box.className = "share-link";
       box.title = "The link to this run; select it to copy";
@@ -2235,8 +2254,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       out.append(`Saved ${r.rounds} round${r.rounds === 1 ? "" : "s"}. Anyone with this link sees them replayed: `, box);
       try { await navigator.clipboard.writeText(url); out.append(" (copied)"); } catch (e) { /* clipboard unavailable */ }
     } catch (err) {
-      out.textContent = plainError(err);
-    } finally { btn.disabled = false; btn.textContent = "Share this run"; }
+      if(current())out.textContent = plainError(err);
+    } finally { if(generation===shareGeneration){btn.disabled = false; btn.textContent = "Share this run";} }
   });
   // "What happened" readout (increment 4): the server reads the recorded events of exactly these rounds and every
   // event it cites is checked against the recording (scripts/run_readout.py).
@@ -2267,6 +2286,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   }
   $("readout-btn").addEventListener("click", async () => {
     if (!live) return;
+    const generation=++readoutGeneration,originLive=live,originCatalog=catalog,originCheckpoint=catalog?.checkpointId;
+    const current=()=>generation===readoutGeneration&&live===originLive&&catalog===originCatalog&&catalog?.checkpointId===originCheckpoint;
     const out = $("readout-out");
     if (live.replay) { if (world.shared && world.shared.readout) renderReadout(world.shared.readout); return; }
     if (!live.runIds.length) { out.textContent = "Play at least one round first."; return; }
@@ -2274,12 +2295,13 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const btn = $("readout-btn"); btn.disabled = true; btn.textContent = "Reading the run…";
     out.textContent = "Reading every recorded event of this run (about half a minute)…";
     try {
-      const r = await api("/readout", { build_trace_id: world.trace_id || null, run_trace_ids: live.runIds });
+      const r = await api("/readout", catalog ? {catalog_run_id:catalog.run.id} : { build_trace_id: world.trace_id || null, run_trace_ids: live.runIds });
+      if(!current())return;
       live.readout = { trace_id: r.trace_id, rounds: live.runIds.length };
       renderReadout(r.readout);
     } catch (err) {
-      out.textContent = plainError(err);
-    } finally { btn.disabled = false; btn.textContent = "What happened"; }
+      if(current())out.textContent = plainError(err);
+    } finally { if(generation===readoutGeneration){btn.disabled = false; btn.textContent = "What happened";} }
   });
   async function openShared(id) {
     const gen=++selectionGeneration;
@@ -2419,6 +2441,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   }, { passive: true });
   ["touchend", "touchmove", "touchcancel"].forEach((t) => document.addEventListener(t, () => clearTimeout(pressTimer), { passive: true }));
   $("desc").addEventListener("input", () => { if (!serviceBlock) $("build-hint").textContent = ""; });
+  const compactWorkspace=matchMedia("(max-width:720px)");
+  if(compactWorkspace.matches)$("workspace-run-tools").open=false;
+  compactWorkspace.addEventListener("change",e=>{$("workspace-run-tools").open=!e.matches;});
   refreshBuild();
   checkService();
   refreshLibrary();
