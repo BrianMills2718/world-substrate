@@ -644,15 +644,20 @@ def _catalog_response(status: int, value: dict[str, Any]) -> tuple[int, dict[str
 def _with_layout(bundle: dict[str, Any], trace_id: str, budget: float) -> dict[str, Any]:
     """The built world with a room-map layout when a small extra call can place its places; otherwise the world as built.
 
-    Never fails a build and never spends beyond the build's own budget (scripts/layout_proposal.py)."""
+    Never fails a build. The build spends nearly all of its own budget, so this step gets its own small allowance on top
+    of what the build spent (the call costs about $0.0002; `budget` is unused and kept for the call sites).
+    Failures are logged to stderr, not hidden (scripts/layout_proposal.py)."""
     from scripts.layout_proposal import MAX_BUDGET, propose_layout
-    try:
-        room = budget - _trace_cost(trace_id)
-        if room < 0.01 or "layout" in bundle:
-            return bundle
-        return propose_layout(bundle, trace_id=trace_id, max_budget=min(MAX_BUDGET, room)) or bundle
-    except Exception:
+    if "layout" in bundle:
         return bundle
+    try:
+        proposed = propose_layout(bundle, trace_id=trace_id, max_budget=_trace_cost(trace_id) + MAX_BUDGET)
+    except Exception as error:
+        print(f"layout step skipped: {type(error).__name__}: {str(error)[:200]}", file=sys.stderr, flush=True)
+        return bundle
+    if proposed is None:
+        print("layout step: no layout (no places to draw, or the reply did not validate)", file=sys.stderr, flush=True)
+    return proposed or bundle
 
 
 def _catalog_view(payload: dict[str, Any]) -> dict[str, Any]:
