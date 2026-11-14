@@ -59,7 +59,9 @@ def validate_actor_information(bundle: dict[str, Any]) -> None:
         raise ActorInformationError("public_entities must be a list")
     known: set[str] = set()
     for row in public:
-        _object(row, {"id", "label", "fields"}, {"actor_ids"})
+        _object(row, {"id", "label", "fields"}, {"actor_ids", "scope"})
+        if "scope" in row and row["scope"] != "place":
+            raise ActorInformationError("unsupported public entity scope")
         if not isinstance(row["id"], str) or row["id"] in known:
             raise ActorInformationError("invalid or duplicate public entity")
         paths(row["id"], row["fields"])
@@ -125,16 +127,33 @@ def _declaration(bundle: dict[str, Any], actor: str) -> tuple[dict[str, Any], di
     return declaration, declaration["actors"][actor]
 
 
+def _place_of(engine: Any, entity_id: str) -> str | None:
+    entity = engine.world.entities.get(entity_id)
+    return entity.location.location_id if entity is not None and entity.location is not None else None
+
+
 def actor_observation(engine: Any, bundle: dict[str, Any], actor: str) -> dict[str, Any]:
-    """Project only explicit authorized paths; never infer a field from its name."""
+    """Project only explicit authorized paths; never infer a field from its name.
+
+    A public row with `scope: "place"` is perceived only from the place it stands in (or is), so physical perception
+    follows where the actor is. Rows without a scope stay known everywhere (identities, the map, delivered
+    reports); that is a declaration, not a distance model. Memory and initial knowledge are separate inputs."""
     declaration, profile = _declaration(bundle, actor)
     extra = {row["entity"]: row["paths"] for row in profile["observable_fields"]}
     entities = {}
+    here_id = _place_of(engine, actor)
+    placed = any(row.get("scope") == "place" for row in declaration["public_entities"])
+    here: list[str] = []
     for row in declaration["public_entities"]:
         if "actor_ids" in row and actor not in row["actor_ids"]:
             continue
         entity = engine.world.entities.get(row["id"])
         if entity is None or not entity_visible_to_actor(engine.world, actor, entity):
+            continue
+        in_place = here_id is not None and (row["id"] == here_id or _place_of(engine, row["id"]) == here_id)
+        if in_place and row["id"] != actor and row["id"] != here_id and "place" not in entity.category_ids:
+            here.append(row["id"])
+        if row.get("scope") == "place" and row["id"] != actor and not in_place:
             continue
         projected = {"entity_id": row["id"], "label": row["label"], "components": {}}
         for path in sorted(set(row["fields"]) | set(extra.get(row["id"], []))):
@@ -142,7 +161,33 @@ def actor_observation(engine: Any, bundle: dict[str, Any], actor: str) -> dict[s
             value = getattr(entity.component(component), field, None)
             projected["components"].setdefault(component, {})[field] = deepcopy(value)
         entities[row["id"]] = projected
-    return {"actor_id": actor, "entities": entities}
+    observation: dict[str, Any] = {"actor_id": actor, "entities": entities}
+    if placed and actor in entities:
+        observation["messages"] = _delivered_messages(entities[actor])
+    if placed and here_id is not None:
+        observation["place"] = {"place_id": here_id, "label": declared_label(declaration, here_id, engine)}
+        observation["here"] = sorted(here)
+    return observation
+
+
+def _delivered_messages(own: dict[str, Any]) -> list[dict[str, str]]:
+    """Reports delivered to this actor, from the actor's own declared report log (any room, no line of sight)."""
+    rows = []
+    for raw in own["components"].get("report_log", {}).get("entries", []) or []:
+        try:
+            item = json.loads(raw)
+            rows.append({"from": str(item["source_id"]), "content": str(item["content"])})
+        except (TypeError, ValueError, KeyError):
+            rows.append({"from": "unknown", "content": str(raw)})
+    return rows
+
+
+def declared_label(declaration: dict[str, Any], entity_id: str, engine: Any) -> str:
+    for row in declaration["public_entities"]:
+        if row["id"] == entity_id:
+            return row["label"]
+    entity = engine.world.entities.get(entity_id)
+    return entity.label if entity is not None else entity_id
 
 
 def actor_page(engine: Any, bundle: dict[str, Any], actor: str) -> dict[str, Any]:
@@ -164,8 +209,13 @@ def actor_page(engine: Any, bundle: dict[str, Any], actor: str) -> dict[str, Any
     return {"observation": observation, "available": available, "blocked": [], "progress": [], "total": len(available)}
 
 
-def actor_context(engine: Any, bundle: dict[str, Any], actor: str, round_no: int | None = None) -> dict[str, Any]:
-    """Prompt data from declared inputs only; provenance belongs to analyst records."""
+def actor_context(engine: Any, bundle: dict[str, Any], actor: str, round_no: int | None = None,
+                  memories: list[str] | None = None) -> dict[str, Any]:
+    """Prompt data from declared inputs only; provenance belongs to analyst records.
+
+    Four inputs stay distinct: the current observation (`place`, `actor_state`, `visible`, which include reports
+    delivered to this actor), global knowledge (`world_summary` and the `brief`'s knowledge), retained `memories`
+    when the caller supplies them, and the declared actions."""
     declaration, profile = _declaration(bundle, actor)
     page = actor_page(engine, bundle, actor)
     def render(record: dict[str, Any]) -> str:
@@ -173,14 +223,23 @@ def actor_context(engine: Any, bundle: dict[str, Any], actor: str, round_no: int
                          for component, fields in sorted(record["components"].items()) for field, value in sorted(fields.items()))
     entities = page["observation"]["entities"]
     knowledge = "\n".join(item["text"] for item in profile["initial_knowledge"])
-    return {"tick": round_no if round_no is not None else engine.world.tick, "actor_id": actor,
-            "actor_state": render(entities.get(actor, {"components": {}})) or "nothing observed",
-            "visible": "\n".join(f"{row['label']} ({eid}): {render(row)}" for eid, row in sorted(entities.items()) if eid != actor),
+    observation = page["observation"]
+    place = observation.get("place")
+    here = [entities[e]["label"] for e in observation.get("here", []) if e in entities]
+    state = render(entities.get(actor, {"components": {}})) or "nothing observed"
+    context = {"tick": round_no if round_no is not None else engine.world.tick, "actor_id": actor,
+            "actor_state": (f"You are in the {place['label']}. " if place else "") + state,
+            "visible": "\n".join(([f"In this place with you: {', '.join(here) or 'no one else'}."] if place else []) +
+                                 [f"Delivered to you from {m['from']}: {m['content']}" for m in observation.get("messages", [])] +
+                                 [f"{row['label']} ({eid}): {render(row)}" for eid, row in sorted(entities.items()) if eid != actor]),
             "progress": "", "actions": [{"number": i, "action_id": row["action_id"], "description": row["description"] + " (" + ", ".join(
                 f"{name}={entities[value]['label']} ({value})" if isinstance(value, str) and value in entities
                 else f"{name}={json.dumps(value, ensure_ascii=False)}"
                 for name, value in sorted(row["action"].items()) if name not in {"actor", "kind", "base_revision", "controller"}) + ") [executability unknown]"} for i, row in enumerate(page["available"], 1)],
             "world_summary": declaration["public_summary"], "brief": profile["brief"] + ("\n" + knowledge if knowledge else ""), "recent": []}
+    if memories is not None:
+        context["memories"] = list(memories)
+    return context
 
 
 def actor_input_provenance(bundle: dict[str, Any], actor: str) -> dict[str, Any]:

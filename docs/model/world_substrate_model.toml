@@ -674,19 +674,20 @@ writers = [
   { file = "scripts/scaffold_world.py", function = "<module>", line = 13 },
   { file = "scripts/import_cvs_situation.py", function = "<module>", line = 18 },
   { file = "scripts/native_coordination_authoring.py", function = "draft_to_bundle", line = 546 },
+  { file = "scripts/build_pump_facility_example.py", function = "build", line = 63 },
 ]
 
 [[records]]
 name = "world-substrate-causal-model/v0"
 scope = "product"
 written_by = ["compile"]
-writers = [{ file = "src/world_substrate/action_authoring.py", function = "<module>", line = 24 }]
+writers = [{ file = "src/world_substrate/action_authoring.py", function = "<module>", line = 24 }, { file = "scripts/build_pump_facility_example.py", function = "build", line = 63 }]
 
 [[records]]
 name = "world-substrate-action-mechanic/v0"
 scope = "product"
 written_by = ["compile"]
-writers = [{ file = "src/world_substrate/action_authoring.py", function = "<module>", line = 25 }]
+writers = [{ file = "src/world_substrate/action_authoring.py", function = "<module>", line = 25 }, { file = "scripts/build_pump_facility_example.py", function = "mechanic", line = 49 }]
 
 [[records]]
 name = "world-substrate-process-mechanic/v0"

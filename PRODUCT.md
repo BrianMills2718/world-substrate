@@ -37,3 +37,5 @@ Neither feature is implemented or advertised by the current saved-round branchin
 Reuse existing native Kitchen/Castaway/Workshop/Greenhouse examples and retained pump data. The polished [native Coordination Hall](https://brianmills.dev/waltzman/world-substrate) demonstrates existing composed visual capability. The [Replay Studio](https://brianmills.dev/world-builder/play/) is a static example set, not the created-world library.
 
 Success is one continuous workflow: create → find world → open spatial/visual studio → play/replay → preview completed checkpoint → branch → observe independent continuation. Inspect the corresponding action, effects and supplied actor information without losing world/run/time context. Technical checks do not establish human comprehension or scientific model fidelity.
+
+Inhabited facility (2026-11-13): the pump facility example shows rooms, doors, people and delivered reports end to end with place-scoped perception; it is still short of an illustrated Smallville-like place (see the roadmap review).
