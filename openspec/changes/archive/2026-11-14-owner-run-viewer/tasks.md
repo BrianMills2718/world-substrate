@@ -1,0 +1,3 @@
+- [x] `open_scene_viewer.py`: fetch rows, pick the newest laid-out world, export, serve
+- [x] `export_from_rows` shared with the exporter's command line
+- [x] Tests; viewed the served page at 1280px

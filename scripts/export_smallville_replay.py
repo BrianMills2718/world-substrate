@@ -177,9 +177,18 @@ def export(rows: list[dict[str, Any]], maze: dict[str, Any], rooms: dict[str, st
             "sprites": sprites or {}}
 
 
-def main() -> int:
+def export_from_rows(rows: list[dict[str, Any]], bundle: dict[str, Any], maze_dir: Path) -> dict[str, Any]:
+    """A replay for run-log `rows` of the world described by `bundle`, using the bundle's own `layout`."""
     from scripts.scene_layout import resolve
 
+    layout = resolve(bundle)
+    replay = export(rows, load_maze(maze_dir), rooms=layout["rooms"], people=layout["people"], start_rooms=layout["start_rooms"],
+                    labels=layout["labels"], doors=layout["doors"], sprites=layout["sprites"])
+    replay["map"], replay["title"] = layout["map"], layout["title"]
+    return replay
+
+
+def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("run_log", type=Path)
     ap.add_argument("bundle", type=Path, help="the world's authoring bundle JSON (carries the `layout` declaration)")
@@ -187,11 +196,7 @@ def main() -> int:
     ap.add_argument("out_dir", type=Path)
     args = ap.parse_args()
     rows = [json.loads(line) for line in args.run_log.read_text().splitlines() if line.strip()]
-    layout = resolve(json.loads(args.bundle.read_text()))
-    replay = export(rows, load_maze(args.maze_dir), rooms=layout["rooms"], people=layout["people"], start_rooms=layout["start_rooms"],
-                    labels=layout["labels"], doors=layout["doors"], sprites=layout["sprites"])
-    replay["map"] = layout["map"]
-    replay["title"] = layout["title"]
+    replay = export_from_rows(rows, json.loads(args.bundle.read_text()), args.maze_dir)
     args.out_dir.mkdir(parents=True, exist_ok=True)
     (args.out_dir / "master_movement.json").write_text(json.dumps(replay["steps"]))
     (args.out_dir / "meta.json").write_text(json.dumps(replay["meta"]))
