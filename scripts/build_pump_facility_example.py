@@ -59,14 +59,15 @@ def build() -> tuple[dict, dict]:
         {"name": "report_log", "fields": [{"name": "entries", "type": "string_list", "default": []}]},
         {"name": "boundary", "fields": [{"name": "place_a", "type": "entity_ref", "default": "corridor"},
                                         {"name": "place_b", "type": "entity_ref", "default": "laboratory"},
-                                        {"name": "state", "type": "string", "default": "closed"}]},
+                                        {"name": "state", "type": "string", "default": "closed"},
+                                        {"name": "other_side", "type": "entity_ref", "default": "lab-door-in"}]},
         {"name": "pump", "fields": [{"name": "calibrated", "type": "boolean", "default": False},
                                     {"name": "status", "type": "string", "default": "uncalibrated"}]},
     ]
     entities = [{"id": pid, "label": label, "categories": ["place"], "components": {}} for pid, label in PLACES.items()]
-    for did, (label, a, b, _) in DOORS.items():
+    for did, (label, a, b, partner) in DOORS.items():
         entities.append({"id": did, "label": label, "categories": ["boundary"], "location": a,
-                         "components": {"boundary": {"place_a": a, "place_b": b, "state": "closed"}}})
+                         "components": {"boundary": {"place_a": a, "place_b": b, "state": "closed", "other_side": partner}}})
     entities.append({"id": "prototype-pump", "label": "Prototype pump", "categories": ["equipment", "pump"],
                      "location": "laboratory", "components": {"pump": {"calibrated": False, "status": "uncalibrated"}}})
     for pid, (label, role, place, _) in PEOPLE.items():
@@ -88,8 +89,8 @@ def build() -> tuple[dict, dict]:
                  {"way": {"categories": ["boundary"], "components": ["boundary"]},
                   "partner": {"categories": ["boundary"], "components": ["boundary"]}},
                  [check("you are at the door", ref("actor", "location.location_id"), ref("way", "location.location_id")),
-                  check("the partner is the same door's other side", ref("partner", "components.boundary.place_a"),
-                        ref("way", "components.boundary.place_b"))],
+                  check("the partner is the same door's other side", ref("way", "components.boundary.other_side"),
+                        {"entity_id": "partner"})],
                  [{"participant": "way", "path": "components.boundary.state", "op": "set", "value": {"literal": "open"}},
                   {"participant": "partner", "path": "components.boundary.state", "op": "set", "value": {"literal": "open"}}],
                  ["No key, lock or force is modeled; a closed door only needs someone at it to open it."]),

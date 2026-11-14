@@ -162,6 +162,20 @@ class InhabitedFacilityTests(unittest.TestCase):
         self.assertIn("partner=Control room door (corridor side) (control-door-out)", json.dumps(context["actions"]))
 
     @pytest.mark.req("information-delivery/place-scoped-perception-with-distinct-inputs")
+    def test_free_text_reader_knows_the_far_half_of_the_door_it_stands_at(self):
+        """The workspace's resident path refused every "open the door": the far half was not in the reader's entities."""
+        engine, _, _ = runner.build_engine(BUNDLE, CAUSAL)
+        engine.actor_information_bundle = validate_bundle(copy.deepcopy(BUNDLE))
+        seen = {}
+        def fake(text, **kw):
+            seen.update(kw["entities"])
+            return {"kind": "wait", "fields": {}, "quoted_spans": {}, "nearest_kind": "none", "why": ""}, 0.0
+        with patch.object(runner.open_attempt, "interpret", fake), patch.dict("sys.modules", {"llm_client": type("m", (), {})()}):
+            runner._read_attempt(engine, "bo", "I open the door", [], model="m", trace_id="t", max_budget=0.1)
+        self.assertIn("control-door-out", seen)  # named by Bo's own open-door form, not perceived
+        self.assertNotIn("lab-door-in", seen)    # another room's door is still not his to name
+
+    @pytest.mark.req("information-delivery/place-scoped-perception-with-distinct-inputs")
     def test_replay_and_branch_show_the_same_facts(self):
         catalog = service._catalog()
         rid = catalog.create_run(self.world["id"])["run"]["id"]
