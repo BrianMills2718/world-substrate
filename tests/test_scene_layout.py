@@ -136,3 +136,30 @@ def test_the_pump_story_exports_on_a_generated_map_with_no_clone_and_no_private_
     assert len(replay["doors"]["laboratory-door"]["tiles"]) == 2
     walk = [replay["steps"][k]["Ari"]["movement"] for k in sorted(replay["steps"], key=int)]
     assert all(abs(a[0] - b[0]) + abs(a[1] - b[1]) <= 1 for a, b in zip(walk, walk[1:]))
+
+
+def _share_of_the_scripted_pump_run():
+    rows = [json.loads(line) for line in (ROOT / "evidence/ui/inhabited-facility-20261113/scripted-run-log.jsonl").read_text().splitlines() if line.strip()]
+    rounds = [t for r in rows for t in r["result"]["transcript"]]
+    return {"world": {"bundle": validate_bundle(deepcopy(BUNDLE))}, "rounds": rounds}
+
+
+@pytest.mark.req("scene-viewer/public-generated-map")
+def test_a_share_replay_uses_the_generated_map_withholds_report_words_and_keeps_them_for_the_owner():
+    from scripts.world_builder_service import _public_replay
+    share = _share_of_the_scripted_pump_run()
+    public, owner = _public_replay(share), _public_replay(share, owner=True)
+    assert public["ok"] and public["grid"]["sheet"] == "tinydungeon.png" and public["map"].startswith("public-hub")
+    chats = lambda r: [c[1] for f in r["steps"].values() for who in f.values() for c in (who.get("chat") or [])]
+    assert chats(owner) and all("words not shown" in c for c in chats(public)) and len(chats(public)) == len(chats(owner))
+    assert not any(c in " ".join(chats(public)) for c in [t.split(": ", 1)[1] for t in chats(owner)])
+    assert "ville" not in json.dumps(public).lower().replace("the_ville", "")  # no private map name in the public payload
+
+
+@pytest.mark.req("scene-viewer/public-generated-map")
+def test_a_world_with_no_layout_has_no_public_room_map():
+    from scripts.world_builder_service import _public_replay
+    share = _share_of_the_scripted_pump_run()
+    del share["world"]["bundle"]["layout"]
+    with pytest.raises(scene_layout.LayoutError):
+        _public_replay(share)

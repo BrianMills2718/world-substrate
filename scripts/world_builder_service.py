@@ -663,6 +663,38 @@ def _catalog_scene(record: dict[str, Any]) -> dict[str, Any]:
                                            run_id=record.get("catalog_run_id"), driven=True)}
 
 
+PUBLIC_MAP_FOR_SLOTS = {3: "public-hub-3", 5: "public-hub-5"}
+
+
+def _public_replay(record: dict[str, Any], owner: bool = False) -> dict[str, Any]:
+    """The room-map replay of a shared run, drawn on a generated map with free-licensed tiles only (never the
+    private Smallville art or map data). A world whose layout names a private map is drawn on the generated map with
+    the same number of rooms; a world with no layout has no map. Message words are withheld unless `owner`."""
+    import copy
+    from scripts.export_smallville_replay import export_from_rows
+    from scripts.scene_layout import LayoutError, prepared_maps
+    bundle = copy.deepcopy(record["world"]["bundle"])
+    layout = bundle.get("layout")
+    if not isinstance(layout, dict):
+        raise LayoutError("this world declares no layout, so it has no room map")
+    maps = prepared_maps()
+    named = maps.get(layout.get("map")) or {}
+    if named.get("kind") != "generated":
+        target = PUBLIC_MAP_FOR_SLOTS.get(len(named.get("slots") or {}))
+        if not target:
+            raise LayoutError("no public room map fits this layout")
+        layout["map"] = target
+        for person in (layout.get("people") or {}).values():
+            person.pop("sprite", None)
+    replay = export_from_rows([{"result": {"transcript": record.get("rounds") or []}}], bundle, Path("/nonexistent"))
+    if not owner:
+        for frame in replay["steps"].values():
+            for who in frame.values():
+                if who.get("chat"):
+                    who["chat"] = [[name, text.split(": ", 1)[0] + ": (words not shown)"] for name, text in who["chat"]]
+    return {"ok": True, **replay}
+
+
 def _catalog_backfill() -> dict[str, Any]:
     """Add owner builds and exact-matching public recordings; never guess ancestry."""
     import gzip
@@ -1630,6 +1662,16 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 self._error(error.status, str(error))
             except Exception:
                 self._error(500, "the private world library is unavailable")
+            return
+        if path.startswith("/share/") and path.endswith("/replay"):
+            record = _open_share(path[len("/share/"):-len("/replay")])
+            if record is None:
+                self._error(404, "shared run not found")
+            else:
+                try:
+                    self._json(200, _public_replay(record, owner=self._owner_check() is True))
+                except Exception as error:
+                    self._error(404, f"no room map for this run: {error}")
             return
         if path.startswith("/share/") and path.endswith("/scene"):
             record = _open_share(path[len("/share/"):-len("/scene")])

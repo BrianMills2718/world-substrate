@@ -191,6 +191,7 @@ def export_from_rows(rows: list[dict[str, Any]], bundle: dict[str, Any], maze_di
     replay["map"], replay["title"] = layout["map"], layout["title"]
     if generated:
         replay["grid"] = generated["grid"]
+        replay["meta"]["maze_name"] = layout["map"]  # no Smallville name in a public replay
     return replay
 
 
