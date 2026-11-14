@@ -1,0 +1,5 @@
+- [x] Exporter carries rules and the rule each attempt met
+- [x] Viewer overlay, demo switch, second demo, smallest public map
+- [x] Tests; viewed locally
+- [x] publish-checker (verdict: publish)
+- [ ] deploy, verify live

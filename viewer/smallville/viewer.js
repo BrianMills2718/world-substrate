@@ -19,6 +19,11 @@ fetch(replayUrl).then(r => r.json())
   .catch(e => fail(SHARE ? "This shared run has no room map: " + e : "Could not load the replay or map assets. For Smallville maps run scripts/setup_smallville_viewer.py first. " + e));
 
 function start(R, M) {
+  if (REPLAY === "public" || REPLAY === "resident") {  // the two published demos
+    const d = $("demos"); d.style.display = "block"; d.append("Demo runs: ");
+    [["public", "scripted people (refusal, then the door opens)"], ["resident", "AI residents (words not shown)"]].forEach(([k, label], i) => {
+      if (i) d.append(" · "); const a = document.createElement(k === REPLAY ? "b" : "a"); a.textContent = label; if (k !== REPLAY) a.href = "?replay=" + k; d.append(a); });
+  }
   if (R.title) { document.getElementById("title").textContent = R.title + " replay"; document.title = R.title + " Replay"; }
   const names = R.meta.persona_names, last = R.meta.step, GEN = !!R.grid;
   const q = new URLSearchParams(location.search);  // ?step=N&paused=1 opens a given step (for links and tests)
@@ -48,6 +53,7 @@ function start(R, M) {
         LAYERS.forEach(n => { const l = map.createLayer(n, sets, 0, 0); if (n.startsWith("Foreground")) l.setDepth(5); });
       }
       Object.entries(R.doors).forEach(([id, d]) => { doorGfx[id] = this.add.graphics().setDepth(2); });
+      makeRuleTags(this);
       names.forEach(n => {
         if (!GEN) ["left", "right", "down", "up"].forEach(dir => this.anims.create({ key: n + "-" + dir, frameRate: 6, repeat: -1,
           frames: this.anims.generateFrameNames(n, { prefix: dir + "-walk.", start: 0, end: 3, zeroPad: 3 }) }));
@@ -73,6 +79,51 @@ function start(R, M) {
   }
   new Phaser.Game({ type: Phaser.AUTO, parent: "game", pixelArt: true, scene: Replay,
     scale: { mode: Phaser.Scale.RESIZE, width: "100%", height: "100%" } });
+
+  // Rules overlay: a tag per rule, on the doors it governs or stacked in the map's corner. Grey = not tried this step;
+  // blue = allowed, orange = refused, each saying so in words. Clicking a tag opens the rule's full text.
+  const tags = [], RULES = R.rules || [];
+  let rulesOn = false;
+  function makeRuleTags(sc) {
+    if (!RULES.length) return;
+    $("rules").style.display = "";
+    const v = R.view; let n = 0;
+    RULES.forEach(rule => {
+      const spots = rule.at_doors ? Object.entries(R.doors).map(([id, d]) => {
+        const xs = d.tiles.map(t => t[0]), ys = d.tiles.map(t => t[1]);
+        return { door: id, x: (Math.min(...xs) + Math.max(...xs) + 1) / 2 * T, y: (Math.min(...ys) + (rule.kind === "move" ? 2.6 : -0.6)) * T };
+      }) : [{ door: null, x: (v.x + 0.6) * T, y: (v.y + 1.2 + n++ * 0.9) * T, left: true }]  // in the margin left of the map;
+      spots.forEach(sp => {
+        const t = sc.add.text(sp.x, sp.y, "", { font: "bold 13px sans-serif", color: "#fff", backgroundColor: "#586573", padding: { x: 6, y: 3 } })
+          .setOrigin(sp.left ? 1 : 0.5, 0).setDepth(8).setVisible(false).setInteractive({ useHandCursor: true });
+        t.on("pointerdown", () => ruleBox(rule));
+        tags.push({ rule, door: sp.door, t });
+      });
+    });
+  }
+  function ruleBox(rule) {
+    const b = $("rulebox"); b.innerHTML = "";
+    const add = (tag, text, parent = b) => { const e = document.createElement(tag); e.textContent = text; parent.appendChild(e); return e; };
+    const x = add("button", "Close"); x.className = "x"; x.onclick = () => { b.style.display = "none"; };
+    add("h2", rule.kind); add("div", rule.rationale);
+    [["Needs", rule.needs], ["Changes", rule.changes], ["Not modelled", rule.limits]].forEach(([h, items]) => {
+      add("h3", h); if (!items.length) { add("div", "nothing"); return; }
+      const ul = add("ul", ""); items.forEach(i => add("li", i, ul));
+    });
+    b.style.display = "block";
+  }
+  function drawRules(frame) {
+    if (!tags.length) return;
+    const met = {};  // "kind|door" -> the attempts this step that met the rule
+    names.forEach(n => { const r = frame[n] && frame[n].rule; if (r) (met[r.kind + "|" + (r.door || "")] = met[r.kind + "|" + (r.door || "")] || []).push({ n, r }); });
+    tags.forEach(g => {
+      const hit = met[g.rule.kind + "|" + (g.door || "")];
+      let text = g.rule.kind, fill = "#586573";
+      if (hit) { const h = hit[hit.length - 1]; text = g.rule.kind + " - " + h.n + (h.r.ok ? " allowed" : " refused: " + (h.r.why.join("; ") || "rule not met")); fill = h.r.ok ? "#1f5fa8" : "#b4540a"; }
+      g.t.setText(text).setBackgroundColor(fill).setScale(L).setVisible(rulesOn);
+    });
+  }
+  $("rules").onclick = () => { rulesOn = !rulesOn; $("rules").textContent = rulesOn ? "Hide rules" : "Show rules"; $("rules").classList.toggle("on", rulesOn); drawRules(R.steps[String(step)]); if (!rulesOn) $("rulebox").style.display = "none"; };
 
   function drawDoors(s) {
     const st = doorAt(s);
@@ -101,7 +152,7 @@ function start(R, M) {
       p.emoji.setText(f.pronunciatio);
       const line = f.chat && f.chat[0] ? f.chat[0][1] : ""; p.chat.setText(line).setVisible(!!line);
     });
-    drawDoors(s); panel(frame); $("slider").value = s;
+    drawDoors(s); drawRules(frame); panel(frame); $("slider").value = s;
     const r = R.rounds.find(r => s >= r.start && s <= r.end);
     $("label").textContent = (r ? "Round " + r.round + " · " : "Start · ") + "step " + s + "/" + last;
   }

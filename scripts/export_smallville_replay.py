@@ -119,9 +119,34 @@ def describe(actor: str, row: dict[str, Any], labels: dict[str, str]) -> tuple[s
     return EMOJI[kind], what, chat
 
 
+def _effect_words(effect: dict[str, Any]) -> str:
+    """One effect of a rule in plain words, from its recorded shape (who, which field, what is done)."""
+    who, field = effect.get("participant", "?"), str(effect.get("path", "")).split(".")[-1].replace("_", " ")
+    value = effect.get("value") or {}
+    if effect.get("op") == "set" and "literal" in value:
+        return f"sets the {who}'s {field} to {json.dumps(value['literal']).strip(chr(34))}"
+    if effect.get("op") == "set":
+        return f"sets the {who}'s {field} from the action"
+    if str(effect.get("op", "")).startswith("append"):
+        return f"adds the words to the {who}'s {field}"
+    return f"{effect.get('op', 'changes')} the {who}'s {field}"
+
+
+def rules_of(causal: dict[str, Any] | None) -> list[dict[str, Any]]:
+    """The world's rules (one per action kind) as the overlay shows them: why it exists, what it requires, what it changes."""
+    out = []
+    for m in (causal or {}).get("mechanics") or []:
+        participants = json.dumps(m.get("checks") or [])
+        out.append({"kind": m["action_kind"], "rationale": m.get("rationale", ""),
+                    "needs": [c["label"] for c in m.get("checks") or [] if c.get("label")],
+                    "changes": [_effect_words(e) for e in m.get("effects") or []], "limits": list(m.get("limits") or []),
+                    "at_doors": '"way"' in participants or any(e.get("participant") == "way" for e in m.get("effects") or [])})
+    return out
+
+
 def export(rows: list[dict[str, Any]], maze: dict[str, Any], rooms: dict[str, str], people: dict[str, str],
            start_rooms: dict[str, str], labels: dict[str, str], doors: dict[str, dict[str, Any]] | None = None,
-           sprites: dict[str, str] | None = None, hold: int = 2) -> dict[str, Any]:
+           sprites: dict[str, str] | None = None, hold: int = 2, causal: dict[str, Any] | None = None) -> dict[str, Any]:
     """The replay as one dict: `steps` (Smallville's master_movement shape), `meta`, `doors`, `door_changes`, `rounds`, `view`, `sprites`.
 
     `rows` are server run-log rows (one saved round each); `rooms` maps room id to "<sector>|<arena>" on the map;
@@ -166,6 +191,12 @@ def export(rows: list[dict[str, Any]], maze: dict[str, Any], rooms: dict[str, st
                 emoji, text, chat = info[p]
                 frame[people[p]] = {"movement": list(pos[p]), "pronunciatio": emoji, "description": text,
                                     "chat": [[people[p], chat]] if chat else None}
+                tried = turn["actors"].get(p) or {}
+                kind = (tried.get("did") or {}).get("kind")
+                if kind and causal is not None:  # which rule this person's attempt met, and whether it let it through
+                    way = (tried["did"].get("way"))
+                    frame[people[p]]["rule"] = {"kind": kind, "ok": tried.get("status") == "accepted",
+                                                "why": list(tried.get("refused_because") or []), "door": half_of.get(way)}
             steps[str(n)] = frame
         round_index.append({"round": number, "start": start, "end": n})
     meta = {"fork_sim_code": "world-substrate", "start_date": "February 13, 2023", "curr_time": "February 13, 2023, 00:00:00",
@@ -174,10 +205,19 @@ def export(rows: list[dict[str, Any]], maze: dict[str, Any], rooms: dict[str, st
     ys = [t[1] for r in rooms.values() for t in room_tiles(maze, r)] + [t[1] for d in door_rows.values() for t in d["tiles"]]
     view = {"x": min(xs) - 1, "y": min(ys) - 1, "w": max(xs) - min(xs) + 3, "h": max(ys) - min(ys) + 3}
     return {"steps": steps, "meta": meta, "doors": door_rows, "door_changes": changes, "rounds": round_index, "view": view,
-            "sprites": sprites or {}}
+            "sprites": sprites or {}, **({"rules": rules_of(causal)} if causal is not None else {})}
 
 
-def export_from_rows(rows: list[dict[str, Any]], bundle: dict[str, Any], maze_dir: Path) -> dict[str, Any]:
+def withhold_words(replay: dict[str, Any]) -> dict[str, Any]:
+    """Replace the words of every report with a note, for a replay shown to someone who may not read them."""
+    for frame in replay["steps"].values():
+        for who in frame.values():
+            if who.get("chat"):
+                who["chat"] = [[name, text.split(": ", 1)[0] + ": (words not shown)"] for name, text in who["chat"]]
+    return replay
+
+
+def export_from_rows(rows: list[dict[str, Any]], bundle: dict[str, Any], maze_dir: Path, causal: dict[str, Any] | None = None) -> dict[str, Any]:
     """A replay for run-log `rows` of the world described by `bundle`, using the bundle's own `layout`."""
     from scripts.scene_layout import resolve
 
@@ -187,7 +227,7 @@ def export_from_rows(rows: list[dict[str, Any]], bundle: dict[str, Any], maze_di
         from scripts.generated_map import build
         generated = build(layout["map"], list(layout["prepared"]["slots"]))
     replay = export(rows, generated["maze"] if generated else load_maze(maze_dir), rooms=layout["rooms"], people=layout["people"], start_rooms=layout["start_rooms"],
-                    labels=layout["labels"], doors=layout["doors"], sprites=layout["sprites"])
+                    labels=layout["labels"], doors=layout["doors"], sprites=layout["sprites"], causal=causal)
     replay["map"], replay["title"] = layout["map"], layout["title"]
     if generated:
         replay["grid"] = generated["grid"]

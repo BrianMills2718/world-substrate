@@ -19,13 +19,19 @@ input[type=range]{flex:1 1 160px;min-width:120px}
 .card b{display:block}
 .card .say{color:var(--blue);margin-top:2px;overflow-wrap:anywhere}
 .card .no{color:var(--orange)}
+#stage{position:relative;flex:1 1 auto;display:flex;min-height:320px}
+#stage #game{flex:1 1 auto}
+#rulebox{position:absolute;top:10px;right:10px;max-width:min(360px,80%);max-height:calc(100% - 20px);overflow:auto;background:var(--panel);border:2px solid var(--blue);border-radius:10px;padding:10px 12px;display:none;font-size:14px}
+#rulebox h2{font-size:15px;margin:0 0 4px}#rulebox h3{font-size:12px;margin:8px 0 2px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute)}
+#rulebox ul{margin:0;padding-left:18px}#rulebox .x{float:right;min-height:0;padding:2px 8px}
 #err{color:var(--orange);display:none;margin:8px 0}
 </style></head><body>
 <h1 id="title">Scene replay</h1>
+<div id="demos" style="display:none;margin:0 0 8px"></div>
 <div id="err"></div>
-<div id="game"></div>
+<div id="stage"><div id="game"></div><div id="rulebox" role="dialog" aria-label="Rule"></div></div>
 <div class="bar">
-<button id="play" class="on">Pause</button><button id="prev">Previous round</button><button id="next">Next round</button>
+<button id="play" class="on">Pause</button><button id="rules" style="display:none">Show rules</button><button id="prev">Previous round</button><button id="next">Next round</button>
 <select id="speed" aria-label="Speed"><option value="1">1 step/s</option><option value="3" selected>3 steps/s</option><option value="8">8 steps/s</option></select>
 <input id="slider" type="range" min="0" value="0" aria-label="Step"><span id="label"></span>
 </div>

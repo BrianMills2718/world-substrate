@@ -8,7 +8,7 @@ rm -rf "$here/dist"
 mkdir -p "$dest/room-map/assets-cc0" "$dest/play" "$dest/build" "$dest/design/attempt-from-belief"
 cp "$repo/scripts/world_builder_home.html" "$dest/index.html"
 # The room-map viewer: our own code, the generated map and CC0 tiles only. Never Smallville's art or maps.
-cp "$repo/viewer/smallville/index.html" "$repo/viewer/smallville/viewer.js" "$repo/viewer/smallville/replay-public.json" "$dest/room-map/"
+cp "$repo/viewer/smallville/index.html" "$repo/viewer/smallville/viewer.js" "$repo/viewer/smallville/replay-public.json" "$repo/viewer/smallville/replay-resident.json" "$dest/room-map/"
 cp "$repo/viewer/smallville/assets-cc0/tinydungeon.png" "$repo/viewer/smallville/assets-cc0/TinyDungeon-License.txt" "$dest/room-map/assets-cc0/"
 cp "$repo/scripts/vendor/graph-viewer.js" "$dest/graph-viewer.js"
 cp "$repo/evidence/renders/world-replay-studio-v0.html" "$dest/play/index.html"
