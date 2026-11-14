@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>World graph</title>
+<style>
+:root{--bg:#f3f5f7;--fg:#16212b;--mute:#586573;--panel:#fff;--line:#cdd5dd;--faint:#e3e8ed;--blue:#1f5fa8;--blue-bg:#dbe8f6;--orange:#b4540a;--orange-bg:#fbe6d4;--grey:#6b7785;--chip:#e6ecf2;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f161d;--fg:#e4ebf1;--mute:#9aa8b5;--panel:#17212b;--line:#2c3a47;--faint:#1f2b36;--blue:#6fb0f0;--blue-bg:#173250;--orange:#f0a060;--orange-bg:#4a2c14;--grey:#8a97a5;--chip:#223140;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.4 Inter,system-ui,sans-serif;padding:14px max(16px,env(safe-area-inset-left,0px))}
+h1{font:600 20px/1.2 "Space Grotesk",Inter,system-ui,sans-serif;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 10px;max-width:90ch}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}
+button{font:inherit;color:var(--fg);background:var(--chip);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
+button:disabled{opacity:.45;cursor:default}
+button:focus-visible,input:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+label{display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+input[type=range]{width:min(320px,40vw)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;color:var(--mute);font-size:13px}
+.key{display:inline-flex;gap:6px;align-items:center}
+.sw{width:14px;height:14px;border-radius:4px;border:2px solid var(--grey);background:var(--panel)}
+.sw.ok{border-color:var(--blue);background:var(--blue-bg)}.sw.no{border-color:var(--orange);background:var(--orange-bg)}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:14px;align-items:start}
+.stagebox{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;position:relative;overflow:auto}
+#stage{position:relative;min-width:900px}
+#edges{position:absolute;inset:0;pointer-events:none;overflow:visible}
+.cols{display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:90px;position:relative}
+.col h2,.proc h2{font:600 12px/1 Inter,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:0 0 8px}
+.col{display:flex;flex-direction:column;gap:6px}
+.box{position:relative;border:2px solid var(--line);border-radius:8px;padding:5px 66px 5px 8px;background:var(--panel);cursor:pointer;font-size:13px;line-height:1.25;text-align:left;color:var(--fg);min-height:30px}
+.box small{display:block;color:var(--mute);font-size:11px}
+.box.actor{border-left:6px solid #6fa8dc}.box.action{border-left:6px solid #f0a35e}.box.place{border-left:6px solid #7d8a90}
+.box.dim{opacity:.35}
+.box.ok{border-color:var(--blue);background:var(--blue-bg)}.box.no{border-color:var(--orange);background:var(--orange-bg)}.box.mix{border-color:var(--orange);background:var(--blue-bg)}.box.none{border-color:var(--grey);border-style:dashed}
+.box.sel{outline:3px solid var(--fg);outline-offset:1px}.box.rel{outline:2px dotted var(--fg)}
+.tag{position:absolute;right:6px;top:3px;font-size:11px;font-weight:600}
+.tag.ok{color:var(--blue)}.tag.no{color:var(--orange)}.tag.none{color:var(--grey)}
+.proc{margin-top:18px;border-top:1px solid var(--line);padding-top:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:2px dashed var(--line);border-radius:14px;padding:3px 10px;font-size:12px;background:var(--panel);cursor:pointer}
+.chip.ok{border-color:var(--blue);background:var(--blue-bg)}.chip.dim{opacity:.35}
+.chip.sel{outline:3px solid var(--fg)}
+aside{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;max-height:80vh;overflow:auto;position:sticky;top:8px}
+aside h2{font:600 15px/1.2 Inter,system-ui,sans-serif;margin:0 0 6px}
+.try{border-left:4px solid var(--grey);padding:4px 8px;margin:6px 0;background:var(--faint);border-radius:0 6px 6px 0;font-size:13px;cursor:pointer}
+.try.ok{border-color:var(--blue)}.try.no{border-color:var(--orange)}
+.try b{font-weight:600}.try .why{color:var(--mute);font-size:12px;display:block}
+.mute{color:var(--mute)}
+@media (max-width:1100px){.wrap{grid-template-columns:1fr}aside{position:static;max-height:none}}
+</style></head><body>
+<h1 id="title">World graph</h1>
+<p class="sub" id="sub">Everything the world is made of, in three columns: who acts, the moves the rules allow, and the things they use. The round you pick lights up what happened in it. Click any box to see its links.</p>
+<div class="bar">
+<button id="prev">Previous round</button><input id="rng" type="range" min="0" max="0" value="0" aria-label="Round"><button id="next">Next round</button>
+<span id="count" class="mute"></span>
+<label><input type="checkbox" id="only"> Only boxes this round used</label>
+<label><input type="checkbox" id="all"> Show every link, faintly</label>
+</div>
+<div class="legend"><span class="key"><span class="sw ok"></span>Blue: allowed</span><span class="key"><span class="sw no"></span>Orange: refused</span><span class="key"><span class="sw" style="border-color:var(--orange);background:var(--blue-bg)"></span>Orange edge on blue: some allowed, some refused</span><span class="key"><span class="sw"></span>Grey, dashed: chose no move, or not used this round</span></div>
+<div class="wrap" style="margin-top:10px">
+<div class="stagebox"><div id="stage"><svg id="edges"></svg>
+<div class="cols"><div class="col" id="c0"><h2>Who acts</h2></div><div class="col" id="c1"><h2>Moves the rules allow</h2></div><div class="col" id="c2"><h2>Things and places</h2></div></div>
+<div class="proc"><h2>Changes the world makes by itself</h2><div class="chips" id="proc"></div></div></div></div>
+<aside id="side" aria-live="polite"></aside></div>
+<script>
+var D=null,round=0,sel=null,boxes={},chips={};
+var P=new URLSearchParams(location.search);
+function $(i){return document.getElementById(i)}
+function url(){var s=P.get("share");if(s)return "/world-builder/api/share/"+encodeURIComponent(s)+"/graph";return P.get("data")||"graph-demo.json"}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function nm(id){return (D.byId[id]||{label:id}).label}
+fetch(url()).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(init).catch(function(e){$("sub").textContent="This world's graph could not be loaded ("+e.message+")."});
+function init(d){D=d;D.byId={};d.graph.nodes.forEach(function(n){D.byId[n.id]=n});
+ $("title").textContent=(d.title||"World")+" — whole-system graph";document.title=(d.title||"World")+" graph";
+ var cols=[[],[],[]];d.graph.nodes.forEach(function(n){if(n.kind==="actor")cols[0].push(n);else if(n.kind==="action")cols[1].push(n);else if(n.kind!=="process")cols[2].push(n)});
+ [0,1,2].forEach(function(i){cols[i].forEach(function(n){var b=el("button","box "+n.kind);b.appendChild(document.createTextNode(n.label));b.dataset.id=n.id;b.onclick=function(){pick(n.id)};boxes[n.id]=b;$("c"+i).appendChild(b)})});
+ d.graph.nodes.filter(function(n){return n.kind==="process"}).forEach(function(n){var c=el("button","chip",n.label);c.dataset.id=n.id;c.onclick=function(){pick(n.id)};chips[n.id]=c;$("proc").appendChild(c)});
+ $("rng").max=Math.max(0,d.rounds.length-1);
+ $("rng").oninput=function(){round=+this.value;draw()};$("prev").onclick=function(){if(round>0){round--;draw()}};$("next").onclick=function(){if(round<D.rounds.length-1){round++;draw()}};
+ $("only").onchange=draw;$("all").onchange=draw;addEventListener("resize",drawEdges);draw()}
+function pick(id){sel=sel===id?null:id;draw()}
+function state(st){return st==="accepted"?"ok":st==="no_action"?"none":"no"}
+function words(st){return st==="accepted"?"Allowed":st==="no_action"?"Chose no move":st==="unsupported_action"?"No rule covers it":"Refused"}
+var edgeList=[];
+function draw(){var R=D.rounds[round]||{tries:[],fired:[],world_changed:[]};$("rng").value=round;
+ $("count").textContent="Round "+(R.turn||round+1)+" of "+D.rounds.length;$("prev").disabled=round<=0;$("next").disabled=round>=D.rounds.length-1;
+ var lit={},only=$("only").checked;edgeList=[];
+ function mark(id,s){var o=lit[id]||(lit[id]={ok:0,no:0,none:0,n:0,changed:false});o.n++;o[s]++;o.s=o.ok&&o.no?"mix":o.ok?"ok":o.no?"no":"none"}
+ R.tries.forEach(function(t){var s=state(t.status);mark(t.actor,s);
+  if(t.move){mark(t.move,s);edgeList.push({a:t.actor,b:t.move,s:s,l:"can"});t.uses.forEach(function(u){mark(u,s);edgeList.push({a:t.move,b:u,s:s,l:"uses"})})}
+  t.changed.forEach(function(c){if(lit[c])lit[c].changed=true;else lit[c]={s:"ok",ok:0,no:0,none:0,n:0,changed:true}})});
+ R.world_changed.forEach(function(c){if(lit[c])lit[c].changed=true;else lit[c]={s:"ok",ok:0,no:0,none:0,n:0,changed:true}});
+ Object.keys(boxes).forEach(function(id){var b=boxes[id],o=lit[id],n=D.byId[id];b.className="box "+n.kind+(o?" "+o.s:"")+(only&&!o?" dim":"")+(id===sel?" sel":"");
+  b.querySelectorAll(".tag,small").forEach(function(x){x.remove()});
+  if(o){var t=el("span","tag "+(o.s==="mix"?"no":o.s),o.s==="ok"?"Allowed":o.s==="no"?"Refused":o.s==="mix"?"Mixed":"No move");b.appendChild(t);
+   if(o.s==="mix")b.appendChild(el("small","",o.ok+" allowed, "+o.no+" refused"));
+   if(o.n>1){var sm=el("small","",(n.kind==="actor"?"tried ":"used ")+o.n+(o.n===1?" time":" times")+" this round");b.appendChild(sm)}
+   if(o.changed){var s2=el("small","","changed by this round");b.appendChild(s2)}}
+  if(n.kind!=="actor"&&n.kind!=="action"&&o&&o.changed&&!o.n){}});
+ Object.keys(chips).forEach(function(id){var f=R.fired.indexOf(id)>=0;chips[id].className="chip"+(f?" ok":"")+(only&&!f?" dim":"")+(id===sel?" sel":"")});
+ side(R);setTimeout(drawEdges,0)}
+function relIds(id){var s={};D.graph.edges.forEach(function(e){if(e.source===id)s[e.target]=1;if(e.target===id)s[e.source]=1});return s}
+function drawEdges(){var svg=$("edges"),st=$("stage"),sr=st.getBoundingClientRect();svg.setAttribute("width",st.scrollWidth);svg.setAttribute("height",st.scrollHeight);svg.innerHTML="";
+ function pt(id,side){var b=boxes[id];if(!b)return null;var r=b.getBoundingClientRect();return{x:(side==="r"?r.right:r.left)-sr.left,y:r.top+r.height/2-sr.top}}
+ function line(a,b,cls,label){var A=boxes[a],B=boxes[b];if(!A||!B)return;var ca=+A.closest(".col").id.slice(1),cb=+B.closest(".col").id.slice(1);if(ca===cb)return;
+  var from=ca<cb?pt(a,"r"):pt(a,"l"),to=ca<cb?pt(b,"l"):pt(b,"r");if(!from||!to)return;var dx=(to.x-from.x)/2;
+  var p=document.createElementNS("http://www.w3.org/2000/svg","path");p.setAttribute("d","M"+from.x+","+from.y+" C"+(from.x+dx)+","+from.y+" "+(to.x-dx)+","+to.y+" "+to.x+","+to.y);
+  p.setAttribute("fill","none");p.setAttribute("stroke",cls.c);p.setAttribute("stroke-width",cls.w);p.setAttribute("opacity",cls.o);if(cls.d)p.setAttribute("stroke-dasharray",cls.d);svg.appendChild(p)}
+ var css=getComputedStyle(document.documentElement),C={ok:css.getPropertyValue("--blue"),no:css.getPropertyValue("--orange"),none:css.getPropertyValue("--grey"),f:css.getPropertyValue("--line"),fg:css.getPropertyValue("--fg")};
+ if($("all").checked)D.graph.edges.forEach(function(e){line(e.source,e.target,{c:C.f,w:1,o:.6})});
+ if(sel&&boxes[sel])D.graph.edges.forEach(function(e){if(e.source===sel||e.target===sel)line(e.source,e.target,{c:C.fg,w:1.5,o:.55,d:"4 3"})});
+ edgeList.forEach(function(e){line(e.a,e.b,{c:C[e.s],w:2.5,o:.9,d:e.s==="none"?"5 4":null})})}
+function side(R){var s=$("side");s.innerHTML="";
+ if(sel){var n=D.byId[sel];s.appendChild(el("h2","",n.label));s.appendChild(el("div","mute",{actor:"Chooses its own moves",action:"A move the rules allow",place:"A place",thing:"A thing in the world",process:"A change the world makes by itself"}[n.kind]));
+  var links={};D.graph.edges.forEach(function(e){if(e.source===sel)(links[e.label]=links[e.label]||[]).push("→ "+nm(e.target));if(e.target===sel)(links[e.label]=links[e.label]||[]).push("← "+nm(e.source))});
+  Object.keys(links).forEach(function(k){var d=el("div","");d.appendChild(el("b","",k+": "));d.appendChild(document.createTextNode(links[k].length>8?links[k].slice(0,8).join(", ")+" and "+(links[k].length-8)+" more":links[k].join(", ")));d.style.margin="6px 0";s.appendChild(d)});
+  var h=el("button","","Back to this round");h.onclick=function(){sel=null;draw()};s.appendChild(h);return}
+ s.appendChild(el("h2","","Round "+(R.turn||round+1)));
+ if(!R.tries.length)s.appendChild(el("div","mute","Nobody tried anything this round."));
+ R.tries.forEach(function(t){var d=el("div","try "+state(t.status));d.onclick=function(){pick(t.move||t.actor)};
+  var b=el("b","",nm(t.actor)+(t.move?" — "+nm(t.move):""));d.appendChild(b);d.appendChild(document.createTextNode(": "+words(t.status)));
+  if(t.because&&t.because.length)d.appendChild(el("span","why","Refused because: "+t.because.join("; ")));
+  if(t.nearest)d.appendChild(el("span","why","Closest move: "+nm("a:"+t.nearest)+"."));
+  s.appendChild(d)});
+ if(R.fired.length){s.appendChild(el("h2","","By itself this round"));s.appendChild(el("div","mute",R.fired.map(nm).join(", ")))}}
+</script></body></html>

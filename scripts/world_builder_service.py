@@ -1679,6 +1679,18 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 except Exception as error:
                     self._error(404, f"no room map for this run: {error}")
             return
+        if path.startswith("/share/") and path.endswith("/graph"):
+            record = _open_share(path[len("/share/"):-len("/graph")])
+            if record is None:
+                self._error(404, "shared run not found")
+            else:
+                try:
+                    from scripts.world_graph import graph_replay
+                    world = record["world"]
+                    self._json(200, {"ok": True, **graph_replay(world["bundle"], world.get("causal_model"), record.get("rounds") or [])})
+                except Exception as error:
+                    self._error(404, f"no graph for this run: {error}")
+            return
         if path.startswith("/share/") and path.endswith("/scene"):
             record = _open_share(path[len("/share/"):-len("/scene")])
             if record is None:
