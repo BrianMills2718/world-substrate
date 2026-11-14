@@ -1,23 +1,27 @@
-# World Builder saved-player design
+# World Builder workspace design
 
-Source: Brian’s 2026-11-13 approval of the [viewer recommendations](docs/VISUAL_FEEDBACK.md). Product truth is in [PRODUCT.md](PRODUCT.md); required behavior is in [world-builder-page](openspec/specs/world-builder-page/spec.md). This design extends the existing World Builder identity and applies to saved recordings.
+Source: Brian’s 2026-11-13 request for a creation-first home, persistent worlds, play/replay/branching and an actual spatial view; confirmed saved-round-first branching. Product truth is in [PRODUCT.md](PRODUCT.md); required behavior is in OpenSpec. This supersedes the inspection-first composition of the initial saved-player slice while preserving its useful controls.
 
-## Surface and visual authority
+## Home
 
-Mode: operate/read. Preserve the World Builder name, existing neutral dark surfaces, readable sans-serif text, blue/orange/grey status distinctions and styled contextual tooltips. Use words as well as status styling. This is a workflow replacement inside the existing visual system, not a new brand.
+One natural-language description box and Create simulation remain the starting action. Your worlds appears beneath it, with readable names, run availability and direct open actions. Private library access uses existing Owner access; no public list of visitor prompts. Search and empty/auth/error states say what is actually available. Example replays are labelled examples, separate from created worlds.
 
-## Composition
+## World studio
 
-Lead with the retained scenario description and truthful recorded-run status. The player starts paused. Visible previous/next, round choice and scrub controls make time deliberate. Playback steps through every recorded event before moving to the next round, so other actors and immediate consequences are not silently skipped.
+The main region is the composed visual world: people, places, objects and represented movement. Reuse native Living Scene projections, profiles/layout and project-owned assets, including the existing Coordination Hall lineage. The generic older role-grid picture remains an additional historical view, not the primary replacement for this scene.
 
-The working area contains a chronological event list, readable world state and contextual event detail. A desktop layout keeps the event list and explanation together; narrow screens stack readable regions and keep navigation reachable. Use explicit width budgets and a contextual inspector, following the pinned Astryx scaffold/structure/side-panel/responsive references in the [source receipt](evidence/ui/usability-review-20261113/astryx-sources.json).
+Scene, timeline, selected action and inspector share world/run/event identity. Selecting an earlier event reconstructs that event’s represented state and updates the scene. Delayed scene/run responses must not replace a later selection. Screen coordinates derived for display are labelled schematic; actual location/ownership fields remain authoritative.
 
-Select one round and event. Event detail shows original words, interpreted fields and recorded result; reaction children and installed-rule settlements retain separate identities. The primary world state and network are reconstructed through that selected event. The retained scene picture has round granularity and is labelled as the whole selected round, inside advanced inspection.
+Time controls remain reachable. Run controls explicitly distinguish New run, Continue, Replay and Branch from this checkpoint. The run list records parent and fork checkpoint; branch prefixes are preserved. A selected mid-round event is not the same as the completed-round checkpoint: preview/select round end before enabling Branch. Old replay-only recordings explain missing continuation data.
 
-Actor information stays attached to the selected actor and exact decision round. Present available structured input fields plainly; keep exact input and provenance available deeper. Do not infer missing information, summarize with another model, or equate supplied input with belief. Actor-only mode preserves the existing privacy projection and hides Analyst content.
+The event inspector shows original words, interpretation and actual effects, including separate reactions and ruling settlements. Actor input remains exact-person/decision-round evidence, deeper than the scene and concise outcome. Actor-only projection hides full-world scenes and other privileged Analyst data. Exact trace, full graph, rules and existing inspection remain available.
 
-## Preservation and acceptance
+## Visual and responsive system
 
-Keep Picture, Network, causal history, the original attempt inspector, exact actor inputs, rules, readout, download and existing creation/live actions reachable. Historical missing data is visibly unavailable. New controls support keyboard focus and styled hover/focus/phone help; use phone-sized targets.
+Inherit World Builder’s neutral dark controls, readable type, blue/orange/grey status labels and styled contextual help. The scene can use its established project assets and background; never make meaning depend on colour alone. No React migration is required. On phones the scene remains usable above a compact event selector and contextual detail, with explicit layout/zoom/full-view affordances rather than overlapping speech panels.
 
-Acceptance is the retained-data task in PRODUCT.md at desktop and phone widths, including direct historical selection from round 6 back to Ari’s round-3 reaction. The world state must become that event’s state; later actions in the same round must not overwrite it. No new simulation, engine, cognition capability or framework migration is part of this slice.
+## Acceptance and limits
+
+Use actual retained native data for scene/projection checks and a controlled persistent HTTP catalog for creation/resume/branch integration. Verify no mutation on merely opening a world, durable save acknowledgement, stale checkpoint rejection, parent immutability, exact state/memory restoration, and clear inability to branch from an incomplete historical recording. New simulations are unnecessary for renderer/catalog mechanics; any native model call must follow the existing free-first and budget rules.
+
+Natural-language interventions and starting-condition configuration are future features. There are no enabled controls implying those capabilities in this implementation.

@@ -13,6 +13,12 @@ reviewed_through: 2026-11-13
 **Recent work (#323 to #345, 2026-10-31 to 2026-11-09):** requests reach the person asked (#326); a shared run shows its picture and can be watched (#328, #329, #331); refusals say what really happened (#333); the Network shows one round and uses the fast layout (#338, #344); the Waltzman rebuild was recorded (#339); the planning package caught up (#340); model routes were renamed (#341); the Waltzman lineage review was written, its recommendations not adopted (#342); Brian's scale reason for rules over an AI judge was recorded (#345).
 **Deployment boundary:** the World Builder backend runs on the personal VPS and its pages on Cloudflare; shipping is `scripts/deploy_world_builder.sh`. The donor-backed `/waltzman/` demo stays a fallback and must not be presented as a native run.
 
+## World workspace — current approved implementation (2026-11-13)
+
+Brian requested natural-language creation as the starting page, all created worlds in a library, play/replay/branch controls and the existing spatial/visual world view. He selected completed saved-round branches first. Implementation is integrated locally: private owner SQLite catalog, exact native checkpoint hydration, independent branch lineage, creation-first library and primary composed spatial studio. Integrated owner browser and release verification remain in progress; this paragraph does not claim deployment. Existing incomplete historical recordings remain replay-only, without invented actor memories or lineage.
+
+Natural-language interventions at a fork and natural-language configuration of a saved world’s starting conditions are explicitly future features, distinct from creating a new world from language. See [product scope](../PRODUCT.md), [design](../DESIGN.md) and the archived OpenSpec world-workspace change. No new engine, scheduler, renderer or cognition system is authorized.
+
 ## Saved-run player — approved implementation (2026-11-13)
 
 Brian approved rebuilding the viewer after the independent usability review. The retained six-round run now has a paused player with direct round/event selection, playback through every retained event, event-specific world state and contextual actor input. Historical cause selection restores that event’s state and brings its detail into view. Phone composition uses a readable event picker; the retained round scene, full network and exact evidence remain available deeper. [Design](../DESIGN.md), [browser and review evidence](../evidence/ui/saved-player-20261113/). Local browser 38/38 and 31 home tests pass; code and task walkthrough reviews pass after diagnosed corrections. PR392 merged; frontend and backend deployed at `0496afefeecbd90e43c13e4f0be1093bbd2616b9`. The final public browser check passes 41/41 with no page errors or unexpected failed requests; all stored rounds, actor inputs and world fingerprint equal the retained recording (`evidence/ui/saved-player-20261113/live-browser/checks.json`). No new simulation or model call.
@@ -232,7 +238,7 @@ Hard constraints:
 | Declared laws | S1 to S3 built; S4 under way; S5 follows the plain-version comparison (Q60) | worlds declare laws, the engine keeps them, a second model reviews the rules |
 | Estimate rules | plan 2026-11-10, package compliant (#366); nothing built | a rule's outcome can depend on a chance Jev estimates from named facts, rolled, recorded and replayed without Jev; only slice E4 (judge-proposed estimate rules) waits for the judge's J3 ([plan](../docs/plans/estimate_rules.md)) |
 | Hardening | queued | law fingerprint with compiler version, role-bound scopes, visible discovery overflow, recorded mechanic exceptions, locking |
-| Persistence and second-domain proof | later | saved user worlds beyond share links; proof beyond Waltzman |
+| Persistence and second-domain proof | split | private owner world/run catalog implemented locally in world-workspace; release verification pending; scientific proof beyond Waltzman remains later |
 
 ### Active slice
 

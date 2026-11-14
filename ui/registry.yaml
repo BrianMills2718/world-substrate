@@ -10,7 +10,7 @@ surfaces:
     source_path: scripts/world_builder_home.html
     url: https://brianmills.dev/world-builder/
     tests: scripts/e2e/world_builder_e2e.mjs (includes the tooltip check the workspace tooltip policy cites); evidence/ui/saved-player-20261113/browser_check.py
-    purpose: Define a represented world, request a constrained model proposal for its mechanics, review compiler-derived authority, approve, then launch a fresh scripted or model-selected run and inspect it.
+    purpose: Create worlds from language, reopen a private owner library, play and replay spatial worlds, and branch completed saved rounds with exact continuation state.
   - id: waltzman-stakeholder-demo
     name: Waltzman stakeholder demo
     lifecycle: canonical
@@ -21,10 +21,17 @@ surfaces:
   - id: living-world-visualization
     name: Standalone living-world visualization
     lifecycle: superseded
-    source_path: README.md
+    source_path: evidence/renders/waltzman-demo-v0.html
     url: https://brianmills.dev/world-substrate-visualization/
-    note: Earlier synthetic visualization prototype, still deployed as design evidence; superseded by the World Builder and the Waltzman demo (README).
-    purpose: Legacy prototype of the living-world view.
+    note: Earlier native event replay, retained as historical visual evidence.
+    purpose: Historical native world replay.
+  - id: native-composed-coordination-hall
+    name: Native composed Coordination Hall
+    lifecycle: canonical
+    source_path: scripts/build_waltzman_living_replay_v2.py
+    url: https://brianmills.dev/waltzman/world-substrate
+    purpose: Spatial native reference replay with actors, places and event-linked material state.
+    note: Native substrate recording; distinct from the donor runtime at /waltzman/.
   - id: native-run-replays
     name: Native run replays and Waltzman version index
     lifecycle: canonical

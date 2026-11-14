@@ -2769,6 +2769,11 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 self._error(403, "reading a private catalog run needs the owner password")
                 return
             record = _catalog().run_by_id(body["catalog_run_id"])["record"]
+            # Bind the readout to the server's exact immutable prefix, never a client claim.
+            request = _REQUEST.get()
+            if request is not None:
+                request["summary"].update(catalog_run_id=record["catalog_run_id"],
+                                          checkpoint_id=record["checkpoint_id"])
         else:
             runs, build = self._run_ids(body)
             record = _assemble_share(build, runs)
@@ -2793,7 +2798,22 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             record = _catalog().run_by_id(body["catalog_run_id"])["record"]
             if not record.get("rounds"):
                 raise ValueError("run at least one round before sharing")
+            readout_id = body.get("readout_trace_id")
+            if readout_id is not None and not (isinstance(readout_id, str) and _TRACE_PATTERN.fullmatch(readout_id)):
+                raise ValueError("readout_trace_id must be a readout id from this service")
+            if readout_id:
+                logged = _logged_entries({readout_id}).get(readout_id)
+                source = (logged or {}).get("request") or {}
+                if (logged and logged["path"] == "/readout" and logged.get("status") == 200
+                        and logged.get("client") == _fingerprint(client)
+                        and source.get("catalog_run_id") == record["catalog_run_id"]
+                        and source.get("checkpoint_id") == record["checkpoint_id"]):
+                    record["readout"] = (logged.get("result") or {}).get("readout")
+                    record["readout_trace_id"] = readout_id
             share_id = _save_share(_fingerprint(client), record)
+            if share_id is None:
+                self._error(HTTPStatus.TOO_MANY_REQUESTS, "You have shared a lot of runs today; try again tomorrow.")
+                return
             self._json(200, {"ok": True, "share_id": share_id, "rounds": len(record["rounds"])})
             return
         runs, build = self._run_ids(body)

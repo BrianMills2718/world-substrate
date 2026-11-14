@@ -1,4 +1,4 @@
-limit: 217
+limit: 222
 reason: 'Measured at 544c086: 183 tracked Markdown files, including required per-run
   TRACE_READ records and historical OpenSpec change records. Preserve that evidence;
   current authority remains docs/index.md and roadmap/README.md. New authored documents
@@ -25,3 +25,7 @@ unlinked_ok:
 - path: openspec/changes/archive/
   reason: Historical change proposals and deltas; current required behavior is openspec/specs/,
     linked from the documentation index.
+
+# Five required world-workspace OpenSpec records: proposal, tasks, two archived
+# deltas and the new current world-catalog spec. PRODUCT/DESIGN and roadmap
+# remain the existing authorities; no parallel plan or handoff document.

@@ -67,6 +67,31 @@ class CatalogServiceTests(unittest.TestCase):
         return self.request('/run', {'catalog_run_id': rid, 'expected_checkpoint_id': checkpoint,
                                     'approved': True, 'policy': 'scripted', 'turns': 1, **extra})
 
+    def test_catalog_readout_uses_durable_prefix_and_only_shares_matching_checkpoint(self):
+        rid = self.new_run()
+        status, first = self.step(rid)
+        self.assertEqual(status, 200, first)
+        detail = service._catalog().run_by_id(rid)
+        def fake_dialogue(handler, client, kind, call, **kwargs):
+            payload, _ = call('readout-test', 0)
+            handler._json(200, {'ok': True, **payload, 'trace_id': service.TRACE_ROOT + '/readout/' + 'a' * 32})
+        def fake_read(rounds, **kwargs):
+            self.assertEqual(rounds, detail['record']['rounds'])
+            return {'title': 'Durable orchard'}, None
+        from scripts import run_readout
+        with patch.object(service.WorldBuilderHandler, '_dialogue_call', fake_dialogue), patch.object(run_readout, 'read_run', fake_read):
+            status, result = self.request('/readout', {'catalog_run_id': rid})
+        self.assertEqual(status, 200, result)
+        readout_id = result['trace_id']
+        status, shared = self.request('/share', {'catalog_run_id': rid, 'readout_trace_id': readout_id})
+        self.assertEqual(status, 200, shared)
+        self.assertEqual(self.request('/share/' + shared['share_id'], owner=False)[1]['readout'], result['readout'])
+        status, second = self.step(rid, first['checkpoint_id'])
+        self.assertEqual(status, 200, second)
+        status, shared = self.request('/share', {'catalog_run_id': rid, 'readout_trace_id': readout_id})
+        self.assertEqual(status, 200, shared)
+        self.assertNotIn('readout', self.request('/share/' + shared['share_id'], owner=False)[1])
+
     def test_private_catalog_requires_owner_for_reads_creates_and_runs(self):
         self.assertEqual(self.request('/worlds', owner=False)[0], 403)
         self.assertEqual(self.request('/worlds/' + self.world['id'] + '/runs', {}, owner=False)[0], 403)

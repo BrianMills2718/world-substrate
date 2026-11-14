@@ -1,27 +1,39 @@
 # World Builder product context
 
-Source: Brian’s approved simulator vision and the accepted decisions in [architecture](docs/architecture/arc42.md); saved-player recommendation in [visual feedback](docs/VISUAL_FEEDBACK.md), approved 2026-11-13: “yes do that”. This file summarizes product use for UI work; architecture, OpenSpec and accepted decisions retain their authority.
+Source: Brian’s current world-workspace request and branching follow-up, 2026-11-13; accepted simulator decisions in [architecture](docs/architecture/arc42.md). This file records the product target for UI work. Architecture, OpenSpec and accepted decisions retain their narrower authority.
 
 ## Platform and stack
 
-Web. The existing World Builder uses HTML, CSS and JavaScript with a Python service. The saved-player slice extends that stack, applying selected Astryx layout guidance without adopting its React components. This is an agent implementation choice under the approved scope.
+Web. Extend the existing HTML/CSS/JavaScript and Python service, existing SQLite persistence, native runner and composed Living Scene renderer. Catalog identity is application metadata outside immutable world bundles. No new simulator engine, scheduler, renderer or cognition system.
 
-## Users and purpose
+## Users, purpose and main journey
 
-Brian and simulation users describe a bounded world, watch people and processes act, and investigate what changed, why, and which information an actor received. Waltzman influence/coordination scenarios are one application of a general-purpose simulator, not the UI’s only domain.
+A person starts at a natural-language world-creation page. Created worlds remain in a durable library. Opening a world leads to its visual/spatial studio, runs and branches. The person can start or continue a run, replay its retained history, or create a new branch from a saved completed round.
 
-The recurring viewing task is to choose a time and event, inspect its actual effects and causal context, and inspect the relevant actor’s supplied information without losing the selected event. Watching and investigating use the same recording.
+The world itself is the primary display. Spatial/visual and causal inspection belong together; the event/state/actor inspector supports the world view. The saved-player slice is an inspection capability inside this larger product, not a replacement for the visual world or home/library workflow.
 
-## Capabilities and constraints
+Waltzman influence/coordination is one application of a general-purpose simulator. Preserve actual represented place membership, object ownership and accepted movement. Screen geometry may be illustrative; it is not evidence of physical distance, collision or walking constraints unless those are represented by the world’s own rules.
 
-- Preserve the approved creation flow: one description box and Create simulation; existing live execution remains available.
-- A saved recording is read-only evidence. Playback and seeking make no model calls and never alter stored state or resident memory.
-- Original wording, interpretation, installed-rule result, later settlement and immediate reactions remain distinct. Preserve visible errors in historical recordings.
-- Supplied actor input is evidence of what was supplied, not proof of belief. Actor-only viewing uses declared retained inputs; full-world state and diagnostics belong to Analyst view.
-- General semantic accuracy and scientific fidelity are separate from UI correctness. [Modeling choices](docs/model/modeling-choices.md) defines those boundaries.
+## Current implementation scope
+
+- Home retains one description box and Create simulation, with Your worlds below. Successful owner-created worlds are saved durably. The initial catalog is private under existing Owner access; public sharing remains explicit. Guest/IP bookkeeping is not an ownership credential.
+- A world definition, logical run, request segment, public share and saved checkpoint have distinct IDs. Existing simulation content IDs are never rewritten to become catalog IDs.
+- New run starts the world from its initial state. Continue resumes the current run from its complete saved checkpoint. Replay is read-only and makes no model calls. Branch copies a completed saved round’s material state, actor memory, reviewed rule/ruling identity and applicable continuation state into an independent child run with linked parent history.
+- An event projection is not a resumable cognitive checkpoint. Branching is explicitly from the end of a saved round, with the checkpoint state previewed before creation. Parents remain unchanged.
+- Recoverable owner logs/public recordings may be imported without inventing missing state, ownership or parentage. Replay-only older recordings show why Continue/Branch is unavailable.
+- Original wording, interpretation, mechanical result, later settlements and reactions remain distinct. Actor inputs use actual retained person/round records and do not prove belief. Actor-only viewing hides privileged world/diagnostic content.
+
+## Future features explicitly requested by Brian
+
+Source: Brian’s branching answer, 2026-11-13: start with saved-round branches; document these as future features.
+
+1. **Natural-language interventions at a fork.** For example, ask that Ari tell Bo about the failed sensor. A later design must translate an intervention through installed/reviewed mechanics and retain what was actually done, without rewriting parent history or directly assigning a human’s belief.
+2. **Natural-language configuration of starting conditions.** Configure an existing world’s initial conditions through language as a separate reviewed variant, rather than silently editing a recorded run or its world rules. Initial state, agent information and rule/version identity must remain explicit.
+
+Neither feature is implemented or advertised by the current saved-round branching UI. Natural-language creation can already describe a new world; that is distinct from configuring a reusable saved world’s starting conditions.
 
 ## Evidence and success
 
-Use retained pump recording `T-e9dYLdIi61` and historical airfield recording `PKVERt8chzt7`, with no fresh simulation. The approved [usability assessment](.impeccable/critique/2026-11-13T20-43-27Z__scripts-world-builder-home-html.md) and its evidence identify the failures.
+Reuse existing native Kitchen/Castaway/Workshop/Greenhouse examples and retained pump data. The polished [native Coordination Hall](https://brianmills.dev/waltzman/world-substrate) demonstrates existing composed visual capability. The [Replay Studio](https://brianmills.dev/world-builder/play/) is a static example set, not the created-world library.
 
-Success is a readable desktop and phone player with direct temporal control and coherent event context. Demonstrate Bo’s original negative words versus recorded positive assent, then Ari’s parent/child validation steps with their corresponding historical state and actor input. Human comprehension remains Brian’s judgment; passing technical assertions alone do not establish it.
+Success is one continuous workflow: create → find world → open spatial/visual studio → play/replay → preview completed checkpoint → branch → observe independent continuation. Inspect the corresponding action, effects and supplied actor information without losing world/run/time context. Technical checks do not establish human comprehension or scientific model fidelity.

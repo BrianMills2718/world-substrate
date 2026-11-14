@@ -14,6 +14,12 @@ model {
   service = component 'World Builder service' {
     description 'scripts/world_builder_service.py: same-origin HTTP API, jobs, budget ledger, run log, share links'
   }
+  catalog = store 'Private world catalog' {
+    description 'scripts/world_catalog.py: SQLite definitions, logical runs, complete checkpoints and branch ancestry'
+  }
+  scene_bridge = component 'Generated-world scene bridge' {
+    description 'scripts/world_scene_bridge.py: original world and retained events to existing composed Living Scene'
+  }
   generation = component 'World generation' {
     description 'scripts/generate_world_bundle.py, generate_causal_model.py, scaffold_world.py, review_rules.py'
   }
@@ -64,6 +70,10 @@ model {
   }
 
   page -> service 'HTTP, same origin'
+  service -> catalog 'save and hydrate exact checkpoints'
+  service -> scene_bridge 'render requested retained context'
+  scene_bridge -> replay 'reuse composed renderer'
+  scene_bridge -> projection 'reconstruct retained event state'
   service -> generation 'propose structure and rules'
   service -> peopleworld 'worlds about people'
   service -> driver 'install and run'

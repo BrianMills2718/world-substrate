@@ -137,7 +137,7 @@ World Builder API (Worker world-builder-api -> container on the personal VPS, im
 World Substrate engine (src/world_substrate) --> run log, budget ledger, saved worlds and share links on the VPS
 ```
 
-Upstream semantic input is the pinned Linguistic Core extraction; review pages for planning packages are served from `hive.brianmills.dev/plans/world-substrate/main/proposals/`. The promoted stakeholder demo at `https://brianmills.dev/waltzman/` runs through the Cybernetic V3 donor path on the same VPS (moved 2026-09-16), and `https://brianmills.dev/world-substrate-visualization/` still serves the synthetic prototype as legacy design evidence.
+Upstream semantic input is the pinned Linguistic Core extraction; review pages for planning packages are served from `hive.brianmills.dev/plans/world-substrate/main/proposals/`. The promoted stakeholder demo at `https://brianmills.dev/waltzman/` runs through the Cybernetic V3 donor path on the same VPS (moved 2026-09-16), `https://brianmills.dev/waltzman/world-substrate` serves the native composed Coordination Hall, and `https://brianmills.dev/world-substrate-visualization/` serves an earlier native event replay as historical visual evidence. Neither historical replay is the created-world library.
 
 ### Source dispositions
 
@@ -228,7 +228,9 @@ The diagram source is [model.c4](model.c4) (LikeC4); its arrows follow each modu
 | Projection and scenes | `src/world_substrate/projection.py`, `living_scene.py`, `living_scene_layout.py` | snapshot plus event deltas; logical scene frames | [live-projection](../../openspec/specs/live-projection/spec.md), [living-scene](../../openspec/specs/living-scene/spec.md) |
 | Policies | `src/world_substrate/policy.py` | scripted and LLM selection among Engine-minted action ids | transition-engine |
 | World Builder service | `scripts/world_builder_service.py`, `world_builder_runs.py`, `world_dialogue.py` | same-origin HTTP API: generate, approve, run, jobs, budget ledger, run log, share links | [world-builder-page](../../openspec/specs/world-builder-page/spec.md) |
-| World Builder page | `scripts/world_builder_home.html`, `world_builder_app.js`, `world_builder_core.js`, `render_world_builder.py` | one box and Create simulation; live play; build record | world-builder-page |
+| World catalog | `scripts/world_catalog.py` | private SQLite world definitions, logical runs, complete end-round checkpoints and parent-linked branches; durable write before owner success; old incomplete recordings remain replay-only | [world-catalog](../../openspec/specs/world-catalog/spec.md) |
+| Generated-world scene bridge | `scripts/world_scene_bridge.py` | map original generated input and retained events into the existing composed Living Scene; canonical place membership, illustrative screen geometry, parent-driven event selection | living-scene, scene-replay |
+| World Builder page | `scripts/world_builder_home.html`, `world_builder_app.js`, `world_builder_core.js`, `render_world_builder.py` | natural-language creation, private world library, spatial studio, live play, replay and saved-round branching | world-builder-page |
 | World generation | `scripts/generate_world_bundle.py`, `generate_causal_model.py`, `scaffold_world.py`, `review_rules.py` | propose structure, propose rules, validate the bundle, independent rules review | [world-authoring-bundle](../../openspec/specs/world-authoring-bundle/spec.md), causal-model-authoring |
 | Run driver | `scripts/run_authored_world.py`, `attempts.py`, `concordia_residents.py`, `run_stop.py` | install and run a world; tasks under way; Concordia residents; when a run stops by itself | transition-engine |
 | People-world path | `scripts/people_world.py` plus `spikes/any-scenario-2026-10/` (`compile_spec`, `spec_pipeline`, imported at `people_world.py:26,76-77`) | build a world about people through the scenario-spec pipeline | ODD 11 |
@@ -240,6 +242,12 @@ The diagram source is [model.c4](model.c4) (LikeC4); its arrows follow each modu
 | Checks | `scripts/check_project.py`, `check_saved_worlds.py`, `check_trace_reads.py`, `deploy_world_builder.sh` | project gate, free replay of saved worlds, trace-read coverage, gated deploy | none |
 
 Reference worlds under `reference_worlds/` (Castaway, Kitchen, Greenhouse, Workshop, Waltzman, CVS sustainment) are fixtures, not engine code. The Workshop world showed the machinery-versus-content split (M6): components are an open typed registry (`model.py:188`), observation needs a location rather than a special actor state (`engine.py:263-270`), and the Workshop keeps its own `pick_up` rule. Only revision-currency and entity-existence checks are substrate-universal; a materially different world re-specifies nearly all other checks (M2 give-path audit).
+
+### Catalog and continuation boundary (2026-11-13)
+
+Owner access protects the complete catalog; public share links expose only explicitly shared records. World content identity, catalog world identity, logical run identity, request trace identity and checkpoint identity remain separate. A complete checkpoint retains material state, actor continuation state, ruling and approval state, and the original definition. The server hydrates continuation from that checkpoint rather than trusting client replacements. A branch links the saved prefix and starts an independent logical run; an event projection alone cannot serve as a cognitive checkpoint. Successful terminal responses with no new round preserve the existing checkpoint. Recovery never infers missing parentage from matching fingerprints or adjacent rounds.
+
+The visual bridge uses the existing composed renderer, with place membership reconstructed from canonical events. Geometry and motion are schematic unless the world represents physical constraints. Natural-language fork interventions and configuring a saved world’s starting conditions remain future features, described in [product context](../../PRODUCT.md).
 
 ## 6. Runtime view
 

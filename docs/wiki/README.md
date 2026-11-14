@@ -209,10 +209,11 @@ state.
 ## Human-reviewable artifacts
 
 - <https://brianmills.dev/world-builder/>: the World Builder (one box, Create simulation, live play).
+- <https://brianmills.dev/waltzman/world-substrate>: the native composed Coordination Hall.
 - <https://brianmills.dev/world-builder/play/>: Replay Studio over retained traces.
 - <https://brianmills.dev/world-builder/build/>: the advanced form editor.
 - <https://brianmills.dev/waltzman/>: the donor-backed Waltzman demo, kept as fallback.
-- <https://brianmills.dev/world-substrate-visualization/>: the 2026-09 synthetic prototype, design evidence only.
+- <https://brianmills.dev/world-substrate-visualization/>: an earlier native event replay, retained as historical visual evidence.
 - Review pages for the planning packages: `hive.brianmills.dev/plans/world-substrate/main/proposals/{planning-package,open-attempt,declared-laws,ai-judge,estimate-rules}/review-page/`.
 - `evidence/renders/waltzman-demo-v0.html`, `evidence/renders/kitchen-spatial-replay-v1.html` and
   `evidence/renders/greenhouse-zero-review-v0.html`: retained reference replays.

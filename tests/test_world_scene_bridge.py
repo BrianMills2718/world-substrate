@@ -72,9 +72,9 @@ def test_authored_labels_cannot_escape_script_or_markup():
     assert '__PROFILE____AUTOPLAY__' in result['html']
 
 
-def test_settlement_under_actor_ruling_is_retained():
+def test_settlement_under_native_actor_judge_is_retained():
     world = {'bundle':{'world':{'id':'example'},'entities':[{'id':'a','categories':['actor'],'components':{}}]}}
-    rounds = [{'turn':1,'actors':{'a':{'event_id':'r1-e00001','status':'unsupported_action','changes':[], 'ruling':{'disposition':{'settled':{'event_id':'r1-e00002','status':'accepted','changes':[]}}}}}}]
+    rounds = [{'turn':1,'actors':{'a':{'event_id':'r1-e00001','status':'unsupported_action','changes':[], 'judge':{'disposition':{'settled':{'event_id':'r1-e00002','status':'accepted','changes':[]}}}}}}]
     projection, _, _ = build_scene_inputs(world, rounds)
     assert [e['event_id'] for e in projection['events']] == ['r1-e00001','r1-e00002']
 
