@@ -78,3 +78,29 @@ def test_every_connection_a_prepared_map_declares_is_walkable_with_a_doorway(map
     for a, b in prepared["connections"]:
         start, goal = ex.anchor(maze, prepared["slots"][a]), ex.anchor(maze, prepared["slots"][b])
         assert ex.doorway(maze, [start] + ex.walk(maze, start, goal))
+
+
+@pytest.mark.req("scene-viewer/owner-run-viewer")
+def test_a_run_log_alone_gives_the_same_replay_as_the_hand_exported_one():
+    """The first saved round carries the bundle, so the run log is enough: no separate bundle file."""
+    from scripts import open_scene_viewer as viewer
+    run_log = ROOT / "evidence/ui/inhabited-facility-20261113/run-log.jsonl"
+    rows = [json.loads(line) for line in run_log.read_text().splitlines() if line.strip()]
+    rows[0]["request"]["bundle"]["layout"] = BUNDLE["layout"]  # this saved run predates layouts
+    rows.insert(0, {**rows[0], "ts": "0", "path": "/other"})  # a non-run row is ignored
+    chain, bundle = viewer.pick_run(rows, "Pump Facility")
+    assert len(chain) == 6 and bundle["layout"]["map"] == "ville-dorm"
+    with pytest.raises(SystemExit, match="no saved run"):
+        viewer.pick_run(rows, "No Such World")
+
+
+@pytest.mark.req("scene-viewer/owner-run-viewer")
+@pytest.mark.skipif(not VILLE.exists(), reason="needs the local Smallville clone")
+def test_the_owner_export_reproduces_the_viewer_replay():
+    from scripts import open_scene_viewer as viewer
+    from scripts.export_smallville_replay import export_from_rows
+    rows = [json.loads(line) for line in (ROOT / "evidence/ui/inhabited-facility-20261113/run-log.jsonl").read_text().splitlines() if line.strip()]
+    rows[0]["request"]["bundle"]["layout"] = BUNDLE["layout"]
+    chain, bundle = viewer.pick_run(rows, None)
+    got = export_from_rows(chain, bundle, VILLE)
+    assert got == json.loads((ROOT / "viewer/smallville/replay.json").read_text())

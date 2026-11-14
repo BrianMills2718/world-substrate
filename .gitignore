@@ -13,3 +13,4 @@ runs/
 .DS_Store
 .lockstep/
 viewer/smallville/assets/
+viewer/smallville/replay-owner.json
