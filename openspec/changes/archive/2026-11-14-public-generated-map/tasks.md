@@ -1,0 +1,3 @@
+- [x] Generated map, CC0 sheet and licence note, two prepared maps
+- [x] Viewer draws a replay's grid; exporter attaches it
+- [x] Tests; viewed at 1280px

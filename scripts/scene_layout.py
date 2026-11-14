@@ -89,4 +89,4 @@ def resolve(bundle: dict[str, Any]) -> dict[str, Any]:
     return {"rooms": {p: prepared["slots"][s] for p, s in layout["rooms"].items()},
             "people": {p: labels[p] for p in layout["people"]},
             "start_rooms": {p: row["start"] for p, row in layout["people"].items()},
-            "labels": labels, "doors": layout["doors"], "sprites": sprites, "map": layout["map"], "title": bundle["world"]["label"], "tiles": prepared["tiles"]}
+            "labels": labels, "doors": layout["doors"], "sprites": sprites, "map": layout["map"], "title": bundle["world"]["label"], "tiles": prepared["tiles"], "prepared": prepared}
