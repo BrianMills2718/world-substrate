@@ -81,6 +81,7 @@ def main():
             fruit=copy.deepcopy(bundle['entities'][-1]);fruit['id']='apple-'+str(n);bundle['entities'].append(fruit)
         bundle['actor_information']={'version':1,'public_summary':'A public orchard used only for interface verification.','public_entities':[{'id':e['id'],'label':e['label'],'fields':[]} for e in bundle['entities']], 'actors':{'ava':{'brief':'Pick fruit in this orchard.','initial_knowledge':[],'observable_fields':[]}}}
         definition={'ok':True,'bundle':bundle,'causal_model':causal,'description':'A constructed orchard interface fixture with twelve fruit. Scripted policy verifies persistence, not model behavior.','world_kind':'ongoing','run_stop':{'mode':'every_round'},'review':service.CausalModel.from_dict(causal,bundle=service.validate_bundle(bundle)).as_review()}
+        definition.pop('review')  # Historical build logs omit this derived display summary.
         orchard=catalog.save_world(definition,service._world_fingerprint(bundle,causal))
         receipt['fixture_world']=definition
         server=ThreadingHTTPServer(('127.0.0.1',0),Handler)
@@ -115,7 +116,7 @@ def main():
                 page.locator('#workspace-home').click();page.wait_for_function('!document.querySelector("#stage-describe").hidden && !document.querySelector("#library-status").textContent.includes("Loading")');page.locator('[data-world-id="'+orchard['id']+'"]').click();page.locator('#world-scene').wait_for(state='visible')
                 page.locator('#workspace-new-run').click()
                 page.wait_for_function('document.querySelector("#outcome").textContent.startsWith("Round 1")')
-                page.locator('#play-btn').click()
+                page.locator('#play-btn').click();page.locator('#workspace-replay').click()
                 page.wait_for_function('document.querySelector("#saved-player").hidden === false')
                 parent_id=urllib.parse.parse_qs(urllib.parse.urlparse(page.url).query)['worldRun'][0]
                 parent=api('/worlds/'+orchard['id']+'/runs/'+parent_id)
@@ -123,7 +124,7 @@ def main():
                 prefix=len(parent['record']['rounds'])
                 page.locator('#workspace-continue').click()
                 page.wait_for_function('(n)=>document.querySelector("#outcome").textContent.startsWith("Round "+(n+1))',arg=prefix)
-                page.locator('#play-btn').click();page.wait_for_function('document.querySelector("#saved-player").hidden === false')
+                page.locator('#play-btn').click();page.locator('#workspace-replay').click();page.wait_for_function('document.querySelector("#saved-player").hidden === false')
                 parent=api('/worlds/'+orchard['id']+'/runs/'+parent_id)
                 check('Continue extends the same run with earlier prefix',len(parent['record']['rounds'])>prefix and parent['run']['id']==parent_id)
                 before=len(receipt['network']);page.locator('#workspace-replay').click();page.locator('#saved-player').wait_for(state='visible');page.wait_for_timeout(200)
@@ -136,7 +137,7 @@ def main():
                 prior_inputs=len(receipt['native_inputs']);page.locator('#workspace-branch').click()
                 page.wait_for_function('(old)=>!location.href.includes(old)',arg=parent_id)
                 page.wait_for_function('document.querySelector("#outcome").textContent.startsWith("Round 2")')
-                page.locator('#play-btn').click();page.wait_for_function('document.querySelector("#saved-player").hidden === false')
+                page.locator('#play-btn').click();page.locator('#workspace-replay').click();page.wait_for_function('document.querySelector("#saved-player").hidden === false')
                 child_id=urllib.parse.parse_qs(urllib.parse.urlparse(page.url).query)['worldRun'][0]
                 child=api('/worlds/'+orchard['id']+'/runs/'+child_id)
                 expected=catalog.resume(parent_id,parent['run']['checkpoint_id'])

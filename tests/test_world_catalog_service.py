@@ -98,7 +98,7 @@ class CatalogServiceTests(unittest.TestCase):
         self.assertEqual(self.request('/run', {'catalog_run_id': 'x', 'expected_checkpoint_id': None}, owner=False)[0], 403)
         status, detail = self.request('/worlds/' + self.world['id'])
         self.assertEqual(status, 200)
-        self.assertEqual(detail['world']['definition'], WORLD)
+        self.assertEqual({k: detail['world']['definition'][k] for k in WORLD}, WORLD)
 
     def test_real_native_round_continue_branch_and_durable_prefix(self):
         rid = self.new_run()
@@ -198,6 +198,37 @@ class CatalogServiceTests(unittest.TestCase):
         self.assertFalse(detail['checkpoints'][0]['can_branch'])
         self.assertIn('earlier checkpoint', detail['checkpoints'][0]['reason'])
         self.assertEqual(self.request('/worlds/' + wid + '/runs', {'parent_run_id': rid, 'checkpoint_id': first['checkpoint_id']})[0], 422)
+
+    def test_request_round_cap_does_not_exhaust_logical_run(self):
+        definition = copy.deepcopy(WORLD)
+        definition['run_stop'] = {'mode': 'every_round'}
+        wid = service._catalog().save_world(definition, 'every-round')['id']
+        rid = service._catalog().create_run(wid)['run']['id']
+        status, first = self.step(rid)
+        self.assertEqual(status, 200, first)
+        self.assertEqual(first['summary']['stopped']['reason'], 'round_cap')
+        detail = service._catalog().run_by_id(rid)
+        self.assertTrue(detail['run']['can_continue'])
+        self.assertTrue(detail['checkpoints'][0]['can_branch'])
+        status, second = self.step(rid, first['checkpoint_id'])
+        self.assertEqual(status, 200, second)
+        self.assertEqual(second['summary']['last_turn'], 2)
+
+    def test_historical_missing_display_review_is_derived_without_rewriting_definition(self):
+        wid = self.world['id']
+        status, detail = self.request('/worlds/' + wid)
+        self.assertEqual(status, 200, detail)
+        self.assertTrue(detail['world']['definition']['review']['mechanics'])
+        self.assertEqual(detail['world']['definition']['review_origin'], 'compiler-derived-from-retained-rules')
+        status, run = self.request('/worlds/' + wid + '/runs', {})
+        self.assertEqual(status, 200, run)
+        self.assertTrue(run['record']['world']['review']['mechanics'])
+        self.assertEqual(service._catalog().world(wid)['world']['definition'], WORLD)
+        status, first = self.step(run['run']['id'])
+        self.assertEqual(status, 200, first)
+        status, share = self.request('/share', {'catalog_run_id': run['run']['id']})
+        self.assertEqual(status, 200, share)
+        self.assertTrue(self.request('/share/' + share['share_id'], owner=False)[1]['world']['review']['mechanics'])
 
     def test_recovery_closes_share_reader_before_writing_the_same_database(self):
         # Production defaults catalog and shares to the same SQLite file.

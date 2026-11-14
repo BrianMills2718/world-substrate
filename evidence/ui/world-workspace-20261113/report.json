@@ -128,12 +128,12 @@
     },
     {
       "method": "GET",
-      "path": "/world-builder/api/worlds/8f584c369f2546a7b8f81685c510b3b4",
+      "path": "/world-builder/api/worlds/e7dc784080a34720bd1729f1176ee716",
       "status": 200
     },
     {
       "method": "GET",
-      "path": "/world-builder/api/worlds/8f584c369f2546a7b8f81685c510b3b4/scene",
+      "path": "/world-builder/api/worlds/e7dc784080a34720bd1729f1176ee716/scene",
       "status": 200
     },
     {
@@ -143,37 +143,22 @@
     },
     {
       "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3",
       "status": 200
     },
     {
       "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/scene",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/scene",
       "status": 200
     },
     {
       "method": "POST",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs",
       "status": 200
     },
     {
       "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/f66ff966e45a4d2c821f6f81887f22aa/scene",
-      "status": 200
-    },
-    {
-      "method": "POST",
-      "path": "/world-builder/api/run",
-      "status": 202
-    },
-    {
-      "method": "GET",
-      "path": "/world-builder/api/jobs/b913800fb29d486995f0a7d9d9cf7ad5",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/f66ff966e45a4d2c821f6f81887f22aa/scene",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d/scene",
       "status": 200
     },
     {
@@ -183,32 +168,12 @@
     },
     {
       "method": "GET",
-      "path": "/world-builder/api/jobs/f58b2f696af74eb388877437ce056de8",
+      "path": "/world-builder/api/jobs/85302a4fd82a46edabfe4945143f0211",
       "status": 200
     },
     {
       "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/f66ff966e45a4d2c821f6f81887f22aa/scene",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/f66ff966e45a4d2c821f6f81887f22aa",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/f66ff966e45a4d2c821f6f81887f22aa/scene",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/f66ff966e45a4d2c821f6f81887f22aa",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/f66ff966e45a4d2c821f6f81887f22aa/scene",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d/scene",
       "status": 200
     },
     {
@@ -218,7 +183,42 @@
     },
     {
       "method": "GET",
-      "path": "/world-builder/api/jobs/5da187b581d74af58d5fc81ab7a4af86",
+      "path": "/world-builder/api/jobs/a8810c7e90d746b99d9f9303f010f5a3",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d/scene",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d/scene",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d/scene",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d/scene",
       "status": 200
     },
     {
@@ -228,57 +228,7 @@
     },
     {
       "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/f66ff966e45a4d2c821f6f81887f22aa/scene",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/world-builder/api/jobs/9250ea71507b4b5e81370fc4433c4e31",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/f66ff966e45a4d2c821f6f81887f22aa/scene",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/f66ff966e45a4d2c821f6f81887f22aa",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/f66ff966e45a4d2c821f6f81887f22aa/scene",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/f66ff966e45a4d2c821f6f81887f22aa",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/f66ff966e45a4d2c821f6f81887f22aa/scene",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/f66ff966e45a4d2c821f6f81887f22aa",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/f66ff966e45a4d2c821f6f81887f22aa/scene",
-      "status": 200
-    },
-    {
-      "method": "POST",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/8ffb2d65d7b04c02b20b50b5a9ddbb27/scene",
+      "path": "/world-builder/api/jobs/977a9217ab054e97b9ed1c69f1ffa3e4",
       "status": 200
     },
     {
@@ -288,7 +238,67 @@
     },
     {
       "method": "GET",
-      "path": "/world-builder/api/jobs/d91abd516dcb490cac54d6ab9e0d5185",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d/scene",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/jobs/16dc2415a404463da8181d1b0d1f6718",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d/scene",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d/scene",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d/scene",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d/scene",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/b31b394927cc4eb2b1430f50d1c6959d/scene",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/3b0784a8252f47f2a5ee4bcc2ca73bc6/scene",
       "status": 200
     },
     {
@@ -298,27 +308,47 @@
     },
     {
       "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/8ffb2d65d7b04c02b20b50b5a9ddbb27/scene",
+      "path": "/world-builder/api/jobs/ffd70755078a40f4b2870fb97260ba63",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/world-builder/api/run",
+      "status": 202
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/3b0784a8252f47f2a5ee4bcc2ca73bc6/scene",
       "status": 200
     },
     {
       "method": "GET",
-      "path": "/world-builder/api/jobs/362c85bf9fda4582993e22bd42391a87",
+      "path": "/world-builder/api/jobs/a2a4faa295e34c0bbff0bf384c36dda5",
       "status": 200
     },
     {
       "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/8ffb2d65d7b04c02b20b50b5a9ddbb27/scene",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/3b0784a8252f47f2a5ee4bcc2ca73bc6",
       "status": 200
     },
     {
       "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/8ffb2d65d7b04c02b20b50b5a9ddbb27",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/3b0784a8252f47f2a5ee4bcc2ca73bc6/scene",
       "status": 200
     },
     {
       "method": "GET",
-      "path": "/world-builder/api/worlds/4a4809aafbe347ec9808e83a30bf5cd5/runs/8ffb2d65d7b04c02b20b50b5a9ddbb27/scene",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/3b0784a8252f47f2a5ee4bcc2ca73bc6/scene",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/3b0784a8252f47f2a5ee4bcc2ca73bc6",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/world-builder/api/worlds/90c32fd2183d40f3aded603e282641c3/runs/3b0784a8252f47f2a5ee4bcc2ca73bc6/scene",
       "status": 200
     },
     {
@@ -2584,117 +2614,6 @@
     "world_kind": "ongoing",
     "run_stop": {
       "mode": "every_round"
-    },
-    "review": {
-      "schema_version": "world-substrate-causal-model/v0",
-      "mechanics": [
-        {
-          "mechanic_id": "orchard.action.pick",
-          "action_kind": "pick",
-          "rationale": "A worker can take a ripe fruit in the same place; the fruit becomes picked and owned by that worker.",
-          "reads": [
-            "entities.<actor>.category_ids",
-            "entities.<actor>.location.location_id",
-            "entities.<fruit>.category_ids",
-            "entities.<fruit>.components.fruit",
-            "entities.<fruit>.components.fruit.stage",
-            "entities.<fruit>.location.location_id",
-            "entities.<fruit>.ownership.owner_ref"
-          ],
-          "writes": [
-            "entities.<fruit>.components.fruit.stage",
-            "entities.<fruit>.last_cause_event_id",
-            "entities.<fruit>.ownership.owner_ref"
-          ],
-          "checks": [
-            {
-              "label": "Fruit is ripe",
-              "left": {
-                "participant": {
-                  "name": "fruit",
-                  "path": "components.fruit.stage"
-                }
-              },
-              "op": "eq",
-              "right": {
-                "literal": "ripe"
-              }
-            },
-            {
-              "label": "Fruit is in the worker's location",
-              "left": {
-                "participant": {
-                  "name": "fruit",
-                  "path": "location.location_id"
-                }
-              },
-              "op": "eq",
-              "right": {
-                "participant": {
-                  "name": "actor",
-                  "path": "location.location_id"
-                }
-              }
-            },
-            {
-              "label": "Fruit is in the shared store",
-              "left": {
-                "participant": {
-                  "name": "fruit",
-                  "path": "ownership.owner_ref"
-                }
-              },
-              "op": "eq",
-              "right": {
-                "literal": "place:orchard"
-              }
-            }
-          ],
-          "effects": [
-            {
-              "participant": "fruit",
-              "path": "ownership.owner_ref",
-              "op": "set",
-              "value": {
-                "owner_ref": "actor"
-              }
-            },
-            {
-              "participant": "fruit",
-              "path": "components.fruit.stage",
-              "op": "set",
-              "value": {
-                "literal": "picked"
-              }
-            }
-          ],
-          "limits": [
-            "Picking does not model reach, damage, or carrying capacity."
-          ],
-          "tests": [
-            "ripe fruit can be picked; already-picked fruit is refused"
-          ]
-        }
-      ],
-      "processes": [],
-      "terminal": {
-        "mode": "all",
-        "selector": {
-          "categories": [
-            "fruit"
-          ],
-          "components": [
-            "fruit"
-          ]
-        },
-        "checks": [
-          {
-            "path": "components.fruit.stage",
-            "op": "eq",
-            "value": "picked"
-          }
-        ]
-      }
     }
   },
   "console_errors": [],
@@ -2702,14 +2621,14 @@
   "parent_run": {
     "ok": true,
     "run": {
-      "id": "f66ff966e45a4d2c821f6f81887f22aa",
-      "world_id": "4a4809aafbe347ec9808e83a30bf5cd5",
+      "id": "b31b394927cc4eb2b1430f50d1c6959d",
+      "world_id": "90c32fd2183d40f3aded603e282641c3",
       "name": "Run",
       "parent_run_id": null,
       "fork_checkpoint_id": null,
-      "created": "2026-11-14T00:12:17.889308+00:00",
-      "updated": "2026-11-14T00:12:21.413429+00:00",
-      "checkpoint_id": "b6a384f3935f452fb2e96e83c6f9d1c7",
+      "created": "2026-11-14T00:43:04.408697+00:00",
+      "updated": "2026-11-14T00:43:08.237803+00:00",
+      "checkpoint_id": "61b30887f6da4c0697b2f916642ba3aa",
       "latest_round": 4,
       "can_continue": true,
       "reason": null,
@@ -2717,7 +2636,7 @@
     },
     "record": {
       "schema": "world-builder-share/v1",
-      "created": "2026-11-14T00:12:17.889308+00:00",
+      "created": "2026-11-14T00:43:04.408697+00:00",
       "world": {
         "ok": true,
         "bundle": {
@@ -3304,7 +3223,8 @@
               }
             ]
           }
-        }
+        },
+        "review_origin": "compiler-derived-from-retained-rules"
       },
       "rounds": [
         {
@@ -3499,7 +3419,7 @@
       "actor_inputs": {},
       "runs": [
         {
-          "trace_id": "world-builder-live/run/ed2e76fc40c548eca58678d921542480",
+          "trace_id": "world-builder-live/run/defe9ee4f7834f72a8eda3a36068a819",
           "policy": "resident",
           "turns": 1,
           "terminal_reached": false,
@@ -3520,7 +3440,7 @@
           }
         },
         {
-          "trace_id": "world-builder-live/run/fc093f94b90d4f669915eee1ecd845ab",
+          "trace_id": "world-builder-live/run/928b4b3ecc5847cb8cdf3e5f68c551c4",
           "policy": "resident",
           "turns": 1,
           "terminal_reached": false,
@@ -3541,7 +3461,7 @@
           }
         },
         {
-          "trace_id": "world-builder-live/run/783519f7c46a426395a65b329c055381",
+          "trace_id": "world-builder-live/run/cf84409f6a6345d88645ed5ded8f8d6e",
           "policy": "resident",
           "turns": 1,
           "terminal_reached": false,
@@ -3562,7 +3482,7 @@
           }
         },
         {
-          "trace_id": "world-builder-live/run/286bf24447ae407086e72711cdd3ba0b",
+          "trace_id": "world-builder-live/run/2a4ee3bd7ed14de0b0f6e7b094fde633",
           "policy": "resident",
           "turns": 1,
           "terminal_reached": false,
@@ -3585,32 +3505,32 @@
       ],
       "world_fingerprint": "2ee2188122784a76",
       "actor_information_mode": "declared-v1",
-      "catalog_world_id": "4a4809aafbe347ec9808e83a30bf5cd5",
-      "catalog_run_id": "f66ff966e45a4d2c821f6f81887f22aa",
-      "checkpoint_id": "b6a384f3935f452fb2e96e83c6f9d1c7",
-      "event_namespace": "f66ff966e45a4d2c821f6f81887f22aa"
+      "catalog_world_id": "90c32fd2183d40f3aded603e282641c3",
+      "catalog_run_id": "b31b394927cc4eb2b1430f50d1c6959d",
+      "checkpoint_id": "61b30887f6da4c0697b2f916642ba3aa",
+      "event_namespace": "b31b394927cc4eb2b1430f50d1c6959d"
     },
     "checkpoints": [
       {
-        "id": "b850331b722a4222a2d79cd45f624ead",
+        "id": "7c52e90c0c8345a2ab97488886896583",
         "round": 1,
         "can_branch": true,
         "reason": null
       },
       {
-        "id": "baeed312348e469b9e47a17b2d17a881",
+        "id": "842cc9531c114700b42b57f404cab386",
         "round": 2,
         "can_branch": true,
         "reason": null
       },
       {
-        "id": "ad227a78ab854a66b050eb1f50a6ce13",
+        "id": "c1d52578149b444fa7318bdf38789ad6",
         "round": 3,
         "can_branch": true,
         "reason": null
       },
       {
-        "id": "b6a384f3935f452fb2e96e83c6f9d1c7",
+        "id": "61b30887f6da4c0697b2f916642ba3aa",
         "round": 4,
         "can_branch": true,
         "reason": null
@@ -3620,14 +3540,14 @@
   "child_run": {
     "ok": true,
     "run": {
-      "id": "8ffb2d65d7b04c02b20b50b5a9ddbb27",
-      "world_id": "4a4809aafbe347ec9808e83a30bf5cd5",
+      "id": "3b0784a8252f47f2a5ee4bcc2ca73bc6",
+      "world_id": "90c32fd2183d40f3aded603e282641c3",
       "name": "Branch",
-      "parent_run_id": "f66ff966e45a4d2c821f6f81887f22aa",
-      "fork_checkpoint_id": "b850331b722a4222a2d79cd45f624ead",
-      "created": "2026-11-14T00:12:23.184865+00:00",
-      "updated": "2026-11-14T00:12:24.346019+00:00",
-      "checkpoint_id": "7707770156fd47c5bc16e964b800a7dc",
+      "parent_run_id": "b31b394927cc4eb2b1430f50d1c6959d",
+      "fork_checkpoint_id": "7c52e90c0c8345a2ab97488886896583",
+      "created": "2026-11-14T00:43:10.290307+00:00",
+      "updated": "2026-11-14T00:43:11.405649+00:00",
+      "checkpoint_id": "96e3a15fa323438e89900bb5620a697f",
       "latest_round": 3,
       "can_continue": true,
       "reason": null,
@@ -3635,7 +3555,7 @@
     },
     "record": {
       "schema": "world-builder-share/v1",
-      "created": "2026-11-14T00:12:23.184865+00:00",
+      "created": "2026-11-14T00:43:10.290307+00:00",
       "world": {
         "ok": true,
         "bundle": {
@@ -4222,7 +4142,8 @@
               }
             ]
           }
-        }
+        },
+        "review_origin": "compiler-derived-from-retained-rules"
       },
       "rounds": [
         {
@@ -4370,7 +4291,7 @@
       "actor_inputs": {},
       "runs": [
         {
-          "trace_id": "world-builder-live/run/ed2e76fc40c548eca58678d921542480",
+          "trace_id": "world-builder-live/run/defe9ee4f7834f72a8eda3a36068a819",
           "policy": "resident",
           "turns": 1,
           "terminal_reached": false,
@@ -4391,7 +4312,7 @@
           }
         },
         {
-          "trace_id": "world-builder-live/run/4e8adf144bdc495ba6c58b4f769ef4bf",
+          "trace_id": "world-builder-live/run/68073b123cb24fdfaa913c6c05784ad9",
           "policy": "resident",
           "turns": 1,
           "terminal_reached": false,
@@ -4412,7 +4333,7 @@
           }
         },
         {
-          "trace_id": "world-builder-live/run/bde9c61cbd5f4c68a3dcb341a35ae977",
+          "trace_id": "world-builder-live/run/6c11fbf5454943f7ab8c15fad91a2c37",
           "policy": "resident",
           "turns": 1,
           "terminal_reached": false,
@@ -4435,26 +4356,26 @@
       ],
       "world_fingerprint": "2ee2188122784a76",
       "actor_information_mode": "declared-v1",
-      "catalog_world_id": "4a4809aafbe347ec9808e83a30bf5cd5",
-      "catalog_run_id": "8ffb2d65d7b04c02b20b50b5a9ddbb27",
-      "checkpoint_id": "7707770156fd47c5bc16e964b800a7dc",
-      "event_namespace": "8ffb2d65d7b04c02b20b50b5a9ddbb27"
+      "catalog_world_id": "90c32fd2183d40f3aded603e282641c3",
+      "catalog_run_id": "3b0784a8252f47f2a5ee4bcc2ca73bc6",
+      "checkpoint_id": "96e3a15fa323438e89900bb5620a697f",
+      "event_namespace": "3b0784a8252f47f2a5ee4bcc2ca73bc6"
     },
     "checkpoints": [
       {
-        "id": "b850331b722a4222a2d79cd45f624ead",
+        "id": "7c52e90c0c8345a2ab97488886896583",
         "round": 1,
         "can_branch": true,
         "reason": null
       },
       {
-        "id": "3e81398ee8a8422e941c7520ed931acf",
+        "id": "67a3f23421cf4a0187ef7d72ac5cacfd",
         "round": 2,
         "can_branch": true,
         "reason": null
       },
       {
-        "id": "7707770156fd47c5bc16e964b800a7dc",
+        "id": "96e3a15fa323438e89900bb5620a697f",
         "round": 3,
         "can_branch": true,
         "reason": null

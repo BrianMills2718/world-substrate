@@ -1,22 +1,22 @@
 # World workspace HTTP/browser trace read
 
-The final walkthrough uses actual owner-auth HTTP, SQLite persistence, sealed native snapshots and the composed Living Scene. Only the policy is replaced with scripted moves at the actual base-class dispatch seam; `LLM_CLIENT_NO_SPEND=1` additionally prevents provider spend. The retained pump generation is opened read-only. The orchard is explicitly constructed from the repository orchard fixture with twelve fruit and declared actor information. It is not a new model-generated world.
+The final walkthrough uses actual owner-auth HTTP, SQLite persistence, sealed native snapshots and the composed Living Scene. Only the policy is replaced with scripted moves at the actual base-class dispatch seam; `LLM_CLIENT_NO_SPEND=1` additionally prevents provider spend. The retained pump generation is opened read-only. The orchard is explicitly constructed from the repository orchard fixture with twelve fruit and declared actor information. It is not a new model-generated world. Its stored definition deliberately omits the historical compiler display summary; the API derives that summary without changing stored rules or executing a model.
 
 ## Round 1
 
-Ava (`ava`) picks apple-1 in `r1-e00001`; its stage changes ripe→picked and ownership moves from the orchard to Ava. The native actor cognition has the original brief and one recent pick, with empty resident memory. Source: `world-builder-live/run/ed2e76fc40c548eca58678d921542480`.
+Ava (`ava`) picks apple-1 in `r1-e00001`; its stage changes ripe→picked and ownership moves from the orchard to Ava. The native actor cognition has the original brief and one recent pick, with empty resident memory. Source: `world-builder-live/run/defe9ee4f7834f72a8eda3a36068a819`.
 
 ## Round 2
 
-Ava (`ava`) picks apple-10 in `r2-e00001`. Parent source: `world-builder-live/run/fc093f94b90d4f669915eee1ecd845ab`. The branch restores the exact completed round-1 snapshot and complete actor-state object, then makes the same scripted pick: `world-builder-live/run/4e8adf144bdc495ba6c58b4f769ef4bf`. The parent remains unchanged. The repeated event ID is scoped to its run; the UI shows distinct run IDs and parent/fork metadata.
+Ava (`ava`) picks apple-10 in `r2-e00001`. Parent source: `world-builder-live/run/928b4b3ecc5847cb8cdf3e5f68c551c4`. The branch restores the exact completed round-1 snapshot and complete actor-state object, then makes the same scripted pick: `world-builder-live/run/68073b123cb24fdfaa913c6c05784ad9`. The parent remains unchanged. The repeated event ID is scoped to its run; the UI shows distinct run IDs and parent/fork metadata.
 
 ## Round 3
 
-Ava (`ava`) picks apple-11 in `r3-e00001` in the parent (`world-builder-live/run/783519f7c46a426395a65b329c055381`) and the branch (`world-builder-live/run/bde9c61cbd5f4c68a3dcb341a35ae977`). Each has its own actor-state recent history with three picks, while retaining the same brief. No invented resident memory is claimed by this scripted fixture.
+Ava (`ava`) picks apple-11 in `r3-e00001` in the parent (`world-builder-live/run/cf84409f6a6345d88645ed5ded8f8d6e`) and the branch (`world-builder-live/run/6c11fbf5454943f7ab8c15fad91a2c37`). Each has its own actor-state recent history with three picks, while retaining the same brief. No invented resident memory is claimed by this scripted fixture.
 
 ## Round 4
 
-Ava (`ava`) picks apple-12 in parent event `r4-e00001`, source `world-builder-live/run/286bf24447ae407086e72711cdd3ba0b`. Pause arrived during the previous request, so the UI reopened the completed persisted prefix rather than dropping this committed round. This is the important pause/continuation regression check.
+Ava (`ava`) picks apple-12 in parent event `r4-e00001`, source `world-builder-live/run/2a4ee3bd7ed14de0b0f6e7b094fde633`. Pause followed by explicit Replay retains the complete persisted prefix rather than dropping this committed round. This is the important pause/continuation regression check.
 
 ## Findings
 
@@ -28,3 +28,11 @@ Feedback:
 - obs: A subclass-only policy override was bypassed by an explicit base-class call and caused eight unintended model calls costing a measured $0.00136536; expected zero provider calls (`harness-correction.json`, `unintended-model-calls.json`).
 - claim (seen, high): The harness mocked the presumed dispatch point without checking the executed call site (`scripts/world_builder_service.py`, `verify.py`).
 - action (Prevent, done): Patch the exact base method and enforce `LLM_CLIENT_NO_SPEND=1`; the corrected native walkthrough has six scripted rounds and zero model calls (`verify.py`, `run-log.jsonl`, `report.json`).
+
+Historical review compatibility: the log retains bundle and rules but omits `review`; the owner API now derives the same compiler display summary used by existing shares, and leaves the stored definition unchanged. The missing-review fixture completes all 27 browser checks.
+
+A rerun caught an overbroad stop check: `round_cap` ends one request segment, whereas `quiet_rounds`, `round_limit` and `budget` end the saved logical run. The stopped-checkpoint check now distinguishes those reasons; two native HTTP steps in every-round mode remain runnable and branchable. The failed scripted prefix and harness timing assumption are retained in `pause-harness-before.json` and `round-cap-before.txt`. The harness now requests Replay explicitly after Pause rather than assuming that Pause always changes viewing mode.
+
+Feedback:
+- obs: A truthy stopped record incorrectly treated a per-request `round_cap` as a finished logical run; the new native two-step regression preserves that distinction (`tests/test_world_catalog_service.py::CatalogServiceTests::test_request_round_cap_does_not_exhaust_logical_run`).
+- action (Repair, done): Derive omitted historical display metadata on detached API reads and keep the original saved definition unchanged (`scripts/world_builder_service.py::_catalog_view`).
