@@ -96,7 +96,7 @@ def build() -> tuple[dict, dict]:
         mechanic("move", "Movement changes the actor's room only through a passable door whose near side they stand in.",
                  {"to": {"categories": ["place"], "components": []},
                   "way": {"categories": ["boundary"], "components": ["boundary"]}},
-                 [check("the door is open", ref("way", "components.boundary.state"), {"literal": "open"}),
+                 [check("the door must be open", ref("way", "components.boundary.state"), {"literal": "open"}),
                   check("you are in the room this door leaves", ref("actor", "location.location_id"),
                         ref("way", "components.boundary.place_a")),
                   check("the destination is the room this door enters", {"action_field": "to"},

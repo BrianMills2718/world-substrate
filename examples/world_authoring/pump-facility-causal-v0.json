@@ -123,7 +123,7 @@
       "parameters": {},
       "checks": [
         {
-          "label": "the door is open",
+          "label": "the door must be open",
           "left": {
             "participant": {
               "name": "way",

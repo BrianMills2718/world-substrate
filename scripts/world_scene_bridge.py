@@ -20,12 +20,13 @@ ROOT = Path(__file__).resolve().parents[1]
 ART = ROOT / 'reference_worlds/waltzman/assets-v2'
 PORTRAITS = ('resident-ari.svg', 'resident-mara.svg', 'resident-idris.svg',
              'resident-nira.svg', 'resident-selene.svg', 'resident-tomas.svg')
+MOBILE_ROW_PX = 92
 SEMANTICS = ('Schematic world view: place membership and ownership follow retained canonical state. '
              'Screen positions, portrait art, spacing and transitions are illustrative; '
              'they do not establish physical distance, speed or collisions.')
 
 
-def _retained_events(rounds: list) -> tuple[list[dict], dict[str, Any], list[str]]:
+def _retained_events(rounds: list, rule_by_kind: dict | None = None) -> tuple[list[dict], dict[str, Any], list[str]]:
     events, event_rounds, limitations = [], {}, []
     seen: dict[str, list] = {}
     for index, row in enumerate(rounds):
@@ -66,9 +67,32 @@ def _retained_events(rounds: list) -> tuple[list[dict], dict[str, Any], list[str
                 limitations.append('Some legacy events have presentation IDs; their exact native commit order was not retained.')
             clean = {key: deepcopy(event[key]) for key in ('rule_id', 'rule_version', 'status', 'tick', 'world_revision', 'causal_bearer', 'causal_parent_event_ids', 'changes') if key in event}
             clean['event_id'] = event_id
+            # A saved actor row names the move's kind, not the rule; the installed rule of that kind is its rule.
+            kind = (event.get('did') or {}).get('kind') if isinstance(event.get('did'), dict) else None
+            if event.get('refused_because') and 'checks' not in event:
+                clean['checks'] = [{'label': str(label), 'ok': False} for label in event['refused_because']]
+            if 'rule_id' not in clean and (rule_by_kind or {}).get(kind):
+                clean['rule_id'] = rule_by_kind[kind]
             events.append(clean)
             event_rounds[event_id] = turn
     return events, event_rounds, list(dict.fromkeys(limitations))
+
+
+def _event_visuals(world: dict) -> dict:
+    """Show every installed rule's attempt, and reports appended to a person's own log as messages between people.
+
+    The studio scene is the owner's privileged world view, so message words are shown (`show_content`)."""
+    visuals = {}
+    for mechanic in (world.get('causal_model') or {}).get('mechanics', []):
+        rule_id, kind = mechanic.get('mechanic_id'), mechanic.get('action_kind', 'action')
+        if not isinstance(rule_id, str):
+            continue
+        operations = [{'op': 'action.feedback', 'read_paths': {}, 'label': kind.replace('-', ' ')}]
+        if any(e.get('op') == 'append_report' for e in mechanic.get('effects', [])):
+            operations.insert(0, {'op': 'information.transmit', 'report_log_from_changed_entities': True,
+                                  'show_content': True, 'read_paths': {}})
+        visuals[rule_id] = {'label': kind.replace('-', ' '), 'operations': operations}
+    return visuals
 
 
 def build_scene_inputs(world: dict, rounds: list, *, run_id: str | None = None) -> tuple[dict, dict, list[str]]:
@@ -80,7 +104,8 @@ def build_scene_inputs(world: dict, rounds: list, *, run_id: str | None = None) 
         raise ValueError('Original authored world entities are unavailable for this retained run')
     if not isinstance(spec.get('id'), str):
         raise ValueError('Original authored world identity is unavailable')
-    events, event_rounds, limitations = _retained_events(rounds)
+    rule_by_kind = {m.get('action_kind'): m.get('mechanic_id') for m in (world.get('causal_model') or {}).get('mechanics', [])}
+    events, event_rounds, limitations = _retained_events(rounds, rule_by_kind)
     # Same authored-to-material field mapping used by run_authored_world.build_engine,
     # without compiling laws, creating controllers, or executing an engine.
     defaults = {c['name']:{f['name']:deepcopy(f['default']) for f in c.get('fields',[]) if 'default' in f} for c in bundle.get('components',[])}
@@ -109,7 +134,7 @@ def build_scene_inputs(world: dict, rounds: list, *, run_id: str | None = None) 
                'scene':{'background':'#263840','shell_background':'#101b24', 'mobile_min_height':max(720, len(rows)*48)},
                'assets':{'object':{'kind':'image','path':'package.svg'}},
                'zones':{}, 'actors':{}, 'entities':{}, 'activities':{}, 'institutions':{},
-               'event_visuals':{}, 'state_styles':{},
+               'event_visuals':_event_visuals(world), 'state_styles':{},
                'presentation':{'event_rounds':event_rounds, 'spatial_semantics':SEMANTICS}}
     anchors = {}
     columns = min(3, max(1,len(places)))
@@ -134,6 +159,11 @@ def build_scene_inputs(world: dict, rounds: list, *, run_id: str | None = None) 
     if places:
         max_rows = max(1,math.ceil((len(actors)+len(objects))/3))
         profile['scene']['mobile_min_height'] = max(profile['scene']['mobile_min_height'], math.ceil(len(places)*max_rows*110/.76))
+        # Phone rows are spaced by pixels, not by the zone's share of a short page, so a person's name tag
+        # never lands on a neighbouring object (2026-11-13 facility review: Mara over a door at 390px).
+        usable = .72/len(places) - .09
+        if usable > .03:
+            profile['scene']['mobile_min_height'] = max(profile['scene']['mobile_min_height'], math.ceil((max_rows*MOBILE_ROW_PX+30)/usable))
     for actor_index, row in enumerate(actors+objects):
         is_actor = row in actors
         group = 'actors' if is_actor else 'entities'
@@ -152,7 +182,7 @@ def build_scene_inputs(world: dict, rounds: list, *, run_id: str | None = None) 
             rank = actor_index
             slots = max(1,math.ceil((len(actors)+len(objects))/3))
             positions = {key:[zone['anchor'][0]+(rank%3-1)*min(14,28/columns),zone['rect'][1]+14+(rank//3)*(zone['rect'][3]-24)/max(1,slots-1)] for key,zone in profile['zones'].items()}
-            mobile_positions = {key:[zone['mobile_anchor'][0]+(rank%3-1)*25, zone['mobile_rect'][1]+9+(rank//3)*(zone['mobile_rect'][3]-15)/max(1,slots-1)] for key,zone in profile['zones'].items()}
+            mobile_positions = {key:[zone['mobile_anchor'][0]+(rank%3-1)*25, zone['mobile_rect'][1]+9+(rank//3)*MOBILE_ROW_PX*100/profile['scene']['mobile_min_height']] for key,zone in profile['zones'].items()}
             home = positions.get(loc, home)
             mobile_home = mobile_positions.get(loc,mobile_home)
         else:
@@ -177,7 +207,7 @@ def build_scene_inputs(world: dict, rounds: list, *, run_id: str | None = None) 
             if candidates:
                 render[field+'_binding'] = candidates[0]
         asset = 'object'
-        art_by_component = {'validation_decision':'validation.svg','condition':'safeguard.svg','technical_condition':'safeguard.svg','resource':'reserve.svg','authority':'staff.svg','position':'coalition.svg','decision_position':'coalition.svg','boundary':'safeguard.svg'}
+        art_by_component = {'validation_decision':'validation.svg','condition':'safeguard.svg','technical_condition':'safeguard.svg','resource':'reserve.svg','authority':'staff.svg','position':'coalition.svg','decision_position':'coalition.svg','boundary':'door.svg','pump':'pump.svg'}
         for name in entities[entity_id]['components']:
             if name in art_by_component:
                 asset = name+'-art'

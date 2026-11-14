@@ -161,9 +161,15 @@ class InhabitedFacilityTests(unittest.TestCase):
         place = lambda f, who: f["views"]["actors"][who]["bindings"]["location"]
         self.assertEqual([place(frames[0], "ari"), door(frames[0])], ["laboratory", "closed"])
         self.assertEqual([place(frames[-1], "ari"), door(frames[-1])], ["corridor", "open"])
+        # The refusal and the delivered reports are visible effects in the replayed scene, not only in the record.
+        feedback = [e for f in frames for e in f["presentation_effects"] if e["kind"] == "action_feedback"]
+        self.assertEqual(feedback[0]["reasons"], ["the door must be open"])
+        sent = [(e["source_id"], e["recipient_id"], e["content"]) for f in frames for e in f["presentation_effects"]
+                if e["kind"] == "information_transmission"]
+        self.assertEqual(sent, [("bo", "mara", "Is the pump ready?"), ("ari", "bo", REPORT)])
         rounds = saved["rounds"]
         self.assertEqual(rounds[0]["actors"]["ari"]["status"], "precondition_failed")
-        self.assertIn("the door is open", rounds[0]["actors"]["ari"]["refused_because"])
+        self.assertIn("the door must be open", rounds[0]["actors"]["ari"]["refused_because"])
         self.assertEqual(rounds[1]["actors"]["ari"]["status"], "accepted")
         # Branch from the round where the door was just opened; Ari is still in the laboratory.
         child = catalog.create_run(self.world["id"], parent_run_id=rid, checkpoint_id=checkpoints[1])["run"]["id"]

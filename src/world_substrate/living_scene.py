@@ -324,6 +324,8 @@ def _information_transmissions(
     explicit = operation.get("delivery_entity")
     if explicit is not None and (not isinstance(explicit, str) or not explicit):
         raise ValueError("information.transmit delivery_entity must be a nonempty string")
+    if operation.get("report_log_from_changed_entities") is True:
+        return _report_log_transmissions(event, operation)
     if isinstance(explicit, str):
         candidates = [explicit]
     elif operation.get("delivery_from_changed_entities") is True:
@@ -375,6 +377,33 @@ def _information_transmissions(
                 "content": deepcopy(info.get("content")) if content_visible else None,
             }
         )
+    return rows
+
+
+def _report_log_transmissions(event: dict[str, Any], operation: dict[str, Any]) -> list[dict[str, Any]]:
+    """Reports appended to a recipient's own report log by this event (the `append_report` effect).
+
+    The profile's `show_content: true` is its declaration that this scene is a privileged world view; without it
+    the message is shown as delivered with its words withheld."""
+    shown = operation.get("show_content") is True
+    rows: list[dict[str, Any]] = []
+    for change in event.get("changes") or []:
+        path = change.get("path") if isinstance(change, dict) else None
+        parts = path.split(".") if isinstance(path, str) else []
+        if len(parts) != 5 or parts[0] != "entities" or parts[2:] != ["components", "report_log", "entries"]:
+            continue
+        before, after = change.get("before") or [], change.get("after") or []
+        if not isinstance(before, list) or not isinstance(after, list):
+            continue
+        for raw in after[len(before):]:
+            try:
+                item = json.loads(raw)
+                source, content = str(item["source_id"]), str(item["content"])
+            except (TypeError, ValueError, KeyError):
+                continue
+            rows.append({"kind": "information_transmission", "delivery_id": item.get("id"), "info_id": item.get("id"),
+                         "source_id": source, "recipient_id": parts[1], "channel_id": item.get("channel"),
+                         "topic": None, "content_visible": shown, "content": content if shown else None})
     return rows
 
 
