@@ -199,6 +199,17 @@ class CatalogServiceTests(unittest.TestCase):
         self.assertIn('earlier checkpoint', detail['checkpoints'][0]['reason'])
         self.assertEqual(self.request('/worlds/' + wid + '/runs', {'parent_run_id': rid, 'checkpoint_id': first['checkpoint_id']})[0], 422)
 
+    def test_recovery_closes_share_reader_before_writing_the_same_database(self):
+        # Production defaults catalog and shares to the same SQLite file.
+        with patch.dict(service.os.environ, {'WORLD_BUILDER_CATALOG_DB': self.tmp.name + '/shares.sqlite'}):
+            world = service._catalog().save_world(WORLD, service._world_fingerprint(BUNDLE, CAUSAL))
+            record = {'schema': 'world-builder-share/v1', 'created': '2026-11-14T00:00:00Z', 'world': WORLD, 'rounds': [], 'actor_inputs': {}}
+            service._save_share('synthetic-client', record)
+            status, result = self.request('/worlds/import-logs', {})
+            self.assertEqual(status, 200, result)
+            self.assertEqual(result['public_recordings_matched'], 1)
+            self.assertEqual(len(service._catalog().world(world['id'])['runs']), 1)
+
     def test_backfill_is_owner_only_and_does_not_import_guest_builds(self):
         logdir = Path(self.tmp.name) / 'runs'
         logdir.mkdir(exist_ok=True)
