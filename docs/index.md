@@ -19,7 +19,7 @@ Current work and delivery status live in the [roadmap](../roadmap/README.md); hi
 Agent instructions: [root](../AGENTS.md), [docs](AGENTS.md), [roadmap](../roadmap/AGENTS.md),
 [reference worlds](../reference_worlds/AGENTS.md), [tests](../tests/AGENTS.md).
 
-UI work also reads [product context](../PRODUCT.md) and the [saved-player design](../DESIGN.md). Architecture, OpenSpec and accepted decisions retain their authority.
+UI work also reads [product context](../PRODUCT.md) and the [world-workspace design](../DESIGN.md). Architecture, OpenSpec and accepted decisions retain their authority.
 
 ## 2. What the code must do (OpenSpec capability specs)
 
@@ -38,6 +38,7 @@ Each spec keeps the wording of the contract it was folded from on 2026-11-09 and
 | [living-scene](../openspec/specs/living-scene/spec.md) | read-only scene frames and the composed renderer (maintained, not extended) |
 | [scene-replay](../openspec/specs/scene-replay/spec.md) | the presentation contract between a saved trace and its replay |
 | [native-coordination](../openspec/specs/native-coordination/spec.md) | the native Waltzman coordination vertical, comparison and diagnostics |
+| [world-catalog](../openspec/specs/world-catalog/spec.md) | private world library, logical runs and exact completed-round checkpoints and branches |
 | [world-builder-page](../openspec/specs/world-builder-page/spec.md) | Brian's rules for the World Builder page, with the feedback log |
 | [ai-judge](../openspec/specs/ai-judge/spec.md) | the AI judge for attempts no rule covers: its consequence report (pass 1 and pass 2), the judge itself, Concordia's game master (J2), and a checked ruling becoming a rule, installed or held for approval (J3) |
 

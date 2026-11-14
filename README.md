@@ -4,9 +4,10 @@
 
 World Substrate is a persistent, observable world engine in which people (AI, scripted or human) express intents and **installed mechanics, not model prose, decide canonical consequences**. A generative builder sits on top: describe a world in plain words, and it proposes the world's structure, its laws and its rules as data that a local compiler checks before anything runs.
 
-- **World Builder:** <https://brianmills.dev/world-builder/>: one box and one Create simulation button. Pressing it is the approval; the world is built, its rules reviewed by a second model and tested for free, and then played live one round at a time.
+- **World Builder:** <https://brianmills.dev/world-builder/>: natural-language creation, a private owner world library and a spatial studio with play, replay and saved-round branches. Pressing Create simulation is approval; the world is built, its rules reviewed by a second model and tested for free, then played one round at a time. Natural-language fork interventions and configuring a saved world’s starting conditions are future features ([product context](PRODUCT.md)).
+- **Native composed Coordination Hall:** <https://brianmills.dev/waltzman/world-substrate>
 - **Waltzman donor demo (fallback):** <https://brianmills.dev/waltzman/>
-- **2026-09 synthetic prototype (design evidence only):** <https://brianmills.dev/world-substrate-visualization/>
+- **Earlier native event replay:** <https://brianmills.dev/world-substrate-visualization/>
 
 ## Start here
 
@@ -34,7 +35,7 @@ State on 2026-11-09 (`main` at `0e66a98`). The prototype substrate phase is comp
 | Live play, share links, run page | deployed on the personal VPS since 2026-10-05; a share link stores and replays a run |
 | Linguistic Core binding | six of seven M1 action kinds; generated action kinds are not semantically bound |
 | Waltzman reference world | blocked baseline, exact-history intervention, living projection, information kept apart from causal parents, detachable analysis |
-| Saved user worlds and identity | share links only; the owner is identified by password |
+| Saved user worlds and identity | private owner catalog, logical runs and complete saved-round branches; explicit public share links |
 
 ## Architectural thesis
 

@@ -38,7 +38,7 @@ def _retained_events(rounds: list) -> tuple[list[dict], dict[str, Any], list[str
                 if isinstance(value.get('changes'), list) and (value.get('event_id') or value.get('status') or value.get('rule_id')):
                     found.append(value)
                 # Only recorded event containers, never cognition/attempt text.
-                for key in ('world_events', 'actors', 'reactions', 'ruling_events', 'settled', 'events', 'ruling', 'disposition'):
+                for key in ('world_events', 'actors', 'reactions', 'ruling_events', 'settled', 'events', 'ruling', 'judge', 'disposition'):
                     child = value.get(key)
                     if key == 'actors' and isinstance(child, dict):
                         for actor in child.values():
