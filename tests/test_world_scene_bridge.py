@@ -110,3 +110,13 @@ def test_rendered_actor_moves_but_ownership_does_not_move_remote_object():
     positions = json.loads(result.stdout)
     assert positions['before']['sam'][0] < 50 < positions['after']['sam'][0]
     assert positions['tool'][0] < 50
+
+
+def test_native_actor_selector_identifies_worker_without_actor_category():
+    world = {'bundle': json.loads((ROOT / 'examples/world_authoring/orchard-v0.json').read_text()),
+             'causal_model': json.loads((ROOT / 'examples/world_authoring/orchard-causal-v0.json').read_text())}
+    _, profile, _ = build_scene_inputs(world, [])
+    assert 'ava' in profile['actors']
+    assert 'ava' not in profile['entities']
+    assert profile['actors']['ava']['asset'].startswith('portrait-')
+    assert profile['actors']['ava']['mobile_home'][1] < profile['entities']['apple-1']['mobile_home'][1]
