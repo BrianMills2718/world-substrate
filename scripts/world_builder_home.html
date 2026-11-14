@@ -1623,9 +1623,11 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const graph = focused ? focusNetwork(whole, turnNow ? roundTouched(turnNow, live.replay) : new Set(), turnNow, live.replay) : whole;
     $("net-whole").hidden = !big;
     $("net-whole").textContent = focused ? `Show the whole world (${whole.nodes.length} boxes)` : "Show only what this round touched";
+    const activeLive = live, activeWorld = world;
     const selection = live.replay ? live.selectedEvent : null;
     try { await loadGraphViewer(); }
-    catch (err) { $("net-caption").textContent = "The network picture could not load: " + err.message; return; }
+    catch (err) { if (live !== activeLive || world !== activeWorld) return; $("net-caption").textContent = "The network picture could not load: " + err.message; return; }
+    if (live !== activeLive || world !== activeWorld) return;
     if (live.replay && live.selectedEvent !== selection) return;
     const shape = JSON.stringify([graph.nodes.map((n) => n.id), graph.edges.map((e) => e.id)]);
     if (!netViewer) {

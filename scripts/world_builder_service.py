@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import contextvars
+from contextlib import closing
 import hashlib
 import hmac
 import json
@@ -670,14 +671,17 @@ def _catalog_backfill() -> dict[str, Any]:
         builds += 1
     worlds = {world["fingerprint"]: world for world in catalog.worlds()}
     recovered = 0
-    with _share_connect() as db:
-        for share_id, blob in db.execute("SELECT id,record FROM shares"):
-            record = json.loads(gzip.decompress(blob))
-            world = record.get("world") or {}
-            fingerprint = _world_fingerprint(world.get("bundle"), world.get("causal_model"))
-            if fingerprint in worlds:
-                catalog.import_share(worlds[fingerprint]["id"], share_id, record)
-                recovered += 1
+    # The catalog normally shares this SQLite file. Release the read cursor and
+    # connection before importing through a separate write connection.
+    with closing(_share_connect()) as db:
+        shared_rows = db.execute("SELECT id,record FROM shares").fetchall()
+    for share_id, blob in shared_rows:
+        record = json.loads(gzip.decompress(blob))
+        world = record.get("world") or {}
+        fingerprint = _world_fingerprint(world.get("bundle"), world.get("causal_model"))
+        if fingerprint in worlds:
+            catalog.import_share(worlds[fingerprint]["id"], share_id, record)
+            recovered += 1
     initial_segments = 0
     for row in rows:
         request, result = row.get("request") or {}, row.get("result") or {}

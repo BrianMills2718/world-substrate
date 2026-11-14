@@ -1,0 +1,42 @@
+{
+  "schema": "saved-player-browser-check/v1",
+  "mode": "live",
+  "source_sha256": "9655a17d679b8007fd084b86f1e63c999512403c5ae666cc947987a23a499d06",
+  "viewports": [
+    1440,
+    390
+  ],
+  "passed_checks": 17,
+  "checks": [
+    "1440: saved scenario is visible, all six rounds seekable, initial round stays paused",
+    "1440: Play advances Ari to Bo within round1 and Pause holds the exact event",
+    "1440: resumed playback visits every recorded round1 event in order before round2",
+    "1440: final round alone stays playable; Replay from its last event returns to first event and can pause",
+    "1440: Bo original words, interpreted assent, actual false-to-true consequence and own round1 input stay together",
+    "1440: Ari validation event restores its own intermediate completed-review state and round3 input",
+    "1440: open Network inspector refreshes its selected object after historical event changes",
+    "1440: immediate child has its own causal parent and hold/validation/review state",
+    "1440: selecting historical child from round6 restores round3 child state rather than latest-round state",
+    "1440: previous, next and range support keyboard round navigation",
+    "1440: main navigation controls have at least44px targets and styled hover tooltips",
+    "1440: every visible enabled player control has a styled tooltip (17 controls)",
+    "1440: keyboard focus exposes the same styled navigation help",
+    "1440: critical player regions wrap within desktop/phone viewport",
+    "1440: Actor-only mode hides analyst state/navigation and other actors' input/provenance",
+    "1440: preserved picture, network and refusal inspection remain reachable",
+    "1440: Edit and run again restores the original one-box creation UI without creating a new simulation"
+  ],
+  "page_errors": [
+    "Cannot read properties of null (reading 'replay')"
+  ],
+  "unexpected_failed_requests": [],
+  "blocked_writes": [
+    "https://brianmills.dev/cdn-cgi/rum?",
+    "https://brianmills.dev/cdn-cgi/rum?",
+    "https://brianmills.dev/cdn-cgi/rum?",
+    "https://brianmills.dev/cdn-cgi/rum?"
+  ],
+  "no_model_calls": true,
+  "failure": "AssertionError: Locator expected to be visible\nActual value: hidden \nCall log:\n  - Expect \"to_be_visible\" locator(\"#saved-player\") with timeout 5000ms\n  - waiting for locator(\"#saved-player\")\n    14 × locator resolved to <section hidden=\"\" id=\"saved-player\" aria-label=\"Recorded simulation player\">…</section>\n       - unexpected value \"hidden\"\n\nAria snapshot:\n- banner: World Builder\n- main:\n  - heading \"Simulate any small world\" [level=1]\n  - paragraph: Say who is involved and what they are trying to do. AI writes the rules and the simulation starts.\n  - region \"What should happen?\":\n    - text: What should happen?\n    - textbox \"What should happen?\":\n      - /placeholder: Two cooks share one knife and must finish three salad orders before closing.\n    - button \"Create simulation\"\n    - button \"or try an example\"\n    - status\n    - group: Options\n    - region \"Your worlds\":\n      - heading \"Your worlds\" [level=2]\n      - button \"Owner access\"\n      - status: Use owner access to see your private saved worlds. Visitor creations are not added to this library.\n- contentinfo:\n  - group: More",
+  "result": "fail"
+}

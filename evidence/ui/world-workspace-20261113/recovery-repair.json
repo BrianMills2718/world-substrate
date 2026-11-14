@@ -1,0 +1,13 @@
+{
+  "observed_build": "daa4a1d30976dd7ce0d4152ecb7e56c27db8ae4e",
+  "request": "POST /worlds/import-logs",
+  "status": 500,
+  "error": "sqlite3.OperationalError: database is locked",
+  "cause": "Recovery held a share SELECT cursor while a separate catalog connection wrote the same SQLite file.",
+  "repair": "Fetch and close the share read before catalog writes. Regression uses the deployed shared-file layout.",
+  "focused_regression": {
+    "passed": 1,
+    "exit": 0
+  },
+  "raw_private_server_logs_published": false
+}
