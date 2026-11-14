@@ -1,0 +1,5 @@
+- [x] `/share/<id>/replay` route, public map substitution, words withheld
+- [x] Public page built into the Cloudflare pages (viewer, CC0 sheet, licence, demo replay); link from the shared-run view
+- [x] Tests
+- [x] publish-checker (verdict: publish)
+- [ ] deploy, verify live

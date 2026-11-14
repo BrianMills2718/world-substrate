@@ -10,10 +10,13 @@ const REPLAY = new URLSearchParams(location.search).get("replay");  // ?replay=s
 // A replay with a `grid` is a map made from code, drawn with the CC0 Tiny Dungeon sheet (assets-cc0/); any other replay uses
 // Smallville's own map and art (private use; copied by scripts/setup_smallville_viewer.py).
 const CC0 = "assets-cc0/";
-const replayUrl = (REPLAY && /^https?:|^\//.test(REPLAY)) ? REPLAY : (REPLAY ? "replay-" + REPLAY + ".json" : "replay.json");
+// ?share=<id> reads a shared run's replay from the World Builder service (generated maps only, report words withheld).
+const SHARE = new URLSearchParams(location.search).get("share");
+const replayUrl = SHARE ? "/world-builder/api/share/" + encodeURIComponent(SHARE) + "/replay"
+  : (REPLAY && /^https?:|^\//.test(REPLAY)) ? REPLAY : (REPLAY ? "replay-" + REPLAY + ".json" : "replay.json");
 fetch(replayUrl).then(r => r.json())
   .then(R => R.grid ? start(R, null) : fetch(A + "map.json").then(r => r.json()).then(M => start(R, M)))
-  .catch(e => fail("Could not load the replay or map assets. For Smallville maps run scripts/setup_smallville_viewer.py first. " + e));
+  .catch(e => fail(SHARE ? "This shared run has no room map: " + e : "Could not load the replay or map assets. For Smallville maps run scripts/setup_smallville_viewer.py first. " + e));
 
 function start(R, M) {
   if (R.title) { document.getElementById("title").textContent = R.title + " replay"; document.title = R.title + " Replay"; }
