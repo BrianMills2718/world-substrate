@@ -32,7 +32,7 @@
         },
         {
           "name": "wiki and Markdown cap",
-          "command": "python3 /home/brian/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
+          "command": "python3 /home/brian/code2/agentic-engineering-system-canonical/scripts/md_file_cap.py --repo . --ref HEAD",
           "exit_status": 0,
           "counts": {
             "md_files": 200,
