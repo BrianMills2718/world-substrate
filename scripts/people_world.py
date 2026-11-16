@@ -33,6 +33,7 @@ PIPELINE = Path(__file__).resolve().parents[1] / "spikes/any-scenario-2026-10"
 # every call (2026-10-21, evidence/best-of-all-worlds/final-b7d1dc5, #198), and two Waltzman builds on 2026-10-23
 # cost $0.05 each against $0.5-0.65 with sol on 2026-10-16 (evidence/luna-rules-2026-10-23).
 PEOPLE_MODEL = os.environ.get("WORLD_BUILDER_STRONG_MODEL") or "openrouter/openai/gpt-6-luna"
+CHECK_MODEL = os.environ.get("WORLD_BUILDER_CHECK_MODEL") or "openrouter/openai/gpt-6-luna"
 PEOPLE_MODEL_WHY = (
     "World Builder people world: the scenario spec and its rules are the whole world definition; the model is set "
     "by WORLD_BUILDER_STRONG_MODEL (luna by default for cost, sol for shared demos)."
@@ -224,6 +225,33 @@ def unfinished_hedges(trace_id: str) -> list[Future]:
         return [f for f in _HEDGES.pop(trace_id, []) if not f.done()]
 
 
+GROUP_CHECK_WHY = "World Builder people world: a light check that every person or group the description names is in the built world."
+
+
+def check_named_groups(description: str, labels: list[str], *, trace_id: str, max_budget: float) -> tuple[list[str], list[str]]:
+    """(named, missing): every person or group the description names, and those with no matching entry in `labels`.
+
+    One light model call does both the reading and the matching, because whether "the logistics group" is the built
+    "Logistics working group" is a meaning question, not a string one.
+
+    Implements: world-builder-page/the-draft-keeps-every-named-group
+    """
+    from llm_client import call_llm, safe_json_loads
+    messages = [
+        {"role": "system", "content": (
+            "You check a built world against the description it came from. List every person or group the description "
+            "names or counts (for example each of 'four countries' separately when it says four countries). Then say which "
+            "of those have no matching entry in the built list; a differently worded label for the same group is a match. "
+            'Return JSON only: {"named": [...], "missing": [...]}.')},
+        {"role": "user", "content": json.dumps({"description": description, "built": labels}, indent=1)},
+    ]
+    result = call_llm(CHECK_MODEL, messages, task="world-builder-named-groups", trace_id=trace_id, max_budget=max_budget,
+                      num_retries=1, max_tokens=2000, model_justification=GROUP_CHECK_WHY)
+    value = safe_json_loads(result.content)
+    return [str(x) for x in value.get("named") or []], [str(x) for x in value.get("missing") or []]
+
+
+
 def prepare_people_world(description: str, *, trace_id: str, max_budget: float, progress: Progress, feedback: str = "") -> dict[str, Any]:
     """Description -> ScenarioSpecV1 -> compiled bundle and the attempts people can make (no rules yet)."""
     compile_spec, sp = _pipeline()
@@ -234,6 +262,25 @@ def prepare_people_world(description: str, *, trace_id: str, max_budget: float, 
     from scripts.generate_world_bundle import is_recorded_authoring_replay
     if not spec.public_summary.strip() and not is_recorded_authoring_replay():
         raise ValueError("Fresh people-world authoring requires an explicit actor-safe public_summary")
+    if not is_recorded_authoring_replay():
+        try:
+            named, missing = check_named_groups(description, [p.label for p in spec.people], trace_id=trace_id, max_budget=max_budget)
+        except Exception as error:  # the check must never stop a build
+            named, missing = [], []
+            progress("note", "Could not check that every named group is in", f"{type(error).__name__}: {error}"[:160])
+        if missing:
+            progress("doing", f"{len(missing)} named group{'s' if len(missing) != 1 else ''} missing; asking again", "", missing)
+            retry = (feedback + "\n" if feedback else "") + "The description names these groups, and the first draft left them out. Add each as its own person or group: " + "; ".join(missing)
+            spec, _ = hedged(trace_id, lambda: sp.scenario_spec(description, model=PEOPLE_MODEL, trace_id=trace_id,
+                                                                max_budget=max_budget, reasoning_effort=SPEC_EFFORT,
+                                                                route_policy=fast_route(PEOPLE_MODEL), feedback=retry))
+            try:
+                named, missing = check_named_groups(description, [p.label for p in spec.people], trace_id=trace_id, max_budget=max_budget)
+            except Exception:
+                missing = []
+        if named:
+            progress("done" if not missing else "note", f"{len(named) - len(missing)} of {len(named)} named groups are in the draft",
+                     "" if not missing else "Left out, and why the builder could not keep them is in the trace", missing)
     progress("done", f"Found {len(spec.people)} people or groups", "each with goals, beliefs and what they know",
              [p.label for p in spec.people])
     if spec.information_items or spec.scheduled_moments:
