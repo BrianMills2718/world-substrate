@@ -112,7 +112,7 @@ class CompilerTests(unittest.TestCase):  # S2
     def setUp(self):
         sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
         from compile_spec import compile_spec
-        from scaffold_world import validate_bundle
+        from scripts.scaffold_world import validate_bundle
         from scripts.run_authored_world import build_engine
         self.bundle, self.causal, self.coverage = compile_spec(_two_recipient_spec())
         validate_bundle(self.bundle)
@@ -209,7 +209,7 @@ class GroupDecisionTests(unittest.TestCase):
     def setUp(self):
         sys.path[:0] = [str(REPO), str(REPO / "src"), str(REPO / "scripts")]
         from compile_spec import compile_spec
-        from scaffold_world import validate_bundle
+        from scripts.scaffold_world import validate_bundle
         from scripts.run_authored_world import build_engine
         from world_substrate.mechanisms.time import ClockAdvanceProcess
         self.compile, self.build = compile_spec, build_engine
@@ -913,3 +913,15 @@ class IndependentGeneratedDecisionTests(unittest.TestCase):
         recipient = actor_page(self.engine, self.built["bundle"], "country-b")
         self.assertTrue(any(r["action"]["kind"] == "communicate" for r in holder["available"]))
         self.assertFalse(any(r["action"]["kind"] == "communicate" for r in recipient["available"]))
+
+
+class RecordWithoutScalarStateTests(unittest.TestCase):
+    def test_a_record_whose_state_is_only_lists_still_makes_a_valid_world(self):
+        """A shared thing (an early-warning system) named with list-only state must not become a component with no fields."""
+        import compile_spec
+        from scripts.scaffold_world import validate_bundle
+        record = {"record_id": "shared_early_warning_system", "kind": "system", "label": "Shared early-warning system",
+                  "public_state": [{"key": "members", "value": ["a", "b"]}], "hidden_state": [], "visible_to_actor_ids": []}
+        spec = ScenarioSpecV1.model_validate(_minimal(world_records=[record]))
+        bundle, _, _ = compile_spec.compile_spec(spec)
+        validate_bundle(bundle)

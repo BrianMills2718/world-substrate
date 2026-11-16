@@ -745,6 +745,8 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
         name = rec.record_id
         fields = [(e.key, e.value) for e in rec.public_state] + [(f"hidden_{e.key}", e.value) for e in rec.hidden_state]
         fields = [(k, v) for k, v in fields if not isinstance(v, list) and v is not None]
+        if not fields:  # a thing with only list state still exists in the world; a component needs at least one field
+            fields = [("present", True)]
         components.append({"name": name, "fields": [{"name": k, "type": _field_type(v), "default": v} for k, v in fields]})
         # its own id as a category too, so a rule slot named after this record can be pinned to it (spec_pipeline.pin_named_slots)
         entities.append({"id": _eid(rec.record_id), "label": rec.label, "categories": [_eid(rec.kind), _eid(rec.record_id)],
