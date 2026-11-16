@@ -55,6 +55,12 @@ function start(R, M) {
         LAYERS.forEach(n => { const l = map.createLayer(n, sets, 0, 0); if (n.startsWith("Foreground")) l.setDepth(5); });
       }
       Object.entries(R.doors).forEach(([id, d]) => { doorGfx[id] = this.add.graphics().setDepth(2); });
+      // Room names on the top wall of each room, and things that stand in a room as a generic prop with their name.
+      (R.rooms || []).forEach(r => this.add.text((r.x0 + 0.3) * T, r.label_row * T + 6, r.label, { font: "bold 14px sans-serif", color: "#ffffff", stroke: "#16212b", strokeThickness: 4 }).setDepth(3));
+      (R.objects || []).forEach(o => {
+        this.add.sprite(o.tile[0] * T, o.tile[1] * T, "td", 89).setOrigin(0, 0).setScale(T / 16).setDepth(1);
+        this.add.text(o.tile[0] * T + T / 2, o.tile[1] * T - 2, o.label, { font: "bold 11px sans-serif", color: "#ffffff", stroke: "#16212b", strokeThickness: 3 }).setOrigin(0.5, 1).setDepth(3);
+      });
       makeRuleTags(this);
       names.forEach(n => {
         if (!GEN) ["left", "right", "down", "up"].forEach(dir => this.anims.create({ key: n + "-" + dir, frameRate: 6, repeat: -1,
@@ -77,7 +83,7 @@ function start(R, M) {
         c.setScroll((v.x + v.w / 2) * T - c.width / 2 - (lm / 2) / c.zoom, (v.y + v.h / 2) * T - c.height / 2);
         drawGraph();
       };
-      fitFn = fit; this.scale.on("resize", fit); fit();
+      fitFn = fit; this.scale.on("resize", fit); fit(); this.time.delayedCall(400, fit);  // the page settles after the first fit
       show(step, false); if (playing) loop();
     }
   }

@@ -1,0 +1,2 @@
+- [x] exporter rooms and objects; viewer draws them; demos rebuilt
+- [ ] deploy and live check

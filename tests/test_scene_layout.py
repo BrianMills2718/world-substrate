@@ -327,3 +327,14 @@ def test_a_replay_carries_the_graph_and_which_person_each_graph_actor_is():
     refused = [t for r in replay["graph"]["rounds"] for t in r["tries"] if t["status"] == "precondition_failed"]
     assert refused and all(t["because"] for t in refused)
     assert "words" not in json.dumps(replay["graph"]).lower().replace("(words not shown)", "")
+
+
+@pytest.mark.req("scene-viewer/named-rooms-and-objects")
+def test_rooms_are_named_off_the_doorways_and_the_pump_is_placed_clear_of_them():
+    replay = json.loads((ROOT / "viewer/smallville/replay-public.json").read_text())
+    assert {r["label"] for r in replay["rooms"]} == {"Laboratory", "Corridor", "Control room"}
+    doors = [tuple(t) for d in replay["doors"].values() for t in d["tiles"]]
+    for r in replay["rooms"]:
+        assert not any(r["x0"] <= t[0] <= r["x1"] and t[1] == r["label_row"] for t in doors)
+    (pump,) = replay["objects"]
+    assert pump["room"] == "laboratory" and all(abs(pump["tile"][0] - d[0]) + abs(pump["tile"][1] - d[1]) > 3 for d in doors)
