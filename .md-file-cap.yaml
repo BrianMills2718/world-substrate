@@ -1,34 +1,38 @@
-limit: 223
-reason: 'Measured at 544c086: 183 tracked Markdown files, including required per-run
-  TRACE_READ records and historical OpenSpec change records. Preserve that evidence;
-  current authority remains docs/index.md and roadmap/README.md. New authored documents
-  require a fresh justification rather than automatic growth. On 2026-11-12 add three required
-  OpenSpec archive documents for the consent-contract normative reconciliation (proposal,
-  tasks and full spec delta). Add three required archive documents for the complete
-  actor-information target contract (proposal, tasks and delta); these preserve
-  normative adoption separately from unbuilt runtime behavior, with no new parallel
-  planning authority. Add three required archival documents for the I1 independent
-  generated concern procedure; implementation and deployed evidence retain their own
-  status rather than being inferred from normative adoption. Add one required
-  TRACE_READ for the retained first authentic I0/I1 build failure; failures are
-  preserved and reviewed rather than erased to satisfy the cap. Add one required
-  TRACE_READ for integration-2 defect discovery and four required OpenSpec archive
-  files for actor-authored report exposure and source-grounded initial-input review;
-  these repair observed I0/I1 failures through existing seams, not a new roadmap. Add two required trace-read records for production request validation and the actual deployed integration; preserve failures alongside acceptance evidence. Add one required TRACE_READ for the deployed two-round run, preserving its scoped success and observed source-authority defects rather than overwriting it with a later run. Add the required TRACE_READ for production5, preserving all prior failures and the observed compound-intent limit alongside the scoped boundary evidence. Add three required OpenSpec archive documents for the bounded whole-attempt coverage correction, preserving its adoption separately from runtime evidence. Add one required TRACE_READ retaining all three native interpreter replies, including the malformed compound assessment, and model-free engine replay limits. Add one required TRACE_READ for Brian’s approved fresh six-round production run, preserving both negation inversions, the rejected first draft and the observed outcome. Add three required OpenSpec archive records for the approved operation-polarity and public-referent correction; no new parallel planning authority. Add one required TRACE_READ preserving all nine recorded-policy native polarity/referent checks and their bounded interpretation limits.'
-# One additional required Impeccable critique snapshot preserves Brian’s 2026-11-13
-# unusability correction and independent evidence; it is linked from the existing
-# feedback log and creates no new planning authority.
-# Five required records for the approved saved-player slice: PRODUCT.md and
-# DESIGN.md consolidate UI context; OpenSpec proposal/tasks/spec preserve
-# adoption separately from implementation evidence. No parallel roadmap.
+limit: 275
+reason: 'Measured at 544c086: 183 tracked Markdown files, including required per-run TRACE_READ
+  records and historical OpenSpec change records. Preserve that evidence; current authority
+  remains docs/index.md and roadmap/README.md. New authored documents require a fresh justification
+  rather than automatic growth. On 2026-11-12 add three required OpenSpec archive documents
+  for the consent-contract normative reconciliation (proposal, tasks and full spec delta). Add
+  three required archive documents for the complete actor-information target contract (proposal,
+  tasks and delta); these preserve normative adoption separately from unbuilt runtime behavior,
+  with no new parallel planning authority. Add three required archival documents for the I1
+  independent generated concern procedure; implementation and deployed evidence retain their
+  own status rather than being inferred from normative adoption. Add one required TRACE_READ
+  for the retained first authentic I0/I1 build failure; failures are preserved and reviewed
+  rather than erased to satisfy the cap. Add one required TRACE_READ for integration-2 defect
+  discovery and four required OpenSpec archive files for actor-authored report exposure and
+  source-grounded initial-input review; these repair observed I0/I1 failures through existing
+  seams, not a new roadmap. Add two required trace-read records for production request validation
+  and the actual deployed integration; preserve failures alongside acceptance evidence. Add
+  one required TRACE_READ for the deployed two-round run, preserving its scoped success and
+  observed source-authority defects rather than overwriting it with a later run. Add the required
+  TRACE_READ for production5, preserving all prior failures and the observed compound-intent
+  limit alongside the scoped boundary evidence. Add three required OpenSpec archive documents
+  for the bounded whole-attempt coverage correction, preserving its adoption separately from
+  runtime evidence. Add one required TRACE_READ retaining all three native interpreter replies,
+  including the malformed compound assessment, and model-free engine replay limits. Add one
+  required TRACE_READ for Brian’s approved fresh six-round production run, preserving both negation
+  inversions, the rejected first draft and the observed outcome. Add three required OpenSpec
+  archive records for the approved operation-polarity and public-referent correction; no new
+  parallel planning authority. Add one required TRACE_READ preserving all nine recorded-policy
+  native polarity/referent checks and their bounded interpretation limits. On 2026-11-16 raise
+  the limit to 275 (measured at 52385e9): the scene-viewer slices (world graph page, graph over
+  the map, named rooms, zoom and pan, whole network) each add the three required OpenSpec archive
+  documents (proposal, tasks, delta), and three required TRACE_READ records cover the inhabited-facility
+  and world-workspace runs. All are preserved evidence; no new parallel planning authority,
+  and nothing was deleted to meet the cap.'
 unlinked_ok:
 - path: openspec/changes/archive/
   reason: Historical change proposals and deltas; current required behavior is openspec/specs/,
     linked from the documentation index.
-
-# Five required world-workspace OpenSpec records: proposal, tasks, two archived
-# deltas and the new current world-catalog spec. PRODUCT/DESIGN and roadmap
-# remain the existing authorities; no parallel plan or handoff document.
-
-# One required TRACE_READ preserves the actual integrated UI run and the
-# unintended resident-call harness failure, including measured cost and correction.

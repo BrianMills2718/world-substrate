@@ -218,3 +218,13 @@ Every document still in the repository that the [documentation index](index.md) 
 - [j3/price-times-quantity trace read](../evidence/ai-judge/j3/price-times-quantity/TRACE_READ.md)
 - [j3/wait-approve trace read](../evidence/ai-judge/j3/wait-approve/TRACE_READ.md)
 - [j3/wait-reject trace read](../evidence/ai-judge/j3/wait-reject/TRACE_READ.md)
+
+## Later evidence and the viewer's art licence
+
+- [Inhabited facility, resident run: trace read](../evidence/ui/inhabited-facility-20261113/TRACE_READ.md)
+- [Inhabited facility, direct harness: trace read](../evidence/ui/inhabited-facility-20261113/direct-harness/TRACE_READ.md)
+- [World workspace: trace read](../evidence/ui/world-workspace-20261113/TRACE_READ.md)
+- [Visible I0/I1 run: trace read](../evidence/i0-i1/visible-run-20261113/TRACE_READ.md)
+- [Preserve operation polarity: trace read](../evidence/open-attempt/preserve-operation-polarity/TRACE_READ.md)
+- [Whole-attempt coverage: trace read](../evidence/open-attempt/whole-attempt-coverage/TRACE_READ.md)
+- [Scene viewer's CC0 tiles: licence and source](../viewer/smallville/assets-cc0/README.md)
