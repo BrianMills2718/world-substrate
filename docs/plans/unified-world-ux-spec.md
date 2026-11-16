@@ -28,16 +28,19 @@ Goal: [unified-world-ux](../goals/unified-world-ux.md). Source: Brian, 2026-11-1
 +--------------------------------------------------------------------------------+
 ```
 
-Phone width: the library and talk panels become two drawers; the stage is first, then the timeline, then the log.
+Colour key (words and shapes, not colour alone): blue circle = allowed move; orange square = refused move; grey ring = no move. Phone width: the library and talk panels become two drawers opened from a bottom bar (Worlds, Talk); the stage comes first, then the timeline, then the log.
 
 ## States
 
 1. **Describe** (dialogue): the agent asks at most three questions, one at a time, each with suggested answers. The draft sits beside the chat as plain words, editable. A "make it more precise" button rewrites the draft.
 2. **Draft**: plain-words summary names every group, the meeting and the deadline, and lists what was left out. Build is the approval. An old draft version is read-only with "Back to latest".
 3. **Building**: steps appear as they finish; the time shown is the measured one (about 3 minutes), not "a minute"; no internal terms.
-4. **Run**: live on the stage. Pause, speed 1 to 5, step. Pauses itself when the tab is inactive and says so.
+4. **Run**: live on the stage. Pause, speed 1 to 5, step. Speed is how long the page waits between rounds (each round is one AI request), not engine speed. New: it pauses itself when the tab has been inactive for 5 minutes and says so.
 5. **Playback**: the same stage and timeline; scrubbing never runs the AI. Any round can be named ("moment") and restored without losing the current state.
-6. **Branch**: "What if..." at a round opens an isolated copy with one change typed in words; it plays beside the original on the same timeline. Keep or discard. Nothing edits a run in place.
+6. **Branch**: "What if..." at a round opens an isolated copy that plays beside the original. Nothing edits a run in place; keep or discard.
+   - **The change**: pick one group and type in words what it now wants or believes (for example, "Country Three now believes its logistics concern is resolved"). The copy starts from the saved round with that group's own brief changed. Rules, memory and world state are untouched (the goal's boundary; `_run` refuses overrides of those). If the engine will not accept a changed brief on a fork, the fallback is "same start, new draw": fork the same round again with no change; increment 4 verifies which one holds before building it.
+   - **When it is offered**: only on rounds the engine can fork (a saved round with its snapshot and actor state). Elsewhere the button is greyed with the engine's reason in words. Branching is owner-only; visitors in the try-it path do not get it and the page says so.
+   - **One timeline for two runs**: the branch hangs off the parent at the round it left, and shows the parent's round numbers, so round 4 means the same moment in both.
 7. **Library**: World, then Runs, then Branches. Gallery and list, star to pin, search, last opened first. Owner library stays owner-only; visitors get a try-it path that is not saved and says so.
 
 ## Rules for every screen
@@ -55,11 +58,17 @@ Editable approve-gated draft (Lovable); read-only old versions; branch as isolat
 
 ## Build order and how each reuses the code
 
-2. **Live run on the map.** New route `POST /live-replay` takes the same body as `/share` and returns `_public_replay(_assemble_share(...))` without saving. The run stage embeds `room-map/` in an iframe with `?embed=1`; after each round the page posts the new replay to it (`ws-replay`), the same way it already posts `ws-round` to the old picture. The old picture iframe and the Network panel leave the run stage.
+2. **Live run on the map.**
+   - **Route**: new `POST /live-replay`, same body as `/share`, returns `_public_replay(_assemble_share(...))` without saving. Owner catalog runs use `catalog_run_id` and `record["rounds"]` instead (second path). It rereads the run log each call; it is called once per finished round and the cost is measured in the increment, with a cache by run id if it matters. Message words follow the existing rule: owners see them, visitors see "(words not shown)".
+   - **Viewer work (new, not a message tweak)**: `viewer.js` today fetches one replay and fixes its length once. Embed mode adds a `message` listener that takes a longer replay, extends the timeline and follows the newest round unless the person scrubbed back. The old picture iframe works differently (it already has every round and is told which to show), so this is more than copying `ws-round`.
+   - **Why not the existing `/scene` iframe**: it draws the older living-scene picture, with no graph, no offices and no timeline.
+   - The old picture iframe and the Network panel leave the run stage.
 3. **Timeline.** The viewer's round slider and the saved player's round list merge into one timeline bar under the stage.
-4. **Branch.** Reuses catalog branching (`catalog_run_id` plus checkpoint) behind the "What if" button; two runs drawn beside each other.
+4. **Branch.** Reuses catalog branching (`create_run` from a checkpoint, `world_catalog.py`) behind the "What if" button, with the change and eligibility rules above; two runs drawn beside each other with a shared round axis.
 5. **Library.** The existing library (`drawLibrary`, `openCatalogWorld`) becomes the left rail.
 6. **Dialogue.** The existing `/clarify` dialogue moves to the right panel and keeps every named group in the draft (a test counts named groups in the description against the draft).
 7. **Polish.** Cold-read with a person who has not seen it, phone width, accessibility, jargon, honest times.
+
+Step numbers match the goal's list; step 1 is this document.
 
 Each step: OpenSpec change, tests marked with the scenario slug, `batch ship`, publish-checker, deploy, live walk with traces read.
