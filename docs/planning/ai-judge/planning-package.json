@@ -171,7 +171,7 @@
         "run-log": "scripts/world_builder_service.py:542",
         "readout": "scripts/run_readout.py:113",
         "scene-replay": "scripts/render_scene_replay.py:449",
-        "share": "scripts/world_builder_service.py:638",
+        "share": "scripts/world_builder_service.py:1672",
         "budget": "scripts/world_builder_service.py:57",
         "people-world": "scripts/people_world.py:474",
         "communicate": "spikes/any-scenario-2026-10/compile_spec.py:56",
@@ -211,7 +211,14 @@
         "consequence-report": "scripts/consequence_report.py:67",
         "judge-ruling": "scripts/judge.py:288",
         "ruling-rule": "scripts/rulings.py:91",
-        "midrun-setting": "scripts/rulings.py:47"
+        "midrun-setting": "scripts/rulings.py:47",
+        "room-map": "viewer/smallville/viewer.js:21",
+        "layout-declaration": "scripts/scene_layout.py:32",
+        "generated-map": "scripts/generated_map.py:20",
+        "replay-export": "scripts/export_smallville_replay.py:232",
+        "world-graph": "scripts/world_graph.py:122",
+        "rules-overlay": "viewer/smallville/viewer.js:125",
+        "proposed-layout": "scripts/layout_proposal.py:53"
       },
       "spectrum": "docs/model/semantic-spectrum.json"
     },
