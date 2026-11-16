@@ -325,13 +325,19 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       <label for="context-actor">Person</label>
       <select id="context-actor" title="Choose whose exact authorized inputs to inspect. Switching views never changes their memory."></select>
     </div>
+    <section id="run-map" class="run-map" aria-labelledby="run-map-h"><h3 id="run-map-h">The world on the map, with its graph beside it</h3>
+    <p class="small muted" id="run-map-status" role="status">The map appears when the first round finishes.</p>
+    <div class="what-if-bar" id="what-if-bar" hidden><button type="button" class="secondary" id="what-if" title="Play this world again from the round shown on the map, beside the original. The original is not changed.">What if…</button> <span class="small muted" id="what-if-note" role="status"></span></div>
+    <div class="run-maps" id="run-maps"><div class="run-map-cell" id="original-cell" hidden><p class="small" id="original-label"></p><iframe id="run-map-frame-2" title="The original run, kept beside the branch" src="about:blank" loading="lazy"></iframe></div>
+    <div class="run-map-cell"><p class="small" id="branch-label" hidden></p><iframe id="run-map-frame" title="Room map and graph of the run" src="room-map/?embed=1&amp;graph=beside" loading="lazy"></iframe></div></div>
+    </section>
     <section id="actor-context" hidden aria-label="Authorized actor inputs">
       <p class="small">This is the selected person's recorded input, before their choice. Viewing it does not change the simulation.</p>
       <p id="actor-context-status" role="status"></p>
       <div class="row" id="actor-round-controls" hidden><label for="actor-round-select">Input before round</label><select id="actor-round-select" title="Inspect this person's authorized input for a recorded round. No other person's state is shown."></select></div>
       <div id="actor-context-records"></div>
     </section>
-    <div id="analyst-context"><section id="world-scene-panel" class="world-scene-panel" aria-labelledby="world-scene-h"><h3 id="world-scene-h">World view</h3><p id="world-scene-status" role="status"></p><iframe id="world-scene" title="Spatial view of the simulated world" sandbox="allow-scripts" hidden></iframe><p id="world-scene-caption"></p><p id="world-scene-selection" aria-live="polite"></p></section>
+    <div id="analyst-context"><section id="world-scene-panel" class="world-scene-panel" hidden aria-labelledby="world-scene-h"><h3 id="world-scene-h">World view</h3><p id="world-scene-status" role="status"></p><iframe id="world-scene" title="Spatial view of the simulated world" sandbox="allow-scripts" hidden></iframe><p id="world-scene-caption"></p><p id="world-scene-selection" aria-live="polite"></p></section>
     <section id="saved-player" hidden aria-label="Recorded simulation player">
       <div class="saved-navigation" id="saved-navigation" aria-label="Recording navigation">
         <button type="button" class="secondary" id="saved-round-prev" title="Select the previous recorded round. No simulation is run.">Prev</button>
@@ -352,12 +358,6 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <div id="stuck-note"></div>
     <p class="outcome" id="outcome" data-tip="Allowed: moves that went through. Refused: moves someone tried that did not go through. Held back by the rules: people who had moves the rules did not let them try that round (counted once per person per round). By itself: changes the world made on its own."></p>
     <div class="rulings" id="rulings-panel" hidden aria-label="The judge’s rulings in this run"></div>
-    <section id="run-map" class="run-map" aria-labelledby="run-map-h"><h3 id="run-map-h">The world on the map, with its graph beside it</h3>
-    <p class="small muted" id="run-map-status" role="status">The map appears when the first round finishes.</p>
-    <div class="what-if-bar" id="what-if-bar" hidden><button type="button" class="secondary" id="what-if" title="Play this world again from the round shown on the map, beside the original. The original is not changed.">What if…</button> <span class="small muted" id="what-if-note" role="status"></span></div>
-    <div class="run-maps" id="run-maps"><div class="run-map-cell" id="original-cell" hidden><p class="small" id="original-label"></p><iframe id="run-map-frame-2" title="The original run, kept beside the branch" src="about:blank" loading="lazy"></iframe></div>
-    <div class="run-map-cell"><p class="small" id="branch-label" hidden></p><iframe id="run-map-frame" title="Room map and graph of the run" src="room-map/?embed=1&amp;graph=beside" loading="lazy"></iframe></div></div>
-    </section>
     <ol class="feed" id="feed" aria-label="What just happened, newest round first"></ol>
     <ul class="underway" id="underway" aria-label="Tasks that take several rounds: under way, stopped part-way, or finished" hidden></ul>
     <details class="picture" id="attempts"><summary title="Every person in the last 10 rounds as squares: allowed, refused, held back by the rules (not allowed to try), or waited. Select one to see why.">Why things were refused</summary>
@@ -647,6 +647,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       }, "*");
     }
     async function refreshScene() {
+      if (true) return;  // the map beside the timeline replaces the old picture (scene-viewer/the-map-is-the-first-thing-on-the-run-stage)
       const path = catalog ? (catalog.run ? catalogPath() + "/scene" : "/worlds/" + encodeURIComponent(catalog.worldId) + "/scene") : sharedSceneId ? "/share/" + encodeURIComponent(sharedSceneId) + "/scene" : null,
         key = path + ":" + (catalog?.checkpointId || "");
       if (!path) {

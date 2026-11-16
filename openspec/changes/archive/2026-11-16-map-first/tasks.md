@@ -1,0 +1,1 @@
+- [x] Test, move the map up, hide the old picture
