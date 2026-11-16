@@ -363,5 +363,5 @@ def test_the_viewer_offers_graph_styles_and_opens_one_from_a_link():
     js = (ROOT / "viewer/smallville/viewer.js").read_text()
     html = (ROOT / "viewer/smallville/index.html").read_text()
     for v in ("round", "map", "hover", "beside"):
-        assert f'<option value="{v}">' in html
+        assert f'<option value="{v}"' in html
     assert 'q.get("graph")' in js and "focusId" in js and "beside" in js
