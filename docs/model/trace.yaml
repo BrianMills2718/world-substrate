@@ -111,7 +111,7 @@ rules:
       continuation reconstructs that effective set before freezing a new profile. The originally supplied bundle
       remains the approval identity. See openspec/specs/ai-judge/spec.md for the additional installation contract.
     owner: scripts/run_authored_world.py
-    reviewed_at: 1edb4a5fe9e5f063801eccca33b53326a2daed25  # re-read build_engine install/freeze and run_world entry: display-only recorded-event projection repair changes no profile authority; source review I0/I1: run_world resolves effective Rulebook then build_engine validates/installs all rules and freezes before policy construction; continuation validates world/rule identities; new actor-input sink does not change profile authority
+    reviewed_at: b2b87ce5be988ae76d1a42a3dfd77d3b73cfe27b  # re-read the 1edb4a5..HEAD diff (2aef478 Replay immediate consequences, 31c10a4 whole-attempt coverage, b3823f6/f970f9a interpretation clarification and operation polarity, 55bde2c/526159d/584a69d Facility reader fixes): changes touch _read_attempt labels/known_bindings, interpretation feedback rows and story display only; build_engine still validates/installs then profile.freeze() before run_world policy construction
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime
@@ -125,7 +125,7 @@ rules:
       Create simulation supplies initial approval; J3 permits checked additional rules under the chosen mode.
       This is rule approval, not the represented people's consent to an exchange (the latter remains Q96).
     owner: scripts/world_builder_service.py
-    reviewed_at: f4b7afab183691df0e364a624a275876bcddb9ba  # source review I0/I1: _run requires approved and compiles before policy calls, keeps exact native law, validates snapshot seal including declared actor_state and rejects unsealed/conflicting restored inputs; actor consent remains a separate modeled action
+    reviewed_at: b2b87ce5be988ae76d1a42a3dfd77d3b73cfe27b  # re-read the f4b7afa..HEAD diff (f552dcb persist private worlds and run checkpoint branches, 0c42b12 recover owner-authenticated worlds, 3aae0b8/cdcf68b layout step, 322066c/7b04534/49fc80c share replay and graph pages): _run now routes owner-only catalog runs to _run_native, which still requires approved and compiles first; catalog hydration takes only approved/policy/model/decisions from the body and the server re-seals its own retained snapshot, approval and rulings, so on that path integrity rests on catalog storage rather than a client-carried seal
     checks:
       - tests/test_world_builder_service.py::test_run_requires_explicit_mechanic_approval
       - tests/test_world_builder_service.py::test_native_coordination_run_refuses_modified_law
@@ -142,7 +142,7 @@ rules:
       The stronger no-call-past-budget invariant requires a separate audit of downstream model-call budgets,
       concurrency and late hedges; the cited request-level tests do not establish it.
     owner: scripts/world_builder_service.py
-    reviewed_at: f4b7afab183691df0e364a624a275876bcddb9ba  # source review I0/I1: _requested_model, _load_budget_state, _reserve_daily_budget, _llm_budget and settlement retain fail-closed admission; no stronger downstream aggregate-cap claim is made
+    reviewed_at: b2b87ce5be988ae76d1a42a3dfd77d3b73cfe27b  # re-read the f4b7afa..HEAD diff (f552dcb catalog runs, 3aae0b8 room-map layout proposal, cdcf68b layout step gets its own spending allowance): catalog runs pass through _run_native admission unchanged; _with_layout calls a fixed layout model with max_budget = trace cost + $0.03, so a build can settle up to $0.03 above its reservation via recorded cost, consistent with the stated outer-gate-only scope
     checks:
       - tests/test_world_builder_service.py::test_unapproved_model_is_refused_before_spend
       - tests/test_world_builder_service.py::test_corrupt_budget_ledger_fails_closed_before_model_call
@@ -159,7 +159,7 @@ rules:
       errors and prints them without failing the request; successful response does not guarantee a retained record.
       The cited tests cover normal storage and snapshot continuation, not failure of the log store.
     owner: scripts/world_builder_service.py
-    reviewed_at: f4b7afab183691df0e364a624a275876bcddb9ba  # source review I0/I1: _record_response retains exact failed actor inputs through shared sink and normal-storage run records; continuation seals include actor_state; log-write errors are still swallowed, so storage-failure durability remains unmet
+    reviewed_at: b2b87ce5be988ae76d1a42a3dfd77d3b73cfe27b  # re-read the f4b7afa..HEAD diff (f552dcb persist private worlds and exact run checkpoint branches, e645757 workspace contracts, 52b51ec recovery read locks): _record_response now also retains source_draft_reviews and still swallows log-write errors (unmet requirement unchanged); _catalog_response makes the catalog checkpoint save a success condition for owner catalog runs and job responders still log the final result
     checks:
       - tests/test_world_builder_service.py::test_every_build_and_run_leaves_a_durable_record
       - tests/test_world_builder_service.py::test_keep_going_continues_from_the_final_snapshot
@@ -193,8 +193,12 @@ rules:
     verification_limit: >-
       This is a resident-input boundary, not generic Engine read-scope enforcement or proof that a generated
       declaration is semantically authorized. The source-grounded review gate has its own rule and limitation.
+      Known exception, found on re-review 2026-11-16 and not covered by a test: when a world places actors, the
+      observation always names the actor's own current place (id and label); if that place is not a declared
+      public entity, the label comes from the engine's own entity label (declared_label fallback), so a place
+      the declaration did not publish can still reach the actor by name.
     owner: scripts/actor_information.py
-    reviewed_at: f4b7afab183691df0e364a624a275876bcddb9ba
+    reviewed_at: b2b87ce5be988ae76d1a42a3dfd77d3b73cfe27b  # re-read f4b7afab1..HEAD (b0e271c, 55bde2c): place-scoped observation adds the actor's own place; the engine-label fallback is recorded as a known exception above rather than called safe
     checks:
       - tests/test_actor_information.py::test_hidden_state_labels_summary_and_action_text_cannot_change_input
       - tests/test_actor_information.py::test_pending_message_and_its_action_identity_do_not_enter_recipient_input
@@ -212,7 +216,7 @@ rules:
       Typed gate tests establish that unsafe or absent verdicts are rejected, not that the model always detects
       unauthorized disclosures. Generated verdicts and actual prompts require trace inspection.
     owner: scripts/review_rules.py
-    reviewed_at: e4ea994f2aee8bd31eda182d52a0fe7c3c986bae
+    reviewed_at: b2b87ce5be988ae76d1a42a3dfd77d3b73cfe27b  # stale finding is a rebase artifact: e4ea994 is not an ancestor of HEAD, its twin f644cb4 (same subject Fix independent stance and source-authority repair) is the only later commit, and git diff e4ea994 HEAD on the owner is empty, so the reviewed text is unchanged
     checks:
       - tests/test_initial_actor_knowledge.py::test_missing_malformed_or_disallowed_review_never_approves
       - tests/test_initial_actor_knowledge.py::test_existing_review_call_reads_actual_contexts_and_rejects_narrator_negative_knowledge
@@ -228,7 +232,7 @@ rules:
       These are declared procedural assumptions with a bounded effective repair action; they establish neither
       scientific fidelity of the condition nor calibrated human responses or a required social ending.
     owner: spikes/any-scenario-2026-10/compile_spec.py
-    reviewed_at: e4ea994f2aee8bd31eda182d52a0fe7c3c986bae
+    reviewed_at: b2b87ce5be988ae76d1a42a3dfd77d3b73cfe27b  # stale finding is a rebase artifact: e4ea994 is not an ancestor of HEAD, its twin f644cb4 (same subject Fix independent stance and source-authority repair) is the only later commit, and git diff e4ea994 HEAD on the owner is empty, so the reviewed text is unchanged
     checks:
       - tests/test_scenario_spec.py::test_delivery_review_repair_and_assent_remain_distinct
       - tests/test_scenario_spec.py::test_no_forced_support_timer_or_claim_truth_and_safe_metadata
