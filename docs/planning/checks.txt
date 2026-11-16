@@ -1047,3 +1047,89 @@ Both current installed validate_planning_package commands: exit0,10/10parts,11/1
 Trace reads51/0 and durable docs0findings independently reproduced exit0. Bothspectrumchecks9/9 exit0;15system-model tests exit0. Productionacceptance remains pending.
 
 I0/I1 delivery status refresh (2026-11-13): both package validators exit0,compliant=true;10/10parts,11/12substance,0failing,1conditionalplain-versioncomparisonpending. System-map deadline remains2026-11-17; no new benchmark is required by currentdelivery. Freshness0changedplanfiles since64db257. ExactJSON reports are retained besideproduction5. Canonical plan_checklist --write exit0; its conditionalbaseline checkbox says failing although rawsubstance.pending is populated and problems=[]; the validator verdict and explicit conditional disposition govern, rather than inventing a comparison requirement. This is a tool-report formatting limitation retained for Feedback. I0/I1 criteria nowbuilt with actualrecordingURL, no fabricatedhumanjudgment.
+
+Scene-viewer package refresh, 2026-11-16, worktree feat/ws-plan at base 3d9194c. Pre-edit runs read HEAD; make check, spectrum and the system-model test were rerun after the package edits. Full outputs; nothing edited to pass.
+
+== python3 scripts/check_trace_reads.py --root evidence
+RESULT runs=57 problems=0
+exit=0 secs=2
+
+== python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42
+FINDING STALE role=system_model id=RULE-FROZEN-PROFILE file=scripts/run_authored_world.py: owner changed in 7 commit(s) after the rule was last reviewed (1edb4a5fe); re-read the rule and set reviewed_at
+FINDING STALE role=system_model id=RULE-APPROVAL-BEFORE-RUN file=scripts/world_builder_service.py: owner changed in 11 commit(s) after the rule was last reviewed (f4b7afab1); re-read the rule and set reviewed_at
+FINDING STALE role=system_model id=RULE-BUDGET-FAILS-CLOSED file=scripts/world_builder_service.py: owner changed in 11 commit(s) after the rule was last reviewed (f4b7afab1); re-read the rule and set reviewed_at
+FINDING STALE role=system_model id=RULE-DURABLE-RUN-RECORD file=scripts/world_builder_service.py: owner changed in 11 commit(s) after the rule was last reviewed (f4b7afab1); re-read the rule and set reviewed_at
+FINDING STALE role=system_model id=RULE-DECLARED-ACTOR-INPUTS file=scripts/actor_information.py: owner changed in 2 commit(s) after the rule was last reviewed (f4b7afab1); re-read the rule and set reviewed_at
+FINDING STALE role=system_model id=RULE-ACTOR-INPUT-REVIEW file=scripts/review_rules.py: owner changed in 1 commit(s) after the rule was last reviewed (e4ea994f2); re-read the rule and set reviewed_at
+FINDING STALE role=system_model id=RULE-INDEPENDENT-CONCERN-PROCEDURE file=spikes/any-scenario-2026-10/compile_spec.py: owner changed in 1 commit(s) after the rule was last reviewed (e4ea994f2); re-read the rule and set reviewed_at
+durable-docs: mode=repo repo=/home/brian/code2/worktrees/ws-plan findings=7 (STALE=7), exit 1
+exit=1 secs=1
+
+== python3 /home/brian/code2/agentic-engineering-system-canonical/scripts/md_file_cap.py --repo . --ref HEAD
+OVER    272  BrianMills2718/world-substrate  -- 272 > exception limit 223 (Measured at 544c086: 183 tracked Markdown files, including required per-run TRACE_READ records and historical OpenSpec change records. Preserve that evidence; current authority remains docs/index.md and roadmap/README.md. New authored documents require a fresh justification rather than automatic growth. On 2026-11-12 add three required OpenSpec archive documents for the consent-contract normative reconciliation (proposal, tasks and full spec delta). Add three required archive documents for the complete actor-information target contract (proposal, tasks and delta); these preserve normative adoption separately from unbuilt runtime behavior, with no new parallel planning authority. Add three required archival documents for the I1 independent generated concern procedure; implementation and deployed evidence retain their own status rather than being inferred from normative adoption. Add one required TRACE_READ for the retained first authentic I0/I1 build failure; failures are preserved and reviewed rather than erased to satisfy the cap. Add one required TRACE_READ for integration-2 defect discovery and four required OpenSpec archive files for actor-authored report exposure and source-grounded initial-input review; these repair observed I0/I1 failures through existing seams, not a new roadmap. Add two required trace-read records for production request validation and the actual deployed integration; preserve failures alongside acceptance evidence. Add one required TRACE_READ for the deployed two-round run, preserving its scoped success and observed source-authority defects rather than overwriting it with a later run. Add the required TRACE_READ for production5, preserving all prior failures and the observed compound-intent limit alongside the scoped boundary evidence. Add three required OpenSpec archive documents for the bounded whole-attempt coverage correction, preserving its adoption separately from runtime evidence. Add one required TRACE_READ retaining all three native interpreter replies, including the malformed compound assessment, and model-free engine replay limits. Add one required TRACE_READ for Brian’s approved fresh six-round production run, preserving both negation inversions, the rejected first draft and the observed outcome. Add three required OpenSpec archive records for the approved operation-polarity and public-referent correction; no new parallel planning authority. Add one required TRACE_READ preserving all nine recorded-policy native polarity/referent checks and their bounded interpretation limits.)
+UNREACHABLE     7  BrianMills2718/world-substrate  -- 3 reader docs not linked from wiki/index.md, 4 more than 2 links deep (e.g. evidence/ui/inhabited-facility-20261113/direct-harness/TRACE_READ.md, evidence/ui/world-workspace-20261113/TRACE_READ.md, viewer/smallville/assets-cc0/README.md)
+DURABLE     7  BrianMills2718/world-substrate  -- 7 durable-document findings (e.g. STALE role=system_model id=RULE-FROZEN-PROFILE file=scripts/run_authored_world.py: owner changed in 7 commit(s) after the rule was last reviewed (1edb4a5fe); re-read the rule and set reviewed_at; STALE role=system_model id=RULE-APPROVAL-BEFORE-RUN file=scripts/world_builder_service.py: owner changed)
+REPO  BrianMills2718/world-substrate  md=272  cap=over  reach=orphans(7)  layout=undeclared(0)  durable=findings(7)
+md-file-cap: 1 given repos checked, cap 100: ok=0 exception=0 over=1 not-checked=0; wiki reachability ok=0 orphans=1 no-wiki=0; layout ok=0 findings=0 undeclared=1; durable ok=0 findings=1 undeclared=0   exit 1
+exit=1 secs=4
+
+== python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/validate_project_navigation.py .
+DELEGATED wiki/index.md: workspace wiki rule; project-wiki/v1 schema not applied; reachability, cap and layout are checked by python3 ~/code/project-meta/scripts/md_file_cap.py --repo R
+REPORT ONLY: 0 finding(s); semantic truth and approval were not evaluated
+exit=0 secs=0
+
+== python3 /home/brian/code2/workspace/scripts/repo_format.py .
+RESULT repo-format compliant=1 of=1 exit=0
+exit=0 secs=0
+
+== python spectrum_check.py --repo . docs/planning/planning-package.json (after edits)
+ok   L1 project S1   Every project term has a definition in the domain graph (93 checked)
+ok   L1 project S1b  Every node in the domain graph is a term in the project or planning layer (93 checked)
+ok   L3 project S3   Every term names a kind that exists (93 checked)
+ok   L4 project S4   Every project term connects to at least one other term (93 checked)
+ok   L2 both    P2   No other name points to two different terms (43 checked)
+ok   L2 both    P2c  No two terms have near-identical names unless an ambiguous entry separates them (198 checked)
+ok   L2 both    P2b  Each ambiguous word lists only terms that exist (6 checked)
+ok   L3 both    P3   A project file does not redefine a planning term or give one another kind (93 checked)
+ok   L5 project S5   Every open question touches only concepts that are terms (106 checked)
+spectrum_check: 9 passed, 0 failed of 9 (13 planning terms, 93 project terms); exit 0
+exit=0
+
+== lockstep check sources
+RESULT sources brian=41 inferred=86 other=48 missing=0 exit=0
+exit=0 secs=1
+
+== lockstep check trace (summary; full list 460 lines omitted)
+    151 unimplemented 
+     53 unknown 
+    256 untested 
+RESULT trace findings=460 exit=1
+exit=1 secs=3
+
+== validate_planning_path.py docs/plans/ai_judge.path-decision.json --json
+  "selected_path": "durable_solo",
+  "valid": true
+exit=0 secs=0
+
+== validate_planning_path.py docs/plans/declared_laws.path-decision.json --json
+  "selected_path": "reset",
+  "valid": true
+exit=0 secs=0
+
+== validate_planning_path.py docs/plans/estimate_rules.path-decision.json --json
+  "selected_path": "durable_solo",
+  "valid": true
+exit=0 secs=0
+
+== validate_planning_path.py docs/plans/open_attempt.path-decision.json --json
+  "selected_path": "durable_solo",
+  "valid": true
+exit=0 secs=0
+
+== batch make check (after edits; tail)
+Totals: 15 passed, 0 failed (15 items)
+World Substrate project check passed.
+Neutral runtime tests: 1173 passed, 2 skipped, 229 subtests passed in 58.15s
+exit=0 secs=66
+
+== check_saved_worlds.py --builds: not rerun 2026-11-16 (needs the installed llm_client environment and every recorded build folder; no saved-world code changed in the scene-viewer work). Its 2026-11-13 result recorded earlier in this file stays historical.
