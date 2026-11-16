@@ -1,0 +1,3 @@
+- [x] Tests for the label fix, the What if button and the side-by-side maps
+- [x] Viewer label says "following the run" while playing toward the newest round
+- [x] What if button, branch point from the shown round, pinned original beside the branch
