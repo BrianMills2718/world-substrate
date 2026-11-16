@@ -56,7 +56,7 @@ rules:
       material hash
       unchanged and the refusal recorded.
     owner: src/world_substrate/engine.py
-    reviewed_at: 4878cb84ffabf9d8dfaad4472ff9c64036673aeb  # re-read 2026-11-10 (ai-judge J0, PR #362): the reaction-limit refusal now applies only under a recorded limit (Engine(reaction_limit=...)), still through _refuse_round with the world restored; a blocked knock-on step is recorded without writing anything; tests below plus tests/test_knock_on_unbounded.py
+    reviewed_at: 03b307351ecd8272be731d8f4ca316ce6a47e5b8  # re-read 2026-11-16 after the trace-link commit 03b3073: the owner file's code is identical to its last reviewed state apart from docstring Implements lines (AST compared with docstrings removed), so the rule text is unchanged
     checks:
       - tests/test_action_envelopes.py::test_malformed_envelope_is_invalid_atomic_and_replayable
       - tests/test_first_fill.py::test_stale_revision_is_rejected_without_material_change
@@ -74,7 +74,7 @@ rules:
       A rule or process may write only the components it declared; reaching undeclared state refuses the
       action or stops the tick with nothing changed, and the refusal replays identically.
     owner: src/world_substrate/engine.py
-    reviewed_at: 4878cb84ffabf9d8dfaad4472ff9c64036673aeb  # re-read 2026-11-10 (ai-judge J0, PR #362): J0 changed how many reactions a moment may run and what is recorded, not the scope checks in _apply_process, which still run on every write
+    reviewed_at: 03b307351ecd8272be731d8f4ca316ce6a47e5b8  # re-read 2026-11-16 after the trace-link commit 03b3073: the owner file's code is identical to its last reviewed state apart from docstring Implements lines (AST compared with docstrings removed), so the rule text is unchanged
     checks:
       - tests/test_write_scope.py::test_action_reaching_undeclared_components_is_refused
       - tests/test_write_scope.py::test_process_reaching_undeclared_state_stops_the_tick
@@ -86,7 +86,7 @@ rules:
     statement: >-
       Precondition checks and process due-tests only read; one that writes is refused and the tick is rolled back.
     owner: src/world_substrate/engine.py
-    reviewed_at: 4878cb84ffabf9d8dfaad4472ff9c64036673aeb  # re-read 2026-11-10 (ai-judge J0, PR #362): the new near_misses (blocked knock-on steps) only compares check values on the moment's view and returns rows; checks and due-tests still run read-only
+    reviewed_at: 03b307351ecd8272be731d8f4ca316ce6a47e5b8  # re-read 2026-11-16 after the trace-link commit 03b3073: the owner file's code is identical to its last reviewed state apart from docstring Implements lines (AST compared with docstrings removed), so the rule text is unchanged
     checks:
       - tests/test_rule_authority.py::test_checks_are_refused_if_they_write
       - tests/test_rule_authority.py::test_due_cannot_write_and_the_tick_is_rolled_back
@@ -97,7 +97,7 @@ rules:
       The authority shown for review is derived by the compiler from the proposed rule, not taken from the
       model's claims; unknown effect paths and engine-owned fields are rejected before installation.
     owner: src/world_substrate/action_authoring.py
-    reviewed_at: f4b7afab183691df0e364a624a275876bcddb9ba  # source review I0/I1: DeclaredActionMechanic.from_dict validates selectors/signatures/checks/effects, derives reads/writes; append_report is action-only and typed, adds target read/write, and cannot author engine cause ids
+    reviewed_at: 03b307351ecd8272be731d8f4ca316ce6a47e5b8  # re-read 2026-11-16 after the trace-link commit 03b3073: the owner file's code is identical to its last reviewed state apart from docstring Implements lines (AST compared with docstrings removed), so the rule text is unchanged
     checks:
       - tests/test_action_authoring.py::test_review_exposes_derived_authority_not_model_claimed_authority
       - tests/test_action_authoring.py::test_unknown_effect_path_is_rejected_before_installation
@@ -111,7 +111,7 @@ rules:
       continuation reconstructs that effective set before freezing a new profile. The originally supplied bundle
       remains the approval identity. See openspec/specs/ai-judge/spec.md for the additional installation contract.
     owner: scripts/run_authored_world.py
-    reviewed_at: b2b87ce5be988ae76d1a42a3dfd77d3b73cfe27b  # re-read the 1edb4a5..HEAD diff (2aef478 Replay immediate consequences, 31c10a4 whole-attempt coverage, b3823f6/f970f9a interpretation clarification and operation polarity, 55bde2c/526159d/584a69d Facility reader fixes): changes touch _read_attempt labels/known_bindings, interpretation feedback rows and story display only; build_engine still validates/installs then profile.freeze() before run_world policy construction
+    reviewed_at: 03b307351ecd8272be731d8f4ca316ce6a47e5b8  # re-read 2026-11-16 after the trace-link commit 03b3073: the owner file's code is identical to its last reviewed state apart from docstring Implements lines (AST compared with docstrings removed), so the rule text is unchanged
     checks:
       - tests/test_run_authored_world.py::test_compiled_profile_is_frozen_before_run
       - tests/test_run_authored_world.py::test_unreviewable_mechanic_never_reaches_runtime
@@ -125,7 +125,7 @@ rules:
       Create simulation supplies initial approval; J3 permits checked additional rules under the chosen mode.
       This is rule approval, not the represented people's consent to an exchange (the latter remains Q96).
     owner: scripts/world_builder_service.py
-    reviewed_at: b2b87ce5be988ae76d1a42a3dfd77d3b73cfe27b  # re-read the f4b7afa..HEAD diff (f552dcb persist private worlds and run checkpoint branches, 0c42b12 recover owner-authenticated worlds, 3aae0b8/cdcf68b layout step, 322066c/7b04534/49fc80c share replay and graph pages): _run now routes owner-only catalog runs to _run_native, which still requires approved and compiles first; catalog hydration takes only approved/policy/model/decisions from the body and the server re-seals its own retained snapshot, approval and rulings, so on that path integrity rests on catalog storage rather than a client-carried seal
+    reviewed_at: 03b307351ecd8272be731d8f4ca316ce6a47e5b8  # re-read 2026-11-16 after the trace-link commit 03b3073: the owner file's code is identical to its last reviewed state apart from docstring Implements lines (AST compared with docstrings removed), so the rule text is unchanged
     checks:
       - tests/test_world_builder_service.py::test_run_requires_explicit_mechanic_approval
       - tests/test_world_builder_service.py::test_native_coordination_run_refuses_modified_law
@@ -142,7 +142,7 @@ rules:
       The stronger no-call-past-budget invariant requires a separate audit of downstream model-call budgets,
       concurrency and late hedges; the cited request-level tests do not establish it.
     owner: scripts/world_builder_service.py
-    reviewed_at: b2b87ce5be988ae76d1a42a3dfd77d3b73cfe27b  # re-read the f4b7afa..HEAD diff (f552dcb catalog runs, 3aae0b8 room-map layout proposal, cdcf68b layout step gets its own spending allowance): catalog runs pass through _run_native admission unchanged; _with_layout calls a fixed layout model with max_budget = trace cost + $0.03, so a build can settle up to $0.03 above its reservation via recorded cost, consistent with the stated outer-gate-only scope
+    reviewed_at: 03b307351ecd8272be731d8f4ca316ce6a47e5b8  # re-read 2026-11-16 after the trace-link commit 03b3073: the owner file's code is identical to its last reviewed state apart from docstring Implements lines (AST compared with docstrings removed), so the rule text is unchanged
     checks:
       - tests/test_world_builder_service.py::test_unapproved_model_is_refused_before_spend
       - tests/test_world_builder_service.py::test_corrupt_budget_ledger_fails_closed_before_model_call
@@ -159,7 +159,7 @@ rules:
       errors and prints them without failing the request; successful response does not guarantee a retained record.
       The cited tests cover normal storage and snapshot continuation, not failure of the log store.
     owner: scripts/world_builder_service.py
-    reviewed_at: b2b87ce5be988ae76d1a42a3dfd77d3b73cfe27b  # re-read the f4b7afa..HEAD diff (f552dcb persist private worlds and exact run checkpoint branches, e645757 workspace contracts, 52b51ec recovery read locks): _record_response now also retains source_draft_reviews and still swallows log-write errors (unmet requirement unchanged); _catalog_response makes the catalog checkpoint save a success condition for owner catalog runs and job responders still log the final result
+    reviewed_at: 03b307351ecd8272be731d8f4ca316ce6a47e5b8  # re-read 2026-11-16 after the trace-link commit 03b3073: the owner file's code is identical to its last reviewed state apart from docstring Implements lines (AST compared with docstrings removed), so the rule text is unchanged
     checks:
       - tests/test_world_builder_service.py::test_every_build_and_run_leaves_a_durable_record
       - tests/test_world_builder_service.py::test_keep_going_continues_from_the_final_snapshot
@@ -170,6 +170,7 @@ rules:
       The live view is rebuilt only from a canonical snapshot plus event deltas, reconstructs each branch exactly,
       and keeps stable event ids.
     owner: src/world_substrate/projection.py
+    reviewed_at: 03b307351ecd8272be731d8f4ca316ce6a47e5b8  # re-read 2026-11-16 after the trace-link commit 03b3073: the owner file's code is identical to its last reviewed state apart from docstring Implements lines (AST compared with docstrings removed), so the rule text is unchanged
     checks:
       - tests/test_waltzman_projection.py::test_snapshot_plus_event_deltas_reconstruct_each_canonical_branch_exactly
       - tests/test_waltzman_projection.py::test_projection_preserves_stable_event_ids_and_branch_prefix
@@ -179,6 +180,7 @@ rules:
     statement: >-
       Only authorized observers see an information item's content, and information context never becomes causal parentage.
     owner: src/world_substrate/information.py
+    reviewed_at: 03b307351ecd8272be731d8f4ca316ce6a47e5b8  # re-read 2026-11-16 after the trace-link commit 03b3073: the owner file's code is identical to its last reviewed state apart from docstring Implements lines (AST compared with docstrings removed), so the rule text is unchanged
     checks:
       - tests/test_living_scene_information_feedback.py::test_authorized_observer_sees_content_and_unauthorized_observer_does_not
       - tests/test_living_scene_information_feedback.py::test_information_context_does_not_become_causal_parentage
@@ -198,7 +200,7 @@ rules:
       public entity, the label comes from the engine's own entity label (declared_label fallback), so a place
       the declaration did not publish can still reach the actor by name.
     owner: scripts/actor_information.py
-    reviewed_at: b2b87ce5be988ae76d1a42a3dfd77d3b73cfe27b  # re-read f4b7afab1..HEAD (b0e271c, 55bde2c): place-scoped observation adds the actor's own place; the engine-label fallback is recorded as a known exception above rather than called safe
+    reviewed_at: 03b307351ecd8272be731d8f4ca316ce6a47e5b8  # re-read 2026-11-16 after the trace-link commit 03b3073: the owner file's code is identical to its last reviewed state apart from docstring Implements lines (AST compared with docstrings removed), so the rule text is unchanged
     checks:
       - tests/test_actor_information.py::test_hidden_state_labels_summary_and_action_text_cannot_change_input
       - tests/test_actor_information.py::test_pending_message_and_its_action_identity_do_not_enter_recipient_input
@@ -216,7 +218,7 @@ rules:
       Typed gate tests establish that unsafe or absent verdicts are rejected, not that the model always detects
       unauthorized disclosures. Generated verdicts and actual prompts require trace inspection.
     owner: scripts/review_rules.py
-    reviewed_at: b2b87ce5be988ae76d1a42a3dfd77d3b73cfe27b  # stale finding is a rebase artifact: e4ea994 is not an ancestor of HEAD, its twin f644cb4 (same subject Fix independent stance and source-authority repair) is the only later commit, and git diff e4ea994 HEAD on the owner is empty, so the reviewed text is unchanged
+    reviewed_at: 03b307351ecd8272be731d8f4ca316ce6a47e5b8  # re-read 2026-11-16 after the trace-link commit 03b3073: the owner file's code is identical to its last reviewed state apart from docstring Implements lines (AST compared with docstrings removed), so the rule text is unchanged
     checks:
       - tests/test_initial_actor_knowledge.py::test_missing_malformed_or_disallowed_review_never_approves
       - tests/test_initial_actor_knowledge.py::test_existing_review_call_reads_actual_contexts_and_rejects_narrator_negative_knowledge
@@ -232,7 +234,7 @@ rules:
       These are declared procedural assumptions with a bounded effective repair action; they establish neither
       scientific fidelity of the condition nor calibrated human responses or a required social ending.
     owner: spikes/any-scenario-2026-10/compile_spec.py
-    reviewed_at: b2b87ce5be988ae76d1a42a3dfd77d3b73cfe27b  # stale finding is a rebase artifact: e4ea994 is not an ancestor of HEAD, its twin f644cb4 (same subject Fix independent stance and source-authority repair) is the only later commit, and git diff e4ea994 HEAD on the owner is empty, so the reviewed text is unchanged
+    reviewed_at: 03b307351ecd8272be731d8f4ca316ce6a47e5b8  # re-read 2026-11-16 after the trace-link commit 03b3073: the owner file's code is identical to its last reviewed state apart from docstring Implements lines (AST compared with docstrings removed), so the rule text is unchanged
     checks:
       - tests/test_scenario_spec.py::test_delivery_review_repair_and_assent_remain_distinct
       - tests/test_scenario_spec.py::test_no_forced_support_timer_or_claim_truth_and_safe_metadata
