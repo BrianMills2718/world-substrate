@@ -460,7 +460,7 @@
       "status": "present",
       "path": "docs/planning/cold-review.md",
       "verdict": "pass",
-      "reviewed_revision": "a23067accd0cb6941a2f1a45e8e1ec399904f3fe",
+      "reviewed_revision": "7bfd786a5a03b21b14000587cba5a6c83419bd31",
       "package_commit": "49f4d5a7a8c6918e7b003468a2b1ab4c08c2d03f",
       "note": "Last independent pass at a23067a (2026-11-13, Q26/G17 settlement attribution; docs/planning/cold-review.md:42). A cold review on 2026-11-16 returned revise because the package predated the scene-viewer work (viewer concepts, layout step cost, acceptance, Viewer path difficulties, stop lift, stale check counts); those findings are addressed in this revision and a new cold review is pending. That revise report is not yet saved in cold-review.md."
     },
