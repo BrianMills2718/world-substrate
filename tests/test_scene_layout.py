@@ -338,3 +338,12 @@ def test_rooms_are_named_off_the_doorways_and_the_pump_is_placed_clear_of_them()
         assert not any(r["x0"] <= t[0] <= r["x1"] and t[1] == r["label_row"] for t in doors)
     (pump,) = replay["objects"]
     assert pump["room"] == "laboratory" and all(abs(pump["tile"][0] - d[0]) + abs(pump["tile"][1] - d[1]) > 3 for d in doors)
+
+
+@pytest.mark.req("scene-viewer/zoom-and-pan")
+def test_the_viewer_wires_wheel_zoom_drag_pan_and_a_reset_button_that_refit_the_map():
+    js = (ROOT / "viewer/smallville/viewer.js").read_text()
+    page = (ROOT / "viewer/smallville/index.html").read_text()
+    assert 'id="reset"' in page and "Reset view" in page
+    assert 'addEventListener("wheel"' in js and '"pointermove"' in js and '$("reset").onclick' in js
+    assert "userZoom" in js and js.count("fitFn()") >= 2  # each refits the map, which redraws the graph
