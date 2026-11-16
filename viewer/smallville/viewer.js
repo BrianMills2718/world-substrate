@@ -312,6 +312,15 @@ function start(R, M) {
     drawDoors(s); drawRules(frame); panel(frame); drawGraph(); $("slider").value = s;
     const r = R.rounds.find(r => s >= r.start && s <= r.end);
     $("label").textContent = (r ? "Round " + r.round + " · " : "Start · ") + "step " + s + "/" + last;
+    if (EMBED) { baseLabel = $("label").textContent; tag(); parent.postMessage({ type: "ws-round-shown", round: r ? r.round : 0, atNewest: s >= last }, location.origin); }
+  }
+  // Embedded: say whether the map follows the run or shows an earlier round, and offer the way back to the newest.
+  let baseLabel = "";
+  function tag() {
+    if (!EMBED) return;
+    const following = followNewest || step >= last;
+    $("golive").style.display = following ? "none" : "";
+    $("label").textContent = baseLabel + (following ? " · newest round" : " · earlier round");
   }
 
   function panel(frame) {
@@ -341,9 +350,10 @@ function start(R, M) {
   $("reset").onclick = () => { userZoom = 1; panX = 0; panY = 0; view(); };
   const startOfRound = d => { const rs = R.rounds, i = rs.findIndex(r => step >= r.start && step <= r.end); const j = Math.max(0, Math.min(rs.length - 1, (i < 0 ? 0 : i) + d)); return rs[j].start; };
   $("slider").max = last;
-  $("slider").oninput = e => { show(+e.target.value, false); followNewest = step >= last; };
-  $("prev").onclick = () => { show(startOfRound(-1), false); followNewest = step >= last; };
-  $("next").onclick = () => { show(startOfRound(1), false); followNewest = step >= last; };
+  $("slider").oninput = e => { show(+e.target.value, false); followNewest = step >= last; tag(); };
+  $("golive").onclick = () => { show(last, false); followNewest = true; tag(); };
+  $("prev").onclick = () => { show(startOfRound(-1), false); followNewest = step >= last; tag(); };
+  $("next").onclick = () => { show(startOfRound(1), false); followNewest = step >= last; tag(); };
   // A longer replay of the same world: keep the map and people, take the new steps, rounds and graph, and play on to the newest round.
   onReplay = next => {
     const was = last; Object.assign(R, next); GRAPH = R.graph; GACT = R.graph_actors || {}; last = R.meta.step; $("slider").max = last;

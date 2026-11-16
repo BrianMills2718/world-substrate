@@ -1611,7 +1611,13 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   // own run log, nothing saved) and posts it to the embedded viewer, which plays on to the newest round.
   let mapReady = false, mapAsk = 0;
   window.addEventListener("message", (e) => {
-    if (e.source === $("run-map-frame").contentWindow && e.data && e.data.type === "ws-viewer-ready") { mapReady = true; renderRunMap(); }
+    if (e.source !== $("run-map-frame").contentWindow || !e.data) return;
+    if (e.data.type === "ws-viewer-ready") { mapReady = true; renderRunMap(); }
+    // One timeline: the map's scrubber chooses the round; the saved-run panels below follow it.
+    if (e.data.type === "ws-round-shown" && live && live.replay && live.recorded.length) {
+      const index = live.recorded.findIndex((t) => t.turn === e.data.round);
+      if (index >= 0 && index !== live.replayIndex) selectSavedRound(index);
+    }
   });
   async function renderRunMap() {
     const box = $("run-map"), status = $("run-map-status");
@@ -1883,7 +1889,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     if (selected.ruling) { $("saved-actor-input").querySelector("h4").textContent = "Ruling origin"; $("saved-actor-input").querySelector("p").textContent = "This ruling is not a new resident choice. Inspect the earlier attempt for the input supplied before that choice."; }
   }
   function renderSavedReplay() {
-    $("analyst-context").insertBefore($("saved-navigation"),$("world-scene-panel")); $("saved-navigation").hidden=false;
+    $("analyst-context").insertBefore($("saved-navigation"),$("world-scene-panel")); $("saved-navigation").hidden=true;  // the map's timeline replaces these round controls
     const actorMode = $("context-mode").value === "actor", turn = live.rounds[live.rounds.length - 1];
     live.finished = savedIsFinished();
     $("saved-player").hidden = false; $("saved-advanced").hidden = false;

@@ -466,3 +466,16 @@ def test_the_run_stage_shows_the_room_map_and_no_longer_the_old_picture_or_netwo
     page = (ROOT / "scripts/world_builder_home.html").read_text()
     assert "room-map/?embed=1" in page and "/live-replay" in page
     assert 'id="picture-wrap"' not in page and 'id="network"' not in page
+
+
+@pytest.mark.req("scene-viewer/one-timeline-follows-the-run-and-the-saved-panels")
+def test_the_map_timeline_tells_the_page_which_round_is_shown_and_offers_the_way_back_to_the_newest():
+    js, html = (ROOT / "viewer/smallville/viewer.js").read_text(), (ROOT / "viewer/smallville/index.html").read_text()
+    assert "ws-round-shown" in js and 'id="golive"' in html and "earlier round" in js and "newest round" in js
+
+
+@pytest.mark.req("scene-viewer/one-timeline-follows-the-run-and-the-saved-panels")
+def test_the_page_follows_the_map_timeline_and_no_longer_shows_its_own_round_controls_for_a_recording():
+    page = (ROOT / "scripts/world_builder_home.html").read_text()
+    assert 'e.data.type === "ws-round-shown"' in page and "selectSavedRound(index)" in page
+    assert '$("saved-navigation").hidden=true;' in page
