@@ -196,7 +196,7 @@ rules:
       This is a resident-input boundary, not generic Engine read-scope enforcement or proof that a generated
       declaration is semantically authorized. The source-grounded review gate has its own rule and limitation.
     owner: scripts/actor_information.py
-    reviewed_at: 03b307351ecd8272be731d8f4ca316ce6a47e5b8  # re-read 2026-11-16 after the trace-link commit 03b3073: the owner file's code is identical to its last reviewed state apart from docstring Implements lines (AST compared with docstrings removed), so the rule text is unchanged
+    reviewed_at: d951865be26eb7615173e1f985bf9a15f463829e  # re-read 2026-11-16 at d951865: actor_observation now names the actor's own room only when the declaration publishes it to that actor (new test test_an_undeclared_room_is_not_named_to_the_person_standing_in_it); the engine-label fallback gap found earlier is closed; 17 tests in test_actor_information.py pass
     checks:
       - tests/test_actor_information.py::test_hidden_state_labels_summary_and_action_text_cannot_change_input
       - tests/test_actor_information.py::test_pending_message_and_its_action_identity_do_not_enter_recipient_input
