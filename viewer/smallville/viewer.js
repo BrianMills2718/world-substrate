@@ -30,7 +30,7 @@ function start(R, M) {
   let step = Math.min(+q.get("step") || 0, last), playing = !q.has("paused"), timer = null, scene = null;
   if (!playing) { $("play").textContent = "Play"; $("play").classList.remove("on"); }
   const people = {}, doorGfx = {};
-  let fitFn = null, graphOn = false, gmode = "round", focusId = null, userZoom = 1, panX = 0, panY = 0;  // wheel zooms, dragging pans
+  let fitFn = null, graphOn = false, gmode = "beside", focusId = null, userZoom = 1, panX = 0, panY = 0;  // wheel zooms, dragging pans
   const COLW = 200, GLEFT = 2 * COLW + 76;  // the graph overlay: two columns of boxes (things, then moves) left of the map
   let L = 1;  // labels are drawn larger when the map is zoomed out so they stay readable
   const doorAt = s => { const st = {}; R.door_changes.forEach(c => { if (c.step <= s) st[c.door] = c.state; }); return st; };

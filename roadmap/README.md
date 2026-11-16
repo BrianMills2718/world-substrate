@@ -70,7 +70,7 @@ Source: Brian, 2026-11-14: "on the smallville stuff if it is better then lets ju
 
 **Whole network over the map (2026-11-16):** Brian meant v3's Complete network, not its System map. The "Whole network" tick places every box on the map (places at rooms, things in their room, people at their sprites, moves and processes in the margin) and draws every link faint, with the round's tries bold blue/orange/grey. Spec: [scene-viewer](../openspec/specs/scene-viewer/spec.md#requirement-whole-network-over-the-map). Waltzman (no map) keeps `graph.html`.
 
-**Graph styles (2026-11-16):** Brian found the overlay crowded and asked to see alternatives side by side. A "Graph style" choice offers this round only, whole network on the map, whole network on the map with links on click, and whole network beside the map in columns (click a box to light its links and ring it on the map). `?graph=round|map|hover|beside` opens one. Spec: [scene-viewer](../openspec/specs/scene-viewer/spec.md#requirement-graph-style-choice).
+**Graph styles (2026-11-16):** Brian found the overlay crowded and asked to see alternatives side by side. A "Graph style" choice offers this round only, whole network on the map, whole network on the map with links on click, and whole network beside the map in columns (click a box to light its links and ring it on the map). `?graph=round|map|hover|beside` opens one. Brian chose the beside-the-map style as the default (2026-11-16: "i approve A"). Spec: [scene-viewer](../openspec/specs/scene-viewer/spec.md#requirement-graph-style-choice).
 
 ## World workspace — current approved implementation (2026-11-13)
 
