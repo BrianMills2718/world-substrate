@@ -30,7 +30,7 @@ function start(R, M) {
   let step = Math.min(+q.get("step") || 0, last), playing = !q.has("paused"), timer = null, scene = null;
   if (!playing) { $("play").textContent = "Play"; $("play").classList.remove("on"); }
   const people = {}, doorGfx = {};
-  let fitFn = null, graphOn = false, graphAll = false, userZoom = 1, panX = 0, panY = 0;  // wheel zooms, dragging pans
+  let fitFn = null, graphOn = false, gmode = "round", focusId = null, userZoom = 1, panX = 0, panY = 0;  // wheel zooms, dragging pans
   const COLW = 200, GLEFT = 2 * COLW + 76;  // the graph overlay: two columns of boxes (things, then moves) left of the map
   let L = 1;  // labels are drawn larger when the map is zoomed out so they stay readable
   const doorAt = s => { const st = {}; R.door_changes.forEach(c => { if (c.step <= s) st[c.door] = c.state; }); return st; };
@@ -75,13 +75,13 @@ function start(R, M) {
       });
       const fit = () => {
         const c = this.cameras.main, v = R.view;
-        const lm = graphOn ? Math.min(GLEFT, c.width * 0.45) : 0;  // the graph overlay needs room left of the map
+        const lm = graphOn ? Math.min(gmode === "beside" ? 660 : GLEFT, c.width * (gmode === "beside" ? 0.5 : 0.45)) : 0;  // the graph overlay needs room left of the map
         c.setZoom(Math.min((c.width - lm - 8) / (v.w * T), c.height / (v.h * T)) * userZoom);
         L = Math.min(2.2, Math.max(1, 0.95 / c.zoom));
         names.forEach(n => { people[n].emoji.setScale(L); people[n].chat.setScale(L); });
         if (step !== null && people[names[0]].tile) show(step, false);
         c.setScroll((v.x + v.w / 2) * T - c.width / 2 - (lm / 2 - panX) / c.zoom, (v.y + v.h / 2) * T - c.height / 2 + panY / c.zoom);
-        drawGraph();
+        drawGraph(); requestAnimationFrame(drawGraph);  // the camera's midpoint updates on the next frame
       };
       fitFn = fit; this.scale.on("resize", fit); fit(); this.time.delayedCall(400, fit);  // the page settles after the first fit
       show(step, false); if (playing) loop();
@@ -147,6 +147,7 @@ function start(R, M) {
   function drawGraph() {
     const box = $("gov"); if (!box) return; box.innerHTML = "";
     if (!graphOn || !GRAPH || !scene) return;
+    const whole = gmode !== "round", beside = gmode === "beside";
     const cam = scene.cameras.main, st = $("stage").getBoundingClientRect(), gm = $("game").getBoundingClientRect();
     const ox = gm.left - st.left, oy = gm.top - st.top, W = gm.width, H = gm.height;
     const v0 = R.view, proj = (wx, wy) => [(wx - cam.midPoint.x) * cam.zoom + cam.width / 2 + ox, (wy - cam.midPoint.y) * cam.zoom + cam.height / 2 + oy];
@@ -171,46 +172,74 @@ function start(R, M) {
       const state = o ? stateOf(o) : "none", sub = o ? (state === "mix" ? o.ok + " allowed, " + o.no + " refused" : gword[state]) + (o.changed ? " · changed" : "") : "";
       const y = isMove ? my : ty, x = isMove ? movesX : thingsX;
       const d = chip(x, oy + y, gname(id), state, CW, sub);
-      const h = d.offsetHeight + 6; if (isMove) my += h; else ty += h; place[id] = { x, w: CW, y: oy + y + d.offsetHeight / 2 };
+      const h = d.offsetHeight + 6; if (isMove) my += h; else ty += h; place[id] = { x, w: CW, y: oy + y + d.offsetHeight / 2, el: d };
     };
     const head = (t, x) => { const h = document.createElement("div"); h.className = "ghead"; h.textContent = t; h.style.cssText = "left:" + x + "px;top:" + (oy + 4) + "px"; box.appendChild(h); };
-    if (!graphAll) head("Things used", thingsX); head(graphAll ? "Moves (every one the rules allow)" : "Moves the rules allow", movesX);
-    const NODES = GRAPH.graph.nodes, whole = graphAll;
+    if (!whole) head("Things used", thingsX); if (!beside) head(whole ? "Moves (every one the rules allow)" : "Moves the rules allow", movesX);
+    const NODES = GRAPH.graph.nodes;
+    const C = (x1, y1, x2, y2, color, dash, w) => { const dx = Math.abs(x2 - x1) / 2, p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      p.setAttribute("d", "M" + x1 + "," + y1 + " C" + (x1 - dx) + "," + y1 + " " + (x2 + dx) + "," + y2 + " " + x2 + "," + y2);
+      p.setAttribute("fill", "none"); p.setAttribute("stroke", color); p.setAttribute("stroke-width", w || 2.5); p.setAttribute("opacity", .85); if (dash) p.setAttribute("stroke-dasharray", "5 4"); svg.appendChild(p); };
     const moveIds = NODES.filter(n => n.kind === "action").map(n => n.id);
     const procIds = NODES.filter(n => n.kind === "process").map(n => n.id);
     const thingIds = NODES.filter(n => n.kind === "thing").map(n => n.id);
     const roomOf = id => (R.rooms || []).find(r => "e:" + r.id === id);
     const homeOf = {}; GRAPH.graph.edges.forEach(e => { if (e.label === "is in" && roomOf(e.target)) homeOf[e.source] = e.target; });
-    moveIds.filter(id => lit.moves[id] || whole).forEach(id => col(id, lit.moves[id], true));
+    const actState = {}; (round ? round.tries : []).forEach(t => { actState[t.actor] = gstate(t.status); });
+    const lines = [];
+    if (beside) {  // the whole network laid out beside the map in columns; click a box to see its links and where it is on the map
+      const PL = ox + 10, PW = Math.max(300, mapL - ox - 22), cols = [["People", NODES.filter(n => n.kind === "actor")], ["Moves and rules", NODES.filter(n => n.kind === "action" || n.kind === "process")],
+        ["Things", NODES.filter(n => n.kind === "thing")], ["Places", NODES.filter(n => n.kind === "place")]];
+      const gap = 16, cw = (PW - gap * (cols.length - 1)) / cols.length, step = Math.min(52, (H - 56) / Math.max(1, ...cols.map(c => c[1].length)));
+      cols.forEach(([title, list], ci) => { const x = PL + ci * (cw + gap); head(title, x);
+        list.forEach((n, i) => { const y = oy + 24 + i * step;
+          const st = n.kind === "actor" ? (actState[n.id] || "none") : n.kind === "action" ? (lit.moves[n.id] ? stateOf(lit.moves[n.id]) : "none") : n.kind === "process" ? (round && round.fired.includes(n.id) ? "ok" : "none") : n.kind === "thing" ? (lit.things[n.id] ? stateOf(lit.things[n.id]) : "none") : "none";
+          const d = chip(x, y, n.label, st, cw); d.style.fontSize = "11px"; d.style.padding = "1px 5px";
+          place[n.id] = { x, w: cw, y: y + d.offsetHeight / 2, col: ci, el: d }; }); });
+    }
+    if (!beside) moveIds.filter(id => lit.moves[id] || whole).forEach(id => col(id, lit.moves[id], true));
     const placedThings = new Set(), rowIn = {};
-    if (whole) {  // the whole network: every box sits on the map where it belongs; moves and processes sit in the margin
+    if (whole && !beside) {  // the whole network: every box sits on the map where it belongs; moves and processes sit in the margin
       if (procIds.length) { head("Changes the world makes by itself", movesX); my += 20; procIds.forEach(id => col(id, lit.things[id], true)); }
       thingIds.forEach(id => {
         const o = (R.objects || []).find(q => "e:" + q.id === id), rm = roomOf(homeOf[id]); if (!o && !rm) return;
         const k = rm ? (rowIn[rm.id] = (rowIn[rm.id] || 0) + 1) - 1 : 0, w = 170;
         const [cx, cy] = o ? proj((o.tile[0] + 0.5) * T, (o.tile[1] + 1.6) * T) : proj((rm.x0 + rm.x1 + 1) / 2 * T, (rm.y1 + 0.2 - k * 0.8) * T);
         const state = lit.things[id] ? stateOf(lit.things[id]) : "none", d = chip(cx - w / 2, cy - 10, gname(id), state, w, lit.things[id] && lit.things[id].changed ? "changed" : "");
-        d.style.fontSize = "11px"; d.style.padding = "1px 6px"; placedThings.add(id); place[id] = { x: cx - w / 2, w, y: cy - 10 + d.offsetHeight / 2, onMap: true };
+        d.style.fontSize = "11px"; d.style.padding = "1px 6px"; placedThings.add(id); place[id] = { x: cx - w / 2, w, y: cy - 10 + d.offsetHeight / 2, onMap: true, el: d };
       });
       NODES.filter(n => n.kind === "place" && roomOf(n.id)).forEach(n => {
         const r = roomOf(n.id), [cx, cy] = proj((r.x0 + r.x1 + 1) / 2 * T, (r.y0 + 1.3) * T), w = 96;
         const d = chip(cx - w / 2, cy, n.label, "none", w); d.style.fontWeight = "700"; d.style.fontSize = "11px"; d.style.padding = "1px 6px"; d.style.background = "#eef2f6";
-        place[n.id] = { x: cx - w / 2, w, y: cy + d.offsetHeight / 2, onMap: true };
+        place[n.id] = { x: cx - w / 2, w, y: cy + d.offsetHeight / 2, onMap: true, el: d };
       });
     }
-    thingIds.filter(id => !placedThings.has(id) && (lit.things[id] || (whole && !roomOf(homeOf[id])))).forEach(id => col(id, lit.things[id], false));
+    if (!beside) thingIds.filter(id => !placedThings.has(id) && (lit.things[id] || (whole && !roomOf(homeOf[id])))).forEach(id => col(id, lit.things[id], false));
     if (whole) {  // every route, faint; this round's tries are drawn bold on top
-      const at = id => { const q = place[id]; if (q) return q.onMap ? [q.x + q.w / 2, q.y] : [q.x + q.w, q.y];
+      const at = (id, other) => { const q = place[id]; if (q && beside) { const o = place[other]; return !o || q.col < o.col ? [q.x + q.w, q.y] : [q.x, q.y]; }
+        if (q) return q.onMap ? [q.x + q.w / 2, q.y] : [q.x + q.w, q.y];
         const nm = GACT[id], pp = nm && people[nm]; if (pp) { const [a, b] = proj(pp.sprite.x, pp.sprite.y); return [a, b - 20]; } return null; };
       let drawn = 0;
-      GRAPH.graph.edges.forEach(e => { const a = at(e.source), b = at(e.target); if (!a || !b) return; drawn++;
-        const l = document.createElementNS("http://www.w3.org/2000/svg", "line"); l.setAttribute("x1", a[0]); l.setAttribute("y1", a[1]); l.setAttribute("x2", b[0]); l.setAttribute("y2", b[1]);
-        l.setAttribute("stroke", "#2a3644"); l.setAttribute("stroke-width", 1); l.setAttribute("opacity", .4); svg.appendChild(l); });
-      const n = document.createElement("div"); n.className = "ghead"; n.style.cssText = "left:" + thingsX + "px;bottom:8px"; n.textContent = NODES.length + " boxes, " + drawn + " of " + GRAPH.graph.edges.length + " links drawn here"; box.appendChild(n);
+      GRAPH.graph.edges.forEach(e => { const a = at(e.source, e.target), b = at(e.target, e.source); if (!a || !b) return; drawn++;
+        const l = document.createElementNS("http://www.w3.org/2000/svg", beside ? "path" : "line");
+        if (beside) { const bow = place[e.source] && place[e.target] && place[e.source].col === place[e.target].col ? -40 : (b[0] - a[0]) / 2; l.setAttribute("d", "M" + a[0] + "," + a[1] + " C" + (a[0] + bow) + "," + a[1] + " " + (b[0] - bow) + "," + b[1] + " " + b[0] + "," + b[1]); l.setAttribute("fill", "none"); }
+        else { l.setAttribute("x1", a[0]); l.setAttribute("y1", a[1]); l.setAttribute("x2", b[0]); l.setAttribute("y2", b[1]); }
+        l.setAttribute("stroke", beside ? "#9db0c2" : "#2a3644"); l.setAttribute("stroke-width", 1); l.setAttribute("opacity", beside ? .6 : .4); svg.appendChild(l); lines.push({ el: l, a: e.source, b: e.target }); });
+      const n = document.createElement("div"); n.className = "ghead"; n.style.cssText = "left:" + (beside ? ox + 10 : thingsX) + "px;bottom:8px";
+      n.textContent = NODES.length + " boxes, " + drawn + " of " + GRAPH.graph.edges.length + " links" + (gmode === "hover" ? " (click a box to see its links)" : beside ? " (click a box to light its links and place on the map)" : " drawn here"); box.appendChild(n);
+      const nb = new Set(); if (focusId) { nb.add(focusId); lines.forEach(L => { if (L.a === focusId || L.b === focusId) { nb.add(L.a); nb.add(L.b); } }); }
+      lines.forEach(L => { const on = focusId && (L.a === focusId || L.b === focusId); L.el.style.display = gmode === "hover" && !on ? "none" : "";
+        if (on) { L.el.setAttribute("stroke", beside ? "#ffffff" : "#16212b"); L.el.setAttribute("stroke-width", 2.4); L.el.setAttribute("opacity", .95); } });
+      Object.entries(place).forEach(([id, q]) => { if (!q.el) return; q.el.style.pointerEvents = "auto"; q.el.style.cursor = "pointer";
+        q.el.onclick = () => { focusId = focusId === id ? null : id; drawGraph(); };
+        if (focusId) { if (nb.has(id)) q.el.style.boxShadow = beside ? "0 0 0 3px #ffffff" : "0 0 0 3px #16212b"; else q.el.style.opacity = .45; } });
+      if (focusId) {  // ring the focused box where it is on the map
+        const fn = NODES.find(q => q.id === focusId), nm = GACT[focusId], pp = nm && people[nm], ob = (R.objects || []).find(q => "e:" + q.id === focusId), rm = roomOf(focusId) || roomOf(homeOf[focusId]);
+        const pt = pp ? (([a, b]) => [a, b - 22])(proj(pp.sprite.x, pp.sprite.y)) : ob ? proj((ob.tile[0] + 0.5) * T, (ob.tile[1] + 0.5) * T) : rm ? proj((rm.x0 + rm.x1 + 1) / 2 * T, (rm.y0 + rm.y1 + 1) / 2 * T) : null;
+        const w2 = document.createElement("div"); w2.className = "ghead"; w2.style.cssText = "left:" + (beside ? ox + 10 : thingsX) + "px;bottom:26px"; w2.textContent = (fn ? fn.label : focusId) + (pt ? ": ringed on the map" : ": not a place on the map"); box.appendChild(w2);
+        if (pt) { const c = document.createElementNS("http://www.w3.org/2000/svg", "circle"); c.setAttribute("cx", pt[0]); c.setAttribute("cy", pt[1]); c.setAttribute("r", rm && !pp && !ob ? 60 : 28); c.setAttribute("fill", "none"); c.setAttribute("stroke", "#ffffff"); c.setAttribute("stroke-width", 5); c.setAttribute("stroke-dasharray", "7 5"); svg.appendChild(c); }
+      }
     }
-    const C = (x1, y1, x2, y2, color, dash, w) => { const dx = Math.abs(x2 - x1) / 2, p = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      p.setAttribute("d", "M" + x1 + "," + y1 + " C" + (x1 - dx) + "," + y1 + " " + (x2 + dx) + "," + y2 + " " + x2 + "," + y2);
-      p.setAttribute("fill", "none"); p.setAttribute("stroke", color); p.setAttribute("stroke-width", w || 2.5); p.setAttribute("opacity", .85); if (dash) p.setAttribute("stroke-dasharray", "5 4"); svg.appendChild(p); };
     const tagged = [];
     lit.tries.forEach(t => {
       const s = gstate(t.status), name = GACT[t.actor], pp = name && people[name]; if (!pp) return;
@@ -225,14 +254,16 @@ function start(R, M) {
       const tag = chip(g.x - 90, y, text, g.s, 180, g.t.because && g.t.because.length ? "refused: " + g.t.because[0] : "");
       const mv = g.t.move && place[g.t.move];
       if (mv) { C(g.x - 90, y + tag.offsetHeight / 2, mv.x + mv.w, mv.y, GCOL[g.s], g.s === "none");
-        g.t.uses.forEach(u => { const th = place[u]; if (th) { if (th.onMap) C(mv.x + mv.w, mv.y, th.x, th.y, GCOL[g.s], false, 1.8); else C(mv.x, mv.y, th.x + th.w, th.y, GCOL[g.s], false, 1.8); } }); }
+        g.t.uses.forEach(u => { const th = place[u]; if (th) { if (th.onMap || beside) C(mv.x + mv.w, mv.y, th.x, th.y, GCOL[g.s], false, 1.8); else C(mv.x, mv.y, th.x + th.w, th.y, GCOL[g.s], false, 1.8); } }); }
     });
     if (!lit.tries.length) { const n = document.createElement("div"); n.className = "ghead"; n.style.cssText = "left:" + movesX + "px;top:" + (oy + 24) + "px"; n.textContent = "Nothing tried yet."; box.appendChild(n); }
   }
-  if (GRAPH) { $("graphbtn").style.display = ""; $("graphall").parentElement.style.display = "none";
+  if (GRAPH) { $("graphbtn").style.display = ""; $("gmode").parentElement.style.display = "none";
     $("graphbtn").onclick = () => { graphOn = !graphOn; $("graphbtn").textContent = graphOn ? "Hide graph" : "Show graph"; $("graphbtn").classList.toggle("on", graphOn);
-      $("graphall").parentElement.style.display = graphOn ? "" : "none"; if (fitFn) fitFn(); drawGraph(); };
-    $("graphall").onchange = e => { graphAll = e.target.checked; drawGraph(); }; }
+      $("gmode").parentElement.style.display = graphOn ? "" : "none"; if (fitFn) fitFn(); drawGraph(); };
+    $("gmode").onchange = e => { gmode = e.target.value; focusId = null; if (fitFn) fitFn(); drawGraph(); };
+    const want = q.get("graph");  // ?graph=round|map|hover|beside opens the graph in that style (for links and tests)
+    if (want && ["round", "map", "hover", "beside"].includes(want)) { gmode = want; $("gmode").value = want; $("graphbtn").click(); } }
 
   function drawDoors(s) {
     const st = doorAt(s);

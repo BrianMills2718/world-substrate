@@ -1,0 +1,2 @@
+- [x] graph style choice with four styles and click-to-focus
+- [ ] deploy and live check
