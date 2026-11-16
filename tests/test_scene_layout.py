@@ -431,3 +431,38 @@ def test_the_viewer_offers_graph_styles_and_opens_one_from_a_link():
 def test_the_old_graph_page_sends_visitors_to_the_graph_beside_the_room_map():
     html = (ROOT / "viewer/smallville/graph.html").read_text()
     assert 'q.set("graph", "beside")' in html and 'location.replace(url)' in html and "index.html" in html
+
+
+@pytest.mark.req("scene-viewer/a-running-world-is-drawn-on-the-map-as-it-plays")
+def test_a_live_replay_is_drawn_from_the_server_run_log_without_saving_and_withholds_words_from_visitors(monkeypatch):
+    import scripts.world_builder_service as svc
+    share = _meeting_world()
+    seen = {}
+    monkeypatch.setattr(svc, "_assemble_share", lambda build, runs: seen.update(build=build, runs=runs) or share)
+    monkeypatch.setattr(svc, "_save_share", lambda *a, **k: pytest.fail("a live replay must not be saved"))
+    build, run = (f"{svc.TRACE_ROOT}/{kind}/{'a' * 32}" for kind in ("build", "run"))
+    body = {"build_trace_id": build, "run_trace_ids": [run]}
+    chats = lambda r: [c[1] for f in r["steps"].values() for who in f.values() for c in (who.get("chat") or [])]
+    visitor, owner = svc._live_replay(body, owner=False), svc._live_replay(body, owner=True)
+    assert seen["runs"] == [run] and visitor["map"] == "public-offices-10"
+    assert chats(owner) and all("words not shown" in c for c in chats(visitor))
+
+
+@pytest.mark.req("scene-viewer/a-running-world-is-drawn-on-the-map-as-it-plays")
+def test_a_live_replay_of_a_private_catalog_run_needs_the_owner(monkeypatch):
+    import scripts.world_builder_service as svc
+    with pytest.raises(PermissionError):
+        svc._live_replay({"catalog_run_id": "x"}, owner=False)
+
+
+@pytest.mark.req("scene-viewer/a-running-world-is-drawn-on-the-map-as-it-plays")
+def test_the_viewer_in_embed_mode_takes_a_longer_replay_by_message_and_follows_the_newest_round():
+    js = (ROOT / "viewer/smallville/viewer.js").read_text()
+    assert "embed" in js and "ws-replay" in js and "ws-viewer-ready" in js and "followNewest" in js
+
+
+@pytest.mark.req("scene-viewer/a-running-world-is-drawn-on-the-map-as-it-plays")
+def test_the_run_stage_shows_the_room_map_and_no_longer_the_old_picture_or_network_panel():
+    page = (ROOT / "scripts/world_builder_home.html").read_text()
+    assert "room-map/?embed=1" in page and "/live-replay" in page
+    assert 'id="picture-wrap"' not in page and 'id="network"' not in page

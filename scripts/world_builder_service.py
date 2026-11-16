@@ -713,6 +713,23 @@ def _public_replay(record: dict[str, Any], owner: bool = False) -> dict[str, Any
     return {"ok": True, **replay}
 
 
+def _live_replay(body: dict[str, Any], owner: bool) -> dict[str, Any]:
+    """The room-map replay of a run still in progress, rebuilt from this server's own run log (or, for the owner, a
+    private catalog run) and never saved. The page asks again after each round so the map grows with the run.
+
+    Implements: scene-viewer/a-running-world-is-drawn-on-the-map-as-it-plays"""
+    if body.get("catalog_run_id") is not None:
+        if not owner:
+            raise PermissionError("reading a private catalog run needs the owner password")
+        record = _catalog().run_by_id(body["catalog_run_id"])["record"]
+        if not record.get("rounds"):
+            raise ValueError("no round has finished yet")
+    else:
+        runs, build = WorldBuilderHandler._run_ids(body)
+        record = _assemble_share(build, runs)
+    return _public_replay(record, owner=owner)
+
+
 def _catalog_backfill() -> dict[str, Any]:
     """Add owner builds and exact-matching public recordings; never guess ancestry."""
     import gzip
@@ -1878,6 +1895,14 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 return
             if path == "/share":
                 self._share(client, body)
+                return
+            if path == "/live-replay":
+                try:
+                    self._json(200, _live_replay(body, owner=self._owner_check() is True))
+                except PermissionError as error:
+                    self._error(403, str(error))
+                except (ValueError, KeyError) as error:  # LayoutError is a ValueError
+                    self._error(404, f"no room map yet: {error}")
                 return
             if path == "/readout":
                 self._readout(client, body)
