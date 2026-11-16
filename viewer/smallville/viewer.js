@@ -15,7 +15,18 @@ const SHARE = new URLSearchParams(location.search).get("share");
 const ROW_MIN = 20;  // the least height one box in the beside-the-map columns gets, so long columns never overlap
 const replayUrl = SHARE ? "/world-builder/api/share/" + encodeURIComponent(SHARE) + "/replay"
   : (REPLAY && /^https?:|^\//.test(REPLAY)) ? REPLAY : (REPLAY ? "replay-" + REPLAY + ".json" : "replay.json");
-fetch(replayUrl).then(r => r.json())
+// ?embed=1: the World Builder page holds this viewer in a frame and posts each longer replay as the run plays
+// ({type:"ws-replay", replay}); the viewer tells the page it is ready ({type:"ws-viewer-ready"}) and follows the newest round
+// unless the person has scrubbed back. Implements: scene-viewer/a-running-world-is-drawn-on-the-map-as-it-plays
+const EMBED = new URLSearchParams(location.search).get("embed") === "1";
+let onReplay = null;  // set by start(): takes a longer replay of the same world
+if (EMBED) {
+  addEventListener("message", e => {
+    if (e.origin !== location.origin || !e.data || e.data.type !== "ws-replay" || !e.data.replay || !e.data.replay.grid) return;
+    if (onReplay) onReplay(e.data.replay); else start(e.data.replay, null);
+  });
+  parent.postMessage({ type: "ws-viewer-ready" }, location.origin);
+} else fetch(replayUrl).then(r => r.json())
   .then(R => R.grid ? start(R, null) : fetch(A + "map.json").then(r => r.json()).then(M => start(R, M)))
   .catch(e => fail(SHARE ? "This shared run has no room map: " + e : "Could not load the replay or map assets. For Smallville maps run scripts/setup_smallville_viewer.py first. " + e));
 
@@ -27,7 +38,8 @@ function start(R, M) {
   }
   if (R.title) { document.getElementById("title").textContent = R.title + " replay"; document.title = R.title + " Replay"; }
   if (R.illustrative) { const n = document.getElementById("note"); n.textContent = R.illustrative; n.style.display = "block"; }
-  const names = R.meta.persona_names, last = R.meta.step, GEN = !!R.grid;
+  const names = R.meta.persona_names, GEN = !!R.grid;
+  let last = R.meta.step, followNewest = true;
   const q = new URLSearchParams(location.search);  // ?step=N&paused=1 opens a given step (for links and tests)
   let step = Math.min(+q.get("step") || 0, last), playing = !q.has("paused"), timer = null, scene = null;
   if (!playing) { $("play").textContent = "Play"; $("play").classList.remove("on"); }
@@ -94,7 +106,7 @@ function start(R, M) {
 
   // Rules overlay: a tag per rule, on the doors it governs or stacked in the map's corner. Grey = not tried this step;
   // blue = allowed, orange = refused, each saying so in words. Clicking a tag opens the rule's full text.
-  const tags = [], RULES = R.rules || [];
+  const tags = [], RULES = R.rules || [];  // rules do not change while a run plays
   let rulesOn = false;
   function makeRuleTags(sc) {
     if (!RULES.length) return;
@@ -141,7 +153,7 @@ function start(R, M) {
   // Graph overlay (scene-viewer/world-graph): the same whole-system graph as graph.html, drawn over the map. People are
   // tagged where they stand; the moves they tried sit in the left margin and the things those moves used in the right,
   // each linked and lit for this round: blue = allowed, orange = refused, grey = no move or not used, each said in words.
-  const GRAPH = R.graph, GACT = R.graph_actors || {};
+  let GRAPH = R.graph, GACT = R.graph_actors || {};
   const GCOL = { ok: "#1f5fa8", no: "#b4540a", mix: "#b4540a", none: "#586573" };
   const gword = { ok: "allowed", no: "refused", mix: "mixed", none: "no move" };
   const gstate = st => st === "accepted" ? "ok" : st === "no_action" ? "none" : "no";
@@ -329,12 +341,18 @@ function start(R, M) {
   $("reset").onclick = () => { userZoom = 1; panX = 0; panY = 0; view(); };
   const startOfRound = d => { const rs = R.rounds, i = rs.findIndex(r => step >= r.start && step <= r.end); const j = Math.max(0, Math.min(rs.length - 1, (i < 0 ? 0 : i) + d)); return rs[j].start; };
   $("slider").max = last;
-  $("slider").oninput = e => { show(+e.target.value, false); };
-  $("prev").onclick = () => show(startOfRound(-1), false);
-  $("next").onclick = () => show(startOfRound(1), false);
+  $("slider").oninput = e => { show(+e.target.value, false); followNewest = step >= last; };
+  $("prev").onclick = () => { show(startOfRound(-1), false); followNewest = step >= last; };
+  $("next").onclick = () => { show(startOfRound(1), false); followNewest = step >= last; };
+  // A longer replay of the same world: keep the map and people, take the new steps, rounds and graph, and play on to the newest round.
+  onReplay = next => {
+    const was = last; Object.assign(R, next); GRAPH = R.graph; GACT = R.graph_actors || {}; last = R.meta.step; $("slider").max = last;
+    if (last > was && followNewest) { playing = true; $("play").textContent = "Pause"; $("play").classList.add("on"); loop(); }
+    else show(step, false);
+  };
   $("speed").onchange = loop;
   $("play").onclick = () => {
     if (step >= last) show(0, false);
-    playing = !playing; $("play").textContent = playing ? "Pause" : "Play"; $("play").classList.toggle("on", playing); if (playing) loop();
+    playing = !playing; followNewest = playing || step >= last; $("play").textContent = playing ? "Pause" : "Play"; $("play").classList.toggle("on", playing); if (playing) loop();
   };
 }

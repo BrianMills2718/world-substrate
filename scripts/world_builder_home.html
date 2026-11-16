@@ -205,7 +205,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   .net-key { display: inline-block; width: 16px; height: 12px; border: 2px solid; border-radius: 3px; vertical-align: middle; margin-right: 4px; }
   .net-legend { margin: 4px 0 6px; }
 
-.world-library{margin-top:32px;padding-top:24px;border-top:1px solid var(--line)}.world-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:16px}.world-card{border:1px solid var(--line);border-radius:8px;padding:16px}.world-card p{font-size:14px;color:var(--muted)}.workspace-controls{padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:20px}.workspace-controls .row{margin-top:12px}.workspace-controls button,.world-library button{min-height:44px}.workspace-controls select,.world-library input{min-height:44px;max-width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:7px;padding:9px;font:inherit}.world-scene-panel{margin:18px 0 24px}.world-scene-panel iframe{width:100%;height:540px;border:1px solid var(--line);border-radius:10px;background:#0b1013;display:block}.world-scene-panel p{font-size:14px;color:var(--muted)}body.workspace-view main{max-width:1320px}body.workspace-view main>h1,body.workspace-view main>.lede{display:none}
+.world-library{margin-top:32px;padding-top:24px;border-top:1px solid var(--line)}.world-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:16px}.world-card{border:1px solid var(--line);border-radius:8px;padding:16px}.world-card p{font-size:14px;color:var(--muted)}.workspace-controls{padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:20px}.workspace-controls .row{margin-top:12px}.workspace-controls button,.world-library button{min-height:44px}.workspace-controls select,.world-library input{min-height:44px;max-width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:7px;padding:9px;font:inherit}.run-map{margin:16px 0}.run-map iframe{width:100%;height:min(86vh,820px);min-height:420px;border:1px solid var(--line);border-radius:10px;background:#0b1013;display:block}.run-map[hidden]{display:none}.world-scene-panel{margin:18px 0 24px}.world-scene-panel iframe{width:100%;height:540px;border:1px solid var(--line);border-radius:10px;background:#0b1013;display:block}.world-scene-panel p{font-size:14px;color:var(--muted)}body.workspace-view main{max-width:1320px}body.workspace-view main>h1,body.workspace-view main>.lede{display:none}
 @media(max-width:720px){.workspace-controls .row{display:grid;grid-template-columns:1fr 1fr}.workspace-controls select,.workspace-controls label{grid-column:1/-1;width:100%}.world-scene-panel iframe{height:420px}.world-cards{grid-template-columns:1fr}.world-library input{width:100%}}
 @media(max-width:720px){body.workspace-view main{padding:12px 12px 30px}body.workspace-view #stage-run{padding:16px}.workspace-controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:12px}.workspace-controls>button{font-size:14px;padding:8px 10px}.workspace-controls>div{flex:1}.workspace-controls details{margin:0}.workspace-controls summary{min-height:44px;padding:10px;font-size:14px}.workspace-controls details[open]{min-width:100%}.workspace-controls:has(details[open])>div{flex-basis:100%}#workspace-status{width:100%;margin:0;font-size:12px}#workspace-continue-note:empty{display:none}#saved-scenario:not(.expanded){display:none}#saved-intro{float:right}#saved-setup-toggle{font-size:12px;padding:8px;min-height:36px}#live-status{font-size:12px;margin:8px 0}#stage-run>.row{gap:6px}#stage-run>.row label{font-size:13px}#world-scene-status:not([data-error=true]){display:none}.saved-navigation{margin-top:10px}.world-scene-panel{margin-top:10px}.world-scene-panel h3{margin:8px 0}#world-scene-panel iframe{height:420px!important}}
 </style>
@@ -352,18 +352,10 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <div id="stuck-note"></div>
     <p class="outcome" id="outcome" data-tip="Allowed: moves that went through. Refused: moves someone tried that did not go through. Held back by the rules: people who had moves the rules did not let them try that round (counted once per person per round). By itself: changes the world made on its own."></p>
     <div class="rulings" id="rulings-panel" hidden aria-label="The judge’s rulings in this run"></div>
-    <details class="picture" id="picture-wrap" open><summary title="Show or hide a picture of the places, people and moves in the round you just read">Picture</summary>
-    <p id="picture-note" hidden></p>
-    <iframe class="replay" id="replay" title="Picture of the latest round" sandbox="allow-scripts"></iframe>
-    </details>
-    <details class="picture" id="network" open data-focus="1"><summary title="Show or hide the whole world as a network: who and what exists, where each one is, which moves the rules allow and what changes by itself. What changed in the latest round is lit up.">Network</summary>
-    <div class="legend net-legend"><span><span class="net-key" style="border-color:#6fa8dc"></span>chooses moves</span><span><span class="net-key" style="border-color:#7d8a90"></span>place</span><span><span class="net-key" style="border-color:#a9b5ba"></span>thing</span><span><span class="net-key" style="border-color:#f0a35e"></span>move the rules allow</span><span><span class="net-key" style="border-color:#f0a35e;border-style:dashed"></span>changes by itself</span></div>
-    <p class="small muted" id="net-caption" role="status"></p>
-      <button type="button" class="secondary" id="net-whole" hidden title="Switch between what this round touched and every box in the world"></button>
-    <p class="small" id="net-graph-link-row" hidden><a id="net-graph-link" target="_blank" rel="noopener" title="Open a page that shows every box of this world in three columns and lights one round at a time">Open the whole-system graph of this run</a> (every box in three columns, each round lit, nothing tangled)</p>
-    <div class="net-frame" id="net-graph" aria-label="The world as a network"></div>
-    <p class="detail" id="net-detail"></p>
-    </details>
+    <section id="run-map" class="run-map" aria-labelledby="run-map-h"><h3 id="run-map-h">The world on the map, with its graph beside it</h3>
+    <p class="small muted" id="run-map-status" role="status">The map appears when the first round finishes.</p>
+    <iframe id="run-map-frame" title="Room map and graph of the run" src="room-map/?embed=1&amp;graph=beside" loading="lazy"></iframe>
+    </section>
     <ol class="feed" id="feed" aria-label="What just happened, newest round first"></ol>
     <ul class="underway" id="underway" aria-label="Tasks that take several rounds: under way, stopped part-way, or finished" hidden></ul>
     <details class="picture" id="attempts"><summary title="Every person in the last 10 rounds as squares: allowed, refused, held back by the rules (not allowed to try), or waited. Select one to see why.">Why things were refused</summary>
@@ -1465,7 +1457,6 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   // who and what exists; each move the rules allow is an orange box linked to who can make it and what it uses;
   // each change the world makes by itself is a dashed orange box linked to what it changes.
   const NET_FOCUS_OVER = 25;
-  $("net-whole").addEventListener("click", () => { const b = $("network"); b.dataset.focus = b.dataset.focus === "1" ? "0" : "1"; renderNetwork(); });
   // What one round did in a big world: who made which move, what that move used, what changed by itself. Links for moves
   // nobody made and references between things stay in the whole-world view; at 18-32 boxes they were still a tangle
   // (Brian, 2026-11-04: the Waltzman rebuild's Network was unreadable after #333 and #338).
@@ -1615,49 +1606,34 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const p = id && id.startsWith("p:") && ((world.review || {}).processes || []).find((x) => "p:" + x.process_id === id);
     return p ? `${words(p.process_id)}: ${p.rationale}` : "";
   }
-  async function renderNetwork() {
-    const box = $("network");
+  // The run on the room map with the graph beside it (scene-viewer/a-running-world-is-drawn-on-the-map-as-it-plays).
+  // After each finished round the page asks the server for the room-map replay of the rounds so far (rebuilt from its
+  // own run log, nothing saved) and posts it to the embedded viewer, which plays on to the newest round.
+  let mapReady = false, mapAsk = 0;
+  window.addEventListener("message", (e) => {
+    if (e.source === $("run-map-frame").contentWindow && e.data && e.data.type === "ws-viewer-ready") { mapReady = true; renderRunMap(); }
+  });
+  async function renderRunMap() {
+    const box = $("run-map"), status = $("run-map-status");
     box.hidden = !live || !world;
-    if (box.hidden || !box.open) return;
-    $("net-graph-link-row").hidden = !sharedSceneId;
-    if (sharedSceneId) $("net-graph-link").href = "/world-builder/room-map/graph.html?share=" + encodeURIComponent(sharedSceneId);
-    if (!live.net) live.net = { entities: JSON.parse(JSON.stringify(world.bundle.entities)), applied: 0, shape: "" };
-    if (live.replay && live.savedEntities) live.net.entities = live.savedEntities;
-    else while (live.net.applied < live.rounds.length) applyRound(live.net.entities, live.rounds[live.net.applied++]);
-    const whole = worldNetwork({ ...world.bundle, entities: live.net.entities }, world.causal_model);
-    const turnNow = live.replay && live.savedFocusTurn ? live.savedFocusTurn : live.rounds[live.rounds.length - 1];
-    // A world of dozens of boxes drawn at once is an unreadable tangle, so a big one shows what this round touched;
-    // one button shows all of it (Brian, 2026-11-03: the Network was unreadable; nothing is dropped).
-    const big = whole.nodes.length > NET_FOCUS_OVER;
-    const focused = big && box.dataset.focus === "1";
-    const graph = focused ? focusNetwork(whole, turnNow ? roundTouched(turnNow, live.replay) : new Set(), turnNow, live.replay) : whole;
-    $("net-whole").hidden = !big;
-    $("net-whole").textContent = focused ? `Show the whole world (${whole.nodes.length} boxes)` : "Show only what this round touched";
-    const activeLive = live, activeWorld = world;
-    const selection = live.replay ? live.selectedEvent : null;
-    try { await loadGraphViewer(); }
-    catch (err) { if (live !== activeLive || world !== activeWorld) return; $("net-caption").textContent = "The network picture could not load: " + err.message; return; }
-    if (live !== activeLive || world !== activeWorld) return;
-    if (live.replay && live.selectedEvent !== selection) return;
-    const shape = JSON.stringify([graph.nodes.map((n) => n.id), graph.edges.map((e) => e.id)]);
-    if (!netViewer) {
-      // A highlight sent before the first layout is lost, so send the latest one again once it is drawn.
-      netViewer = GraphViewer.mount($("net-graph"), { graph, fullPage: false, onSelect: (pick) => { if (live) live.netSelectedId = pick ? pick.id : null; $("net-detail").textContent = pick ? netDescribe(pick.id) : ""; },
-        onLayout: () => { if (live && live.net) netViewer.highlight(live.net.lit); } });
-    } else if (shape !== live.net.shape) netViewer.update(graph);
-    live.net.shape = shape;
-    $("net-detail").textContent = live.netSelectedId ? netDescribe(live.netSelectedId) : "";
-    const turn = turnNow;
-    const lit = turn ? [...roundTouched(turn, live.replay)].filter((id) => graph.nodes.some((n) => n.id === id)) : [];
-    const litSet = new Set(lit);
-    graph.edges.forEach((e) => { if (litSet.has(e.source) && litSet.has(e.target)) lit.push(e.id); });
-    live.net.lit = lit.length && !focused ? lit : null;
-    netViewer.highlight(live.net.lit);
-    $("net-caption").textContent = focused
-      ? (turn ? `Showing ${graph.nodes.length} of ${whole.nodes.length} boxes: who acted in round ${turn.turn} and what that used or changed. Select a box to see its state now.` : `Showing ${graph.nodes.length} of ${whole.nodes.length} boxes: the people. Select a box to see its state.`)
-      : turn
-      ? (litSet.size ? `Lit up: what round ${turn.turn} used or changed. Select a box to see its state now.` : `Nothing changed in round ${turn.turn}. Select a box to see its state now.`)
-      : "Before round 1. Select a box to see its state.";
+    if (box.hidden) return;
+    if (!live.rounds.length) { status.textContent = "The map appears when the first round finishes."; return; }
+    if (!mapReady || (live.replay && live.mapSent)) return;  // a recording's whole map is sent once; the viewer plays it
+    const ask = ++mapAsk, mine = live;
+    let replay;
+    try {
+      if (live.replay) {
+        if (!sharedSceneId) { status.textContent = "This recording has no map."; return; }
+        const r = await fetch("/world-builder/api/share/" + encodeURIComponent(sharedSceneId) + "/replay", { headers: ownerKey() ? { "X-World-Builder-Owner": ownerKey() } : {} });
+        replay = await r.json(); if (!r.ok) throw new Error(replay.error || r.status);
+      } else {
+        replay = await api("/live-replay", catalog ? { catalog_run_id: catalog.run.id } : { build_trace_id: world.trace_id || null, run_trace_ids: live.runIds });
+      }
+    } catch (err) { if (ask === mapAsk && mine === live) status.textContent = "The map could not be drawn: " + plainError(err); return; }
+    if (ask !== mapAsk || mine !== live) return;
+    status.textContent = replay.illustrative || "";
+    live.mapSent = true;
+    $("run-map-frame").contentWindow.postMessage({ type: "ws-replay", replay }, location.origin);
   }
 
   // Ruling to rule (ai-judge plan J3): every ruling of the run as the last round ended, with Approve and Reject for a held
@@ -1812,7 +1788,6 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     live.selectedEvent = eventKey || null;
     live.finished = savedIsFinished();
     live.net = null;
-    $("net-detail").textContent = "";
     renderLive();
     if (fromHistory) { $("saved-event-h").setAttribute("tabindex", "-1"); $("saved-event-h").focus({ preventScroll: true }); $("saved-event-h").scrollIntoView({ block: "start" }); }
     else if (focusedEvent && eventKey) { const next = $("saved-events").querySelector(`[data-event-id="${CSS.escape(eventKey)}"]`); if (next) next.focus({ preventScroll: true }); }
@@ -1947,10 +1922,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       live.savedFocusTurn = { turn: turn.turn, actors: selected.actor ? { [selected.actor]: selected.event } : {}, reactions: selected.actor ? [] : [selected.event], world_events: [], world_changes: [] };
       renderSavedEvent(turn, selected, rows); renderSavedWorld(live.savedEntities, turn, selected);
     } else { $("saved-event-detail").textContent = "No event records are available for this round."; $("saved-world-state").replaceChildren(); $("saved-actor-input").replaceChildren(); }
-    // Retained legacy surfaces remain available, but their round-based picture has explicitly coarser granularity.
-    $("picture-wrap").querySelector("summary").textContent = `Original picture — end of round ${turn.turn}`;
-    $("picture-wrap").hidden = false; showPictureProblem(); tellPicture();
-    $("outcome").textContent = `Historical views for round ${turn.turn}. The original picture shows the whole round; the network shows the selected event.`;
+    $("outcome").textContent = `Historical views for round ${turn.turn}. The map shows the whole recording.`;
     const feed = $("feed"); feed.replaceChildren();
     live.rounds.slice(-FEED_ROUNDS).reverse().forEach((recordedTurn) => {
       const li = document.createElement("li"), b = document.createElement("button"); b.type = "button"; b.className = "secondary"; b.textContent = `Select round ${recordedTurn.turn}`; b.title = "Select this historical round and restore its matching state."; b.addEventListener("click", () => selectSavedRound(live.recorded.indexOf(recordedTurn))); li.append(b, roundSentence(recordedTurn), ...knockOnBlocks(recordedTurn));
@@ -1958,7 +1930,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       savedEventRows(recordedTurn).forEach((item) => { const event = document.createElement("button"); event.type = "button"; event.className = "secondary"; event.dataset.eventId = item.key; event.dataset.savedHistoryEvent = "true"; event.textContent = item.title; event.title = `Select ${item.key} in historical round ${recordedTurn.turn}.`; event.addEventListener("click", () => selectSavedRound(live.recorded.indexOf(recordedTurn), item.key)); history.append(event); });
       li.append(history); feed.append(li);
     });
-    renderStrip([turn]); renderUnderway([turn]); renderRulings(); renderNetwork(); renderActorContext();
+    renderStrip([turn]); renderUnderway([turn]); renderRulings(); renderRunMap(); renderActorContext();
     if (!actorMode) $("run-h").textContent = (world.bundle.world || {}).label || "Simulation recording";
   }
   $("saved-round-prev").addEventListener("click", () => selectSavedRound(live.replayIndex - 1));
@@ -1986,10 +1958,6 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       // 2026-10-21 C5 check: a refused first round left "Starting the first round…" under the refusal.
       : live.playing ? "Starting the first round…" : "No rounds have run yet.";
     $("live-status").textContent = live.why;
-    // No picture until a round has run: before that it was an empty white box.
-    $("replay").closest("details").hidden = !n;
-    showPictureProblem();
-    if (live.replay && n) tellPicture();
     const btn = $("play-btn");
     const watchAgain = live.finished && live.replay;
     btn.textContent = live.playing ? "⏸ Pause" : watchAgain ? "▶ Watch again" : "▶ Play";
@@ -2017,7 +1985,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         + ". Open “Why things were refused” to see what is blocking them.";
       note.append(n);
     }
-    renderNetwork();
+    renderRunMap();
     renderActorContext();
   }
 
@@ -2124,7 +2092,6 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         const stopped = run.summary.stopped;
         if (stopped && STOP_REASONS.includes(stopped.reason)) live.stopsAt = stopped;
         if (run.trace_id) live.runIds.push(run.trace_id);
-        if (run.replay_html) $("replay").srcdoc = run.replay_html;
         if (!rounds.length) {
           live.playing = false;
           if (live.stopsAt) { stopHere(); renderLive(); return; }
@@ -2192,26 +2159,6 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     renderLive();
   }
 
-  // A recording's picture holds every round; the page tells it which round to show.
-  function recordedPicture() { return (world && world.shared && world.shared.replay_html) || ""; }
-  // A picture that cannot be drawn says so and why; it never quietly disappears.
-  function showPictureProblem() {
-    const broken = Boolean(live && live.replay && !recordedPicture());
-    $("replay").hidden = broken;
-    $("picture-note").hidden = !broken;
-    if (broken) $("picture-note").textContent = "The picture of this recording could not be drawn"
-      + (world.shared && world.shared.picture_error ? " (" + world.shared.picture_error + ")" : "")
-      + ". The rounds and the network below still play.";
-  }
-  function tellPicture() {
-    const frame = $("replay").contentWindow, n = live.rounds.length;
-    if (frame && n) frame.postMessage({ type: "ws-round", round: live.rounds[n - 1].turn }, "*");
-  }
-  $("replay").addEventListener("load", () => { if (live && live.replay) tellPicture(); });
-  // The picture says how tall it is, so no empty space sits under it.
-  window.addEventListener("message", (e) => {
-    if (e.source === $("replay").contentWindow && e.data && e.data.type === "ws-picture-height" && e.data.height > 100) $("replay").style.height = e.data.height + "px";
-  });
   function startLive(options) {
     if (!world) return;
     const recorded = (options && options.rounds) || (world.shared && world.shared.rounds) || null;
@@ -2221,21 +2168,19 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     $("share-out").textContent = ""; $("readout-out").innerHTML = "";
     $("readout-btn").hidden = live.replay && !(world.shared && world.shared.readout);
     $("share-btn").hidden = live.replay;
-    showPictureProblem();
-    $("replay").srcdoc = live.replay ? recordedPicture() : ""; delete $("detail").dataset.touched; $("detail").textContent = "";
-    $("net-detail").textContent = "";
+    delete $("detail").dataset.touched; $("detail").textContent = "";
+    mapReady = false; $("run-map-status").textContent = "The map appears when the first round finishes.";
+    $("run-map-frame").src = "room-map/?embed=1&graph=beside";  // a fresh viewer for each run, so no earlier world's map is left in it
     const resume=options&&options.resumeRecord;
     if(resume){live.rounds=(resume.rounds||[]).slice();live.lastTurn=live.rounds.at(-1)?.turn||0;live.actorInputs=resume.actor_inputs||{};live.actorInformationMode=resume.actor_information_mode;live.runIds=(resume.runs||[]).map(r=>r.trace_id).filter(Boolean);live.rounds.forEach(t=>{const c=countRound(t);Object.keys(live.totals).forEach(k=>live.totals[k]+=(c[k]||0));});}
     updateWorkspaceControls();show("run");refreshScene();
     if (live.replay) {
       live.replayIndex = 0; live.rounds = live.recorded.slice(0, 1); live.buffer = [];
       live.finished = live.recorded.length <= 1;
-      $("picture-wrap").open = false; $("network").open = false; $("saved-advanced").open = false;
+      $("saved-advanced").open = false;
       renderLive();
       if (world.shared && world.shared.readout) renderReadout(world.shared.readout);
     } else {
-      $("picture-wrap").querySelector("summary").textContent = "Picture";
-      $("picture-wrap").open = false; $("network").open = false;
       play();
     }
   }
@@ -2382,7 +2327,6 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   $("use-btn").addEventListener("click", () => { $("desc").value = $("so-far").value.trim(); refreshBuild(); $("dialogue").hidden = true; build(); });
   $("rules-btn").addEventListener("click", () => { pause(); show("review"); });
   $("play-btn").addEventListener("click", () => { if (live && live.playing) pause(); else play(); });
-  $("network").addEventListener("toggle", () => { if ($("network").open) renderNetwork(); });
   $("strip").addEventListener("click", () => { $("detail").dataset.touched = "1"; });
   $("desc").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) build(); });
   $("change-btn").addEventListener("click", () => show("describe"));
