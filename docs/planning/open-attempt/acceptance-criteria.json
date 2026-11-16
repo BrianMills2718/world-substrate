@@ -360,10 +360,10 @@
       ],
       "demonstration": [
         "Open the clinic link (no owner password).",
-        "Press play, or drag the step slider through both rounds.",
-        "Read each person's action in the people panel and any report line."
+        "Press play, or drag the step slider through both rounds; watch the walks follow the doorways.",
+        "Open the resident demo link (?replay=resident) and go to step 15: Ari's report to Bo reads \"(words not shown)\"."
       ],
-      "expected": "A map of the Small clinic with three rooms (Exam room, Reception room, Lab) on CC0 tiles; people walk one tile a step through doorways; a refused try stays in place with its reason; any report reads \"(words not shown)\".",
+      "expected": "Clinic link: a map of the Small clinic with three rooms (Exam room, Reception room, Lab) on CC0 tiles; people walk one tile a step through doorways. Resident link: report lines read \"(words not shown)\" (the clinic run sent no reports).",
       "failure_example": "Broken: a blank page or \"no room map for this run\" for a world that has a layout, a person jumping through a wall, Smallville art, or a report's actual words shown to a visitor. Working: the map loads and walks follow doorways.",
       "representation": {
         "view": "spatial-map-with-linked-overlay",
@@ -371,7 +371,7 @@
       },
       "entrypoint": "https://brianmills.dev/world-builder/room-map/?share=hn4jUQnwJH5g",
       "status": "built",
-      "status_note": "Served from committed git on the public site; checked 2026-11-16 only by fetching the page (HTTP 200) and its data route. No human has judged it pass or fail. Data route /world-builder/api/share/hn4jUQnwJH5g/replay returned map public-hub-3, 2 rounds, 3 rooms, 4 rules."
+      "status_note": "Served from committed git on the public site; checked 2026-11-16 only by fetching the pages (HTTP 200) and their data. No human has judged it pass or fail. Clinic data route /world-builder/api/share/hn4jUQnwJH5g/replay returned map public-hub-3, 2 rounds, 3 rooms, 4 rules, 0 chat lines and 0 refused tries, so the hidden-words case is shown on replay-resident.json (54 chat lines, step 15 Ari 'to Bo: (words not shown)')."
     },
     {
       "id": "V2",
@@ -381,9 +381,10 @@
         "roadmap/README.md:61"
       ],
       "demonstration": [
-        "Open the clinic link at computer width.",
+        "Open the public demo link (?replay=public) at computer width.",
         "Press Show rules.",
-        "Step through the rounds; click a rule tag to read the full rule."
+        "At step 1 Ari is refused at the closed door: read the orange tag; step on to where the door opens; click a rule tag to read the full rule.",
+        "Open the clinic link and press Show rules to see a Builder-made world's rules (all its tries were allowed)."
       ],
       "expected": "Each rule has a tag on its door or in the margin; at each step the rule each person's try met is blue with \"allowed\" or orange with \"refused\" and the failed check in words; clicking shows the rule text.",
       "failure_example": "Broken: tags with colour but no words, a refused try marked allowed, or no Show rules button on a run whose world has rules. Working: colour and words agree with the people panel.",
@@ -391,9 +392,9 @@
         "view": "spatial-map-with-linked-overlay",
         "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
       },
-      "entrypoint": "https://brianmills.dev/world-builder/room-map/?share=hn4jUQnwJH5g",
+      "entrypoint": "https://brianmills.dev/world-builder/room-map/?replay=public",
       "status": "built",
-      "status_note": "Served from committed git on the public site; checked 2026-11-16 only by fetching the page (HTTP 200) and its data route. No human has judged it pass or fail. The overlay is computer-width only (spec:110); phone width is not claimed (Q104)."
+      "status_note": "Served from committed git on the public site; checked 2026-11-16 only by fetching the pages (HTTP 200) and their data. No human has judged it pass or fail. replay-public.json has 2 refused tries (step 1 Ari, 'the door must be open'); the clinic run has 0 refused tries of 72 rule frames, so it shows only allowed. The overlay is computer-width only (spec:110); phone width is not claimed (Q104)."
     },
     {
       "id": "V3",
@@ -415,7 +416,7 @@
       },
       "entrypoint": "https://brianmills.dev/world-builder/room-map/?share=hn4jUQnwJH5g",
       "status": "built",
-      "status_note": "Served from committed git on the public site; checked 2026-11-16 only by fetching the page (HTTP 200) and its data route. No human has judged it pass or fail. The clinic share is the first live Builder-made world (spec:141, commit 73a240c). Layout step cost measured at $0.0002 a call (3 calls); a fresh build to exercise it again costs a build and was not run."
+      "status_note": "Served from committed git on the public site; checked 2026-11-16 only by fetching the page (HTTP 200) and its data route. No human has judged it pass or fail. Basis for 'built': the clinic is a Builder-made world whose layout nobody drew by hand; it was built after the layout step shipped (3aae0b8, 2026-11-14 13:16) and its export failure led to 73a240c (13:36, spec:141). Layout step cost measured at $0.0002 a call (3 calls); a fresh build to exercise it again costs a build and was not run."
     },
     {
       "id": "V4",
@@ -446,8 +447,9 @@
         "roadmap/README.md:65"
       ],
       "demonstration": [
-        "Open the clinic link at computer width.",
-        "Press Show graph; step through the rounds; tick Every box to see all boxes."
+        "Open the public demo link (?replay=public) at computer width.",
+        "Press Show graph; at step 1 Ari's tag is orange with \"refused\" and the reason; step on through the rounds; tick Every box to see all boxes.",
+        "Open the clinic link and press Show graph to see the graph over a Builder-made world's rooms."
       ],
       "expected": "Each person is tagged where they stand; their move and the things it used are drawn left of the map and lit blue, orange (with \"refused\" and the reason) or grey; off by default only the round's boxes show.",
       "failure_example": "Broken: tags that do not follow the people, an orange tag with no reason, or the graph not changing with the step. Working: the overlay matches the people panel at every step.",
@@ -455,9 +457,9 @@
         "view": "spatial-map-with-linked-overlay",
         "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
       },
-      "entrypoint": "https://brianmills.dev/world-builder/room-map/?share=hn4jUQnwJH5g",
+      "entrypoint": "https://brianmills.dev/world-builder/room-map/?replay=public",
       "status": "built",
-      "status_note": "Served from committed git on the public site; checked 2026-11-16 only by fetching the page (HTTP 200) and its data route. No human has judged it pass or fail. The clinic replay carries graph and graph_actors."
+      "status_note": "Served from committed git on the public site; checked 2026-11-16 only by fetching the pages (HTTP 200) and their data. No human has judged it pass or fail. replay-public.json carries graph and graph_actors and 2 refused tries; the clinic replay carries graph and graph_actors but 0 refused tries, so it shows no orange."
     },
     {
       "id": "V6",

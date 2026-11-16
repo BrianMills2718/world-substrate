@@ -15,34 +15,37 @@ window.PAGE_DATA = {
       "command": "python3 scripts/check_trace_reads.py --root evidence",
       "exit_status": 0,
       "counts": {
-       "runs": 51,
+       "runs": 57,
        "problems": 0
       },
-      "note": "I0/I1 retained authentic failures included; recorded in evidence/i0-i1/repair-verification.txt. Exit 0."
+      "note": "2026-11-16 (base 3d9194c): 57 runs, 0 problems, exit 0."
      },
      {
       "name": "durable documents (legacy arc42 checker)",
       "command": "python3 /home/brian/code2/company-planning/plugins/company-planning/scripts/durable_docs_check.py --repo . --arc42",
-      "exit_status": 0,
+      "exit_status": 1,
       "counts": {
-       "findings": 0,
+       "findings": 7,
        "legacy_format_mismatches": 0,
-       "stale_rule_reviews": 0
+       "stale_rule_reviews": 7
       },
-      "note": "2026-11-12 modeling-contracts refresh: exact arc42 headings, thesis/disproof, documentation-locality citation and lineage now satisfy the retained checker. No desired runtime guarantee was weakened; budget and storage-failure limits remain explicit."
+      "note": "2026-11-16 (base 3d9194c): exit 1: 7 STALE findings, rules whose owner code changed after their last review (e.g. RULE-DURABLE-RUN-RECORD on scripts/world_builder_service.py, 11 commits). Not re-reviewed in this refresh; tracked by Q106.",
+      "tracked_by": "Q106"
      },
      {
       "name": "wiki and Markdown cap",
       "command": "python3 /home/brian/code2/agentic-engineering-system-canonical/scripts/md_file_cap.py --repo . --ref HEAD",
-      "exit_status": 0,
+      "exit_status": 1,
       "counts": {
-       "md_files": 200,
-       "cap": 200,
-       "unreachable": 0,
-       "durable_findings": 0,
-       "stale_rule_reviews": 0
+       "md_files": 272,
+       "cap": 100,
+       "exception_limit": 223,
+       "unreachable": 7,
+       "durable_findings": 7,
+       "stale_rule_reviews": 7
       },
-      "note": "2026-11-13 b83e76c: md_file_cap --repo . --ref HEAD exit0;200/200, reach/layout/durable0findings. This is an approved exception preserving mandatory OpenSpec and trace-read artifacts."
+      "note": "2026-11-16 (base 3d9194c): exit 1: 272 tracked Markdown files, over the 223-file exception limit (default cap 100); 7 files unreachable from wiki/index.md (3 not linked, 4 more than 2 links deep, e.g. viewer/smallville/assets-cc0/README.md); 7 durable-document findings (the stale rules above). The earlier 200/200 exception no longer holds. Tracked by Q106; the check was not changed.",
+      "tracked_by": "Q106"
      },
      {
       "name": "project navigation",
@@ -50,7 +53,8 @@ window.PAGE_DATA = {
       "exit_status": 0,
       "counts": {
        "findings": 0
-      }
+      },
+      "note": "2026-11-16 (base 3d9194c): 0 findings, exit 0 (reachability delegated to md_file_cap)."
      },
      {
       "name": "repository format",
@@ -60,7 +64,7 @@ window.PAGE_DATA = {
        "compliant": 1,
        "of": 1
       },
-      "note": "2026-11-12 modeling-contracts refresh: 1 of 1, exit 0. Static format only; not full Lockstep conformance."
+      "note": "2026-11-16 (base 3d9194c): 1 of 1, exit 0. Static format only; not full Lockstep conformance."
      },
      {
       "name": "semantic spectrum",
@@ -69,21 +73,22 @@ window.PAGE_DATA = {
       "counts": {
        "passed": 9,
        "failed": 0,
-       "project_terms": 80,
+       "project_terms": 93,
        "planning_terms": 13
       },
-      "note": "2026-11-12 modeling-contracts refresh: 156 names, 96 questions, 80 project terms; all 9 rules pass. Conceptual contract decisions do not certify unbuilt runtime behavior."
+      "note": "2026-11-16 (base 3d9194c): after the viewer concepts were added: 9 of 9 rules pass, 93 project terms, 106 questions, exit 0."
      },
      {
       "name": "Lockstep source provenance",
       "command": "uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep check sources",
       "exit_status": 0,
       "counts": {
-       "brian": 21,
-       "inferred": 83,
+       "brian": 41,
+       "inferred": 86,
        "other": 48,
        "missing": 0
-      }
+      },
+      "note": "2026-11-16 (base 3d9194c): exit 0."
      },
      {
       "name": "planning routes",
@@ -93,32 +98,33 @@ window.PAGE_DATA = {
        "records": 4,
        "passed": 4,
        "failed": 0
-      }
+      },
+      "note": "2026-11-16 (base 3d9194c): 4 of 4 valid, exit 0."
      },
      {
       "name": "project make check",
       "command": "make check",
       "exit_status": 0,
       "counts": {
-       "passed": 1037,
+       "passed": 1173,
        "skipped": 2,
        "subtests_passed": 229,
-       "specs_passed": 13
+       "specs_passed": 15
       },
-      "note": "2026-11-13: batch make check on committed code2fa9b86 plus this documentation candidate; exit0,1037passed2skipped229subtests,45.45seconds,13specs. Final exact committed merge gate remains ship-owned. Production acceptance remains pending; full AES conformance is separate."
+      "note": "2026-11-16 (base 3d9194c): batch make check after the package edits: exit 0, 1173 passed, 2 skipped, 229 subtests, 15 specs, 66 s. Production acceptance remains pending; full AES conformance is separate."
      },
      {
       "name": "Lockstep requirement/scenario trace links",
       "command": "uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep check trace",
       "exit_status": 1,
       "counts": {
-       "findings": 329,
-       "missing_requirement_annotations": 128,
-       "missing_scenario_markers": 201,
-       "unknown_ids": 0
+       "findings": 460,
+       "unimplemented": 151,
+       "untested": 256,
+       "unknown_ids": 53
       },
       "tracked_by": "Q77",
-      "note": "2026-11-12: configured real source roots and linked 13 existing test functions with 15 existing=True markers covering 6 distinct scenario IDs. This is annotation coverage, not 329 demonstrated behavior defects. Proposed/unbuilt requirements remain unmapped; full AES conformance is not claimed."
+      "note": "2026-11-16 (base 3d9194c): exit 1: 460 findings (151 unimplemented, 256 untested, 53 unknown ids such as scene-viewer/smallville-replay-export at tests/test_smallville_replay_export.py:64). The 53 unknown ids are new since 2026-11-12 (unknown_ids 0 then): Lockstep prints them as references to requirement ids it cannot resolve; not diagnosed. The unimplemented and untested rows are annotation coverage. Tracked by Q77; checks.txt:1104."
      },
      {
       "name": "I0/I1 saved and recorded-build compatibility",
@@ -131,7 +137,7 @@ window.PAGE_DATA = {
        "errors": 0,
        "lost": 0
       },
-      "note": "Every recorded build folder visited; unavailable old replies and integration-2 missing current privacy verdict remain stopped replays, not passes. No previously whole saved world was lost. See evidence/i0-i1/repair-verification.txt."
+      "note": "Every recorded build folder visited; unavailable old replies and integration-2 missing current privacy verdict remain stopped replays, not passes. No previously whole saved world was lost. See evidence/i0-i1/repair-verification.txt. Not rerun 2026-11-16: no saved-world code changed in the scene-viewer work; this 2026-11-13 result is historical."
      }
     ]
    },
@@ -186,7 +192,7 @@ window.PAGE_DATA = {
      "run-log": "scripts/world_builder_service.py:542",
      "readout": "scripts/run_readout.py:113",
      "scene-replay": "scripts/render_scene_replay.py:449",
-     "share": "scripts/world_builder_service.py:638",
+     "share": "scripts/world_builder_service.py:1672",
      "budget": "scripts/world_builder_service.py:57",
      "people-world": "scripts/people_world.py:474",
      "communicate": "spikes/any-scenario-2026-10/compile_spec.py:56",
@@ -232,7 +238,14 @@ window.PAGE_DATA = {
      "technical-condition": "spikes/any-scenario-2026-10/compile_spec.py:621",
      "expressed-stance": "spikes/any-scenario-2026-10/compile_spec.py:665",
      "recorded-assent": "spikes/any-scenario-2026-10/compile_spec.py:660",
-     "validation-hold": "spikes/any-scenario-2026-10/compile_spec.py:685"
+     "validation-hold": "spikes/any-scenario-2026-10/compile_spec.py:685",
+     "room-map": "viewer/smallville/viewer.js:21",
+     "layout-declaration": "scripts/scene_layout.py:32",
+     "generated-map": "scripts/generated_map.py:20",
+     "replay-export": "scripts/export_smallville_replay.py:232",
+     "world-graph": "scripts/world_graph.py:122",
+     "rules-overlay": "viewer/smallville/viewer.js:125",
+     "proposed-layout": "scripts/layout_proposal.py:53"
     },
     "spectrum": "docs/model/semantic-spectrum.json"
    },
@@ -312,7 +325,8 @@ window.PAGE_DATA = {
       "docs/plans/open_attempt.md",
       "docs/plans/declared_laws.md",
       "docs/plans/ai_judge.md",
-      "Current normative-readiness conversation, 2026-11-12"
+      "Current normative-readiness conversation, 2026-11-12",
+      "roadmap/README.md Viewer path (2026-11-14) and openspec/changes/archive/2026-11-14-*/proposal.md, 2026-11-15-*/proposal.md"
      ],
      "found": [
       {
@@ -331,6 +345,16 @@ window.PAGE_DATA = {
        "lifted_on": "2026-11-12",
        "lifted_words": "i approve. givem e the /goal text",
        "lifted_source": "docs/plans/open_attempt.md:522; Brian approved these two slices after PR #378 and activated the I0/I1 goal."
+      },
+      {
+       "said_on": "2026-11-12",
+       "words": "before we move to implementaiotn my instinct is that we should make sure all our normative docuemtnationa nd plans are optimal and that all open questions have been resolved",
+       "source": "Brian, current normative-readiness conversation, 2026-11-12; recorded here verbatim",
+       "applies_to": "The scene-viewer scope only: the Smallville-style replay export, static viewer, world layout declaration, owner run viewer, public generated map and share room map, rules overlay, Builder-proposed layout, whole-system graph, graph over the map, named rooms and zoom (openspec/specs/scene-viewer/spec.md). The hold above still stands for engine, scheduler, cognition, solver and unrelated judge work.",
+       "status": "lifted",
+       "lifted_on": "2026-11-14",
+       "lifted_words": "yes remove the new renderer rule; i approve c then b then a; build the public one; i approve your recommendation",
+       "lifted_source": "Brian, 2026-11-14, four approvals: \"yes remove the new renderer rule\" (roadmap/README.md:38); \"i approve c then b then a\" (roadmap/README.md:57, openspec/changes/archive/2026-11-14-owner-run-viewer/proposal.md:3); \"build the public one\" (roadmap/README.md:61, openspec/changes/archive/2026-11-14-public-generated-map/proposal.md:3); \"i approve your recommendation\" (Decision 4 = C, roadmap/README.md:63, openspec/changes/archive/2026-11-14-world-graph-page/proposal.md:3)."
       }
      ]
     },
@@ -405,6 +429,13 @@ window.PAGE_DATA = {
        "cost_per_run_usd": 0.048596,
        "basis": "measured",
        "evidence": "evidence/i0-i1/deployed-integration-3/llm-calls.jsonl: calls 23427. Includes used/unused hedges; one rejected build, no residents. Historical workload only, not a forecast or general bound."
+      },
+      {
+       "step": "world-substrate-layout (Builder-proposed room-map layout, one optional call after the build)",
+       "calls_per_run": 1,
+       "cost_per_run_usd": 0.0002,
+       "basis": "measured",
+       "evidence": "llm-cost estimate --task world-substrate-layout (run 2026-11-16): 3 successful priced calls on 2026-11-14, model openrouter/openai/gpt-6-luna, median $0.0002, p90 $0.0003, total $0.0007; median 841 input tokens (0.0% cached, recorded on 3 of 3), 247 output tokens. Called by scripts/layout_proposal.py:61 (call_llm task=world-substrate-layout, at most 2 attempts when the first reply fails validation); spend allowance MAX_BUDGET = $0.03 on top of the build's own spend (scripts/layout_proposal.py:19, scripts/world_builder_service.py:654). Three calls is a small sample, not a general bound."
       }
      ],
      "cheapest_design": "Use recorded commands and deterministic replay without model calls for structural checks. Authoring creates checkable artifacts in the existing harness; actors and interpretation retain their current single-call boundaries. A new comparison needs a named decision that argument and retained evidence cannot settle. Fixture costs establish neither semantic-review benefit nor future workload cost. I0/I1 reuses the existing semantic review call for actual initial actor contexts; no additional cognition or review stage is introduced. Free paired-input, authority and replay checks precede the minimum real generated/resident demonstration."
@@ -432,7 +463,7 @@ window.PAGE_DATA = {
     "verdict": "pass",
     "reviewed_revision": "a23067accd0cb6941a2f1a45e8e1ec399904f3fe",
     "package_commit": "49f4d5a7a8c6918e7b003468a2b1ab4c08c2d03f",
-    "note": "Independent scoped polarity/reference contract review passed at49f4d5a on2026-11-13. A2 displays original utterances, quoted field bindings and separate consequences. Native and browser evidence retain their own scope; Q36 general semantic accuracy remains open."
+    "note": "Last independent pass at a23067a (2026-11-13, Q26/G17 settlement attribution; docs/planning/cold-review.md:42). A cold review on 2026-11-16 returned revise because the package predated the scene-viewer work (viewer concepts, layout step cost, acceptance, Viewer path difficulties, stop lift, stale check counts); those findings are addressed in this revision and a new cold review is pending. That revise report is not yet saved in cold-review.md."
    },
    "acceptance": {
     "status": "present",
@@ -2544,7 +2575,8 @@ window.PAGE_DATA = {
    "status": "resolved",
    "sources": [
     "roadmap/README.md:43",
-    "scripts/export_smallville_replay.py:213"
+    "scripts/export_smallville_replay.py:213",
+    "commit 11b0b2f (PR #404, 2026-11-14): exporter maps each round to walking steps by round_index"
    ],
    "touches": [
     "replay-export"
@@ -2642,7 +2674,7 @@ window.PAGE_DATA = {
    "short": "Viewer D8: embedding and phone width",
    "question": "The workspace is a static page plus API; the viewer should embed as a scene route and work at 390px.",
    "blocks": "whether the room map is part of the workspace rather than a separate page",
-   "resolves_with": "Partly settled: the public room map is its own page linked from the shared-run view (scripts/world_builder_home.html:678), and the facility fits 390px (spec:30). Remaining: not embedded in the workspace; the rules overlay is computer-only (spec:110); the report bubble clips on phones (Q101). Settles with an embed decision and a 390px check.",
+   "resolves_with": "Partly settled: the public room map is its own page linked from the shared-run view (scripts/world_builder_home.html:678), and the facility fits 390px (spec:30). Remaining: not embedded in the workspace; choosing a branch or checkpoint step in the room map is not built (handed on from Q99); the rules overlay is computer-only (spec:110); the report bubble clips on phones (Q101). Settles with an embed decision and a 390px check.",
    "classification": "implementation_gap",
    "dependencies": [],
    "revisit_trigger": "When a world or viewer change touches this difficulty.",
@@ -2692,8 +2724,8 @@ window.PAGE_DATA = {
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/planning/checks.txt",
-    "docs/planning/planning-package.json"
+    "docs/planning/checks.txt:1057-1065 (durable_docs_check, 7 STALE, exit 1)",
+    "docs/planning/checks.txt:1068-1073 (md_file_cap, md=272, orphans 7, durable 7, exit 1)"
    ],
    "touches": [
     "run-log"
