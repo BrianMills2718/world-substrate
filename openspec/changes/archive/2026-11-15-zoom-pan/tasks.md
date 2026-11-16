@@ -1,0 +1,2 @@
+- [x] wheel zoom, drag pan, Reset view
+- [ ] deploy and live check

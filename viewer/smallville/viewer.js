@@ -30,7 +30,7 @@ function start(R, M) {
   let step = Math.min(+q.get("step") || 0, last), playing = !q.has("paused"), timer = null, scene = null;
   if (!playing) { $("play").textContent = "Play"; $("play").classList.remove("on"); }
   const people = {}, doorGfx = {};
-  let fitFn = null, graphOn = false, graphAll = false;
+  let fitFn = null, graphOn = false, graphAll = false, userZoom = 1, panX = 0, panY = 0;  // wheel zooms, dragging pans
   const COLW = 200, GLEFT = 2 * COLW + 76;  // the graph overlay: two columns of boxes (things, then moves) left of the map
   let L = 1;  // labels are drawn larger when the map is zoomed out so they stay readable
   const doorAt = s => { const st = {}; R.door_changes.forEach(c => { if (c.step <= s) st[c.door] = c.state; }); return st; };
@@ -76,11 +76,11 @@ function start(R, M) {
       const fit = () => {
         const c = this.cameras.main, v = R.view;
         const lm = graphOn ? Math.min(GLEFT, c.width * 0.45) : 0;  // the graph overlay needs room left of the map
-        c.setZoom(Math.min((c.width - lm - 8) / (v.w * T), c.height / (v.h * T)));
+        c.setZoom(Math.min((c.width - lm - 8) / (v.w * T), c.height / (v.h * T)) * userZoom);
         L = Math.min(2.2, Math.max(1, 0.95 / c.zoom));
         names.forEach(n => { people[n].emoji.setScale(L); people[n].chat.setScale(L); });
         if (step !== null && people[names[0]].tile) show(step, false);
-        c.setScroll((v.x + v.w / 2) * T - c.width / 2 - (lm / 2) / c.zoom, (v.y + v.h / 2) * T - c.height / 2);
+        c.setScroll((v.x + v.w / 2) * T - c.width / 2 - (lm / 2 - panX) / c.zoom, (v.y + v.h / 2) * T - c.height / 2 + panY / c.zoom);
         drawGraph();
       };
       fitFn = fit; this.scale.on("resize", fit); fit(); this.time.delayedCall(400, fit);  // the page settles after the first fit
@@ -254,6 +254,14 @@ function start(R, M) {
     clearInterval(timer);
     timer = setInterval(() => { if (!playing) return; if (step >= last) { playing = false; $("play").textContent = "Replay"; $("play").classList.remove("on"); return; } show(step + 1, true); }, 1000 / +$("speed").value);
   }
+  // Zoom and pan the map (and the graph drawn over it): wheel to zoom, drag to move, the button to reset.
+  const view = () => { if (fitFn) fitFn(); };
+  $("game").addEventListener("wheel", e => { e.preventDefault(); userZoom = Math.min(4, Math.max(1, userZoom * (e.deltaY < 0 ? 1.15 : 1 / 1.15))); if (userZoom === 1) { panX = 0; panY = 0; } view(); }, { passive: false });
+  let drag = null;
+  $("game").addEventListener("pointerdown", e => { drag = { x: e.clientX, y: e.clientY, px: panX, py: panY }; });
+  addEventListener("pointermove", e => { if (!drag || userZoom === 1) return; panX = drag.px + e.clientX - drag.x; panY = drag.py - (e.clientY - drag.y); view(); });
+  addEventListener("pointerup", () => { drag = null; });
+  $("reset").onclick = () => { userZoom = 1; panX = 0; panY = 0; view(); };
   const startOfRound = d => { const rs = R.rounds, i = rs.findIndex(r => step >= r.start && step <= r.end); const j = Math.max(0, Math.min(rs.length - 1, (i < 0 ? 0 : i) + d)); return rs[j].start; };
   $("slider").max = last;
   $("slider").oninput = e => { show(+e.target.value, false); };
