@@ -463,6 +463,62 @@
       "aliases": [
         "technical hold"
       ]
+    },
+    {
+      "id": "room-map",
+      "kind": "Substrate",
+      "aliases": [
+        "room map",
+        "map viewer",
+        "Smallville-style viewer"
+      ]
+    },
+    {
+      "id": "layout-declaration",
+      "kind": "Substrate",
+      "aliases": [
+        "layout",
+        "scene layout"
+      ]
+    },
+    {
+      "id": "generated-map",
+      "kind": "Substrate",
+      "aliases": [
+        "public map",
+        "public-hub map"
+      ]
+    },
+    {
+      "id": "replay-export",
+      "kind": "Substrate",
+      "aliases": [
+        "replay exporter",
+        "Smallville replay export"
+      ]
+    },
+    {
+      "id": "world-graph",
+      "kind": "Substrate",
+      "aliases": [
+        "whole-system graph",
+        "graph page"
+      ]
+    },
+    {
+      "id": "rules-overlay",
+      "kind": "Substrate",
+      "aliases": [
+        "Show rules"
+      ]
+    },
+    {
+      "id": "proposed-layout",
+      "kind": "PerWorld",
+      "aliases": [
+        "layout proposal",
+        "Builder-proposed layout"
+      ]
     }
   ],
   "classes": [

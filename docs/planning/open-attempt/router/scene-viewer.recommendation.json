@@ -1,0 +1,34 @@
+{
+ "record_type": "representation_recommendation",
+ "provenance": {
+  "by": "agent",
+  "date": "2026-11-16",
+  "method": "Representation Router planning-review principles applied to the views already built and approved for the scene viewer; records the choice, not a tool-generated score or visual certification. No sketch set was put to Brian for these views.",
+  "source": "openspec/specs/scene-viewer/spec.md:89"
+ },
+ "question": "Can Brian see, on a shared run, where each person went, what they tried, which rule allowed or refused it and why, and how the whole world's parts connect?",
+ "primary": "spatial-map-with-linked-overlay",
+ "rationale": "Where people are and which door stopped them is a spatial question, so the room map is primary; which rule and which things a try used is a relation question, so the graph is a switchable overlay and its own page for worlds without rooms. A round slider keeps one moment selected across both.",
+ "compositionPlan": {
+  "primary_element": "Room map at the selected step",
+  "secondary_elements": [
+   "Show rules tags (allowed / refused with the failed check)",
+   "Show graph overlay (people tags, moves and things used)",
+   "Whole-system graph page for any shared run",
+   "People panel with each person's action in words"
+  ],
+  "reading_order": [
+   "Rooms and people",
+   "Selected step's tries",
+   "Rule outcome and reason",
+   "Graph links"
+  ],
+  "interaction": "Step slider, play/pause, Show rules, Show graph, Every box, wheel zoom, drag pan, Reset view; read-only, no model call.",
+  "color": "Blue allowed, orange refused, grey no move, always with words."
+ },
+ "availability": "built: public pages at /world-builder/room-map/ and /world-builder/room-map/graph.html",
+ "alternatives": [
+  "A table of tries per round answers what happened but not where; kept in the people panel and the shared-run view.",
+  "The Network panel's force graph was a tangle at 70 boxes and 411 links (roadmap/README.md:63); replaced by the three-column graph."
+ ]
+}

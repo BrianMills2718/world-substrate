@@ -1998,6 +1998,219 @@
     "judge-ruling",
     "ruling-rule"
    ]
+  },
+  {
+   "id": "Q97",
+   "short": "Viewer D1: where do coordinates come from",
+   "question": "The substrate knows rooms, not coordinates. Where do map anchors, door tiles and the walkable layer come from, and where are paths computed?",
+   "blocks": "whether the room map can be drawn without putting coordinates in the rules",
+   "resolves_with": "Prior art (Smallville's tile map) plus a declared layout; settled by the scene-viewer spec.",
+   "classification": "implementation_gap",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "resolved",
+   "sources": [
+    "roadmap/README.md:41",
+    "openspec/specs/scene-viewer/spec.md:12",
+    "openspec/specs/scene-viewer/spec.md:47"
+   ],
+   "touches": [
+    "layout-declaration",
+    "replay-export"
+   ],
+   "evidence": "Resolved by openspec/specs/scene-viewer/spec.md (Smallville replay export; World layout declaration), approved by Brian 2026-11-14, \"i approve c then b then a\" (roadmap/README.md:57). The layout names a map slot per place and the doors; the map supplies walkable tiles; scripts/export_smallville_replay.py:56 computes walks by breadth-first search. The rules carry no coordinates."
+  },
+  {
+   "id": "Q98",
+   "short": "Viewer D2: worlds without rooms, or with many",
+   "question": "The World Builder makes arbitrary worlds; most have no rooms. Which worlds get a room map, and how does a new world get a layout?",
+   "blocks": "whether a Builder-made world beyond a hub with four rooms can be shown on a map",
+   "resolves_with": "Partly settled: a world with a layout gets the room map beside the composed scene; the Builder proposes a layout (spec:121, Brian 2026-11-14 \"i approve\", roadmap/README.md:61). Remaining: generated maps are a hub with up to four rooms; a world with more rooms or another shape gets no map. Settles with a layout generator from the place graph, or a recorded decision that the hub limit is enough.",
+   "classification": "implementation_gap",
+   "dependencies": [],
+   "revisit_trigger": "When a shared Builder world with more than five places needs a room map.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "roadmap/README.md:42",
+    "openspec/specs/scene-viewer/spec.md:81",
+    "openspec/specs/scene-viewer/spec.md:125",
+    "scripts/generated_map.py:20"
+   ],
+   "touches": [
+    "proposed-layout",
+    "generated-map",
+    "scene-replay"
+   ]
+  },
+  {
+   "id": "Q99",
+   "short": "Viewer D3: rounds versus walking steps",
+   "question": "A round is a set of ordered commits; Smallville steps are fixed-length with one tile per step. How does a round map to steps?",
+   "blocks": "whether a checkpoint or round can select the right moment in the room map",
+   "resolves_with": "Settled by construction in the exporter.",
+   "classification": "implementation_gap",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "resolved",
+   "sources": [
+    "roadmap/README.md:43",
+    "scripts/export_smallville_replay.py:213"
+   ],
+   "touches": [
+    "replay-export"
+   ],
+   "evidence": "scripts/export_smallville_replay.py expands each round into walking steps and keeps rounds [{round, start, end}] in the replay (line 213); the viewer opens a step with ?step=N. Selecting a branch from the workspace waits on embedding (Q104)."
+  },
+  {
+   "id": "Q100",
+   "short": "Viewer D4: object and door states",
+   "question": "Smallville has no door or object states. How are entity component values (door open, pump calibrated) drawn?",
+   "blocks": "whether a viewer can see a thing's state change on the map",
+   "resolves_with": "Doors are settled (spec:30, :143: drawn closed or open from the replay's door changes, open from the first walk-through when no action opens them). Things are drawn as a generic prop with their name (spec:177) but their state (pump calibrated) is not drawn. Settles with a per-state sprite or label mapping in the scene profile.",
+   "classification": "implementation_gap",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "roadmap/README.md:44",
+    "openspec/specs/scene-viewer/spec.md:30",
+    "openspec/specs/scene-viewer/spec.md:177"
+   ],
+   "touches": [
+    "room-map",
+    "replay-export"
+   ]
+  },
+  {
+   "id": "Q101",
+   "short": "Viewer D5: activities and report bubbles",
+   "question": "Where do emoji and labels come from, and how is a report delivered across rooms shown?",
+   "blocks": "whether every action and report reads correctly on the map at every width",
+   "resolves_with": "Mostly settled: emoji come from an authored map with a generic fallback for any world's actions (spec:143, scripts/export_smallville_replay.py:23); a report shows as the sender's words (spec:30). Remaining: a report bubble clips at the phone's right edge (roadmap/README.md:55). Settles with a viewer fix checked at 390px.",
+   "classification": "implementation_defect",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "roadmap/README.md:45",
+    "roadmap/README.md:55",
+    "openspec/specs/scene-viewer/spec.md:143"
+   ],
+   "touches": [
+    "room-map"
+   ]
+  },
+  {
+   "id": "Q102",
+   "short": "Viewer D6: what a public viewer may see",
+   "question": "The viewer is the owner's all-seeing view; public share scenes must not show what a viewer may not see.",
+   "blocks": "whether the public room map can be shown to visitors",
+   "resolves_with": "Settled by the spec's word-hiding rule.",
+   "classification": "implementation_gap",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "resolved",
+   "sources": [
+    "roadmap/README.md:46",
+    "openspec/specs/scene-viewer/spec.md:93",
+    "openspec/specs/scene-viewer/spec.md:153"
+   ],
+   "touches": [
+    "share",
+    "room-map",
+    "world-graph"
+   ],
+   "evidence": "openspec/specs/scene-viewer/spec.md (Public room map of a shared run; World graph): GET /share/<id>/replay replaces every report's words with \"(words not shown)\" for non-owners; GET /share/<id>/graph carries no message words. Brian, 2026-11-14: \"build the public one\" (roadmap/README.md:61). Positions, moves and rule outcomes are shown, as the shared run already shows them."
+  },
+  {
+   "id": "Q103",
+   "short": "Viewer D7: the replay comes from a real run",
+   "question": "The replay file must be derived from a real run's events by a tested exporter, never hand-edited.",
+   "blocks": "whether a room-map replay is evidence of a run",
+   "resolves_with": "Settled by the spec and its tests.",
+   "classification": "implementation_gap",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "resolved",
+   "sources": [
+    "roadmap/README.md:47",
+    "openspec/specs/scene-viewer/spec.md:12",
+    "tests/test_smallville_replay_export.py"
+   ],
+   "touches": [
+    "replay-export",
+    "run-log"
+   ],
+   "evidence": "openspec/specs/scene-viewer/spec.md:12 exports from the run's recorded rounds; tests/test_smallville_replay_export.py and tests/test_scene_layout.py cover it; public demos are built by scripts/build_public_demos.py from saved runs, and share replays are rebuilt from the saved record on request (scripts/world_builder_service.py:685)."
+  },
+  {
+   "id": "Q104",
+   "short": "Viewer D8: embedding and phone width",
+   "question": "The workspace is a static page plus API; the viewer should embed as a scene route and work at 390px.",
+   "blocks": "whether the room map is part of the workspace rather than a separate page",
+   "resolves_with": "Partly settled: the public room map is its own page linked from the shared-run view (scripts/world_builder_home.html:678), and the facility fits 390px (spec:30). Remaining: not embedded in the workspace; the rules overlay is computer-only (spec:110); the report bubble clips on phones (Q101). Settles with an embed decision and a 390px check.",
+   "classification": "implementation_gap",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "roadmap/README.md:48",
+    "openspec/specs/scene-viewer/spec.md:30",
+    "openspec/specs/scene-viewer/spec.md:110"
+   ],
+   "touches": [
+    "room-map",
+    "rules-overlay"
+   ]
+  },
+  {
+   "id": "Q105",
+   "short": "Viewer D9: art licence for public scenes",
+   "question": "Smallville's art is for private use. What do public scenes draw with?",
+   "blocks": "whether the public World Builder may show a room map at all",
+   "resolves_with": "Settled: public scenes use CC0 tiles; Smallville art stays owner-only and local.",
+   "classification": "deferred_requirement",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "resolved",
+   "sources": [
+    "roadmap/README.md:49",
+    "openspec/specs/scene-viewer/spec.md:64",
+    "openspec/specs/scene-viewer/spec.md:81"
+   ],
+   "touches": [
+    "generated-map",
+    "room-map"
+   ],
+   "evidence": "Brian, 2026-11-14: \"build the public one\" (openspec/changes/archive/2026-11-14-public-generated-map/proposal.md:3). Public maps are generated from code and drawn with Kenney Tiny Dungeon (CC0, viewer/smallville/assets-cc0/); the owner run viewer serves Smallville art on localhost only (spec:64); public_layout (scripts/scene_layout.py:95) moves a private map onto a generated one and drops private sprites."
+  },
+  {
+   "id": "Q106",
+   "short": "Markdown cap, reachability and stale durable rules fail",
+   "question": "md_file_cap.py exits 1: 272 Markdown files against the 223-file exception limit (cap 100), 7 files unreachable from wiki/index.md, 7 durable rules whose owner code changed since their last review (durable_docs_check.py exits 1 with the same 7). Which files are archived or linked, and which rules are re-read?",
+   "blocks": "whether the repository's wiki-compliance check can pass again",
+   "resolves_with": "Reading: re-read the 7 stale rules and set reviewed_at; link or archive the 7 unreachable files; either archive old trace reads and OpenSpec change records or record a fresh justified exception. No test needed.",
+   "classification": "maintenance_debt",
+   "dependencies": [],
+   "revisit_trigger": "Next time Markdown files are added or the exception limit is reviewed.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/planning/checks.txt",
+    "docs/planning/planning-package.json"
+   ],
+   "touches": [
+    "run-log"
+   ]
   }
  ]
 }

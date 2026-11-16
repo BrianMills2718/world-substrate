@@ -201,7 +201,7 @@
     },
     {
       "id": "A7",
-      "criterion": "Recorded skill and dice, rather than expert-sounding words, make the untrained helicopter attempt probably crash under the scenario’s declared crash-on-fail rule.",
+      "criterion": "Recorded skill and dice, rather than expert-sounding words, make the untrained helicopter attempt probably crash under the scenario\u2019s declared crash-on-fail rule.",
       "grounded_in": [
         "docs/plans/open_attempt.md:218 (A1-A9; agent-authored checks under the adopted plan)"
       ],
@@ -291,7 +291,7 @@
         "openspec/specs/information-delivery/spec.md"
       ],
       "demonstration": [
-        "Open the retained Ari/Mara/Bo demonstration in World Builder; select Context view → Actor: authorized inputs, then Person → mara.",
+        "Open the retained Ari/Mara/Bo demonstration in World Builder; select Context view \u2192 Actor: authorized inputs, then Person \u2192 mara.",
         "Open Input before round 1 and Input before round 2; read the exact messages, context and memory. Switch Person to bo and compare only the evidence each received.",
         "Switch to Analyst: whole run and open Exact inputs and provenance. Compare Ari's detailed evidence and the source of each actor's input with the actor views; review the linked full trace and failure evidence.",
         "Confirm that switching views does not change the run. In an older saved world with no declared input recording, Actor view must say no authorized input recording is available."
@@ -350,6 +350,137 @@
         "evidence/i0-i1/local-integration-2/TRACE_READ.md",
         "evidence/i0-i1/deployed-integration-3/TRACE_READ.md"
       ]
+    },
+    {
+      "id": "V1",
+      "criterion": "I can open a shared run as a room map and watch the people move between its rooms, without seeing words a visitor may not read.",
+      "grounded_in": [
+        "openspec/specs/scene-viewer/spec.md:89",
+        "roadmap/README.md:61"
+      ],
+      "demonstration": [
+        "Open the clinic link (no owner password).",
+        "Press play, or drag the step slider through both rounds.",
+        "Read each person's action in the people panel and any report line."
+      ],
+      "expected": "A map of the Small clinic with three rooms (Exam room, Reception room, Lab) on CC0 tiles; people walk one tile a step through doorways; a refused try stays in place with its reason; any report reads \"(words not shown)\".",
+      "failure_example": "Broken: a blank page or \"no room map for this run\" for a world that has a layout, a person jumping through a wall, Smallville art, or a report's actual words shown to a visitor. Working: the map loads and walks follow doorways.",
+      "representation": {
+        "view": "spatial-map-with-linked-overlay",
+        "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
+      },
+      "entrypoint": "https://brianmills.dev/world-builder/room-map/?share=hn4jUQnwJH5g",
+      "status": "built",
+      "status_note": "Served from committed git on the public site; checked 2026-11-16 only by fetching the page (HTTP 200) and its data route. No human has judged it pass or fail. Data route /world-builder/api/share/hn4jUQnwJH5g/replay returned map public-hub-3, 2 rounds, 3 rooms, 4 rules."
+    },
+    {
+      "id": "V2",
+      "criterion": "I can switch on the world's rules over the map and see which rule let each try through or stopped it, and why.",
+      "grounded_in": [
+        "openspec/specs/scene-viewer/spec.md:108",
+        "roadmap/README.md:61"
+      ],
+      "demonstration": [
+        "Open the clinic link at computer width.",
+        "Press Show rules.",
+        "Step through the rounds; click a rule tag to read the full rule."
+      ],
+      "expected": "Each rule has a tag on its door or in the margin; at each step the rule each person's try met is blue with \"allowed\" or orange with \"refused\" and the failed check in words; clicking shows the rule text.",
+      "failure_example": "Broken: tags with colour but no words, a refused try marked allowed, or no Show rules button on a run whose world has rules. Working: colour and words agree with the people panel.",
+      "representation": {
+        "view": "spatial-map-with-linked-overlay",
+        "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
+      },
+      "entrypoint": "https://brianmills.dev/world-builder/room-map/?share=hn4jUQnwJH5g",
+      "status": "built",
+      "status_note": "Served from committed git on the public site; checked 2026-11-16 only by fetching the page (HTTP 200) and its data route. No human has judged it pass or fail. The overlay is computer-width only (spec:110); phone width is not claimed (Q104)."
+    },
+    {
+      "id": "V3",
+      "criterion": "When I build a new world with rooms, it gets a room map without my drawing one.",
+      "grounded_in": [
+        "openspec/specs/scene-viewer/spec.md:121",
+        "openspec/specs/scene-viewer/spec.md:139",
+        "roadmap/README.md:61"
+      ],
+      "demonstration": [
+        "Build a world with rooms, doors and people in the World Builder and run it.",
+        "Share the run and open its room map from the shared-run view (or open the clinic link, a Builder-made world)."
+      ],
+      "expected": "The room map opens with the world's own rooms and doors placed on a public map; a world with no places builds as before and its share link says it has no room map.",
+      "failure_example": "Broken: a build that fails or takes the layout step's error as its own, a map whose doors join the wrong rooms, or a world that already had a layout getting it replaced. Working: the build succeeds either way and the map matches the world's places.",
+      "representation": {
+        "view": "spatial-map-with-linked-overlay",
+        "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
+      },
+      "entrypoint": "https://brianmills.dev/world-builder/room-map/?share=hn4jUQnwJH5g",
+      "status": "built",
+      "status_note": "Served from committed git on the public site; checked 2026-11-16 only by fetching the page (HTTP 200) and its data route. No human has judged it pass or fail. The clinic share is the first live Builder-made world (spec:141, commit 73a240c). Layout step cost measured at $0.0002 a call (3 calls); a fresh build to exercise it again costs a build and was not run."
+    },
+    {
+      "id": "V4",
+      "criterion": "I can see the whole world as one graph (who acts, the moves its rules allow, the things), with one round's tries lit, and read it.",
+      "grounded_in": [
+        "openspec/specs/scene-viewer/spec.md:151",
+        "roadmap/README.md:63"
+      ],
+      "demonstration": [
+        "Open the Waltzman graph link.",
+        "Pick a round; read the lit boxes; click a box to see only its links."
+      ],
+      "expected": "Three columns (who acts, moves the rules allow, things); the chosen round's tries are blue (allowed), orange (refused, with the reason) or grey (no move), with links drawn only for that round or the clicked box; no message words.",
+      "failure_example": "Broken: a tangle of all 411 links at once, a refused try without its reason, or message words on the page. Working: 70 boxes readable in columns with one round lit.",
+      "representation": {
+        "view": "spatial-map-with-linked-overlay",
+        "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
+      },
+      "entrypoint": "https://brianmills.dev/world-builder/room-map/graph.html?share=jyVbywXT8N8F",
+      "status": "built",
+      "status_note": "Served from committed git on the public site; checked 2026-11-16 only by fetching the page (HTTP 200) and its data route. No human has judged it pass or fail. Data route /world-builder/api/share/jyVbywXT8N8F/graph returned 70 nodes, 411 edges, 11 rounds."
+    },
+    {
+      "id": "V5",
+      "criterion": "On the room map I can switch on the graph and see each person's move and the things it used, coloured by what happened.",
+      "grounded_in": [
+        "openspec/specs/scene-viewer/spec.md:163",
+        "roadmap/README.md:65"
+      ],
+      "demonstration": [
+        "Open the clinic link at computer width.",
+        "Press Show graph; step through the rounds; tick Every box to see all boxes."
+      ],
+      "expected": "Each person is tagged where they stand; their move and the things it used are drawn left of the map and lit blue, orange (with \"refused\" and the reason) or grey; off by default only the round's boxes show.",
+      "failure_example": "Broken: tags that do not follow the people, an orange tag with no reason, or the graph not changing with the step. Working: the overlay matches the people panel at every step.",
+      "representation": {
+        "view": "spatial-map-with-linked-overlay",
+        "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
+      },
+      "entrypoint": "https://brianmills.dev/world-builder/room-map/?share=hn4jUQnwJH5g",
+      "status": "built",
+      "status_note": "Served from committed git on the public site; checked 2026-11-16 only by fetching the page (HTTP 200) and its data route. No human has judged it pass or fail. The clinic replay carries graph and graph_actors."
+    },
+    {
+      "id": "V6",
+      "criterion": "The rooms are named, the things in them are shown, and I can zoom in and move around the map.",
+      "grounded_in": [
+        "openspec/specs/scene-viewer/spec.md:175",
+        "openspec/specs/scene-viewer/spec.md:183",
+        "roadmap/README.md:67"
+      ],
+      "demonstration": [
+        "Open the public demo link (?replay=public).",
+        "Read the room names and the pump in the laboratory.",
+        "Zoom with the wheel, drag the map, then press Reset view; repeat with Show graph on."
+      ],
+      "expected": "Laboratory, Corridor and Control room are written on walls without doorways; the prototype pump stands in the laboratory with its name; zoom goes up to 4x, drag moves the map, Reset view returns to the whole map, and the graph overlay follows.",
+      "failure_example": "Broken: a room name written across a doorway, the pump drawn in a doorway or missing, or the graph overlay staying put while the map moves. Working: names, pump and overlay stay aligned at every zoom.",
+      "representation": {
+        "view": "spatial-map-with-linked-overlay",
+        "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
+      },
+      "entrypoint": "https://brianmills.dev/world-builder/room-map/?replay=public",
+      "status": "built",
+      "status_note": "Served from committed git on the public site; checked 2026-11-16 only by fetching the page (HTTP 200) and its data route. No human has judged it pass or fail. Object state (pump calibrated) is not drawn (Q100)."
     }
   ],
   "coverage": {

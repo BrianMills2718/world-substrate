@@ -33,7 +33,7 @@ window.PAGE_DATA = {
      },
      {
       "name": "wiki and Markdown cap",
-      "command": "python3 /home/brian/code2/project-meta/scripts/md_file_cap.py --repo . --ref HEAD",
+      "command": "python3 /home/brian/code2/agentic-engineering-system-canonical/scripts/md_file_cap.py --repo . --ref HEAD",
       "exit_status": 0,
       "counts": {
        "md_files": 200,
@@ -2485,6 +2485,219 @@ window.PAGE_DATA = {
     "judge-ruling",
     "ruling-rule"
    ]
+  },
+  {
+   "id": "Q97",
+   "short": "Viewer D1: where do coordinates come from",
+   "question": "The substrate knows rooms, not coordinates. Where do map anchors, door tiles and the walkable layer come from, and where are paths computed?",
+   "blocks": "whether the room map can be drawn without putting coordinates in the rules",
+   "resolves_with": "Prior art (Smallville's tile map) plus a declared layout; settled by the scene-viewer spec.",
+   "classification": "implementation_gap",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "resolved",
+   "sources": [
+    "roadmap/README.md:41",
+    "openspec/specs/scene-viewer/spec.md:12",
+    "openspec/specs/scene-viewer/spec.md:47"
+   ],
+   "touches": [
+    "layout-declaration",
+    "replay-export"
+   ],
+   "evidence": "Resolved by openspec/specs/scene-viewer/spec.md (Smallville replay export; World layout declaration), approved by Brian 2026-11-14, \"i approve c then b then a\" (roadmap/README.md:57). The layout names a map slot per place and the doors; the map supplies walkable tiles; scripts/export_smallville_replay.py:56 computes walks by breadth-first search. The rules carry no coordinates."
+  },
+  {
+   "id": "Q98",
+   "short": "Viewer D2: worlds without rooms, or with many",
+   "question": "The World Builder makes arbitrary worlds; most have no rooms. Which worlds get a room map, and how does a new world get a layout?",
+   "blocks": "whether a Builder-made world beyond a hub with four rooms can be shown on a map",
+   "resolves_with": "Partly settled: a world with a layout gets the room map beside the composed scene; the Builder proposes a layout (spec:121, Brian 2026-11-14 \"i approve\", roadmap/README.md:61). Remaining: generated maps are a hub with up to four rooms; a world with more rooms or another shape gets no map. Settles with a layout generator from the place graph, or a recorded decision that the hub limit is enough.",
+   "classification": "implementation_gap",
+   "dependencies": [],
+   "revisit_trigger": "When a shared Builder world with more than five places needs a room map.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "roadmap/README.md:42",
+    "openspec/specs/scene-viewer/spec.md:81",
+    "openspec/specs/scene-viewer/spec.md:125",
+    "scripts/generated_map.py:20"
+   ],
+   "touches": [
+    "proposed-layout",
+    "generated-map",
+    "scene-replay"
+   ]
+  },
+  {
+   "id": "Q99",
+   "short": "Viewer D3: rounds versus walking steps",
+   "question": "A round is a set of ordered commits; Smallville steps are fixed-length with one tile per step. How does a round map to steps?",
+   "blocks": "whether a checkpoint or round can select the right moment in the room map",
+   "resolves_with": "Settled by construction in the exporter.",
+   "classification": "implementation_gap",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "resolved",
+   "sources": [
+    "roadmap/README.md:43",
+    "scripts/export_smallville_replay.py:213"
+   ],
+   "touches": [
+    "replay-export"
+   ],
+   "evidence": "scripts/export_smallville_replay.py expands each round into walking steps and keeps rounds [{round, start, end}] in the replay (line 213); the viewer opens a step with ?step=N. Selecting a branch from the workspace waits on embedding (Q104)."
+  },
+  {
+   "id": "Q100",
+   "short": "Viewer D4: object and door states",
+   "question": "Smallville has no door or object states. How are entity component values (door open, pump calibrated) drawn?",
+   "blocks": "whether a viewer can see a thing's state change on the map",
+   "resolves_with": "Doors are settled (spec:30, :143: drawn closed or open from the replay's door changes, open from the first walk-through when no action opens them). Things are drawn as a generic prop with their name (spec:177) but their state (pump calibrated) is not drawn. Settles with a per-state sprite or label mapping in the scene profile.",
+   "classification": "implementation_gap",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "roadmap/README.md:44",
+    "openspec/specs/scene-viewer/spec.md:30",
+    "openspec/specs/scene-viewer/spec.md:177"
+   ],
+   "touches": [
+    "room-map",
+    "replay-export"
+   ]
+  },
+  {
+   "id": "Q101",
+   "short": "Viewer D5: activities and report bubbles",
+   "question": "Where do emoji and labels come from, and how is a report delivered across rooms shown?",
+   "blocks": "whether every action and report reads correctly on the map at every width",
+   "resolves_with": "Mostly settled: emoji come from an authored map with a generic fallback for any world's actions (spec:143, scripts/export_smallville_replay.py:23); a report shows as the sender's words (spec:30). Remaining: a report bubble clips at the phone's right edge (roadmap/README.md:55). Settles with a viewer fix checked at 390px.",
+   "classification": "implementation_defect",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "roadmap/README.md:45",
+    "roadmap/README.md:55",
+    "openspec/specs/scene-viewer/spec.md:143"
+   ],
+   "touches": [
+    "room-map"
+   ]
+  },
+  {
+   "id": "Q102",
+   "short": "Viewer D6: what a public viewer may see",
+   "question": "The viewer is the owner's all-seeing view; public share scenes must not show what a viewer may not see.",
+   "blocks": "whether the public room map can be shown to visitors",
+   "resolves_with": "Settled by the spec's word-hiding rule.",
+   "classification": "implementation_gap",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "resolved",
+   "sources": [
+    "roadmap/README.md:46",
+    "openspec/specs/scene-viewer/spec.md:93",
+    "openspec/specs/scene-viewer/spec.md:153"
+   ],
+   "touches": [
+    "share",
+    "room-map",
+    "world-graph"
+   ],
+   "evidence": "openspec/specs/scene-viewer/spec.md (Public room map of a shared run; World graph): GET /share/<id>/replay replaces every report's words with \"(words not shown)\" for non-owners; GET /share/<id>/graph carries no message words. Brian, 2026-11-14: \"build the public one\" (roadmap/README.md:61). Positions, moves and rule outcomes are shown, as the shared run already shows them."
+  },
+  {
+   "id": "Q103",
+   "short": "Viewer D7: the replay comes from a real run",
+   "question": "The replay file must be derived from a real run's events by a tested exporter, never hand-edited.",
+   "blocks": "whether a room-map replay is evidence of a run",
+   "resolves_with": "Settled by the spec and its tests.",
+   "classification": "implementation_gap",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "resolved",
+   "sources": [
+    "roadmap/README.md:47",
+    "openspec/specs/scene-viewer/spec.md:12",
+    "tests/test_smallville_replay_export.py"
+   ],
+   "touches": [
+    "replay-export",
+    "run-log"
+   ],
+   "evidence": "openspec/specs/scene-viewer/spec.md:12 exports from the run's recorded rounds; tests/test_smallville_replay_export.py and tests/test_scene_layout.py cover it; public demos are built by scripts/build_public_demos.py from saved runs, and share replays are rebuilt from the saved record on request (scripts/world_builder_service.py:685)."
+  },
+  {
+   "id": "Q104",
+   "short": "Viewer D8: embedding and phone width",
+   "question": "The workspace is a static page plus API; the viewer should embed as a scene route and work at 390px.",
+   "blocks": "whether the room map is part of the workspace rather than a separate page",
+   "resolves_with": "Partly settled: the public room map is its own page linked from the shared-run view (scripts/world_builder_home.html:678), and the facility fits 390px (spec:30). Remaining: not embedded in the workspace; the rules overlay is computer-only (spec:110); the report bubble clips on phones (Q101). Settles with an embed decision and a 390px check.",
+   "classification": "implementation_gap",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "roadmap/README.md:48",
+    "openspec/specs/scene-viewer/spec.md:30",
+    "openspec/specs/scene-viewer/spec.md:110"
+   ],
+   "touches": [
+    "room-map",
+    "rules-overlay"
+   ]
+  },
+  {
+   "id": "Q105",
+   "short": "Viewer D9: art licence for public scenes",
+   "question": "Smallville's art is for private use. What do public scenes draw with?",
+   "blocks": "whether the public World Builder may show a room map at all",
+   "resolves_with": "Settled: public scenes use CC0 tiles; Smallville art stays owner-only and local.",
+   "classification": "deferred_requirement",
+   "dependencies": [],
+   "revisit_trigger": "When a world or viewer change touches this difficulty.",
+   "owner": "agent",
+   "status": "resolved",
+   "sources": [
+    "roadmap/README.md:49",
+    "openspec/specs/scene-viewer/spec.md:64",
+    "openspec/specs/scene-viewer/spec.md:81"
+   ],
+   "touches": [
+    "generated-map",
+    "room-map"
+   ],
+   "evidence": "Brian, 2026-11-14: \"build the public one\" (openspec/changes/archive/2026-11-14-public-generated-map/proposal.md:3). Public maps are generated from code and drawn with Kenney Tiny Dungeon (CC0, viewer/smallville/assets-cc0/); the owner run viewer serves Smallville art on localhost only (spec:64); public_layout (scripts/scene_layout.py:95) moves a private map onto a generated one and drops private sprites."
+  },
+  {
+   "id": "Q106",
+   "short": "Markdown cap, reachability and stale durable rules fail",
+   "question": "md_file_cap.py exits 1: 272 Markdown files against the 223-file exception limit (cap 100), 7 files unreachable from wiki/index.md, 7 durable rules whose owner code changed since their last review (durable_docs_check.py exits 1 with the same 7). Which files are archived or linked, and which rules are re-read?",
+   "blocks": "whether the repository's wiki-compliance check can pass again",
+   "resolves_with": "Reading: re-read the 7 stale rules and set reviewed_at; link or archive the 7 unreachable files; either archive old trace reads and OpenSpec change records or record a fresh justified exception. No test needed.",
+   "classification": "maintenance_debt",
+   "dependencies": [],
+   "revisit_trigger": "Next time Markdown files are added or the exception limit is reviewed.",
+   "owner": "agent",
+   "status": "open",
+   "sources": [
+    "docs/planning/checks.txt",
+    "docs/planning/planning-package.json"
+   ],
+   "touches": [
+    "run-log"
+   ]
   }
  ],
  "domain": {
@@ -2676,15 +2889,51 @@ window.PAGE_DATA = {
    },
    {
     "id": "scene-replay",
-    "label": "Scene replay",
+    "label": "Scene replay (composed scene)",
     "kind": "Substrate",
-    "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. Code: scripts/render_scene_replay.py:449."
+    "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. Every world gets this scene; a world that declares a layout also gets the room map beside it (roadmap Viewer path, difficulty 2). Code: scripts/render_scene_replay.py:449."
    },
    {
     "id": "share",
     "label": "Share link and replay",
     "kind": "Substrate",
-    "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls. Code: scripts/world_builder_service.py:638."
+    "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls. Besides the saved record (GET /share/<id>) it serves the room-map replay (GET /share/<id>/replay, report words withheld from non-owners, 404 when the world declares no layout) and the whole-system graph (GET /share/<id>/graph, no message words). Code: scripts/world_builder_service.py:1672."
+   },
+   {
+    "id": "room-map",
+    "label": "Room-map viewer",
+    "kind": "Substrate",
+    "explain": "A Smallville-style tile-map scene (Phaser 3, static files, no server of its own) that plays a replay file: people walking room to room, doors drawn closed or open, refusals with their reason and reports as text, room names and things in rooms, zoom and pan. Public at /world-builder/room-map/?share=<id>; the owner-only variant uses Smallville art on localhost. Code: viewer/smallville/viewer.js:21."
+   },
+   {
+    "id": "layout-declaration",
+    "label": "World layout declaration",
+    "kind": "Substrate",
+    "explain": "A bundle's optional `layout`: a prepared map id, a map slot per place, the two places each door joins with the entity halves that open together, and each person's start place and optional sprite. validate_layout refuses a layout that cannot be drawn and names why; a world without one still validates. Code: scripts/scene_layout.py:32."
+   },
+   {
+    "id": "generated-map",
+    "label": "Generated map",
+    "kind": "Substrate",
+    "explain": "A prepared map made from code instead of Smallville data: a hub room with up to four rooms off it, two-tile door gaps and furniture, drawn with committed CC0 Kenney Tiny Dungeon tiles (public-hub-3, public-hub-5). Public replays always use one. Code: scripts/generated_map.py:20."
+   },
+   {
+    "id": "replay-export",
+    "label": "Replay exporter",
+    "kind": "Substrate",
+    "explain": "Turns a run's recorded rounds and the world's layout into the replay file: per-step walks over walkable tiles (breadth-first, one tile a step), doors and door changes, round-to-step index, rules, rooms, objects and the lit graph. Paths are computed here, never in the rules. Code: scripts/export_smallville_replay.py:232."
+   },
+   {
+    "id": "world-graph",
+    "label": "Whole-system graph",
+    "kind": "Substrate",
+    "explain": "One graph of everything in a world (who acts, the moves its rules allow, the things and places, the changes it makes by itself) with what each round lit: each try allowed (blue), refused (orange, with the reason) or no move (grey). Carries no message words. Drawn on its own page (graph.html) and over the room map (Show graph). Code: scripts/world_graph.py:122."
+   },
+   {
+    "id": "rules-overlay",
+    "label": "Rules overlay",
+    "kind": "Substrate",
+    "explain": "The room map's Show rules switch: a tag per rule on its door and in the margin, the rule each person's try met at the shown step marked allowed (blue) or refused (orange) with the failed check in words; click for the full rule. Rule text is the world's own definition. Computer width only. Code: viewer/smallville/viewer.js:125."
    },
    {
     "id": "budget",
@@ -2769,6 +3018,12 @@ window.PAGE_DATA = {
     "label": "Generated actions and rules",
     "kind": "PerWorld",
     "explain": "The moves and processes the fixed parts do not cover, written by the rules-writing AI and compiled. Code: scripts/people_world.py:251."
+   },
+   {
+    "id": "proposed-layout",
+    "label": "Builder-proposed layout",
+    "kind": "PerWorld",
+    "explain": "The layout an AI writes for a new world after its structure and rules are built: one optional call places the world's places on a prepared public map; kept only when it passes validate_layout, never fails the build, never replaces an existing layout. Code: scripts/layout_proposal.py:53."
    },
    {
     "id": "waltzman-ref",
@@ -3944,24 +4199,108 @@ window.PAGE_DATA = {
    },
    {
     "id": "e151",
+    "source": "builder",
+    "target": "proposed-layout",
+    "label": "asks an AI for"
+   },
+   {
+    "id": "e152",
+    "source": "proposed-layout",
+    "target": "layout-declaration",
+    "label": "is checked as"
+   },
+   {
+    "id": "e153",
+    "source": "layout-declaration",
+    "target": "generated-map",
+    "label": "names"
+   },
+   {
+    "id": "e154",
+    "source": "replay-export",
+    "target": "layout-declaration",
+    "label": "reads"
+   },
+   {
+    "id": "e155",
+    "source": "run-log",
+    "target": "replay-export",
+    "label": "feeds"
+   },
+   {
+    "id": "e156",
+    "source": "replay-export",
+    "target": "world-graph",
+    "label": "carries"
+   },
+   {
+    "id": "e157",
+    "source": "share",
+    "target": "replay-export",
+    "label": "serves through"
+   },
+   {
+    "id": "e158",
+    "source": "share",
+    "target": "world-graph",
+    "label": "serves"
+   },
+   {
+    "id": "e159",
+    "source": "room-map",
+    "target": "replay-export",
+    "label": "plays the file of"
+   },
+   {
+    "id": "e160",
+    "source": "room-map",
+    "target": "generated-map",
+    "label": "draws"
+   },
+   {
+    "id": "e161",
+    "source": "room-map",
+    "target": "rules-overlay",
+    "label": "shows"
+   },
+   {
+    "id": "e162",
+    "source": "room-map",
+    "target": "world-graph",
+    "label": "draws over the map"
+   },
+   {
+    "id": "e163",
+    "source": "rules-overlay",
+    "target": "check",
+    "label": "names the failed"
+   },
+   {
+    "id": "e164",
+    "source": "room-map",
+    "target": "scene-replay",
+    "label": "sits beside"
+   },
+   {
+    "id": "e165",
     "source": "recorded-assent",
     "target": "move",
     "label": "required for activation"
    },
    {
-    "id": "e152",
+    "id": "e166",
     "source": "information",
     "target": "expressed-stance",
     "label": "does not force"
    },
    {
-    "id": "e153",
+    "id": "e167",
     "source": "information",
     "target": "recorded-assent",
     "label": "does not supply"
    },
    {
-    "id": "e154",
+    "id": "e168",
     "source": "validation-hold",
     "target": "recorded-assent",
     "label": "clearing does not supply"
@@ -4244,6 +4583,36 @@ window.PAGE_DATA = {
     "explain": "Blocks: Trust in installed rulings that move another person's goods or coins (A4, A5); not the install, hold, approve and reject mechanism itself.."
    },
    {
+    "id": "Q98",
+    "label": "Q98: Viewer D2: worlds without rooms, or with many",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: whether a Builder-made world beyond a hub with four rooms can be shown on a map."
+   },
+   {
+    "id": "Q100",
+    "label": "Q100: Viewer D4: object and door states",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: whether a viewer can see a thing's state change on the map."
+   },
+   {
+    "id": "Q101",
+    "label": "Q101: Viewer D5: activities and report bubbles",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: whether every action and report reads correctly on the map at every width."
+   },
+   {
+    "id": "Q104",
+    "label": "Q104: Viewer D8: embedding and phone width",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: whether the room map is part of the workspace rather than a separate page."
+   },
+   {
+    "id": "Q106",
+    "label": "Q106: Markdown cap, reachability and stale durable rules fail",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: whether the repository's wiki-compliance check can pass again."
+   },
+   {
     "id": "affordance",
     "label": "Affordance (offered move)",
     "kind": "Concept",
@@ -4342,6 +4711,12 @@ window.PAGE_DATA = {
     "explain": "The moves and processes the fixed parts do not cover, written by the rules-writing AI and compiled."
    },
    {
+    "id": "generated-map",
+    "label": "Generated map",
+    "kind": "Concept",
+    "explain": "A prepared map made from code instead of Smallville data: a hub room with up to four rooms off it, two-tile door gaps and furniture, drawn with committed CC0 Kenney Tiny Dungeon tiles (public-hub-3, public-hub-5). Public replays always use one."
+   },
+   {
     "id": "group-decision",
     "label": "Group decision",
     "kind": "Concept",
@@ -4423,16 +4798,40 @@ window.PAGE_DATA = {
     "explain": "The validated, installed rules of a world, frozen under one id before any run; changing a rule means a new profile."
    },
    {
+    "id": "proposed-layout",
+    "label": "Builder-proposed layout",
+    "kind": "Concept",
+    "explain": "The layout an AI writes for a new world after its structure and rules are built: one optional call places the world's places on a prepared public map; kept only when it passes validate_layout, never fails the build, never replaces an existing layout."
+   },
+   {
     "id": "readout",
     "label": "Readout",
     "kind": "Concept",
     "explain": "One AI summary of a run whose every cited event id is checked against the run."
    },
    {
+    "id": "replay-export",
+    "label": "Replay exporter",
+    "kind": "Concept",
+    "explain": "Turns a run's recorded rounds and the world's layout into the replay file: per-step walks over walkable tiles (breadth-first, one tile a step), doors and door changes, round-to-step index, rules, rooms, objects and the lit graph. Paths are computed here, never in the rules."
+   },
+   {
     "id": "resident",
     "label": "Resident",
     "kind": "Concept",
     "explain": "One Concordia AI agent per person: sees its brief, memory and what it can see, and answers belief, attempt (in its own words), expected effect and work; the older menu reply picks an offered move."
+   },
+   {
+    "id": "room-map",
+    "label": "Room-map viewer",
+    "kind": "Concept",
+    "explain": "A Smallville-style tile-map scene (Phaser 3, static files, no server of its own) that plays a replay file: people walking room to room, doors drawn closed or open, refusals with their reason and reports as text, room names and things in rooms, zoom and pan. Public at /world-builder/room-map/?share=<id>; the owner-only variant uses Smallville art on localhost."
+   },
+   {
+    "id": "rules-overlay",
+    "label": "Rules overlay",
+    "kind": "Concept",
+    "explain": "The room map's Show rules switch: a tag per rule on its door and in the margin, the rule each person's try met at the shown step marked allowed (blue) or refused (orange) with the failed check in words; click for the full rule. Rule text is the world's own definition. Computer width only."
    },
    {
     "id": "rules-retry",
@@ -4466,9 +4865,9 @@ window.PAGE_DATA = {
    },
    {
     "id": "scene-replay",
-    "label": "Scene replay",
+    "label": "Scene replay (composed scene)",
     "kind": "Concept",
-    "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words."
+    "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. Every world gets this scene; a world that declares a layout also gets the room map beside it (roadmap Viewer path, difficulty 2)."
    },
    {
     "id": "sense",
@@ -4480,7 +4879,7 @@ window.PAGE_DATA = {
     "id": "share",
     "label": "Share link and replay",
     "kind": "Concept",
-    "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls."
+    "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls. Besides the saved record (GET /share/<id>) it serves the room-map replay (GET /share/<id>/replay, report words withheld from non-owners, 404 when the world declares no layout) and the whole-system graph (GET /share/<id>/graph, no message words)."
    },
    {
     "id": "skill-roll",
@@ -5132,6 +5531,60 @@ window.PAGE_DATA = {
     "id": "Q96-ruling-rule",
     "source": "Q96",
     "target": "ruling-rule",
+    "label": "bears on"
+   },
+   {
+    "id": "Q98-proposed-layout",
+    "source": "Q98",
+    "target": "proposed-layout",
+    "label": "bears on"
+   },
+   {
+    "id": "Q98-generated-map",
+    "source": "Q98",
+    "target": "generated-map",
+    "label": "bears on"
+   },
+   {
+    "id": "Q98-scene-replay",
+    "source": "Q98",
+    "target": "scene-replay",
+    "label": "bears on"
+   },
+   {
+    "id": "Q100-room-map",
+    "source": "Q100",
+    "target": "room-map",
+    "label": "bears on"
+   },
+   {
+    "id": "Q100-replay-export",
+    "source": "Q100",
+    "target": "replay-export",
+    "label": "bears on"
+   },
+   {
+    "id": "Q101-room-map",
+    "source": "Q101",
+    "target": "room-map",
+    "label": "bears on"
+   },
+   {
+    "id": "Q104-room-map",
+    "source": "Q104",
+    "target": "room-map",
+    "label": "bears on"
+   },
+   {
+    "id": "Q104-rules-overlay",
+    "source": "Q104",
+    "target": "rules-overlay",
+    "label": "bears on"
+   },
+   {
+    "id": "Q106-run-log",
+    "source": "Q106",
+    "target": "run-log",
     "label": "bears on"
    }
   ],

@@ -159,6 +159,24 @@ schema = "world-builder-share/v1"
 state = ["id", "created", "client fingerprint (never returned)", "record (gzip JSON)"]
 
 [[entities]]
+name = "WorldLayout"
+what = "Optional `layout` inside an AuthoringBundle: where the world's places sit on a prepared map. Refused by validate_layout, naming the reason, when its map is not prepared, a place names an unknown slot, two places share a slot, a door joins places whose slots the map does not connect, a person or place is undeclared, or laid-out places are not all joined by doors. A world without one still validates and has no room map. Written by a hand author or by layout_proposal; never replaced once present."
+source = "scripts/scene_layout.py:32"
+state = ["map (a prepared map id in viewer/maps/maps.json or a generated map: public-hub-3, public-hub-5)", "rooms{place id -> map slot}", "doors{door id -> {joins: [place, place], halves: [entity ids that open together] (none = always-open doorway)}}", "people{person id -> {start: place id, sprite (optional, dropped on public maps)}}"]
+
+[[entities]]
+name = "RoomMapReplay"
+what = "The replay file the room-map viewer plays, made on request by export_from_rows from a run's recorded rounds and the world's layout; never stored, never hand-edited. Smallville's master_movement shape plus our additions. On GET /share/<id>/replay a private map is swapped for the generated one with the same room count (public_layout) and, for non-owners, every report reads \"(words not shown)\"."
+source = "scripts/export_smallville_replay.py:232"
+state = ["steps{step -> {person name -> {movement [x, y], pronunciatio (emoji), description, chat, rule {kind, ok, why[], door} when rules are present}}}", "meta (Smallville meta.json fields; maze_name is the public map id on generated maps)", "doors{door id -> {tiles, ...}} and door_changes", "rounds[{round, start, end}] (round-to-step index)", "view {x, y, w, h}, sprites, map, title", "rules[] (the world's causal-model rules, when present)", "rooms[{id, label, x0, y0, x1, y1, label_row}]", "objects[{id, label, tile, room}]", "graph (the WorldGraphPayload) and graph_actors{e:<actor> -> person name}, when a causal model is present", "grid (generated maps only: the tile grid the viewer draws with the CC0 sheet)"]
+
+[[entities]]
+name = "WorldGraphPayload"
+what = "The whole-system graph of a world with what each round lit, from graph_replay. Served alone by GET /share/<id>/graph (with ok: true) for any shared run, with or without a layout, and carried inside RoomMapReplay as `graph`. Carries no message words; a move or box the graph does not know is dropped, never invented."
+source = "scripts/world_graph.py:122"
+state = ["title", "graph{nodes[{id, label, kind}], edges[{id, source, target, label}]} (who acts, moves the rules allow, things and places, by-itself changes)", "rounds[{turn, tries[{actor, status (accepted / refused / no_action / ...), because[], move, uses[], changed[], nearest (unsupported only)}], fired[], world_changed[]}]"]
+
+[[entities]]
 name = "CatalogWorld"
 what = "Private owner-saved original generated definition; catalog identity is distinct from immutable simulation content identity."
 source = "scripts/world_catalog.py:33"
@@ -312,6 +330,15 @@ writes = ["world-substrate-authoring-bundle/v0"]
 schedule = "on request; background job; LLM; budget-reserved"
 
 [[processes]]
+name = "layout_proposal"
+what = "Builder-proposed layout: after generate_world builds structure and rules, one optional light-model call (task world-substrate-layout, openrouter/openai/gpt-6-luna, at most one corrective retry) places the world's places on a prepared public map. The result is attached as WorldLayout only when validate_layout passes; it never fails the build, never replaces an existing layout, and logs to stderr why a layout was skipped."
+source = "scripts/layout_proposal.py:53; scripts/world_builder_service.py:644"
+routes = []
+changes = ["WorldLayout"]
+writes = []
+schedule = "inside POST /generate-world after the build; LLM; its own allowance of $0.03 on top of the build's spend (MAX_BUDGET); measured $0.0002 a call (llm-cost, 3 calls)"
+
+[[processes]]
 name = "generate_draft"
 what = "Native-coordination one-shot text -> bounded draft + draft review -> bundle."
 source = "scripts/world_builder_service.py:876"
@@ -430,7 +457,9 @@ schedule = "every logged request appends one RunLogEntry; every LLM call reserve
 
 [[processes]]
 name = "share"
-what = "Share link: POST /share names a build id and run ids; the server rebuilds the run from its own run log (one world, rounds 1..N unbroken, status 200, last 3 days) and stores it gzipped in shares.sqlite beside the run log. GET /share/* returns it; the page replays the recorded rounds with no AI call."
+what = "Share link: POST /share names a build id and run ids; the server rebuilds the run from its own run log (one world, rounds 1..N unbroken, status 200, last 3 days) and stores it gzipped in shares.sqlite beside the run log. GET /share/* returns it; the page replays the recorded rounds with no AI call. Two sub-routes under GET /share/* (declared by prefix; scripts/world_builder_service.py:1672 and :1682): GET /share/<id>/replay returns a RoomMapReplay on a generated map (404 when the world declares no layout; report words withheld unless the owner password is given), and GET /share/<id>/graph returns a WorldGraphPayload with no message words."
+reads = ["SharedRun", "WorldLayout"]
+serves = ["RoomMapReplay", "WorldGraphPayload"]
 source = "scripts/world_builder_service.py:474"
 routes = ["POST /share", "GET /share/*"]
 changes = ["SharedRun"]

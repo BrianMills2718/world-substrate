@@ -190,15 +190,51 @@ window.MAPS = {
    },
    {
     "id": "scene-replay",
-    "label": "Scene replay",
+    "label": "Scene replay (composed scene)",
     "kind": "Substrate",
-    "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. Code: scripts/render_scene_replay.py:449."
+    "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. Every world gets this scene; a world that declares a layout also gets the room map beside it (roadmap Viewer path, difficulty 2). Code: scripts/render_scene_replay.py:449."
    },
    {
     "id": "share",
     "label": "Share link and replay",
     "kind": "Substrate",
-    "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls. Code: scripts/world_builder_service.py:638."
+    "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls. Besides the saved record (GET /share/<id>) it serves the room-map replay (GET /share/<id>/replay, report words withheld from non-owners, 404 when the world declares no layout) and the whole-system graph (GET /share/<id>/graph, no message words). Code: scripts/world_builder_service.py:1672."
+   },
+   {
+    "id": "room-map",
+    "label": "Room-map viewer",
+    "kind": "Substrate",
+    "explain": "A Smallville-style tile-map scene (Phaser 3, static files, no server of its own) that plays a replay file: people walking room to room, doors drawn closed or open, refusals with their reason and reports as text, room names and things in rooms, zoom and pan. Public at /world-builder/room-map/?share=<id>; the owner-only variant uses Smallville art on localhost. Code: viewer/smallville/viewer.js:21."
+   },
+   {
+    "id": "layout-declaration",
+    "label": "World layout declaration",
+    "kind": "Substrate",
+    "explain": "A bundle's optional `layout`: a prepared map id, a map slot per place, the two places each door joins with the entity halves that open together, and each person's start place and optional sprite. validate_layout refuses a layout that cannot be drawn and names why; a world without one still validates. Code: scripts/scene_layout.py:32."
+   },
+   {
+    "id": "generated-map",
+    "label": "Generated map",
+    "kind": "Substrate",
+    "explain": "A prepared map made from code instead of Smallville data: a hub room with up to four rooms off it, two-tile door gaps and furniture, drawn with committed CC0 Kenney Tiny Dungeon tiles (public-hub-3, public-hub-5). Public replays always use one. Code: scripts/generated_map.py:20."
+   },
+   {
+    "id": "replay-export",
+    "label": "Replay exporter",
+    "kind": "Substrate",
+    "explain": "Turns a run's recorded rounds and the world's layout into the replay file: per-step walks over walkable tiles (breadth-first, one tile a step), doors and door changes, round-to-step index, rules, rooms, objects and the lit graph. Paths are computed here, never in the rules. Code: scripts/export_smallville_replay.py:232."
+   },
+   {
+    "id": "world-graph",
+    "label": "Whole-system graph",
+    "kind": "Substrate",
+    "explain": "One graph of everything in a world (who acts, the moves its rules allow, the things and places, the changes it makes by itself) with what each round lit: each try allowed (blue), refused (orange, with the reason) or no move (grey). Carries no message words. Drawn on its own page (graph.html) and over the room map (Show graph). Code: scripts/world_graph.py:122."
+   },
+   {
+    "id": "rules-overlay",
+    "label": "Rules overlay",
+    "kind": "Substrate",
+    "explain": "The room map's Show rules switch: a tag per rule on its door and in the margin, the rule each person's try met at the shown step marked allowed (blue) or refused (orange) with the failed check in words; click for the full rule. Rule text is the world's own definition. Computer width only. Code: viewer/smallville/viewer.js:125."
    },
    {
     "id": "budget",
@@ -283,6 +319,12 @@ window.MAPS = {
     "label": "Generated actions and rules",
     "kind": "PerWorld",
     "explain": "The moves and processes the fixed parts do not cover, written by the rules-writing AI and compiled. Code: scripts/people_world.py:251."
+   },
+   {
+    "id": "proposed-layout",
+    "label": "Builder-proposed layout",
+    "kind": "PerWorld",
+    "explain": "The layout an AI writes for a new world after its structure and rules are built: one optional call places the world's places on a prepared public map; kept only when it passes validate_layout, never fails the build, never replaces an existing layout. Code: scripts/layout_proposal.py:53."
    },
    {
     "id": "waltzman-ref",
@@ -1458,24 +1500,108 @@ window.MAPS = {
    },
    {
     "id": "e151",
+    "source": "builder",
+    "target": "proposed-layout",
+    "label": "asks an AI for"
+   },
+   {
+    "id": "e152",
+    "source": "proposed-layout",
+    "target": "layout-declaration",
+    "label": "is checked as"
+   },
+   {
+    "id": "e153",
+    "source": "layout-declaration",
+    "target": "generated-map",
+    "label": "names"
+   },
+   {
+    "id": "e154",
+    "source": "replay-export",
+    "target": "layout-declaration",
+    "label": "reads"
+   },
+   {
+    "id": "e155",
+    "source": "run-log",
+    "target": "replay-export",
+    "label": "feeds"
+   },
+   {
+    "id": "e156",
+    "source": "replay-export",
+    "target": "world-graph",
+    "label": "carries"
+   },
+   {
+    "id": "e157",
+    "source": "share",
+    "target": "replay-export",
+    "label": "serves through"
+   },
+   {
+    "id": "e158",
+    "source": "share",
+    "target": "world-graph",
+    "label": "serves"
+   },
+   {
+    "id": "e159",
+    "source": "room-map",
+    "target": "replay-export",
+    "label": "plays the file of"
+   },
+   {
+    "id": "e160",
+    "source": "room-map",
+    "target": "generated-map",
+    "label": "draws"
+   },
+   {
+    "id": "e161",
+    "source": "room-map",
+    "target": "rules-overlay",
+    "label": "shows"
+   },
+   {
+    "id": "e162",
+    "source": "room-map",
+    "target": "world-graph",
+    "label": "draws over the map"
+   },
+   {
+    "id": "e163",
+    "source": "rules-overlay",
+    "target": "check",
+    "label": "names the failed"
+   },
+   {
+    "id": "e164",
+    "source": "room-map",
+    "target": "scene-replay",
+    "label": "sits beside"
+   },
+   {
+    "id": "e165",
     "source": "recorded-assent",
     "target": "move",
     "label": "required for activation"
    },
    {
-    "id": "e152",
+    "id": "e166",
     "source": "information",
     "target": "expressed-stance",
     "label": "does not force"
    },
    {
-    "id": "e153",
+    "id": "e167",
     "source": "information",
     "target": "recorded-assent",
     "label": "does not supply"
    },
    {
-    "id": "e154",
+    "id": "e168",
     "source": "validation-hold",
     "target": "recorded-assent",
     "label": "clearing does not supply"
@@ -1758,6 +1884,36 @@ window.MAPS = {
     "explain": "Blocks: Trust in installed rulings that move another person's goods or coins (A4, A5); not the install, hold, approve and reject mechanism itself.."
    },
    {
+    "id": "Q98",
+    "label": "Q98: Viewer D2: worlds without rooms, or with many",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: whether a Builder-made world beyond a hub with four rooms can be shown on a map."
+   },
+   {
+    "id": "Q100",
+    "label": "Q100: Viewer D4: object and door states",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: whether a viewer can see a thing's state change on the map."
+   },
+   {
+    "id": "Q101",
+    "label": "Q101: Viewer D5: activities and report bubbles",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: whether every action and report reads correctly on the map at every width."
+   },
+   {
+    "id": "Q104",
+    "label": "Q104: Viewer D8: embedding and phone width",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: whether the room map is part of the workspace rather than a separate page."
+   },
+   {
+    "id": "Q106",
+    "label": "Q106: Markdown cap, reachability and stale durable rules fail",
+    "kind": "AgentQuestion",
+    "explain": "Blocks: whether the repository's wiki-compliance check can pass again."
+   },
+   {
     "id": "affordance",
     "label": "Affordance (offered move)",
     "kind": "Concept",
@@ -1856,6 +2012,12 @@ window.MAPS = {
     "explain": "The moves and processes the fixed parts do not cover, written by the rules-writing AI and compiled."
    },
    {
+    "id": "generated-map",
+    "label": "Generated map",
+    "kind": "Concept",
+    "explain": "A prepared map made from code instead of Smallville data: a hub room with up to four rooms off it, two-tile door gaps and furniture, drawn with committed CC0 Kenney Tiny Dungeon tiles (public-hub-3, public-hub-5). Public replays always use one."
+   },
+   {
     "id": "group-decision",
     "label": "Group decision",
     "kind": "Concept",
@@ -1937,16 +2099,40 @@ window.MAPS = {
     "explain": "The validated, installed rules of a world, frozen under one id before any run; changing a rule means a new profile."
    },
    {
+    "id": "proposed-layout",
+    "label": "Builder-proposed layout",
+    "kind": "Concept",
+    "explain": "The layout an AI writes for a new world after its structure and rules are built: one optional call places the world's places on a prepared public map; kept only when it passes validate_layout, never fails the build, never replaces an existing layout."
+   },
+   {
     "id": "readout",
     "label": "Readout",
     "kind": "Concept",
     "explain": "One AI summary of a run whose every cited event id is checked against the run."
    },
    {
+    "id": "replay-export",
+    "label": "Replay exporter",
+    "kind": "Concept",
+    "explain": "Turns a run's recorded rounds and the world's layout into the replay file: per-step walks over walkable tiles (breadth-first, one tile a step), doors and door changes, round-to-step index, rules, rooms, objects and the lit graph. Paths are computed here, never in the rules."
+   },
+   {
     "id": "resident",
     "label": "Resident",
     "kind": "Concept",
     "explain": "One Concordia AI agent per person: sees its brief, memory and what it can see, and answers belief, attempt (in its own words), expected effect and work; the older menu reply picks an offered move."
+   },
+   {
+    "id": "room-map",
+    "label": "Room-map viewer",
+    "kind": "Concept",
+    "explain": "A Smallville-style tile-map scene (Phaser 3, static files, no server of its own) that plays a replay file: people walking room to room, doors drawn closed or open, refusals with their reason and reports as text, room names and things in rooms, zoom and pan. Public at /world-builder/room-map/?share=<id>; the owner-only variant uses Smallville art on localhost."
+   },
+   {
+    "id": "rules-overlay",
+    "label": "Rules overlay",
+    "kind": "Concept",
+    "explain": "The room map's Show rules switch: a tag per rule on its door and in the margin, the rule each person's try met at the shown step marked allowed (blue) or refused (orange) with the failed check in words; click for the full rule. Rule text is the world's own definition. Computer width only."
    },
    {
     "id": "rules-retry",
@@ -1980,9 +2166,9 @@ window.MAPS = {
    },
    {
     "id": "scene-replay",
-    "label": "Scene replay",
+    "label": "Scene replay (composed scene)",
     "kind": "Concept",
-    "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words."
+    "explain": "The page's round-by-round picture of a run: who did what and said what, rebuilt from the run rows; it already quotes a retry's own words. Every world gets this scene; a world that declares a layout also gets the room map beside it (roadmap Viewer path, difficulty 2)."
    },
    {
     "id": "sense",
@@ -1994,7 +2180,7 @@ window.MAPS = {
     "id": "share",
     "label": "Share link and replay",
     "kind": "Concept",
-    "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls."
+    "explain": "A saved run rebuilt from the run log that a visitor replays with no AI calls. Besides the saved record (GET /share/<id>) it serves the room-map replay (GET /share/<id>/replay, report words withheld from non-owners, 404 when the world declares no layout) and the whole-system graph (GET /share/<id>/graph, no message words)."
    },
    {
     "id": "skill-roll",
@@ -2646,6 +2832,60 @@ window.MAPS = {
     "id": "Q96-ruling-rule",
     "source": "Q96",
     "target": "ruling-rule",
+    "label": "bears on"
+   },
+   {
+    "id": "Q98-proposed-layout",
+    "source": "Q98",
+    "target": "proposed-layout",
+    "label": "bears on"
+   },
+   {
+    "id": "Q98-generated-map",
+    "source": "Q98",
+    "target": "generated-map",
+    "label": "bears on"
+   },
+   {
+    "id": "Q98-scene-replay",
+    "source": "Q98",
+    "target": "scene-replay",
+    "label": "bears on"
+   },
+   {
+    "id": "Q100-room-map",
+    "source": "Q100",
+    "target": "room-map",
+    "label": "bears on"
+   },
+   {
+    "id": "Q100-replay-export",
+    "source": "Q100",
+    "target": "replay-export",
+    "label": "bears on"
+   },
+   {
+    "id": "Q101-room-map",
+    "source": "Q101",
+    "target": "room-map",
+    "label": "bears on"
+   },
+   {
+    "id": "Q104-room-map",
+    "source": "Q104",
+    "target": "room-map",
+    "label": "bears on"
+   },
+   {
+    "id": "Q104-rules-overlay",
+    "source": "Q104",
+    "target": "rules-overlay",
+    "label": "bears on"
+   },
+   {
+    "id": "Q106-run-log",
+    "source": "Q106",
+    "target": "run-log",
     "label": "bears on"
    }
   ],
