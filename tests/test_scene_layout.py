@@ -508,3 +508,11 @@ def test_a_saved_library_run_opened_for_replay_is_drawn_on_the_map_from_the_cata
     body = page.split("async function renderRunMap()", 1)[1][:1800]
     assert "if (live.replay && !catalog)" in body and "catalog_run_id: catalog.run.id" in body
     assert "updateWhatIf();" in page.split("function updateWorkspaceControls()", 1)[1][:5000]
+
+
+@pytest.mark.req("scene-viewer/the-map-is-the-first-thing-on-the-run-stage")
+def test_the_map_comes_before_the_saved_run_panels_and_the_old_picture_is_gone():
+    page = (ROOT / "scripts/world_builder_home.html").read_text()
+    stage = page.split('id="stage-run"', 1)[1]
+    assert stage.index('id="run-map"') < stage.index('id="actor-context"') < stage.index('id="saved-player"')
+    assert 'id="world-scene-panel" class="world-scene-panel" hidden' in page
