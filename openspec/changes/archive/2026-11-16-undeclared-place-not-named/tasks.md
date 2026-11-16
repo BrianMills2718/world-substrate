@@ -1,0 +1,2 @@
+- [x] test, fix in scripts/actor_information.py
+- [ ] re-review RULE-DECLARED-ACTOR-INPUTS after merge

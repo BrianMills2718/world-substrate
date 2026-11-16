@@ -252,9 +252,9 @@ An explicitly already received report SHALL compile as delivered exposure, with 
 
 ### Requirement: Place-scoped perception with distinct inputs
 
-Source: Brian's 2026-11-13 inhabited-facility request; inferred by agent for the mechanism.
+Source: Brian's 2026-11-13 inhabited-facility request; inferred by agent for the mechanism; naming rule corrected after Brian, 2026-11-16: "i agree thatt this 'you are in <room name>' is a violation of the rules".
 
-A declared public entity MAY be scoped to a place. An actor SHALL perceive a place-scoped entity's declared fields only while the entity stands in, or is, the actor's current place. Unscoped declared entities remain known everywhere. When a declaration uses a place scope, the actor's observation SHALL also name the actor's place, list the declared entities physically present with it, and list reports delivered to the actor from its own declared report log regardless of place. The actor's prompt context SHALL present that observation, global knowledge (world summary and the actor's declared brief and knowledge) and any supplied retained memories as separate inputs; delivered reports and memories SHALL NOT be treated as physical perception, and place scope SHALL NOT be treated as a distance, hearing or occlusion model.
+A declared public entity MAY be scoped to a place. An actor SHALL perceive a place-scoped entity's declared fields only while the entity stands in, or is, the actor's current place. Unscoped declared entities remain known everywhere. When a declaration uses a place scope, the actor's observation SHALL also name the actor's place only when the declaration publishes that place to the actor (an undeclared place's engine label is private existence and SHALL NOT enter the actor's context), list the declared entities physically present with it, and list reports delivered to the actor from its own declared report log regardless of place. The actor's prompt context SHALL present that observation, global knowledge (world summary and the actor's declared brief and knowledge) and any supplied retained memories as separate inputs; delivered reports and memories SHALL NOT be treated as physical perception, and place scope SHALL NOT be treated as a distance, hearing or occlusion model.
 
 #### Scenario: A closed door blocks movement and opening it permits movement
 
@@ -275,6 +275,12 @@ A declared public entity MAY be scoped to a place. An actor SHALL perceive a pla
 - **WHEN** a run is replayed and a saved round is branched with a different later choice
 - **THEN** the replayed scene shows each person's place and each door's state as the rounds recorded them
 - **AND** the branch begins from the checkpoint's facts and diverges without changing its parent
+
+#### Scenario: An undeclared room is not named to the person standing in it
+
+- **GIVEN** a place-scoped world whose declaration does not publish the room an actor stands in
+- **WHEN** the actor's context is built
+- **THEN** the room's name and id are absent, and who else is in the place is still present
 
 ### Requirement: Offered action forms follow what an actor can perceive
 

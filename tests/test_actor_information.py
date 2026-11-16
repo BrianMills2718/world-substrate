@@ -4,9 +4,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from scripts.actor_information import ActorInformationError, actor_context, actor_page, validate_actor_information
+from scripts.actor_information import ActorInformationError, actor_context, actor_observation, actor_page, validate_actor_information
 from scripts.scaffold_world import validate_bundle
-from world_substrate.model import Entity
+from world_substrate.model import Entity, LocationState
 from world_substrate.information import DeliveryState, InformationState
 
 
@@ -137,3 +137,31 @@ def test_private_entity_identity_and_action_forms_are_recipient_scoped():
     assert 'Private measurement' in str(actor_context(engine, bundle, 'ari'))
     engine.world.entities['private-note'].components['details'].visible = 'different hidden condition'
     assert actor_context(engine, bundle, 'mara') == mara
+
+
+def _placed_fixture(declare_room):
+    """Ari and Mara stand in a store room; the declaration scopes perception by place."""
+    bundle, engine = fixture()
+    bundle["entities"].append({"id": "store-room", "label": "PRIVILEGED room name", "categories": ["place"], "components": {}})
+    engine.world.entities["store-room"] = Entity(entity_id="store-room", label="PRIVILEGED room name", category_ids=("place",), components={})
+    for n in ("ari", "mara"):
+        engine.world.entities[n].location = LocationState(location_id="store-room")
+    for row in bundle["actor_information"]["public_entities"]:
+        row["scope"] = "place"
+    if declare_room:
+        bundle["actor_information"]["public_entities"].append({"id": "store-room", "label": "Store room", "fields": []})
+    return bundle, engine
+
+
+@pytest.mark.req("information-delivery/an-undeclared-room-is-not-named-to-the-person-standing-in-it")
+def test_an_undeclared_room_is_not_named_to_the_person_standing_in_it():
+    bundle, engine = _placed_fixture(declare_room=False)
+    seen = actor_context(engine, bundle, "mara")
+    assert "PRIVILEGED room name" not in str(seen) and "store-room" not in str(seen)
+    assert "In this place with you: Ari." in seen["visible"]  # who else is here is still perceived
+
+
+def test_a_declared_room_is_still_named_to_the_person_standing_in_it():
+    bundle, engine = _placed_fixture(declare_room=True)
+    observation = actor_observation(engine, bundle, "mara")
+    assert observation["place"] == {"place_id": "store-room", "label": "Store room"}

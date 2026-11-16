@@ -168,9 +168,13 @@ def actor_observation(engine: Any, bundle: dict[str, Any], actor: str) -> dict[s
     observation: dict[str, Any] = {"actor_id": actor, "entities": entities}
     if placed and actor in entities:
         observation["messages"] = _delivered_messages(entities[actor])
+    # The room the actor stands in is named only when the declaration publishes it to this actor; an undeclared room's
+    # engine label is private existence and never enters the context (Brian, 2026-11-16: that naming "is a violation").
+    published = any(r["id"] == here_id and ("actor_ids" not in r or actor in r["actor_ids"]) for r in declaration["public_entities"])
     if placed and here_id is not None:
-        observation["place"] = {"place_id": here_id, "label": declared_label(declaration, here_id, engine)}
-        observation["here"] = sorted(here)
+        if published:
+            observation["place"] = {"place_id": here_id, "label": declared_label(declaration, here_id, engine)}
+        observation["here"] = sorted(here)  # who else is here: declared public entities only, so no private naming
     return observation
 
 
@@ -240,7 +244,7 @@ def actor_context(engine: Any, bundle: dict[str, Any], actor: str, round_no: int
     state = render(entities.get(actor, {"components": {}})) or "nothing observed"
     context = {"tick": round_no if round_no is not None else engine.world.tick, "actor_id": actor,
             "actor_state": (f"You are in the {place['label']}. " if place else "") + state,
-            "visible": "\n".join(([f"In this place with you: {', '.join(here) or 'no one else'}."] if place else []) +
+            "visible": "\n".join(([f"In this place with you: {', '.join(here) or 'no one else'}."] if "here" in observation else []) +
                                  [f"Delivered to you from {m['from']}: {m['content']}" for m in observation.get("messages", [])] +
                                  [f"{row['label']} ({eid}): {render(row)}" for eid, row in sorted(entities.items()) if eid != actor]),
             "progress": "", "actions": [{"number": i, "action_id": row["action_id"], "description": row["description"] + " (" + ", ".join(

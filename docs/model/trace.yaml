@@ -195,10 +195,6 @@ rules:
     verification_limit: >-
       This is a resident-input boundary, not generic Engine read-scope enforcement or proof that a generated
       declaration is semantically authorized. The source-grounded review gate has its own rule and limitation.
-      Known exception, found on re-review 2026-11-16 and not covered by a test: when a world places actors, the
-      observation always names the actor's own current place (id and label); if that place is not a declared
-      public entity, the label comes from the engine's own entity label (declared_label fallback), so a place
-      the declaration did not publish can still reach the actor by name.
     owner: scripts/actor_information.py
     reviewed_at: 03b307351ecd8272be731d8f4ca316ce6a47e5b8  # re-read 2026-11-16 after the trace-link commit 03b3073: the owner file's code is identical to its last reviewed state apart from docstring Implements lines (AST compared with docstrings removed), so the rule text is unchanged
     checks:
