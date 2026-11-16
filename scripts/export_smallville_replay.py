@@ -241,6 +241,11 @@ def export_from_rows(rows: list[dict[str, Any]], bundle: dict[str, Any], maze_di
     replay = export(rows, generated["maze"] if generated else load_maze(maze_dir), rooms=layout["rooms"], people=layout["people"], start_rooms=layout["start_rooms"],
                     labels=layout["labels"], doors=layout["doors"], sprites=layout["sprites"], causal=causal)
     replay["map"], replay["title"] = layout["map"], layout["title"]
+    if causal is not None:  # the whole-system graph, lit round by round, to draw over the map (scene-viewer/world-graph)
+        from scripts.world_graph import graph_replay
+        turns = [t for _, t in sorted(((t["turn"], t) for r in rows for t in r["result"]["transcript"]), key=lambda x: x[0])]
+        replay["graph"] = graph_replay(bundle, causal, turns)
+        replay["graph_actors"] = {"e:" + actor: name for actor, name in layout["people"].items()}
     if generated:
         replay["grid"] = generated["grid"]
         replay["meta"]["maze_name"] = layout["map"]  # no Smallville name in a public replay

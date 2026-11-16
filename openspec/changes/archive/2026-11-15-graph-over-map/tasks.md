@@ -1,0 +1,3 @@
+- [x] exporter adds graph and graph_actors; demos rebuilt
+- [x] viewer Show graph overlay
+- [ ] deploy and live check on the clinic share

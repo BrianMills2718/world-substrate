@@ -317,3 +317,13 @@ def test_a_round_lights_each_try_with_its_status_and_refusal_reason_and_no_words
     assert all(t["actor"] in ids and (t["move"] is None or t["move"] in ids) and set(t["uses"]) <= ids
                for r in replay["rounds"] for t in r["tries"])
     assert "said" not in json.dumps(replay)
+
+
+@pytest.mark.req("scene-viewer/graph-over-the-map")
+def test_a_replay_carries_the_graph_and_which_person_each_graph_actor_is():
+    replay = json.loads((ROOT / "viewer/smallville/replay-public.json").read_text())
+    assert len(replay["graph"]["rounds"]) == len(replay["rounds"])
+    assert set(replay["graph_actors"].values()) == set(replay["meta"]["persona_names"])
+    refused = [t for r in replay["graph"]["rounds"] for t in r["tries"] if t["status"] == "precondition_failed"]
+    assert refused and all(t["because"] for t in refused)
+    assert "words" not in json.dumps(replay["graph"]).lower().replace("(words not shown)", "")
