@@ -40,8 +40,13 @@ potin that the judge assesses once we build him".
   limit by up to one round's spending (one round's AI calls are themselves capped by the service's per-request
   allowance, `RUN_BUDGET`), and the run page line says so when it did.
 
-The third condition Brian named, a stopping point written in plain words that the AI judge assesses after each
-round, waits for the judge (docs/plans/ai_judge.md) and will plug in here as another optional key.
+The third condition Brian named is a stopping point written in plain words (`"stop_when"`, 1 to 300 characters, ai-judge
+plan slice J5, `reason: stopping_point`): the judge (Concordia's game master, scripts/judge.py `stopping_point`) is
+asked, after a round in which a field people's moves can change actually changed, and once every 6 quiet rounds as a
+backstop (a stopping point about something no move changes, a clock, would never be asked otherwise), whether it has
+been reached. When it has, the run stops through `limit_check` like the other two: the round and spending limits are
+checked first (their stop needs no judge call), so whichever fires first wins. The judge's AI cost is the run's own
+cost on its trace, so it counts toward a spending limit.
 
 This is a run-loop stopping rule over recorded state, not engine capability (Decision 006).
 """
@@ -59,7 +64,9 @@ DECISION_STATUS = "components.group_decision.status"
 MAX_ROUND_LIMIT = 500
 MIN_SPEND_USD = 0.01
 MAX_SPEND_USD = 100.0
-LIMIT_KEYS = ("max_rounds", "max_spend_usd")
+LIMIT_KEYS = ("max_rounds", "max_spend_usd", "stop_when")
+MAX_STOP_WHEN_CHARS = 300
+QUIET_ROUNDS_BETWEEN_ASKS = 6  # the backstop: the judge is asked again after this many quiet rounds
 
 
 def parse_run_stop(value: Any, *, default: dict[str, Any] | None = None) -> dict[str, Any] | None:
@@ -79,7 +86,7 @@ def parse_run_stop(value: Any, *, default: dict[str, Any] | None = None) -> dict
             raise ValueError(f"run_stop.quiet_rounds must be a whole number from 1 to {MAX_QUIET_ROUNDS}")
         return {"mode": "quiet", "quiet_rounds": n, **limits}
     raise ValueError('run_stop must be {"mode": "quiet", "quiet_rounds": N} or {"mode": "every_round"}, '
-                     'optionally with "max_rounds" and "max_spend_usd"')
+                     'optionally with "max_rounds", "max_spend_usd" and "stop_when"')
 
 
 def _parse_limits(value: dict[str, Any]) -> dict[str, Any]:
@@ -95,13 +102,23 @@ def _parse_limits(value: dict[str, Any]) -> dict[str, Any]:
             raise ValueError(f"run_stop.max_spend_usd must be a dollar amount from {MIN_SPEND_USD} to "
                              f"{MAX_SPEND_USD:g}")
         limits["max_spend_usd"] = round(float(x), 2)
+    if value.get("stop_when") is not None:
+        text = value["stop_when"]
+        if not isinstance(text, str) or not 1 <= len(text.strip()) <= MAX_STOP_WHEN_CHARS:
+            raise ValueError(f"run_stop.stop_when must be a stopping point written in words, 1 to "
+                             f"{MAX_STOP_WHEN_CHARS} characters")
+        limits["stop_when"] = " ".join(text.split())
     return limits
 
 
-def limit_check(run_stop: dict[str, Any] | None, round_no: int, spent_usd: float | None) -> dict[str, Any] | None:
-    """The stop record if this run's spending or round limit is reached after round `round_no`, else None.
+def limit_check(run_stop: dict[str, Any] | None, round_no: int, spent_usd: float | None,
+                judged: dict[str, Any] | None = None) -> dict[str, Any] | None:
+    """The stop record if this run's spending or round limit, or its stopping point, is reached after round
+    `round_no`, else None. `judged` is the judge's reading of the stopping point for this round, when it was asked
+    (scripts/judge.py `stopping_point`: `reached`, `reason`).
 
-    Spending is checked first: when both are reached in the same round, the money is the reason given."""
+    Spending is checked first, then the round limit, then the stopping point: when several are reached in the same
+    round, the first of those is the reason given. The caller asks the judge only when the first two did not fire."""
     if not run_stop:
         return None
     limit = run_stop.get("max_spend_usd")
@@ -110,7 +127,29 @@ def limit_check(run_stop: dict[str, Any] | None, round_no: int, spent_usd: float
     n = run_stop.get("max_rounds")
     if n is not None and round_no >= n:
         return round_limit(round_no, n)
+    if judged and judged.get("reached") and run_stop.get("stop_when"):
+        return stopping_point(round_no, run_stop["stop_when"], judged)
     return None
+
+
+def stopping_point(round_no: int, stop_when: str, judged: dict[str, Any]) -> dict[str, Any]:
+    reason = str(judged.get("reason") or "").strip().rstrip(".") or "the judge found it reached"
+    return {"reason": "stopping_point", "round": round_no, "stop_when": stop_when, "judge_reason": reason,
+            "why": f"Stopped at round {round_no}: {reason} (the judge's reading of your stopping point)."}
+
+
+def ask_judge(run_stop: dict[str, Any] | None, history: list[str], quiet_since_asked: int) -> tuple[str | None, int]:
+    """Whether the judge is asked about the stopping point after the round `history` ends with, and the quiet rounds
+    since it was last asked (to carry on). `(why, count)`: why is "changed" (a field people's moves can change is not
+    what it was a round before), "backstop" (the 6th quiet round since it was last asked), or None (not asked)."""
+    if not run_stop or not run_stop.get("stop_when"):
+        return None, quiet_since_asked
+    if len(history) >= 2 and history[-1].rstrip("*") != history[-2].rstrip("*"):
+        return "changed", 0
+    quiet_since_asked += 1
+    if quiet_since_asked >= QUIET_ROUNDS_BETWEEN_ASKS:
+        return "backstop", 0
+    return None, quiet_since_asked
 
 
 def round_limit(round_no: int, n: int) -> dict[str, Any]:

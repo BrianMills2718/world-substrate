@@ -23,9 +23,15 @@ single-price charge (evidence/ai-judge/j2/sawmill-review/review.json), so per th
 
 Every model call goes through llm_client, on the interpreter's model and route.
 
+The same game master also assesses a stopping point the visitor wrote in plain words (slice J5, `stopping_point`):
+the text is the one putative event, the world as it is now (and what each person did this round) is the context,
+and one typed resolution step asks "has it been reached?" (`reached`, with the `facts` it read and its `reason`).
+Nothing of ours decides it; the run stops when the game master says it has (scripts/run_stop.py).
+
 Implements: ai-judge/the-judge-is-concordia-s-game-master-conditioned-on-the-world-and-the-consequence-report
 Implements: ai-judge/the-judge-proposes-a-rule-reads-its-test-run-and-confirms-revises-once-or-withdraws
 Implements: ai-judge/another-person-s-choice-goes-to-that-person
+Implements: ai-judge/the-judge-assesses-a-stopping-point-written-in-plain-words
 """
 from __future__ import annotations
 
@@ -49,7 +55,10 @@ from scripts import consequence_report  # noqa: E402
 
 TASK = "world-substrate-judge"
 PROMPT = REPO / "prompts/judge_steps.yaml"
+STOP_PROMPT = REPO / "prompts/judge_stopping.yaml"
+STOP_TASK = "world-substrate-judge-stopping-point"
 BY = "the world's game master (Concordia's EventResolution)"
+WATCHER = "The person watching"
 NO_RULE = "no rule could express this"
 MAX_OUTPUT_TOKENS = 4000
 
@@ -72,6 +81,20 @@ PROPOSE_SCHEMA: dict[str, Any] = {
         "proposed_rule": {"type": "string", "description": _RULE_TEXT},
         "test_move": {"type": "string", "description": _MOVE_TEXT},
         "reasoning": {"type": "string", "description": "One or two sentences on why."},
+    },
+}
+
+
+STOP_SCHEMA: dict[str, Any] = {
+    "type": "object", "additionalProperties": False,
+    "required": ["facts", "reached", "reason"],
+    "properties": {
+        "facts": {"type": "array", "items": {"type": "string"},
+                  "description": "The current values and this round's moves that bear on the stopping point, each "
+                                 "with the value or move read."},
+        "reached": {"type": "boolean", "description": "True only if the world as it is now meets the stopping point."},
+        "reason": {"type": "string",
+                   "description": "One short sentence saying what shows it reached, or what is still missing."},
     },
 }
 
@@ -185,8 +208,9 @@ class Step:
     """One resolution step: a typed question asked of the document EventResolution assembled (the components'
     text and the putative event). The answer goes back into the document and becomes the event statement."""
 
-    def __init__(self, model: LlmClientModel, name: str, schema: dict[str, Any], **words: Any):
-        self.model, self.name, self.schema, self.words = model, name, schema, words
+    def __init__(self, model: LlmClientModel, name: str, schema: dict[str, Any], *, prompt: Path = PROMPT,
+                 **words: Any):
+        self.model, self.name, self.schema, self.prompt, self.words = model, name, schema, prompt, words
         self.answer: dict[str, Any] | None = None
         self.document_chars = 0
 
@@ -195,8 +219,9 @@ class Step:
 
         text = document.view().text()
         self.document_chars = len(text)
-        messages = render_prompt(PROMPT, step=self.name, document=text, actor=active_player_name,
-                                 contract=contract(), **self.words)
+        words = {"contract": contract()} if self.prompt == PROMPT else {}
+        messages = render_prompt(self.prompt, step=self.name, document=text, actor=active_player_name,
+                                 **words, **self.words)
         self.answer = self.model.sample_json(messages, self.schema, name=self.name)
         statement = json.dumps(self.answer, ensure_ascii=False)
         document.statement(statement)
@@ -223,7 +248,8 @@ def world_text(bundle: dict[str, Any], causal_value: dict[str, Any], engine: Any
 
 
 def resolve(model: LlmClientModel, step: Step, *, actor: str, attempt: str, people: Sequence[str],
-            world: str, consequence: str) -> dict[str, Any]:
+            world: str, consequence: str,
+            consequence_label: str = "What the engine worked out (the consequence report)") -> dict[str, Any]:
     """One game master turn: Concordia's EventResolution resolves the putative event with `step` as its one
     resolution step. Returns the step's typed answer."""
     resolution = event_resolution.EventResolution(
@@ -233,7 +259,7 @@ def resolve(model: LlmClientModel, step: Step, *, actor: str, attempt: str, peop
         act_component=switch_act.SwitchAct(model=model, entity_names=list(people) or [actor]),
         context_components={
             "world": Text("The world", world),
-            "consequence": Text("What the engine worked out (the consequence report)", consequence),
+            "consequence": Text(consequence_label, consequence),
             memory_component.DEFAULT_MEMORY_COMPONENT_KEY: memory_component.ListMemory(
                 memory_bank=[f"{event_resolution.PUTATIVE_EVENT_TAG} {actor}: {attempt}"]),
             next_acting.DEFAULT_NEXT_ACTING_COMPONENT_KEY: Acting(model, actor, people),
@@ -349,6 +375,23 @@ def _finish(record: dict[str, Any], steps: list[dict[str, Any]], llm: LlmClientM
     return record
 
 
+def stopping_point(bundle: dict[str, Any], causal_value: dict[str, Any], engine: Any, *, stop_when: str,
+                   round_no: int, moves: str, model: str, trace_id: str, max_budget: float) -> dict[str, Any]:
+    """Has the visitor's stopping point been reached, after round `round_no`? The game master resolves the stopping
+    text as the one putative event, given the world as it is now and what each person did this round. Returns the
+    record the run keeps: `reached`, `reason`, the `facts` it read, its calls and their measured cost."""
+    llm = LlmClientModel(model, trace_id=trace_id, max_budget=max_budget, task=STOP_TASK)
+    step = Step(llm, "stopping", STOP_SCHEMA, prompt=STOP_PROMPT)
+    answer = resolve(llm, step, actor=WATCHER, attempt=f"Stopping point: {stop_when}", people=[WATCHER],
+                     world=world_text(bundle, causal_value, engine),
+                     consequence=f"Round {round_no}, what each person did and what it changed:\n{moves}",
+                     consequence_label=f"What happened in round {round_no}")
+    return {"asked": True, "by": BY, "model": model, "trace_id": trace_id, "stop_when": stop_when,
+            "reached": answer.get("reached") is True, "reason": str(answer.get("reason") or "").strip(),
+            "facts": [str(f) for f in answer.get("facts") or []], "world_revision": engine.world.revision,
+            "document_chars": step.document_chars, "calls": llm.calls, "cost_usd": llm.cost}
+
+
 def frozen(engine: Any) -> Any:
     """A read-only copy of the world as it is now, under the same installed rules, for a judge run later in the
     round (the real world moves on with the moves after the attempt)."""
@@ -357,4 +400,4 @@ def frozen(engine: Any) -> Any:
     return Engine(deepcopy(engine.world), engine.registry, reaction_limit=None)
 
 
-__all__ = ["BY", "LlmClientModel", "NO_RULE", "TASK", "frozen", "judge", "resolve", "world_text"]
+__all__ = ["BY", "LlmClientModel", "NO_RULE", "TASK", "frozen", "judge", "resolve", "stopping_point", "world_text"]

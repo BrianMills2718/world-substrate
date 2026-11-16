@@ -612,6 +612,7 @@ def run_world(
     spent: Callable[[], float] | None = None,
     reaction_limit: int | None = None,
     judge: bool = False,
+    stop_quiet: int = 0,
 ) -> tuple[dict[str, Any], Engine, CausalModel]:
     if policy not in {"scripted", "llm", "resident"}:
         raise ValueError("policy must be scripted, llm or resident")
@@ -619,8 +620,9 @@ def run_world(
         raise ValueError("open_attempts needs the resident policy")
     if judge and not open_attempts:
         raise ValueError("the judge rules on unmatched attempts, so it needs open_attempts")
-    if judge:
-        from scripts import judge as judge_rule  # Concordia's game master (ai-judge plan J2)
+    stop_when = (run_stop or {}).get("stop_when")
+    if judge or stop_when:
+        from scripts import judge as judge_rule  # Concordia's game master (ai-judge plan J2; stopping point, J5)
     if type(max_turns) is not int or not 1 <= max_turns <= MAX_TURNS:
         raise ValueError(f"max_turns must be between 1 and {MAX_TURNS}")
     # New runs have no cap on knock-on effects (Decision 009 as amended, ai-judge plan J0); the limit is recorded
@@ -695,6 +697,8 @@ def run_world(
             return float(get_cost(trace_id=trace_id) or 0.0)
 
     spend_seen = [float(run_spent_usd)]  # the last reading; every AI call of a round is made before its check
+    # Quiet rounds since the judge last assessed the stopping point (carried across live play's one-round requests).
+    quiet_since_asked = int(stop_quiet)
 
     def spent_so_far() -> float | None:
         if not watch_spend:
@@ -1089,9 +1093,31 @@ def run_world(
             history.append(run_stop_rule.history_entry(world_now, stop_fields,
                                                        any(row.get("changed") for row in rows.values())))
             del history[:-(run_stop_rule.MAX_QUIET_ROUNDS + 1)]
-            stopped = (run_stop_rule.limit_check(run_stop, turn + turn_offset, spent_so_far())
-                       or run_stop_rule.check(run_stop, history, run_stop_rule.decision_status(world_now),
-                                              turn + turn_offset))
+            round_no = turn + turn_offset
+            spent_now = spent_so_far()
+            stopped = run_stop_rule.limit_check(run_stop, round_no, spent_now)
+            if stopped is None and stop_when:
+                # The stopping point in plain words (ai-judge plan J5): the game master is asked after a round in which
+                # something people's moves can change actually changed, and every 6 quiet rounds as a backstop. A
+                # round or spending limit that already fired needs no answer, so no call is made.
+                why_asked, quiet_since_asked = run_stop_rule.ask_judge(run_stop, history, quiet_since_asked)
+                if why_asked is None:
+                    transcript[-1]["stopping_point"] = {"asked": False}
+                else:
+                    try:
+                        reading = judge_rule.stopping_point(
+                            bundle, causal_value, engine, stop_when=stop_when, round_no=round_no,
+                            moves=_moves_text(rows), model=model_name, trace_id=trace_id, max_budget=max_budget)
+                    except Exception as error:  # a failed judge call is recorded and the run goes on
+                        reading = {"asked": True, "by": judge_rule.BY, "stop_when": stop_when, "reached": False,
+                                   "failed": True, "error": f"{type(error).__name__}: {error}", "cost_usd": 0.0}
+                    reading["because"] = why_asked
+                    transcript[-1]["stopping_point"] = reading
+                    cost += float(reading.get("cost_usd") or 0.0)
+                    spent_so_far()  # the judge's cost is the run's own: carried on, and counted by the next check
+                    stopped = run_stop_rule.limit_check(run_stop, round_no, spent_now, reading)
+            stopped = stopped or run_stop_rule.check(run_stop, history, run_stop_rule.decision_status(world_now),
+                                                     round_no)
             if stopped is not None:
                 break
 
@@ -1188,12 +1214,37 @@ def run_world(
         if run_stop.get("mode") == "quiet":
             # Sent back with the next one-round request, so the quiet count carries across live play.
             trace["stop_history"] = history[-(run_stop["quiet_rounds"] + 1):]
+        elif stop_when:
+            trace["stop_history"] = history[-2:]  # the round before, for "did anything people can change change?"
+        if stop_when:
+            # Sent back too: the quiet rounds since the judge last assessed the stopping point.
+            trace["stop_quiet"] = quiet_since_asked
         if watch_spend:
             # Sent back with the next one-round request, so the spending limit counts the whole live run.
             trace["run_spent_usd"] = round(spend_seen[0], 6)
     # Open tasks, sent back with the next round so live play keeps following them.
     trace["underway"] = [{k: t[k] for k in sorted(attempts.TASK_KEYS)} for t in open_tasks]
     return trace, engine, causal_model
+
+
+def _moves_text(rows: dict[str, Any]) -> str:
+    """What each person did in the round just played, in plain lines, for the judge assessing a stopping point."""
+    lines = []
+    for actor, row in rows.items():
+        did = row.get("did") or {}
+        said = (row.get("attempt") or {}).get("text")
+        fields = {k: v for k, v in did.items() if k not in {"actor", "base_revision", "controller", "kind"}}
+        if said:
+            what = f"said they tried: {said}"
+        elif did:
+            what = f"made the move {did.get('kind')}" + (f" {json.dumps(fields, default=str)}" if fields else "")
+        else:
+            what = "did nothing"
+        changes = "; ".join(
+            f"{'.'.join(str(c['path']).split('.')[1:2] + str(c['path']).split('.')[3:])}: {c.get('before')} -> {c.get('after')}"
+            for c in row.get("changes") or [])
+        lines.append(f"- {actor} {what}: {row.get('status')}" + (f"; changed {changes}" if changes else ""))
+    return "\n".join(lines) or "- nobody did anything"
 
 
 def _runtime_catalog(bundle: dict[str, Any], causal_model: CausalModel | None = None) -> dict[str, Any]:

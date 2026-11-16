@@ -506,6 +506,7 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             **({"stop_history": trace["stop_history"]} if "stop_history" in trace else {}),
             # The run's recorded AI spending so far, when its stop setting has a spending limit.
             **({"run_spent_usd": trace["run_spent_usd"]} if "run_spent_usd" in trace else {}),
+            **({"stop_quiet": trace["stop_quiet"]} if "stop_quiet" in trace else {}),
             "approval": value.get("approval"),
         }
     if path == "/clarify":
@@ -2638,6 +2639,15 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             or not all(isinstance(k, str) and len(k) <= 64 for k in stop_history)
         ):
             raise ValueError(f"stop_history must be up to {MAX_QUIET_ROUNDS + 1} short state keys")
+        # Quiet rounds since the judge last assessed the stopping point in words (trace.stop_quiet).
+        stop_quiet = body.get("stop_quiet") if continue_from is not None else None
+        if stop_quiet is None:
+            stop_quiet = 0
+        if type(stop_quiet) is not int or not 0 <= stop_quiet <= 1000:
+            raise ValueError("stop_quiet must be a whole number of rounds from 0 to 1000")
+        if (run_stop or {}).get("stop_when") and policy not in {"llm", "resident"}:
+            raise ValueError("A stopping point written in words is assessed by the AI judge, so the world must be "
+                             "played by AI (policy llm or resident)")
         # What this live run's earlier rounds spent on AI (trace.run_spent_usd, recorded by llm_client), so a spending
         # limit counts the whole run. Only the visitor's own stop reads it; the daily budget ledger still caps spend.
         run_spent = body.get("run_spent_usd") if continue_from is not None else None
@@ -2674,7 +2684,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         # Residents say what they try in their own words (docs/plans/open_attempt.md).
                         open_attempts=policy == "resident", run_stop=run_stop, stop_history=stop_history,
                         # Concordia's game master rules on each attempt no installed rule covers (ai-judge plan J2).
-                        judge=policy == "resident",
+                        judge=policy == "resident", stop_quiet=stop_quiet,
                         run_spent_usd=float(run_spent), spent=lambda: _trace_cost(trace_id),
                     )
                     trace_cost = _trace_cost(trace_id)
