@@ -218,7 +218,13 @@
         "replay-export": "scripts/export_smallville_replay.py:232",
         "world-graph": "scripts/world_graph.py:122",
         "rules-overlay": "viewer/smallville/viewer.js:125",
-        "proposed-layout": "scripts/layout_proposal.py:53"
+        "proposed-layout": "scripts/layout_proposal.py:53",
+        "actor-input-boundary": "scripts/actor_information.py:128",
+        "claim-provenance": "spikes/any-scenario-2026-10/compile_spec.py:712",
+        "technical-condition": "spikes/any-scenario-2026-10/compile_spec.py:621",
+        "expressed-stance": "spikes/any-scenario-2026-10/compile_spec.py:665",
+        "recorded-assent": "spikes/any-scenario-2026-10/compile_spec.py:660",
+        "validation-hold": "spikes/any-scenario-2026-10/compile_spec.py:685"
       },
       "spectrum": "docs/model/semantic-spectrum.json"
     },
