@@ -74,6 +74,10 @@ def _owner_password() -> str | None:
 
 
 def _is_owner() -> bool:
+    """Whether this request runs on the separate owner ledger (the owner password was supplied).
+
+    Implements: world-builder-page/owner-budget-override
+    """
     return _LEDGER.get() == "owner"
 
 
@@ -418,6 +422,8 @@ def _snapshot_seal(snapshot: Any, bundle: Any, causal: Any, approval: Any = None
     The browser holds the state between live rounds; a continued round must bring back one this
     server sealed, so an edited state (or the same state under other rules) is refused.
     The first round's approval record is sealed with it (#122), so it cannot be swapped either.
+
+    Implements: ai-judge/installed-rulings-travel-with-the-run
     """
     key = (_owner_password() or "world-builder").encode()
     # The run's judge rulings (ai-judge plan J3) are sealed with it, so a list the server did not send is refused; a
@@ -466,6 +472,10 @@ def _request_summary(path: str, body: dict[str, Any]) -> dict[str, Any]:
 
 
 def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, Any]:
+    """Run-log summary; /generate-draft and comparisons keep their whole result.
+
+    Implements: native-coordination/authoring-debugging-evidence
+    """
     if status >= 400 or value.get("ok") is False:
         return {"error": str(value.get("error"))[:500]}
     if path == "/generate-world":
@@ -685,7 +695,9 @@ def _catalog_scene(record: dict[str, Any]) -> dict[str, Any]:
 def _public_replay(record: dict[str, Any], owner: bool = False) -> dict[str, Any]:
     """The room-map replay of a shared run, drawn on a generated map with free-licensed tiles only (never the
     private Smallville art or map data). A world whose layout names a private map is drawn on the generated map with
-    the same number of rooms; a world with no layout has no map. Message words are withheld unless `owner`."""
+    the same number of rooms; a world with no layout has no map. Message words are withheld unless `owner`.
+
+    Implements: scene-viewer/public-room-map-of-a-shared-run"""
     import copy
     from scripts.export_smallville_replay import export_from_rows, withhold_words
     from scripts.scene_layout import LayoutError, public_layout
@@ -1946,6 +1958,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         checks that the proposed mechanics let anything happen at all; if not,
         mechanics are regenerated once with that failure as guidance. The
         visitor still has to approve the mechanics before /run will execute.
+
+        Implements: world-builder-page/natural-language-building
         """
         description = body.get("description")
         if not isinstance(description, str) or not description.strip():
@@ -2712,6 +2726,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         )
 
     def _generate_draft(self, client: str, body: dict[str, Any]) -> None:
+        """Handle /generate-draft under the shared rate limit and ledger with its own cap.
+
+        Implements: native-coordination/authoring-provider-spend
+        """
         description = body.get("description")
         if not isinstance(description, str) or not description.strip():
             raise ValueError("description must be a nonempty string")
@@ -2792,6 +2810,12 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         )
 
     def _compare_native_coordination(self, client: str, body: dict[str, Any]) -> None:
+        """Handle /compare-native-coordination: a second fresh run on the reviewed shared mechanics.
+
+        Implements: native-coordination/comparison-mechanics-authority
+
+        Implements: native-coordination/comparison-fresh-execution
+        """
         if body.get("approved") is not True:
             self._error(
                 HTTPStatus.CONFLICT,
@@ -2971,6 +2995,12 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 request.pop("catalog_step", None)
 
     def _run_native(self, client: str, body: dict[str, Any]) -> None:
+        """Handle /run, accepting native_coordination only on the reviewed shared mechanics.
+
+        Implements: native-coordination/authoring-execution-authority
+
+        Implements: causal-model-authoring/create-simulation-is-the-approval-current-code
+        """
         if body.get("approved") is not True:
             self._error(HTTPStatus.CONFLICT, "mechanics must be explicitly approved before a run")
             return

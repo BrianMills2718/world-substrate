@@ -6,6 +6,8 @@ import unittest
 from dataclasses import dataclass
 from pathlib import Path
 
+import pytest
+
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO))
@@ -132,6 +134,7 @@ def build_engine(model: CausalModel) -> Engine:
 
 
 class ActionAuthoringTests(unittest.TestCase):
+    @pytest.mark.req("causal-model-authoring/a-compiled-declaration-runs-as-an-ordinary-rule")
     def test_declared_action_installs_discovers_commits_and_reaches_terminal(self):
         model = CausalModel.from_dict(causal_model(), bundle=BUNDLE)
         declared = model.mechanics[0]
@@ -151,6 +154,7 @@ class ActionAuthoringTests(unittest.TestCase):
         self.assertTrue(model.terminal and model.terminal.reached(engine.world))
         self.assertEqual(engine.discover("ava")["available"], [])
 
+    @pytest.mark.req("causal-model-authoring/the-proposer-does-not-supply-reads-or-writes")
     def test_review_exposes_derived_authority_not_model_claimed_authority(self):
         model = CausalModel.from_dict(causal_model(), bundle=BUNDLE)
         review = model.as_review()
@@ -158,12 +162,14 @@ class ActionAuthoringTests(unittest.TestCase):
         self.assertIn("entities.<fruit>.ownership.owner_ref", row["writes"])
         self.assertNotIn("writes", causal_model()["mechanics"][0])
 
+    @pytest.mark.req("causal-model-authoring/a-declaration-addresses-something-outside-the-language")
     def test_unknown_effect_path_is_rejected_before_installation(self):
         value = causal_model()
         value["mechanics"][0]["effects"][0]["path"] = "components.fruit.magic"
         with self.assertRaisesRegex(ActionDeclarationError, "unknown state path"):
             CausalModel.from_dict(value, bundle=BUNDLE)
 
+    @pytest.mark.req("causal-model-authoring/a-declaration-names-one-action-signature")
     def test_mechanic_cannot_name_a_participant_absent_from_action_signature(self):
         value = causal_model()
         value["mechanics"][0]["participants"]["tree"] = {
@@ -173,6 +179,7 @@ class ActionAuthoringTests(unittest.TestCase):
         with self.assertRaisesRegex(ActionDeclarationError, "exactly name entity_ref fields"):
             CausalModel.from_dict(value, bundle=BUNDLE)
 
+    @pytest.mark.req("causal-model-authoring/a-selector-constrains-nothing")
     def test_empty_participant_selector_is_rejected(self):
         value = causal_model()
         value["mechanics"][0]["participants"]["fruit"] = {"categories": [], "components": []}
@@ -192,6 +199,8 @@ class ActionAuthoringTests(unittest.TestCase):
         with self.assertRaisesRegex(ActionDeclarationError, "requires numeric"):
             CausalModel.from_dict(value, bundle=BUNDLE)
 
+    @pytest.mark.req("causal-model-authoring/the-proposer-does-not-supply-reads-or-writes")
+    @pytest.mark.req("causal-model-authoring/a-declaration-addresses-something-outside-the-language")
     def test_engine_owned_cause_id_cannot_be_authored_as_effect(self):
         value = causal_model()
         value["mechanics"][0]["effects"][0] = {
@@ -213,6 +222,7 @@ class ActionAuthoringTests(unittest.TestCase):
         engine = build_engine(model)
         self.assertEqual(len(engine.discover("ava")["available"]), 1)
 
+    @pytest.mark.req("causal-model-authoring/a-declaration-names-one-action-signature")
     def test_scalar_action_fields_require_finite_declared_choices(self):
         bundle = json.loads(json.dumps(BUNDLE))
         bundle["actions"][0]["fields"].append({"name": "count", "type": "integer"})

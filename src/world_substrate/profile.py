@@ -45,7 +45,10 @@ class Finding:
 
 @dataclass(frozen=True)
 class MechanicPackage:
-    """The declared contract for one installable mechanic."""
+    """The declared contract for one installable mechanic.
+
+    Implements: mechanic-installation/mechanic-package
+    """
 
     mechanic_id: str
     version: str
@@ -247,7 +250,10 @@ def validate_package(
 
 @dataclass
 class MechanicProfile:
-    """The validated set of mechanics frozen for one run."""
+    """The validated set of mechanics frozen for one run.
+
+    Implements: mechanic-installation/installation
+    """
 
     packages: dict[str, MechanicPackage] = field(default_factory=dict)
     findings: list[Finding] = field(default_factory=list)

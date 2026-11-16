@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 import sys
 import unittest
+
+import pytest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -43,6 +45,8 @@ class CastawayZeroReviewReplay(unittest.TestCase):
         self.assertEqual(frames[-1]["items"]["clay-pot"]["state"], "used")
         self.assertEqual(frames[-1]["actors"]["robinson"]["action"], "drink 250 ml from clay-pot")
         self.assertEqual(frames[-1]["actors"]["friday"]["action"], "fill clay-pot from unsafe-pool")
+
+    @pytest.mark.req("scene-replay/worlds-replay-through-the-generic-path", existing=True)
 
     def test_zero_review_replay_regenerates_exactly(self):
         profile, world_entities = renderer.load_scene_profile(PROFILE)

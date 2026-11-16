@@ -83,6 +83,10 @@ class WorldCatalog:
         return out
 
     def save_world(self, definition, fingerprint, build_trace_id=None):
+        """Persist a world definition under a stable catalog id, distinct from its content fingerprint.
+
+        Implements: world-catalog/durable-private-created-world-library
+        """
         with self._db() as db:
             db.execute("BEGIN IMMEDIATE")
             if build_trace_id:
@@ -190,6 +194,10 @@ class WorldCatalog:
             return self._detail(db, self._runrow(db, rid))
 
     def create_run(self, wid, name=None, parent_run_id=None, checkpoint_id=None):
+        """Create a logical run, or a branch with its own identity from a parent run's checkpoint.
+
+        Implements: world-catalog/independent-saved-round-branches
+        """
         with self._db() as db:
             db.execute("BEGIN IMMEDIATE")
             world = self._world(db, wid)
@@ -224,6 +232,10 @@ class WorldCatalog:
                     "request": cp["request"] if cp else {}, "response": cp["response"] if cp else {}}
 
     def append(self, rid, expected_checkpoint_id, request, response):
+        """Append a completed segment after validating ancestry; a stale checkpoint is refused.
+
+        Implements: world-catalog/logical-runs-and-completed-checkpoints
+        """
         with self._db() as db:
             db.execute("BEGIN IMMEDIATE")
             row = self._runrow(db, rid)

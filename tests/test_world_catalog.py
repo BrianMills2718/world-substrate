@@ -6,6 +6,8 @@ from pathlib import Path
 import tempfile
 import unittest
 
+import pytest
+
 from scripts.world_catalog import WorldCatalog, CatalogConflict, CatalogUnavailable
 
 
@@ -36,6 +38,7 @@ class WorldCatalogTests(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
+    @pytest.mark.req("world-catalog/owner-created-worlds-remain-available-after-reload")
     def test_world_survives_reopen_without_rewriting_content_identity(self):
         self.assertNotEqual(self.world["id"], "content-id")
         reopened = WorldCatalog(self.path).world(self.world["id"])
@@ -43,6 +46,7 @@ class WorldCatalogTests(unittest.TestCase):
         self.assertEqual(self.catalog.save_world(WORLD, "fp", build_trace_id="build-1")["id"], self.world["id"])
         self.assertEqual(len(self.catalog.worlds()), 1)
 
+    @pytest.mark.req("world-catalog/branching-preserves-the-parent")
     def test_branch_preserves_parent_prefix_and_exact_actor_checkpoint(self):
         parent = self.catalog.create_run(self.world["id"])
         cp1 = self.catalog.append(parent["run"]["id"], None, {"turn_offset": 0}, result(1))
@@ -65,6 +69,7 @@ class WorldCatalogTests(unittest.TestCase):
             self.catalog.append(run, cp["id"], {"turn_offset": 1}, result(3))
         self.assertEqual(len(self.catalog.run(self.world["id"], run)["record"]["rounds"]), 1)
 
+    @pytest.mark.req("world-catalog/incomplete-historical-recordings-remain-replayable")
     def test_missing_actor_state_is_not_a_faithful_branch_checkpoint(self):
         run = self.catalog.create_run(self.world["id"])["run"]["id"]
         incomplete = result(1)
@@ -76,6 +81,7 @@ class WorldCatalogTests(unittest.TestCase):
         with self.assertRaises(CatalogUnavailable):
             self.catalog.create_run(self.world["id"], parent_run_id=run, checkpoint_id=cp["id"])
 
+    @pytest.mark.req("world-catalog/incomplete-historical-recordings-remain-replayable")
     def test_existing_shared_recording_is_explicitly_replay_only(self):
         record = {"world": WORLD, "rounds": [{"turn": 1, "actors": {}}], "actor_inputs": {}}
         recovered = self.catalog.import_share(self.world["id"], "share1", record)
@@ -97,6 +103,7 @@ class WorldCatalogTests(unittest.TestCase):
         self.assertEqual(self.catalog.resume(run)["response"]["actor_state"], result(1)["actor_state"])
         self.assertEqual(self.catalog.world(self.world["id"])["world"]["definition"], WORLD)
 
+    @pytest.mark.req("world-catalog/a-completed-world-produces-no-fictitious-checkpoint")
     def test_explicit_finished_response_preserves_checkpoint_and_disables_continue(self):
         rid = self.catalog.create_run(self.world['id'])['run']['id']
         cp = self.catalog.append(rid, None, {}, result(1))

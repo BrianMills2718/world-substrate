@@ -3,6 +3,8 @@ from __future__ import annotations
 import importlib.util
 import sys
 import unittest
+
+import pytest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -26,9 +28,13 @@ class ComposedLivingSceneRendererTests(unittest.TestCase):
         cls.bundle = load_live_projection_bundle(PROJECTION)
         cls.html = renderer.render_html(cls.bundle, cls.profile, PROFILE.parent)
 
+    @pytest.mark.req("living-scene/a-world-uses-the-generic-primitives", existing=True)
+
     def test_generic_renderer_has_world_first_interaction_shell(self) -> None:
         for marker in ("class='stage'", "class='controls'", "id='scrub'", "id='inspector'", "id='inspectorClose'", "data-kind='actors'", "data-kind='entities'", "data-kind='activities'", "data-kind='institutions'"):
             self.assertIn(marker, self.html)
+
+    @pytest.mark.req("living-scene/the-world-is-the-interface", existing=True)
 
     def test_inspector_is_selection_driven_not_persistent_dashboard(self) -> None:
         self.assertIn(".inspector.open", self.html)
@@ -36,6 +42,10 @@ class ComposedLivingSceneRendererTests(unittest.TestCase):
         self.assertIn("function closeInspector()", self.html)
         self.assertNotIn("causal graph", self.html.lower())
         self.assertNotIn("trace table", self.html.lower())
+
+    @pytest.mark.req("living-scene/the-composed-renderer-chooses-only-presentation", existing=True)
+
+    @pytest.mark.req("living-scene/a-world-uses-the-generic-primitives", existing=True)
 
     def test_composed_renderer_supports_presentation_only_motion_and_state_positions(self) -> None:
         self.assertIn("function actorPositions(f)", self.html)
@@ -47,6 +57,8 @@ class ComposedLivingSceneRendererTests(unittest.TestCase):
         self.assertIn("failed: ", self.html)
         self.assertIn("passed: ", self.html)
         self.assertIn("effect.checks", self.html)
+
+    @pytest.mark.req("living-scene/world-specific-detail-stays-in-the-profile", existing=True)
 
     def test_generic_source_contains_no_waltzman_specific_ids(self) -> None:
         source = (REPO / "scripts/render_composed_living_scene.py").read_text().lower()

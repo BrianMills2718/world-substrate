@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 import sys
 import unittest
+
+import pytest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -92,6 +94,9 @@ class WorkshopGreenfieldSceneProof(unittest.TestCase):
         for token in ("workshop", "mira", "frame-a", "wrench-1"):
             self.assertNotIn(token, source)
         self.assertIn("Workshop replay: assembling a chair", REPLAY.read_text())
+
+
+    @pytest.mark.req("scene-replay/worlds-replay-through-the-generic-path", existing=True)
 
 
     def test_zero_review_workshop_profile_is_complete_and_retained(self):

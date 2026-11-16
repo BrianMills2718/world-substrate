@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Generic composed-world renderer for Living Scene v1 retained projections."""
+"""Generic composed-world renderer for Living Scene v1 retained projections.
+
+Implements: living-scene/composed-scene-authority-boundary
+
+Implements: living-scene/composed-scene-generic-presentation-primitives
+
+Implements: living-scene/composed-scene-product-quality-rule
+"""
 from __future__ import annotations
 
 import argparse

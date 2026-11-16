@@ -392,6 +392,10 @@ def causal_model_schema(bundle: dict[str, Any]) -> dict[str, Any]:
 
 
 def _context(bundle: dict[str, Any]) -> dict[str, Any]:
+    """Context given to the model, including the rule that check labels are plain English with entity names.
+
+    Implements: world-builder-page/rule-checks-read-as-plain-english
+    """
     paths: list[str] = [
         "location.location_id",
         "ownership.owner_ref",
@@ -651,6 +655,10 @@ def generate_causal_model(
     max_output_tokens: int = MAX_MECHANICS_OUTPUT_TOKENS,
     route_policy: Any = None,
 ) -> tuple[dict[str, Any], Any]:
+    """Ask a model for a causal model as JSON text, with one compiler-guided repair; nothing returned is executed.
+
+    Implements: causal-model-authoring/model-generation-and-repair
+    """
     bundle = validate_bundle(bundle)
     if world_kind not in WORLD_KINDS:
         raise ValueError(f"world_kind must be one of {WORLD_KINDS}")

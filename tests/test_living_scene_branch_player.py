@@ -5,6 +5,8 @@ import importlib.util
 import json
 import tempfile
 import unittest
+
+import pytest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -30,12 +32,16 @@ class LivingSceneBranchPlayerTests(unittest.TestCase):
         cls.profile = renderer.load_scene_contract(cls.profile_path)
         cls.bundle = renderer.load_live_projection_bundle(cls.bundle_path)
 
+    @pytest.mark.req("living-scene/the-scrubber-and-branch-wrapper", existing=True)
+
     def test_single_scene_has_arbitrary_canonical_boundary_scrubber(self):
         html = renderer.render_html(self.bundle, self.profile, self.profile_path.parent)
         self.assertIn("id='scrub'", html)
         self.assertIn("type='range'", html)
         self.assertIn("oninput=e=>", html)
         self.assertIn(f"max='{len(renderer.build_living_scene_frames(self.bundle, self.profile)) - 1}'", html)
+
+    @pytest.mark.req("living-scene/the-scrubber-and-branch-wrapper", existing=True)
 
     def test_branch_wrapper_selects_retained_documents_without_world_logic(self):
         alternate = copy.deepcopy(self.bundle)
@@ -48,6 +54,8 @@ class LivingSceneBranchPlayerTests(unittest.TestCase):
         self.assertIn("Alternate", html)
         self.assertIn("frame.srcdoc=DOCS[name]", html)
         self.assertIn("requestedFrame", html)
+
+    @pytest.mark.req("living-scene/mobile-geometry-is-presentation-only", existing=True)
 
     def test_mobile_layout_overrides_are_validated_but_remain_presentation_only(self):
         profile = copy.deepcopy(json.loads(self.profile_path.read_text()))

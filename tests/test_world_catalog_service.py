@@ -6,6 +6,8 @@ import copy
 import tempfile
 import threading
 import unittest
+
+import pytest
 import urllib.error
 import urllib.request
 from http.server import ThreadingHTTPServer
@@ -92,6 +94,7 @@ class CatalogServiceTests(unittest.TestCase):
         self.assertEqual(status, 200, shared)
         self.assertNotIn('readout', self.request('/share/' + shared['share_id'], owner=False)[1])
 
+    @pytest.mark.req("world-catalog/owner-created-worlds-remain-available-after-reload")
     def test_private_catalog_requires_owner_for_reads_creates_and_runs(self):
         self.assertEqual(self.request('/worlds', owner=False)[0], 403)
         self.assertEqual(self.request('/worlds/' + self.world['id'] + '/runs', {}, owner=False)[0], 403)
@@ -100,6 +103,7 @@ class CatalogServiceTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual({k: detail['world']['definition'][k] for k in WORLD}, WORLD)
 
+    @pytest.mark.req("world-catalog/branching-preserves-the-parent")
     def test_real_native_round_continue_branch_and_durable_prefix(self):
         rid = self.new_run()
         status, first = self.step(rid, bundle={'malicious': True})
@@ -120,6 +124,7 @@ class CatalogServiceTests(unittest.TestCase):
         self.assertEqual([r['trace_id'] for r in child['record']['runs']], [first['trace_id'], second['trace_id']])
         self.assertEqual(self.request('/share', {'catalog_run_id': branch['run']['id']})[0], 200)
 
+    @pytest.mark.req("world-catalog/continue-restores-a-saved-run")
     def test_duplicate_step_rejected_before_native_work(self):
         rid = self.new_run()
         status, first = self.step(rid)
@@ -129,6 +134,7 @@ class CatalogServiceTests(unittest.TestCase):
         self.assertEqual(status, 409, stale)
         self.assertEqual(len(service._catalog().run(self.world['id'], rid)['record']['rounds']), 1)
 
+    @pytest.mark.req("world-catalog/persistence-failure-is-visible")
     def test_generation_save_hook_owner_only_and_fail_closed(self):
         service._REQUEST.set({'path': '/generate-world', 'summary': {'description': 'Built orchard'}})
         token = service._LEDGER.set('owner')
@@ -147,6 +153,7 @@ class CatalogServiceTests(unittest.TestCase):
             service._LEDGER.reset(token)
             service._REQUEST.set(None)
 
+    @pytest.mark.req("world-catalog/persistence-failure-is-visible")
     def test_checkpoint_failure_never_returns_success(self):
         rid = self.new_run()
         with patch.object(service.WorldCatalog, 'append', side_effect=OSError('disk unavailable')):
@@ -168,6 +175,7 @@ class CatalogServiceTests(unittest.TestCase):
         self.assertIn('checkpoint_id', result)
         self.assertEqual(len(service._catalog().run(self.world['id'], rid)['record']['rounds']), 1)
 
+    @pytest.mark.req("world-catalog/a-completed-world-produces-no-fictitious-checkpoint")
     def test_native_finished_world_returns_success_without_fake_checkpoint(self):
         finished_world = copy.deepcopy(WORLD)
         finished_world['bundle']['entities'] = finished_world['bundle']['entities'][:3]
@@ -258,6 +266,7 @@ class CatalogServiceTests(unittest.TestCase):
         self.assertEqual(first[1]['owner_builds_found'], 2)
         self.assertNotIn('Guest private prompt', json.dumps(second))
 
+    @pytest.mark.req("world-catalog/continue-restores-a-saved-run")
     def test_declared_branch_restores_exact_cognition_and_ignores_client_replacements(self):
         definition = copy.deepcopy(WORLD)
         bundle = definition['bundle']

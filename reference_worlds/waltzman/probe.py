@@ -198,7 +198,10 @@ def run_baseline(root: Path | None = None) -> Engine:
 
 
 def run_intervention(baseline: Engine | None = None) -> Engine:
-    """Fork the blocked run and apply the represented stabilization package."""
+    """Fork the blocked run and apply the represented stabilization package.
+
+    Implements: live-projection/branching
+    """
 
     baseline = baseline or run_baseline()
     engine = Engine.replay_commands(

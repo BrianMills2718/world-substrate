@@ -11,6 +11,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+import pytest
+
 from scripts.run_authored_world import _component_types, _read_attempt, build_engine, mark_only_fillers, run_world
 from world_substrate.engine import Engine, recorded_reaction_limit
 from world_substrate.model import World
@@ -379,6 +381,7 @@ class RequestTests(unittest.TestCase):
 
 
 class KnockOnEffectTests(unittest.TestCase):
+    @pytest.mark.req("information-delivery/a-reaction-names-the-event-it-reacts-to")
     def test_glass_chain_completes_in_one_moment(self):  # A5 (declared fixture)
         engine, _, _ = build_engine(GLASS_BUNDLE, GLASS_RULES)
         result = _push(engine)
@@ -467,6 +470,7 @@ class KnockOnEffectTests(unittest.TestCase):
         # refusal still replays as saved. New runs have no limit (tests/test_knock_on_unbounded.py).
         return build_engine(bundle, rules, reaction_limit=recorded_reaction_limit({}))
 
+    @pytest.mark.req("information-delivery/a-moment-needs-too-many-reactions")
     def test_a_chain_past_the_reaction_limit_is_refused_whole(self):  # A6
         engine, _, _ = self._domino_engine()
         before = engine.world.material_dict()

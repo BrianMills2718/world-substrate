@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import sys
 import unittest
+
+import pytest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -20,6 +22,7 @@ class WaltzmanProjectionTests(unittest.TestCase):
     def setUpClass(cls):
         cls.runs = build_demo_runs()
 
+    @pytest.mark.req("live-projection/the-world-can-be-rebuilt-from-the-bundle")
     def test_snapshot_plus_event_deltas_reconstruct_each_canonical_branch_exactly(self):
         for name, run in self.runs.items():
             with self.subTest(branch=name):
@@ -31,6 +34,7 @@ class WaltzmanProjectionTests(unittest.TestCase):
                     run["verification"]["canonical_material_hash"],
                 )
 
+    @pytest.mark.req("live-projection/an-intervention-branch-is-a-distinct-run")
     def test_projection_preserves_stable_event_ids_and_branch_prefix(self):
         baseline = self.runs["baseline"]
         intervention = self.runs["intervention"]
@@ -40,6 +44,7 @@ class WaltzmanProjectionTests(unittest.TestCase):
         self.assertEqual(intervention_ids[: len(baseline_ids)], baseline_ids)
         self.assertEqual(intervention["fork"]["shared_event_count"], len(baseline_ids))
 
+    @pytest.mark.req("live-projection/the-stream-order")
     def test_sse_is_snapshot_then_canonical_events_then_completion(self):
         run = self.runs["baseline"]
         messages = projection_sse_messages(run)

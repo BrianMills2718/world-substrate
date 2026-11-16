@@ -15,6 +15,8 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import pytest
+
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
@@ -53,6 +55,9 @@ def _exchange_world(root: Path | None = None) -> Engine:
     return Engine(world, engine.registry)
 
 
+@pytest.mark.req('semantic-binding/the-give-binding-cites-predicate-local-roles')
+@pytest.mark.req('semantic-binding/an-ordinary-transfer')
+@pytest.mark.req('semantic-binding/role-definition-ids-stay-out-of-the-event-binding')
 def test_give_binding_cites_pinned_sense_and_roles() -> None:
     assert GIVE_BINDING.sense_id == "lc:give_transfer"
     assert GIVE_BINDING.roles == {
@@ -71,6 +76,7 @@ def test_give_binding_cites_pinned_sense_and_roles() -> None:
     assert SEMANTIC_BINDINGS["give"] is GIVE_BINDING
 
 
+@pytest.mark.req('semantic-binding/role-definition-ids-stay-out-of-the-event-binding')
 def test_role_definition_metadata_cannot_change_role_shape_or_namespace() -> None:
     base = {
         "binding_id": "binding.test.v0",
@@ -102,6 +108,8 @@ def test_give_binding_names_no_exchange_mechanic() -> None:
     assert any("no transfer" in limit.lower() for limit in GIVE_BINDING.interpretation_limits)
 
 
+@pytest.mark.req('transition-engine/two-gives-are-independent', existing=True)
+@pytest.mark.req('semantic-binding/a-reciprocal-pair')
 def test_two_independent_gives_are_recognized_as_one_exchange() -> None:
     engine = _exchange_world()
 
@@ -116,6 +124,7 @@ def test_two_independent_gives_are_recognized_as_one_exchange() -> None:
     assert {exchange.vessel_a, exchange.vessel_b} == {"cup-robinson", "clay-pot"}
 
 
+@pytest.mark.req('transition-engine/two-gives-are-independent', existing=True)
 def test_one_give_with_no_reciprocal_is_not_an_exchange() -> None:
     engine = _exchange_world()
 
@@ -129,6 +138,8 @@ def test_one_give_with_no_reciprocal_is_not_an_exchange() -> None:
     assert engine.world.entities["cup-robinson"].ownership.owner_ref == "actor:friday"
 
 
+@pytest.mark.req('transition-engine/two-gives-are-independent', existing=True)
+@pytest.mark.req('semantic-binding/a-reciprocal-pair')
 def test_derived_exchange_classification_performs_no_transfer() -> None:
     engine = _exchange_world()
 

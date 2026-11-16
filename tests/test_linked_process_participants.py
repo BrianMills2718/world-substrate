@@ -13,6 +13,8 @@ import unittest
 from copy import deepcopy
 from pathlib import Path
 
+import pytest
+
 REPO = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(REPO), str(REPO / "src")]
 
@@ -92,6 +94,7 @@ class CompilerTests(unittest.TestCase):  # L1
 
 
 class EngineTests(unittest.TestCase):  # L2
+    @pytest.mark.req("causal-model-authoring/a-process-changes-linked-entities")
     def test_one_event_changes_the_vehicle_and_its_driver(self):
         engine, _, _ = build_engine(_bundle(), _causal(DRIVE_LINKED))
         engine.registry.register_process(ClockAdvanceProcess())

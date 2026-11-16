@@ -4,6 +4,8 @@
 The trace owns what happened. The scene profile owns only presentation:
 geometry, asset bindings, action-to-motion rules, state appearance, and
 milestone labels. The renderer contains no world-specific entity or action ids.
+
+Implements: scene-replay/authority
 """
 from __future__ import annotations
 
@@ -58,6 +60,11 @@ def load_trace(path: Path, *, expected_world: str | None = None) -> dict[str, An
 
 
 def load_scene_profile(path: Path) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
+    """Load and validate a scene-profile/v0 file (and its optional world model).
+
+    Implements: scene-replay/wire-shape
+    """
+
     profile = json.loads(path.read_text())
     if profile.get("schema_version") != PROFILE_SCHEMA:
         raise ValueError(f"scene profile must use {PROFILE_SCHEMA}")
@@ -245,6 +252,11 @@ def _moment_ids(
     accepted: list[tuple[str, dict[str, Any], dict[str, Any]]],
     previous_release_by: dict[str, str],
 ) -> list[str]:
+    """Trace-derived moment predicates (retry_unavailable, filled_release, take_after_release, all_progress_filled).
+
+    Implements: scene-replay/moment-projection
+    """
+
     progress = raw.get("progress") or {}
     records = raw.get("actors") or {}
     moments: list[str] = []
@@ -285,7 +297,10 @@ def _moment_ids(
 
 
 def _station_layout_positions(profile: dict[str, Any], item_state: dict[str, dict[str, Any]]) -> dict[str, list[float]]:
-    """Resolve presentation-only multi-item station placement for one frame."""
+    """Resolve presentation-only multi-item station placement for one frame.
+
+    Implements: scene-replay/station-item-layout
+    """
     positions: dict[str, list[float]] = {}
     entity_order = list(profile["entities"])
     for station_id, station in profile["stations"].items():
@@ -321,6 +336,11 @@ def _station_layout_positions(profile: dict[str, Any], item_state: dict[str, dic
     return positions
 
 def build_frames(trace: dict[str, Any], profile: dict[str, Any], world_entities: dict[str, dict[str, Any]] | None = None) -> list[dict[str, Any]]:
+    """Project each accepted action through the profile's action_visuals into replay frames.
+
+    Implements: scene-replay/action-projection
+    """
+
     if trace.get("world") != profile.get("world"):
         raise ValueError("trace and scene profile name different worlds")
     actors = list(trace["actors"])
@@ -575,6 +595,11 @@ document.getElementById('toggle').onclick=()=>{{playing=!playing;document.getEle
 
 
 def render_file(trace_path: Path, profile_path: Path, output_path: Path) -> None:
+    """Write the read-only replay HTML for one trace and profile.
+
+    Implements: scene-replay/generation
+    """
+
     profile, world_entities = load_scene_profile(profile_path)
     trace = load_trace(trace_path, expected_world=profile["world"])
     output_path.write_text(render_html(trace, profile, world_entities, profile_path.parent))

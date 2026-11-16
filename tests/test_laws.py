@@ -13,6 +13,8 @@ import unittest
 from copy import deepcopy
 from pathlib import Path
 
+import pytest
+
 REPO = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(REPO), str(REPO / "src")]
 
@@ -98,6 +100,7 @@ class MoveTests(unittest.TestCase):
         engine = _engine([BOXED_MADE_BY_PACKING])
         self.assertEqual(_submit(engine, PACK)["status"], "accepted")
 
+    @pytest.mark.req("information-delivery/a-reaction-would-break-a-declared-law")
     def test_a_knock_on_effect_that_breaks_a_law_refuses_the_whole_move(self):
         engine = _engine([ERASERS_FIXED], processes=[ERASER_ON_PACK])
         before = engine.world.material_hash()

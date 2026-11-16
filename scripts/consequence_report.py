@@ -102,7 +102,10 @@ def _protected_writer(declaration: dict[str, Any]) -> bool:
 
 
 def _check_independent_writers(bundle: dict[str, Any], causal: dict[str, Any]) -> None:
-    """Raw candidate validation accepts only exact compiler-owned procedural writers, never names alone."""
+    """Raw candidate validation accepts only exact compiler-owned procedural writers, never names alone.
+
+    Implements: native-coordination/independent-generated-concern-procedure
+    """
     if not _independent(bundle):
         return
     from types import SimpleNamespace

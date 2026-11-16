@@ -9,6 +9,8 @@ import shutil
 import subprocess
 import sys
 import unittest
+
+import pytest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -60,6 +62,8 @@ class LivingSceneLayoutTests(unittest.TestCase):
         cls.bundle = load_live_projection_bundle(PROJECTION)
         cls.frames = build_living_scene_frames(cls.bundle, cls.profile)
 
+    @pytest.mark.req("living-scene/actors-are-placed-by-one-shared-rule", existing=True)
+
     def test_both_renderers_embed_the_one_shared_rule(self) -> None:
         for name in ("render_living_scene", "render_composed_living_scene"):
             with self.subTest(renderer=name):
@@ -68,6 +72,8 @@ class LivingSceneLayoutTests(unittest.TestCase):
                 self.assertIn("return wsActorPositions(FRAMES,idx,PROFILE,", html)
                 # No renderer keeps a private copy of the move_to replay any more.
                 self.assertEqual(html.count("op.op==='actor.move_to'"), 1)
+
+    @pytest.mark.req("living-scene/actors-are-placed-by-one-shared-rule", existing=True)
 
     def test_activity_ring_wins_over_an_earlier_move_and_moves_persist(self) -> None:
         # G10: frame 1 moves actor-a to resource-a; frame 2 starts the activity.
@@ -87,6 +93,8 @@ class LivingSceneLayoutTests(unittest.TestCase):
         after = [i for i in range(first, len(self.frames)) if statuses[i] != "active"]
         for i in after:
             self.assertEqual(positions[i]["actor-a"], resource)
+
+    @pytest.mark.req("living-scene/actors-are-placed-by-one-shared-rule", existing=True)
 
     def test_actors_moved_to_one_place_are_spread_not_stacked(self) -> None:
         # Issue #106: two actor.move_to to the same anchor on one event.

@@ -310,6 +310,8 @@ def generate_world_bundle(
 
     With ``feedback`` and the ``previous`` bundle, the model redesigns that structure from what a test run of
     rules written for it showed; rule rewrites alone cannot add a missing action or field.
+
+    Implements: world-builder-page/unrepresentable-parts-are-listed
     """
     if not isinstance(description, str) or not description.strip():
         raise ValueError("description must be a nonempty string")

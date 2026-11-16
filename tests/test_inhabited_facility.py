@@ -108,7 +108,8 @@ class InhabitedFacilityTests(unittest.TestCase):
         world = runner.World.from_snapshot(snapshot, component_types=runner._component_types(BUNDLE))
         return runner.Engine(world, engine.registry)
 
-    @pytest.mark.req("information-delivery/place-scoped-perception-with-distinct-inputs")
+    @pytest.mark.req("information-delivery/a-closed-door-blocks-movement-and-opening-it-permits-movement")
+    @pytest.mark.req("information-delivery/observation-follows-place-while-reports-and-knowledge-do-not")
     def test_closed_door_blocks_open_door_permits_and_perception_follows_place(self):
         engine, _, _ = runner.build_engine(BUNDLE, CAUSAL)
         bundle = validate_bundle(copy.deepcopy(BUNDLE))
@@ -146,7 +147,7 @@ class InhabitedFacilityTests(unittest.TestCase):
         self.assertNotIn("two weeks ago.", after["visible"] + after["actor_state"])
         self.assertNotIn("memories", info.actor_context(engine, bundle, "bo", 4))
 
-    @pytest.mark.req("information-delivery/place-scoped-perception-with-distinct-inputs")
+    @pytest.mark.req("information-delivery/an-actor-is-offered-what-is-at-hand-and-not-what-is-elsewhere")
     def test_offered_actions_follow_place_and_people_are_seen_only_when_present(self):
         """A resident run showed open-door never offered and everyone seen from every room (2026-11-13)."""
         engine, _, _ = runner.build_engine(BUNDLE, CAUSAL)
@@ -161,7 +162,7 @@ class InhabitedFacilityTests(unittest.TestCase):
         self.assertNotIn("Ari (ari)", context["visible"])
         self.assertIn("partner=Control room door (corridor side) (control-door-out)", json.dumps(context["actions"]))
 
-    @pytest.mark.req("information-delivery/place-scoped-perception-with-distinct-inputs")
+    @pytest.mark.req("information-delivery/an-actor-is-offered-what-is-at-hand-and-not-what-is-elsewhere")
     def test_free_text_reader_knows_the_far_half_of_the_door_it_stands_at(self):
         """The workspace's resident path refused every "open the door": the far half was not in the reader's entities."""
         engine, _, _ = runner.build_engine(BUNDLE, CAUSAL)
@@ -175,7 +176,8 @@ class InhabitedFacilityTests(unittest.TestCase):
         self.assertIn("control-door-out", seen)  # named by Bo's own open-door form, not perceived
         self.assertNotIn("lab-door-in", seen)    # another room's door is still not his to name
 
-    @pytest.mark.req("information-delivery/place-scoped-perception-with-distinct-inputs")
+    @pytest.mark.req("information-delivery/replay-and-a-branch-show-the-same-facts")
+    @pytest.mark.req("information-delivery/a-real-run-s-report-and-refusal-appear-in-the-replayed-scene")
     def test_replay_and_branch_show_the_same_facts(self):
         catalog = service._catalog()
         rid = catalog.create_run(self.world["id"])["run"]["id"]

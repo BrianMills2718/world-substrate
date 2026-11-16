@@ -10,8 +10,6 @@ from world_substrate import attempt
 from world_substrate.model import Entity
 from test_actor_information import fixture, Details
 
-pytestmark = pytest.mark.req('semantic-binding/preserve-operation-and-referents')
-
 
 def capture(monkeypatch, bundle, engine, actor='mara'):
     engine.actor_information_bundle = bundle
@@ -32,6 +30,7 @@ def capture(monkeypatch, bundle, engine, actor='mara'):
     return calls[0]
 
 
+@pytest.mark.req('semantic-binding/public-examples-do-not-disclose-private-forms-or-force-an-action')
 def test_visible_public_binding_survives_without_private_fillers(monkeypatch):
     bundle, engine = fixture()
     sent = capture(monkeypatch, bundle, engine)
@@ -41,6 +40,7 @@ def test_visible_public_binding_survives_without_private_fillers(monkeypatch):
     assert 'PRIVILEGED' not in str(sent)
 
 
+@pytest.mark.req('semantic-binding/public-examples-do-not-disclose-private-forms-or-force-an-action')
 def test_hidden_action_form_and_description_stay_out_of_interpreter(monkeypatch):
     bundle, engine = fixture()
     bundle['entities'].append({'id': 'private-note', 'label': 'SECRET', 'categories': ['record'],
@@ -57,6 +57,7 @@ def test_hidden_action_form_and_description_stay_out_of_interpreter(monkeypatch)
     assert {'target': 'private-note'} in authorized['signatures'][0]['known_bindings']
 
 
+@pytest.mark.req('semantic-binding/private-state-does-not-change-interpreter-input')
 def test_private_state_change_cannot_change_interpretation_input(monkeypatch):
     bundle, engine = fixture()
     first = capture(monkeypatch, bundle, engine)

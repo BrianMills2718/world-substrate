@@ -4,6 +4,8 @@ import json
 import random
 import sys
 import unittest
+
+import pytest
 from types import ModuleType, SimpleNamespace
 from unittest.mock import MagicMock, patch
 
@@ -26,6 +28,7 @@ REPLY = {
 
 
 class WorldDialogueTests(unittest.TestCase):
+    @pytest.mark.req("world-builder-page/a-visitor-wants-help-with-an-idea")
     def test_clarify_returns_questions_options_and_description(self):
         module, call = fake_llm(json.dumps(REPLY))
         with patch.dict(sys.modules, {"llm_client": module}):
@@ -55,6 +58,7 @@ class WorldDialogueTests(unittest.TestCase):
                     clarify(bad, trace_id="t", max_budget=0.01)
         call.assert_not_called()
 
+    @pytest.mark.req("world-builder-page/a-visitor-wants-help-with-an-idea")
     def test_surprise_uses_a_server_chosen_theme(self):
         module, call = fake_llm(json.dumps({"description": "Mia and Leo share one crane to unload six crates."}))
         with patch.dict(sys.modules, {"llm_client": module}):

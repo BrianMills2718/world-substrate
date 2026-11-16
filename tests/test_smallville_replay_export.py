@@ -29,7 +29,7 @@ def row(kind=None, status="accepted", **fields):
     return {"did": ({"kind": kind, **fields} if kind else None), "status": status, "refused_because": ["the door must be open"] if status != "accepted" else []}
 
 
-@pytest.mark.req("scene-viewer/smallville-replay-export")
+@pytest.mark.req("scene-viewer/a-refused-walk-a-walk-through-a-doorway-and-a-report")
 def test_rounds_become_walking_steps_and_refusals_and_reports_stay_visible():
     rows = [{"result": {"transcript": [
         {"turn": 1, "actors": {"ari": row("move", "precondition_failed", to="right"), "bo": row()}}]}},
@@ -53,7 +53,7 @@ def test_rounds_become_walking_steps_and_refusals_and_reports_stay_visible():
     assert meta["persona_names"] == ["Ari", "Bo"] and meta["step"] == len(steps) - 1
 
 
-@pytest.mark.req("scene-viewer/smallville-replay-export")
+@pytest.mark.req("scene-viewer/an-unreachable-room-fails-loudly")
 def test_an_unreachable_room_fails_loudly():
     m = maze()
     m["collision"][2][3] = "32125"

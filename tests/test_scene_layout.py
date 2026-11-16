@@ -35,7 +35,7 @@ def test_the_pump_facility_layout_resolves_to_rooms_doors_people_and_sprites():
     assert set(got["doors"]) == {"laboratory-door", "control-room-door"}
 
 
-@pytest.mark.req("scene-viewer/world-layout-declaration")
+@pytest.mark.req("scene-viewer/a-layout-that-cannot-be-drawn-is-refused")
 @pytest.mark.parametrize("change,message", [
     ({"map": "no-such-map"}, "not a prepared map"),
     ({"rooms": {"laboratory": "zzz", "corridor": "hub", "control-room": "b"}}, "uses slot 'zzz'"),
@@ -56,7 +56,7 @@ def test_places_with_no_door_between_them_are_refused():
         validate_bundle(with_layout(doors={"laboratory-door": BUNDLE["layout"]["doors"]["laboratory-door"]}))
 
 
-@pytest.mark.req("scene-viewer/world-layout-declaration")
+@pytest.mark.req("scene-viewer/the-same-story-on-a-second-map")
 def test_a_world_without_a_layout_still_validates_and_a_second_map_accepts_the_same_story():
     plain = deepcopy(BUNDLE)
     del plain["layout"]
@@ -80,7 +80,7 @@ def test_every_connection_a_prepared_map_declares_is_walkable_with_a_doorway(map
         assert ex.doorway(maze, [start] + ex.walk(maze, start, goal))
 
 
-@pytest.mark.req("scene-viewer/owner-run-viewer")
+@pytest.mark.req("scene-viewer/a-run-log-is-enough")
 def test_a_run_log_alone_gives_the_same_replay_as_the_hand_exported_one():
     """The first saved round carries the bundle, so the run log is enough: no separate bundle file."""
     from scripts import open_scene_viewer as viewer
@@ -122,7 +122,7 @@ def test_a_generated_map_connects_every_declared_slot_through_a_two_tile_doorway
     assert all(0 <= t < 132 for _, _, t in built["grid"]["props"])
 
 
-@pytest.mark.req("scene-viewer/public-generated-map")
+@pytest.mark.req("scene-viewer/a-story-exports-and-draws-with-no-private-art")
 def test_the_pump_story_exports_on_a_generated_map_with_no_clone_and_no_private_art():
     from scripts.export_smallville_replay import export_from_rows
     bundle = deepcopy(BUNDLE)
@@ -144,7 +144,7 @@ def _share_of_the_scripted_pump_run():
     return {"world": {"bundle": validate_bundle(deepcopy(BUNDLE)), "causal_model": CAUSAL}, "rounds": rounds}
 
 
-@pytest.mark.req("scene-viewer/public-generated-map")
+@pytest.mark.req("scene-viewer/a-visitor-opens-a-share-link-s-room-map")
 def test_a_share_replay_uses_the_generated_map_withholds_report_words_and_keeps_them_for_the_owner():
     from scripts.world_builder_service import _public_replay
     share = _share_of_the_scripted_pump_run()
@@ -157,7 +157,7 @@ def test_a_share_replay_uses_the_generated_map_withholds_report_words_and_keeps_
     assert "ville" not in json.dumps(public).lower().replace("the_ville", "")  # no private map name in the public payload
 
 
-@pytest.mark.req("scene-viewer/public-generated-map")
+@pytest.mark.req("scene-viewer/a-world-with-no-layout-has-no-room-map")
 def test_a_world_with_no_layout_has_no_public_room_map():
     from scripts.world_builder_service import _public_replay
     share = _share_of_the_scripted_pump_run()
@@ -169,7 +169,7 @@ def test_a_world_with_no_layout_has_no_public_room_map():
 CAUSAL = json.loads((ROOT / "examples/world_authoring/pump-facility-causal-v0.json").read_text())
 
 
-@pytest.mark.req("scene-viewer/rules-overlay")
+@pytest.mark.req("scene-viewer/a-refusal-shows-the-rule-that-caused-it")
 def test_a_replay_carries_the_worlds_rules_and_the_rule_each_attempt_met():
     from scripts.export_smallville_replay import export_from_rows
     rows = [json.loads(line) for line in (ROOT / "evidence/ui/inhabited-facility-20261113/scripted-run-log.jsonl").read_text().splitlines() if line.strip()]
@@ -227,7 +227,7 @@ def _bundle_without_layout():
     return bundle
 
 
-@pytest.mark.req("scene-viewer/builder-proposes-layout")
+@pytest.mark.req("scene-viewer/a-spatial-world-gets-a-layout")
 def test_a_valid_proposed_layout_is_attached(monkeypatch):
     from scripts.layout_proposal import propose_layout
     layout = {"version": 1, "map": "public-hub-3", "rooms": {"laboratory": "a", "corridor": "hub", "control-room": "b"},
@@ -238,7 +238,7 @@ def test_a_valid_proposed_layout_is_attached(monkeypatch):
     assert out["layout"] == layout and "layout" not in _bundle_without_layout()
 
 
-@pytest.mark.req("scene-viewer/builder-proposes-layout")
+@pytest.mark.req("scene-viewer/a-world-with-no-places-or-a-bad-layout-is-built-as-before")
 def test_a_world_with_no_places_gets_no_layout_and_a_bad_layout_is_repaired_once_then_dropped(monkeypatch):
     from scripts.layout_proposal import propose_layout
     _fake_llm(monkeypatch, [json.dumps({"layout": None})])
@@ -276,7 +276,7 @@ def test_a_doorway_with_no_halves_is_always_open_in_the_replay():
     assert {c["state"] for c in replay["door_changes"] if c["step"] == 0} == {"open"}
 
 
-@pytest.mark.req("scene-viewer/builder-proposes-layout")
+@pytest.mark.req("scene-viewer/a-clinic-world-exports")
 def test_a_builder_made_world_with_other_actions_exports_and_its_doors_open_when_walked_through():
     """The clinic (a live build on 2026-11-14, layout proposed by the Builder, run scripted and shared): actions the exporter was
     not written for ('check-in', 'unlock-lab-door', 'examine') still show, and a door nobody 'opens' opens when someone walks through."""
@@ -296,7 +296,7 @@ from scripts.world_graph import graph_replay, world_graph  # noqa: E402
 WALTZMAN = json.loads((ROOT / "tests/fixtures/waltzman-share-20261104.json").read_text())
 
 
-@pytest.mark.req("scene-viewer/world-graph")
+@pytest.mark.req("scene-viewer/waltzman-graph-carries-every-box-and-the-round-s-tries")
 def test_the_waltzman_graph_has_every_box_and_link_the_network_shows():
     graph = world_graph(WALTZMAN["world"]["bundle"], WALTZMAN["world"]["causal_model"])
     kinds = {}
@@ -306,7 +306,8 @@ def test_the_waltzman_graph_has_every_box_and_link_the_network_shows():
     assert kinds == {"actor": 10, "action": 17, "thing": 17, "process": 26}
 
 
-@pytest.mark.req("scene-viewer/world-graph")
+@pytest.mark.req("scene-viewer/a-refusal-keeps-its-reason-and-no-words")
+@pytest.mark.req("scene-viewer/waltzman-graph-carries-every-box-and-the-round-s-tries")
 def test_a_round_lights_each_try_with_its_status_and_refusal_reason_and_no_words():
     replay = graph_replay(WALTZMAN["world"]["bundle"], WALTZMAN["world"]["causal_model"], WALTZMAN["rounds"])
     first = replay["rounds"][0]
@@ -319,7 +320,7 @@ def test_a_round_lights_each_try_with_its_status_and_refusal_reason_and_no_words
     assert "said" not in json.dumps(replay)
 
 
-@pytest.mark.req("scene-viewer/graph-over-the-map")
+@pytest.mark.req("scene-viewer/the-replay-carries-the-graph")
 def test_a_replay_carries_the_graph_and_which_person_each_graph_actor_is():
     replay = json.loads((ROOT / "viewer/smallville/replay-public.json").read_text())
     assert len(replay["graph"]["rounds"]) == len(replay["rounds"])
@@ -329,7 +330,7 @@ def test_a_replay_carries_the_graph_and_which_person_each_graph_actor_is():
     assert "words" not in json.dumps(replay["graph"]).lower().replace("(words not shown)", "")
 
 
-@pytest.mark.req("scene-viewer/named-rooms-and-objects")
+@pytest.mark.req("scene-viewer/the-pump-facility-shows-its-rooms-and-its-pump")
 def test_rooms_are_named_off_the_doorways_and_the_pump_is_placed_clear_of_them():
     replay = json.loads((ROOT / "viewer/smallville/replay-public.json").read_text())
     assert {r["label"] for r in replay["rooms"]} == {"Laboratory", "Corridor", "Control room"}
@@ -340,7 +341,7 @@ def test_rooms_are_named_off_the_doorways_and_the_pump_is_placed_clear_of_them()
     assert pump["room"] == "laboratory" and all(abs(pump["tile"][0] - d[0]) + abs(pump["tile"][1] - d[1]) > 3 for d in doors)
 
 
-@pytest.mark.req("scene-viewer/zoom-and-pan")
+@pytest.mark.req("scene-viewer/the-viewer-wires-zoom-pan-and-reset")
 def test_the_viewer_wires_wheel_zoom_drag_pan_and_a_reset_button_that_refit_the_map():
     js = (ROOT / "viewer/smallville/viewer.js").read_text()
     page = (ROOT / "viewer/smallville/index.html").read_text()
@@ -349,7 +350,7 @@ def test_the_viewer_wires_wheel_zoom_drag_pan_and_a_reset_button_that_refit_the_
     assert "userZoom" in js and js.count("fitFn()") >= 2  # each refits the map, which redraws the graph
 
 
-@pytest.mark.req("scene-viewer/whole-network-over-the-map")
+@pytest.mark.req("scene-viewer/the-viewer-wires-the-whole-network-mode")
 def test_the_viewer_has_a_whole_network_mode_that_places_every_box_and_draws_every_link():
     js = (ROOT / "viewer/smallville/viewer.js").read_text()
     html = (ROOT / "viewer/smallville/index.html").read_text()

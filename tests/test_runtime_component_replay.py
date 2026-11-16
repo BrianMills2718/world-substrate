@@ -3,6 +3,8 @@ from __future__ import annotations
 import unittest
 from dataclasses import dataclass
 
+import pytest
+
 from world_substrate.engine import Engine
 from world_substrate.information import InformationState
 from world_substrate.model import COMPONENT_TYPES, Entity, World
@@ -15,6 +17,7 @@ class LocalInformationState:
 
 
 class RuntimeComponentReplayTests(unittest.TestCase):
+    @pytest.mark.req('transition-engine/commands-are-replayed-from-a-snapshot', existing=True)
     def test_engine_replay_uses_world_local_component_type_without_global_registration(self):
         self.assertIs(COMPONENT_TYPES["information"], InformationState)
         registry = RuleRegistry()

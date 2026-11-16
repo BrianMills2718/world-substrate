@@ -220,6 +220,11 @@ def _world_component_types(world: World) -> dict[str, type]:
 
 
 class Engine:
+    """The one transition engine over a canonical world.
+
+    Implements: transition-engine/core-transition-kernel
+    """
+
     def _bearer_of(self, action: TypedAction) -> dict[str, Any]:
         record = action.as_dict()
         actor = record.get("actor")
@@ -276,6 +281,10 @@ class Engine:
         return deepcopy(self._initial_snapshot)
 
     def observe(self, actor_id: str) -> dict[str, Any]:
+        """Project the actor-authorized, lossy observation of the world.
+
+        Implements: transition-engine/core-engine-operations-observe
+        """
         actor = self.world.entities.get(actor_id)
         # An observer needs a place to observe from. It does not need to be a
         # Castaway survivor: requiring ActorState here made health/hydration a
@@ -393,6 +402,10 @@ class Engine:
         return sorted(rows, key=lambda row: (row["entity_id"], row["rule_id"]))
 
     def discover(self, actor_id: str, kind: str | None = None) -> dict[str, Any]:
+        """List executable typed actions and blocked hints for an actor without advancing time.
+
+        Implements: transition-engine/core-engine-operations-discover
+        """
         # One detached view is enough for the whole affordance page. The page is
         # first built with a single read-only check at the end, not one per hook:
         # a per-hook snapshot and diff of the whole world dominated discovery
@@ -587,6 +600,12 @@ class Engine:
         observation: dict[str, Any] | None = None,
         causal_parent_event_ids: list[str] | None = None,
     ) -> dict[str, Any]:
+        """Build one causal event record.
+
+        Implements: transition-engine/core-records-event
+
+        Implements: transition-engine/core-engine-operations-causal-event-fields
+        """
         # Decision 002 requires eight things be inspectable per transition.
         # bearer, binding and observation are the three that were computed
         # elsewhere in this engine and never attached, so an inspector reading
@@ -623,6 +642,14 @@ class Engine:
         return event
 
     def apply(self, action: TypedAction) -> dict[str, Any]:
+        """Check an action and commit all changes and events atomically, or refuse and commit none.
+
+        Implements: transition-engine/core-engine-operations-apply
+
+        Implements: transition-engine/transition-envelope-pipeline
+
+        Implements: transition-engine/transition-envelope-requirements
+        """
         rule = self.registry.action(action.kind)
         command_id = _identifier("c", len(self.world.commands) + 1)
         event_id = _identifier("e", len(self.world.events) + 1)
@@ -867,6 +894,10 @@ class Engine:
         return {"status": status, "event": event}
 
     def advance(self, steps: int = 1) -> dict[str, Any]:
+        """Advance the world clock and run due processes, emitting causal evidence.
+
+        Implements: transition-engine/core-engine-operations-advance
+        """
         if type(steps) is not int or steps < 1:
             raise ValueError("steps must be a positive integer")
         produced: list[dict[str, Any]] = []
@@ -965,6 +996,11 @@ class Engine:
         self, trigger: dict[str, Any], command_id: str
     ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]] | dict[str, Any]:
         """Run knock-on effects of a committed event until nothing more is due.
+
+        Implements: transition-engine/knock-on-chains-of-any-length-finish-in-one-moment
+
+
+        Implements: information-delivery/same-moment-reactions-cite-their-cause-current-code
 
         Waves: every immediate process is asked, on the state the last wave left,
         which entities are due; those are then applied in the registry's fixed
@@ -1189,6 +1225,8 @@ class Engine:
         reaction_limit: int | None = LEGACY_REACTION_LIMIT,
     ) -> Engine:
         """Rebuild an engine using only a loaded snapshot, commands, and registry.
+
+        Implements: transition-engine/core-engine-operations-snapshot-and-replay
 
         ``reaction_limit`` is the limit the recorded run ran under (``recorded_reaction_limit``); commands recorded
         with no limit named ran under the old cap of 32, so that is the default."""

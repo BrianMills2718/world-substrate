@@ -145,6 +145,8 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(mechanics.call_count, 2)
         self.assertEqual(seen, ["", ""])
 
+    @pytest.mark.req("world-builder-page/a-world-is-built-from-a-description")
+    @pytest.mark.req("world-builder-page/part-of-a-description-cannot-be-represented")
     def test_generate_world_returns_structure_mechanics_and_passing_dry_run(self):
         with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
             service, "generate_world_bundle", return_value=(BUNDLE, ["a deadline"], FakeResult()),
@@ -1236,6 +1238,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
     def _owner_env(self):
         return patch.dict(service.os.environ, {"WORLD_BUILDER_OWNER_PASSWORD": "correct horse"})
 
+    @pytest.mark.req("world-builder-page/the-owner-overrides-the-budget")
     def test_owner_password_overrides_an_exhausted_visitor_budget(self):
         self.write_budget(spent=service.DAILY_LLM_BUDGET)
         with self._owner_env(), patch.object(service, "_trace_cost", return_value=0.004), patch.object(
@@ -1401,7 +1404,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         status, second = self.post("/run", continued)
         self.assertEqual(status, 200, second)
 
-    @pytest.mark.req("information-delivery/complete-actor-input-boundary")
+    @pytest.mark.req("information-delivery/a-reviewer-reconstructs-the-actual-policy-input")
     def test_exact_actor_inputs_are_retained_in_run_log(self):
         trace = {"actor_inputs": {"ava": [{"messages": [{"content": "authorized"}], "provenance": ["public"]}]},
                  "actor_information_mode": "declared-v1"}
@@ -1516,6 +1519,8 @@ class WorldBuilderServiceTests(unittest.TestCase):
                          _snapshot_seal({"a": [1, {"b": 2}]}, BUNDLE, CAUSAL))
         self.assertNotEqual(_snapshot_seal({"a": 1.5}, BUNDLE, CAUSAL), _snapshot_seal({"a": 1}, BUNDLE, CAUSAL))
 
+    @pytest.mark.req("native-coordination/the-log-keeps-the-whole-draft-exchange")
+    @pytest.mark.req("native-coordination/the-changed-condition-is-inspectable")
     def test_run_log_keeps_generated_rules_drafts_and_comparisons_in_full(self):
         # Issue #125 (G4): these three paths logged only their key names.
         review = {"mechanics": [{"action_kind": "fix"}]}
@@ -1669,6 +1674,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(payload["cost_usd"], 0.0)
         self.assertIn("Scene replay", payload["replay_html"])
 
+    @pytest.mark.req("native-coordination/the-service-accepts-native-execution")
     def test_native_coordination_run_uses_native_runner_and_living_scene(self):
         shared = json.loads(coordination.DEFAULT_CAUSAL.read_text())
         compiled = CausalModel.from_dict(shared, bundle=DRAFT_BUNDLE)
@@ -1707,6 +1713,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertIn("Living Scene native coordination", payload["replay_html"])
         run_native.assert_called_once()
 
+    @pytest.mark.req("native-coordination/the-service-refuses-native-execution")
     def test_native_coordination_run_refuses_modified_law(self):
         shared = json.loads(coordination.DEFAULT_CAUSAL.read_text())
         modified = json.loads(json.dumps(shared))
@@ -1726,6 +1733,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertIn("shared coordination mechanics", payload["error"])
         run_native.assert_not_called()
 
+    @pytest.mark.req("native-coordination/a-comparison-after-one-approved-run")
     def test_native_comparison_endpoint_changes_one_condition_and_runs_native(self):
         shared = json.loads(coordination.DEFAULT_CAUSAL.read_text())
         comparison_bundle = json.loads(json.dumps(DRAFT_BUNDLE))
@@ -1791,6 +1799,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertIn("approved", payload["error"])
         run_native.assert_not_called()
 
+    @pytest.mark.req("native-coordination/the-comparison-reuses-the-approved-law")
     def test_native_comparison_refuses_modified_law(self):
         shared = json.loads(coordination.DEFAULT_CAUSAL.read_text())
         modified = json.loads(json.dumps(shared))
@@ -1809,6 +1818,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertIn("shared coordination mechanics", payload["error"])
         run_native.assert_not_called()
 
+    @pytest.mark.req("causal-model-authoring/a-run-that-was-not-approved")
     def test_run_requires_explicit_mechanic_approval(self):
         status, payload = self.post(
             "/run",
@@ -1875,6 +1885,7 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertTrue(payload["trace_id"].startswith(service.TRACE_ROOT + "/mechanics/"))
         self.assertAlmostEqual(payload["daily_cost_usd"], 0.001, places=6)
 
+    @pytest.mark.req("native-coordination/extraction-spend-is-limited-and-fails-closed")
     def test_failed_draft_request_charges_full_reservation_and_clears_reserved(self):
         with patch.object(
             service,

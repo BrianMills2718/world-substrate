@@ -113,7 +113,10 @@ def _default_label_template(kind: str, item_field: str | None, station_field: st
 def _resolve_action_binding(
     value: object, *, item_field: str | None, station_field: str | None
 ) -> tuple[object, set[str]]:
-    """Resolve explicit catalog placeholders; report any missing inferred field."""
+    """Resolve explicit catalog placeholders; report any missing inferred field.
+
+    Implements: scene-replay/profile-bootstrapping-explicit-action-presentation-bindings
+    """
     missing: set[str] = set()
     fields = {"$item_field": item_field, "$station_field": station_field}
 
@@ -265,7 +268,10 @@ def _station_item_target_counts(trace: dict[str, Any], profile: dict[str, Any]) 
 def _apply_auto_layout(
     profile: dict[str, Any], trace: dict[str, Any], inferred_owners: dict[str, str]
 ) -> list[str]:
-    """Fill missing illustrative geometry deterministically; never overwrite review."""
+    """Fill missing illustrative geometry deterministically; never overwrite review.
+
+    Implements: scene-replay/profile-bootstrapping-optional-presentation-auto-layout
+    """
     proposed: list[str] = []
     actors = profile.get("actors") or {}
     actor_ids = list(actors)
@@ -348,6 +354,11 @@ def bootstrap_profile(
     review: dict[str, Any] | None = None,
     auto_layout: bool = False,
 ) -> dict[str, Any]:
+    """Draft a scene profile from a world model, a trace and the asset catalog; unresolved choices become todos.
+
+    Implements: scene-replay/profile-bootstrapping
+    """
+
     if trace.get("schema_version") != TRACE_SCHEMA:
         raise ValueError(f"trace must use {TRACE_SCHEMA}")
     if catalog.get("schema_version") != CATALOG_SCHEMA:

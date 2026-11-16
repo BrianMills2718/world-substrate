@@ -37,6 +37,10 @@ def run_matrix(
     causal_path: Path = DEFAULT_CAUSAL,
     run_id_prefix: str = "native-coordination-matrix",
 ) -> dict[str, Any]:
+    """Run every acceptance-matrix world and require one identical mechanic-profile id.
+
+    Implements: native-coordination/diagnostics-matrix-command
+    """
     acceptance = load_acceptance(acceptance_path)
     causal_value = json.loads(causal_path.read_text())
     output_root.mkdir(parents=True, exist_ok=True)

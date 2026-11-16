@@ -25,6 +25,8 @@ class WorldBuilderHomeTests(unittest.TestCase):
         # Slow enough to read a round before the next one replaces it.
         self.assertGreaterEqual(int(re.search(r"REPLAY_PAUSE_MS = (\d+)", self.page).group(1)), 2000)
 
+    @pytest.mark.req("causal-model-authoring/create-simulation-starts-the-run")
+    @pytest.mark.req("world-builder-page/a-world-is-built-from-a-description")
     def test_create_simulation_generates_then_plays_without_a_review_stop(self):
         # 2026-10-15, Brian: one box and one Create simulation button; pressing it is the approval.
         self.assertIn('apiJob("/generate-world"', self.page)
@@ -45,6 +47,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('if(world)delete world.shared;startLive();', self.page)
         self.assertIn("Run with these rules", self.page)
 
+    @pytest.mark.req("world-builder-page/a-visitor-lands-on-the-page")
     def test_one_screen_has_one_primary_action(self):
         self.assertEqual(self.page.count('id="build-btn"'), 1)
         self.assertIn(">Create simulation</button>", self.page)
@@ -88,6 +91,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('href="build/"', self.page)
         self.assertIn('title="Optional settings; the defaults work for most descriptions">Options</summary>', self.page)
 
+    @pytest.mark.req("world-builder-page/a-visitor-picks-the-kind-of-world")
     def test_world_kinds_and_live_play_are_offered(self):
         for label in ("A task to finish", "Keeps running", "⏸ Pause", "▶ Play",
                       "By itself, every round", "Why things were refused"):
@@ -133,6 +137,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('const LIFTS = { round_limit: "max_rounds", budget: "max_spend_usd" };', self.page)
         self.assertTrue(all("title=" in t for t in re.findall(r'<label class="small"[^>]*>', self.page)))
 
+    @pytest.mark.req("world-builder-page/a-visitor-points-at-a-control")
     def test_every_control_has_a_tooltip(self):
         import re
         controls = re.findall(r"<(button|a|textarea|summary)\b[^>]*>", self.page)
@@ -148,7 +153,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn("c.title = \"Use this answer", self.page)
         self.assertIn("const tipTarget = (node) => node && node.closest", self.page)
 
-    @pytest.mark.req("information-delivery/complete-actor-input-boundary")
+    @pytest.mark.req("information-delivery/analyst-access-does-not-become-actor-access")
     def test_actor_view_uses_only_recorded_policy_inputs_and_never_restores_display_text(self):
         import json, subprocess
         funcs = []
@@ -212,6 +217,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertNotIn("live.totals.refused += (row.blocked_by_rules || []).length", self.page)
         self.assertIn('t.className = "tick held";', self.page)
 
+    @pytest.mark.req("world-builder-page/a-visitor-points-at-a-control")
     def test_tooltips_are_visible_bubbles_not_only_native_titles(self):
         self.assertIn('id="tip-bubble"', self.page)
         self.assertIn('document.addEventListener("mouseover"', self.page)
@@ -220,6 +226,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertEqual(self.page.count('class="info" data-tip-for='), 0)
         self.assertIn('document.addEventListener("touchstart"', self.page)
 
+    @pytest.mark.req("world-builder-page/a-build-fails")
     def test_failure_states_are_written_in_plain_words(self):
         self.assertIn("These rules let nobody act", self.page)
         self.assertIn("AI budget", self.page)

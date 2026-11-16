@@ -4,6 +4,8 @@ import importlib.util
 import json
 import tempfile
 import unittest
+
+import pytest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -41,12 +43,15 @@ class CvsSituationImportTests(unittest.TestCase):
             for row in bundle["entities"]
         }
 
+    @pytest.mark.req("cvs-situation-import/the-fixture-matches-its-pinned-source")
     def test_fixture_pins_exact_donor_provenance(self):
         provenance = json.loads(PROVENANCE.read_text())
         self.assertEqual(provenance["source_revision"], "5cb9933f2551ca3e0e75590814f7e686f50d8edb")
         import hashlib
         self.assertEqual(hashlib.sha256(FIXTURE.read_bytes()).hexdigest(), provenance["sha256"])
 
+    @pytest.mark.req("cvs-situation-import/a-source-id-is-kept-as-an-external-identity")
+    @pytest.mark.req("cvs-situation-import/the-fixture-is-synthetic")
     def test_projection_validates_as_authoring_bundle_and_preserves_external_identity(self):
         bundle = scaffold.validate_bundle(self.bundle())
         rows = self.by_external_id(bundle)
@@ -55,6 +60,7 @@ class CvsSituationImportTests(unittest.TestCase):
         self.assertNotIn("regional_hq", {row["id"] for row in bundle["entities"]})
         self.assertTrue(bundle["world"]["summary"].startswith("SYNTHETIC INTEGRATION FIXTURE."))
 
+    @pytest.mark.req("cvs-situation-import/the-selected-scenario-becomes-starting-state")
     def test_selected_scenario_becomes_initial_inventory_state(self):
         rows = self.by_external_id(self.bundle())
         self.assertEqual(
@@ -70,6 +76,8 @@ class CvsSituationImportTests(unittest.TestCase):
         self.assertEqual(context["regime"], "local_priority")
         self.assertTrue(context["is_decider"])
 
+    @pytest.mark.req("cvs-situation-import/capability-activation-is-the-caller-s-choice")
+    @pytest.mark.req("cvs-situation-import/an-enabled-capability-is-a-hypothesis")
     def test_capability_activation_is_explicit_structural_variant(self):
         wanted = {
             "cap_observe_distribution",
@@ -83,6 +91,7 @@ class CvsSituationImportTests(unittest.TestCase):
             self.assertTrue(target[cap_id]["components"]["capability"]["enabled"])
         self.assertFalse(target["cap_extra_a_1"]["components"]["capability"]["enabled"])
 
+    @pytest.mark.req("cvs-situation-import/directional-templates-share-one-signature")
     def test_action_templates_keep_directional_source_identity_but_signature_is_deduplicated(self):
         bundle = self.bundle()
         rows = self.by_external_id(bundle)
@@ -95,6 +104,7 @@ class CvsSituationImportTests(unittest.TestCase):
             ["cap_observe_distribution", "cap_transfer_authority"],
         )
 
+    @pytest.mark.req("cvs-situation-import/imported-actions-refuse-until-mechanics-are-installed")
     def test_projection_scaffolds_only_refusing_mechanics(self):
         with tempfile.TemporaryDirectory() as tmp:
             package = scaffold.scaffold(self.bundle(), Path(tmp))
@@ -102,6 +112,7 @@ class CvsSituationImportTests(unittest.TestCase):
             self.assertIn("always refuse", mechanics)
             self.assertIn("TransferRule", mechanics)
 
+    @pytest.mark.req("cvs-situation-import/something-unsupported-is-imported")
     def test_unknown_semantics_fail_loudly(self):
         value = self.load()
         value["relations"] = [{"kind": "unsupported"}]

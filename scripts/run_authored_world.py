@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Run an authored world from a bundle plus reviewed causal declarations."""
+"""Run an authored world from a bundle plus reviewed causal declarations.
+
+Implements: world-builder-page/refusals-are-shown-per-person-per-round
+"""
 from __future__ import annotations
 
 import argparse
@@ -380,7 +383,10 @@ def _moments(events: list[dict[str, Any]], turn: int, stopped: list[dict[str, An
 
 def _read_attempt(engine: Engine, actor: str, text: str | None, signatures: list[dict[str, Any]], *, model: str,
                   trace_id: str, max_budget: float) -> tuple[dict[str, Any], float]:
-    """One person's words read into a typed move (world_substrate.attempt). A wait costs no call."""
+    """One person's words read into a typed move (world_substrate.attempt). A wait costs no call.
+
+    Implements: semantic-binding/preserve-operation-and-referents
+    """
     if not text or text.strip().lower() in {WAIT, "wait."}:
         return {"kind": open_attempt.WAIT_KIND, "fields": {}, "quoted_spans": {}, "nearest_kind": open_attempt.NONE,
                 "why": "the person waited"}, 0.0
@@ -681,6 +687,10 @@ def run_world(
     judge_rulings: str = rulings_mod.DEFAULT_MODE,
     decisions: list[dict[str, str]] | None = None,
 ) -> tuple[dict[str, Any], Engine, CausalModel]:
+    """Run an authored world for its rounds; with the judge on, only attempts no installed rule covers reach it.
+
+    Implements: ai-judge/the-judge-rules-on-attempts-no-installed-rule-covers-and-only-those
+    """
     if policy not in {"scripted", "llm", "resident"}:
         raise ValueError("policy must be scripted, llm or resident")
     if open_attempts and policy != "resident":
@@ -1533,6 +1543,11 @@ def run_world(
 
 
 def _runtime_catalog(bundle: dict[str, Any], causal_model: CausalModel | None = None) -> dict[str, Any]:
+    """Shared asset catalog adjusted so a fresh world's own presentation wins over catalog bindings.
+
+    Implements: scene-replay/fresh-world-presentation-wins-over-the-shared-catalog-current-code
+    """
+
     catalog = json.loads((REPO / "reference_worlds/scene-asset-catalog-v0.json").read_text())
     world_id = bundle["world"]["id"]
     presentation = bundle.get("presentation") or {}

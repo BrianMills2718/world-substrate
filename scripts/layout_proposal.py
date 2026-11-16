@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Ask a model to place a built world's places on a prepared room map, so a share link can show it as a room map.
 
-Implements: scene-viewer/builder-proposes-layout
+Implements: scene-viewer/the-builder-proposes-a-layout
 A second, optional step after the world's structure is built: one small call that returns a `layout` (see
 `scene_layout.py`) or null when the world has no places to draw. The local validator is the judge; a layout that does
 not pass (after one repair) is dropped and the world is built exactly as before. It never fails a build.

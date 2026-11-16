@@ -14,7 +14,7 @@ def submit(engine, actor, kind, **fields):
                           'base_revision': engine.world.revision, **fields})
 
 
-@pytest.mark.req('native-coordination/independent-generated-concern-procedure')
+@pytest.mark.req('native-coordination/passing-revalidation-clears-only-the-technical-hold')
 def test_technical_person_can_state_a_position_without_becoming_a_required_decider():
     bundle, causal, _ = world_and_rule()
     engine, _, _ = build_engine(bundle, causal)

@@ -5,6 +5,8 @@ import json
 import sys
 import types
 import unittest
+
+import pytest
 from unittest.mock import patch
 from pathlib import Path
 
@@ -66,6 +68,7 @@ class AuthoredWorldRunTests(unittest.TestCase):
         self.assertTrue(trace["summary"]["terminal_reached"])
         self.assertEqual(trace["summary"]["never_offered"], {})
 
+    @pytest.mark.req("world-builder-page/the-rules-refuse-a-move")
     def test_run_records_distinct_rule_refusals_with_their_failed_checks(self):
         bundle = load_bundle(REPAIR_BUNDLE_PATH)
         causal = json.loads(REPAIR_CAUSAL_PATH.read_text())

@@ -94,6 +94,8 @@ def require_actor_input_review(value: Any, actor_ids: list[str]) -> None:
 
     This validates the semantic review's typed result; it does not pretend to
     infer the meaning of a profile or source text with string matching.
+
+    Implements: information-delivery/initial-exposure-and-source-grounded-actor-inputs
     """
     review = value.get("actor_input_review") if isinstance(value, dict) else None
     if not isinstance(review, dict) or set(review) != {"public_summary", "actors"}:

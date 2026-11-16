@@ -77,6 +77,8 @@ class InformationSemanticsTests(unittest.TestCase):
         self.assertNotIn("msg-mara-validation", selene)
         self.assertNotIn("delivery-mara-ari", selene)
 
+    @pytest.mark.req("information-delivery/information-context-is-not-causal-parentage")
+    @pytest.mark.req("information-delivery/a-rule-declares-its-causal-parents")
     def test_information_context_and_hard_causal_ancestry_are_distinct_fields(self):
         engine = run_baseline()
         meeting = next(

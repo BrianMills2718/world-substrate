@@ -4,6 +4,8 @@ Information is canonical only when a world chooses to represent it. Delivery is
 separate from private cognition and from hard mechanical causal ancestry: an
 actor may receive a representation without that representation automatically
 becoming the cause of every later action.
+
+Implements: information-delivery/representation
 """
 
 from __future__ import annotations
@@ -55,7 +57,10 @@ def _delivery_rows(world: World, info_id: str) -> list[Entity]:
 
 
 def information_visible_to_actor(world: World, actor_id: str, entity: Entity) -> bool:
-    """Whether an information entity belongs in an actor-authorized observation."""
+    """Whether an information entity belongs in an actor-authorized observation.
+
+    Implements: information-delivery/observation-rule
+    """
 
     info = entity.component("information")
     if info is None:
