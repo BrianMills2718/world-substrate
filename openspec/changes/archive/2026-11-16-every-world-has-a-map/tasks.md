@@ -1,0 +1,3 @@
+- [x] office map, layout builder, gathering rule, chat lines, illustrative note
+- [x] long graph columns, redirect of the old graph page
+- [ ] deploy and live check on the Waltzman share

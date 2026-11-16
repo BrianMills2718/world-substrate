@@ -127,7 +127,12 @@ def describe(actor: str, row: dict[str, Any], labels: dict[str, str]) -> tuple[s
     if row.get("status") != "accepted":
         why = "; ".join(row.get("refused_because") or []) or row.get("status")
         return EMOJI["refused"], f"{what.replace('walking', 'trying to walk')} - refused: {why}", None
-    chat = f"to {name('recipient')}: {did.get('content')}" if kind == "send-report" else None
+    if kind == "send-report":
+        chat = f"to {name('recipient')}: {did.get('content')}"
+    elif did.get("recipient") in labels:  # any other message to a person (its words are not in the move: only that it was sent)
+        chat = f"to {name('recipient')}: {kind.replace('-', ' ')}"
+    else:
+        chat = None
     return EMOJI.get(kind, EMOJI["other"]), what, chat
 
 
@@ -158,12 +163,14 @@ def rules_of(causal: dict[str, Any] | None) -> list[dict[str, Any]]:
 
 def export(rows: list[dict[str, Any]], maze: dict[str, Any], rooms: dict[str, str], people: dict[str, str],
            start_rooms: dict[str, str], labels: dict[str, str], doors: dict[str, dict[str, Any]] | None = None,
-           sprites: dict[str, str] | None = None, hold: int = 2, causal: dict[str, Any] | None = None) -> dict[str, Any]:
+           sprites: dict[str, str] | None = None, hold: int = 2, causal: dict[str, Any] | None = None,
+           gather: dict[str, Any] | None = None) -> dict[str, Any]:
     """The replay as one dict: `steps` (Smallville's master_movement shape), `meta`, `doors`, `door_changes`, `rounds`, `view`, `sprites`.
 
     `rows` are server run-log rows (one saved round each); `rooms` maps room id to "<sector>|<arena>" on the map;
     `people` maps person id to the persona name shown; `doors` maps a door id to {"between": [room, room], "halves":
-    [entity ids that open together]} (the doorway tiles are found on the path between the two rooms)."""
+    [entity ids that open together]} (the doorway tiles are found on the path between the two rooms). `gather` (a world with
+    no places) sends a person to `gather["room"]` in a round where their move names one of `gather["entities"]`, and home otherwise."""
     order = list(people)
     spot = {room: spots(maze, arena, len(order)) for room, arena in rooms.items()}
     place = lambda room, person: spot[room][order.index(person)]
@@ -188,6 +195,11 @@ def export(rows: list[dict[str, Any]], maze: dict[str, Any], rooms: dict[str, st
             did = (turn["actors"].get(p) or {}).get("did") or {}
             if did.get("kind") == "move" and turn["actors"][p].get("status") == "accepted" and did.get("to") in spot:
                 paths[p] = walk(maze, pos[p], place(did["to"], p))
+            elif gather:
+                meets = turn["actors"].get(p, {}).get("status") == "accepted" and any(v in gather["entities"] for v in did.values() if isinstance(v, str))
+                goal = place(gather["room"] if meets else gather["home"][p], p)
+                if goal != pos[p]:
+                    paths[p] = walk(maze, pos[p], goal)
         length = max([len(v) for v in paths.values()] + [0]) + hold
         start = n + 1
         for p in people:
@@ -235,7 +247,8 @@ def withhold_words(replay: dict[str, Any]) -> dict[str, Any]:
     return replay
 
 
-def export_from_rows(rows: list[dict[str, Any]], bundle: dict[str, Any], maze_dir: Path, causal: dict[str, Any] | None = None) -> dict[str, Any]:
+def export_from_rows(rows: list[dict[str, Any]], bundle: dict[str, Any], maze_dir: Path, causal: dict[str, Any] | None = None,
+                     gather: dict[str, Any] | None = None) -> dict[str, Any]:
     """A replay for run-log `rows` of the world described by `bundle`, using the bundle's own `layout`."""
     from scripts.scene_layout import resolve
 
@@ -245,10 +258,13 @@ def export_from_rows(rows: list[dict[str, Any]], bundle: dict[str, Any], maze_di
         from scripts.generated_map import build
         generated = build(layout["map"], list(layout["prepared"]["slots"]))
     replay = export(rows, generated["maze"] if generated else load_maze(maze_dir), rooms=layout["rooms"], people=layout["people"], start_rooms=layout["start_rooms"],
-                    labels=layout["labels"], doors=layout["doors"], sprites=layout["sprites"], causal=causal)
+                    labels=layout["labels"], doors=layout["doors"], sprites=layout["sprites"], causal=causal, gather=gather)
     replay["map"], replay["title"] = layout["map"], layout["title"]
     maze = generated["maze"] if generated else load_maze(maze_dir)
     names = {e["id"]: e.get("label") or e["id"] for e in bundle.get("entities") or []}
+    if gather:  # a drawn layout: its rooms are named in the declaration, not in the world's entities
+        names.update({r["id"]: r["label"] for r in bundle["actor_information"]["public_entities"] if r["id"].startswith(("office-", "meeting-"))})
+        replay["illustrative"] = "Illustrative layout: this world has no places, so each group is drawn in an office and meetings are held in the middle room."
     replay["rooms"] = []  # each room's name and its floor rectangle, so the viewer can name the rooms
     for room, arena in layout["rooms"].items():
         tiles = room_tiles(maze, arena)
@@ -257,6 +273,10 @@ def export_from_rows(rows: list[dict[str, Any]], bundle: dict[str, Any], maze_di
             doorway_above = any(x0 <= t[0] <= x1 and t[1] == y0 - 1 for d in replay["doors"].values() for t in d["tiles"])
             replay["rooms"].append({"id": room, "label": names.get(room, room), "x0": x0, "y0": y0, "x1": x1, "y1": y1,
                                     "label_row": y1 + 1 if doorway_above else y0 - 1})  # the name goes on whichever wall has no doorway
+    if gather:  # a drawn layout: the meeting room is the middle row; offices above it are named on their top wall, below it on their bottom wall
+        mid = next(r for r in replay["rooms"] if r["id"] == gather["room"])
+        for r in replay["rooms"]:
+            r["label_row"] = r["y1"] + 1 if r["y0"] > mid["y1"] else r["y0"] - 1
     # Things that stand in a laid-out room (a pump, a bed), drawn as a generic prop with their name. Only structural categories
     # decide what is a thing; people, doors and places are drawn already.
     halves = {h for d in layout["doors"].values() for h in d["halves"]}
