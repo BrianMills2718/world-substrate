@@ -1,0 +1,1 @@
+- [x] Test, check_named_groups, one retry, progress line
