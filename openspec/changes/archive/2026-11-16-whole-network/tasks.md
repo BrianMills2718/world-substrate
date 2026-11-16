@@ -1,0 +1,2 @@
+- [x] whole network mode in the room-map overlay
+- [ ] deploy and live check
