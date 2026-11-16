@@ -1,4 +1,6 @@
 """A draft keeps every group the description names (world-builder-page/the-draft-keeps-every-named-group)."""
+import json
+import sys
 from types import SimpleNamespace
 
 import pytest
@@ -13,8 +15,7 @@ def _stub(monkeypatch, replies):
     def fake(model, messages, **kw):
         calls.append(messages)
         return SimpleNamespace(content=replies.pop(0))
-    import llm_client
-    monkeypatch.setattr(llm_client, "call_llm", fake)
+    monkeypatch.setitem(sys.modules, "llm_client", SimpleNamespace(call_llm=fake, safe_json_loads=json.loads))
     return calls
 
 
