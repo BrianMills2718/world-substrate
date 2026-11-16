@@ -516,3 +516,14 @@ def test_the_map_comes_before_the_saved_run_panels_and_the_old_picture_is_gone()
     stage = page.split('id="stage-run"', 1)[1]
     assert stage.index('id="run-map"') < stage.index('id="actor-context"') < stage.index('id="saved-player"')
     assert 'id="world-scene-panel" class="world-scene-panel" hidden' in page
+
+
+@pytest.mark.req("scene-viewer/the-library-is-a-left-rail-beside-the-run")
+def test_the_run_stage_has_a_library_rail_listing_worlds_runs_and_branches():
+    page = (ROOT / "scripts/world_builder_home.html").read_text()
+    stage = page.split('id="stage-run"', 1)[1]
+    assert 'id="lib-rail"' in stage and 'aria-label="Your worlds, runs and branches"' in stage
+    body = page.split("function drawRail()", 1)[1][:4500]
+    assert "parent_run_id" in body and "openCatalogRun(" in body and "openCatalogWorld(" in body and "wb-stars" in page
+    assert "drawRail();" in page.split("function updateWorkspaceControls()", 1)[1][:6000]
+    assert "#stage-run>.lib-rail" in page
