@@ -30,6 +30,8 @@ function start(R, M) {
   let step = Math.min(+q.get("step") || 0, last), playing = !q.has("paused"), timer = null, scene = null;
   if (!playing) { $("play").textContent = "Play"; $("play").classList.remove("on"); }
   const people = {}, doorGfx = {};
+  let fitFn = null, graphOn = false, graphAll = false;
+  const COLW = 200, GLEFT = 2 * COLW + 76;  // the graph overlay: two columns of boxes (things, then moves) left of the map
   let L = 1;  // labels are drawn larger when the map is zoomed out so they stay readable
   const doorAt = s => { const st = {}; R.door_changes.forEach(c => { if (c.step <= s) st[c.door] = c.state; }); return st; };
   const px = (tile) => [tile[0] * T + T / 2, tile[1] * T + T];
@@ -67,13 +69,15 @@ function start(R, M) {
       });
       const fit = () => {
         const c = this.cameras.main, v = R.view;
-        c.setZoom(Math.min(c.width / (v.w * T), c.height / (v.h * T)));
+        const lm = graphOn ? Math.min(GLEFT, c.width * 0.45) : 0;  // the graph overlay needs room left of the map
+        c.setZoom(Math.min((c.width - lm - 8) / (v.w * T), c.height / (v.h * T)));
         L = Math.min(2.2, Math.max(1, 0.95 / c.zoom));
         names.forEach(n => { people[n].emoji.setScale(L); people[n].chat.setScale(L); });
         if (step !== null && people[names[0]].tile) show(step, false);
-        c.setScroll((v.x + v.w / 2) * T - c.width / 2, (v.y + v.h / 2) * T - c.height / 2);
+        c.setScroll((v.x + v.w / 2) * T - c.width / 2 - (lm / 2) / c.zoom, (v.y + v.h / 2) * T - c.height / 2);
+        drawGraph();
       };
-      this.scale.on("resize", fit); fit();
+      fitFn = fit; this.scale.on("resize", fit); fit();
       show(step, false); if (playing) loop();
     }
   }
@@ -125,6 +129,76 @@ function start(R, M) {
   }
   $("rules").onclick = () => { rulesOn = !rulesOn; $("rules").textContent = rulesOn ? "Hide rules" : "Show rules"; $("rules").classList.toggle("on", rulesOn); drawRules(R.steps[String(step)]); if (!rulesOn) $("rulebox").style.display = "none"; };
 
+
+  // Graph overlay (scene-viewer/world-graph): the same whole-system graph as graph.html, drawn over the map. People are
+  // tagged where they stand; the moves they tried sit in the left margin and the things those moves used in the right,
+  // each linked and lit for this round: blue = allowed, orange = refused, grey = no move or not used, each said in words.
+  const GRAPH = R.graph, GACT = R.graph_actors || {};
+  const GCOL = { ok: "#1f5fa8", no: "#b4540a", mix: "#b4540a", none: "#586573" };
+  const gword = { ok: "allowed", no: "refused", mix: "mixed", none: "no move" };
+  const gstate = st => st === "accepted" ? "ok" : st === "no_action" ? "none" : "no";
+  const gname = id => ((GRAPH.graph.nodes.find(n => n.id === id)) || { label: id }).label;
+  function drawGraph() {
+    const box = $("gov"); if (!box) return; box.innerHTML = "";
+    if (!graphOn || !GRAPH || !scene) return;
+    const cam = scene.cameras.main, st = $("stage").getBoundingClientRect(), gm = $("game").getBoundingClientRect();
+    const ox = gm.left - st.left, oy = gm.top - st.top, W = gm.width, H = gm.height;
+    const v0 = R.view, proj = (wx, wy) => [(wx - cam.midPoint.x) * cam.zoom + cam.width / 2 + ox, (wy - cam.midPoint.y) * cam.zoom + cam.height / 2 + oy];
+    const ri = R.rounds.findIndex(r => step >= r.start && step <= r.end), round = ri >= 0 ? GRAPH.rounds[ri] : null;
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.setAttribute("width", ox + W); svg.setAttribute("height", oy + H); box.appendChild(svg);
+    const CW = Math.min(COLW, (proj(v0.x * T, 0)[0] - ox - 20) / 2 - 20);
+    const mapL = proj(v0.x * T, 0)[0], movesX = mapL - 10 - CW, thingsX = movesX - 40 - CW;
+    const chip = (x, y, text, state, w, sub) => {
+      const d = document.createElement("div"); d.className = "gchip " + state; d.style.cssText = "left:" + x + "px;top:" + y + "px;width:" + w + "px";
+      d.textContent = text; if (sub) { const s2 = document.createElement("small"); s2.textContent = sub; d.appendChild(s2); }
+      d.style.borderStyle = state === "none" ? "dashed" : "solid"; d.style.borderColor = GCOL[state]; box.appendChild(d); return d;
+    };
+    const lit = { moves: {}, things: {}, tries: [] };
+    (round ? round.tries : []).forEach(t => {
+      const s = gstate(t.status); lit.tries.push(t);
+      if (t.move) { const m = lit.moves[t.move] || (lit.moves[t.move] = { ok: 0, no: 0, none: 0 }); m[s]++; t.uses.forEach(u => { const o = lit.things[u] || (lit.things[u] = { ok: 0, no: 0, none: 0 }); o[s]++; }); }
+    });
+    (round ? round.world_changed : []).forEach(c => { if (!lit.things[c]) lit.things[c] = { ok: 1, no: 0, none: 0, changed: true }; });
+    const stateOf = o => o.ok && o.no ? "mix" : o.ok ? "ok" : o.no ? "no" : "none";
+    const place = {}; let my = 24, ty = 24;
+    const col = (id, o, isMove) => {
+      const state = o ? stateOf(o) : "none", sub = o ? (state === "mix" ? o.ok + " allowed, " + o.no + " refused" : gword[state]) + (o.changed ? " · changed" : "") : "";
+      const y = isMove ? my : ty, x = isMove ? movesX : thingsX;
+      const d = chip(x, oy + y, gname(id), state, CW, sub);
+      const h = d.offsetHeight + 6; if (isMove) my += h; else ty += h; place[id] = { x, w: CW, y: oy + y + d.offsetHeight / 2 };
+    };
+    const head = (t, x) => { const h = document.createElement("div"); h.className = "ghead"; h.textContent = t; h.style.cssText = "left:" + x + "px;top:" + (oy + 4) + "px"; box.appendChild(h); };
+    head("Things used", thingsX); head("Moves the rules allow", movesX);
+    const moveIds = GRAPH.graph.nodes.filter(n => n.kind === "action").map(n => n.id);
+    const thingIds = GRAPH.graph.nodes.filter(n => n.kind === "thing").map(n => n.id);
+    moveIds.filter(id => lit.moves[id] || graphAll).forEach(id => col(id, lit.moves[id], true));
+    thingIds.filter(id => lit.things[id] || graphAll).forEach(id => col(id, lit.things[id], false));
+    const C = (x1, y1, x2, y2, color, dash, w) => { const dx = Math.abs(x2 - x1) / 2, p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      p.setAttribute("d", "M" + x1 + "," + y1 + " C" + (x1 - dx) + "," + y1 + " " + (x2 + dx) + "," + y2 + " " + x2 + "," + y2);
+      p.setAttribute("fill", "none"); p.setAttribute("stroke", color); p.setAttribute("stroke-width", w || 2.5); p.setAttribute("opacity", .85); if (dash) p.setAttribute("stroke-dasharray", "5 4"); svg.appendChild(p); };
+    const tagged = [];
+    lit.tries.forEach(t => {
+      const s = gstate(t.status), name = GACT[t.actor], pp = name && people[name]; if (!pp) return;
+      const [px0, py0] = proj(pp.sprite.x, pp.sprite.y);
+      tagged.push({ t, s, name, x: px0, y: py0 + 6 });
+    });
+    tagged.sort((a, b) => a.y - b.y || a.x - b.x);
+    const placed = [];
+    tagged.forEach(g => {  // stagger tags so adjacent people do not hide each other
+      let y = g.y; while (placed.some(q => Math.abs(q.x - g.x) < 190 && Math.abs(q.y - y) < 40)) y += 42; placed.push({ x: g.x, y });
+      const text = g.name + ": " + (g.t.status === "unsupported_action" ? "no rule covers it" : gword[g.s]) + (g.t.move ? " · " + gname(g.t.move) : "");
+      const tag = chip(g.x - 90, y, text, g.s, 180, g.t.because && g.t.because.length ? "refused: " + g.t.because[0] : "");
+      const mv = g.t.move && place[g.t.move];
+      if (mv) { C(g.x - 90, y + tag.offsetHeight / 2, mv.x + mv.w, mv.y, GCOL[g.s], g.s === "none");
+        g.t.uses.forEach(u => { const th = place[u]; if (th) C(mv.x, mv.y, th.x + th.w, th.y, GCOL[g.s], false, 1.8); }); }
+    });
+    if (!lit.tries.length) { const n = document.createElement("div"); n.className = "ghead"; n.style.cssText = "left:" + movesX + "px;top:" + (oy + 24) + "px"; n.textContent = "Nothing tried yet."; box.appendChild(n); }
+  }
+  if (GRAPH) { $("graphbtn").style.display = ""; $("graphall").parentElement.style.display = "none";
+    $("graphbtn").onclick = () => { graphOn = !graphOn; $("graphbtn").textContent = graphOn ? "Hide graph" : "Show graph"; $("graphbtn").classList.toggle("on", graphOn);
+      $("graphall").parentElement.style.display = graphOn ? "" : "none"; if (fitFn) fitFn(); drawGraph(); };
+    $("graphall").onchange = e => { graphAll = e.target.checked; drawGraph(); }; }
+
   function drawDoors(s) {
     const st = doorAt(s);
     Object.entries(R.doors).forEach(([id, d]) => {
@@ -152,7 +226,7 @@ function start(R, M) {
       p.emoji.setText(f.pronunciatio);
       const line = f.chat && f.chat[0] ? f.chat[0][1] : ""; p.chat.setText(line).setVisible(!!line);
     });
-    drawDoors(s); drawRules(frame); panel(frame); $("slider").value = s;
+    drawDoors(s); drawRules(frame); panel(frame); drawGraph(); $("slider").value = s;
     const r = R.rounds.find(r => s >= r.start && s <= r.end);
     $("label").textContent = (r ? "Round " + r.round + " · " : "Start · ") + "step " + s + "/" + last;
   }
