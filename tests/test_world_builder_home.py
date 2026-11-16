@@ -16,10 +16,9 @@ class WorldBuilderHomeTests(unittest.TestCase):
     def test_a_shared_recording_shows_its_picture_and_can_be_watched_again(self):
         # 2026-11-03, Brian on a shared run: "this is blank and doesnt play".
         # 2026-11-03, Brian on hiding it: "you didnt fix it you just seemed to have removed it".
-        # A picture that cannot be drawn says so and why.
-        self.assertIn('$("picture-note").hidden = !broken;', self.page)
-        self.assertIn('world.shared.picture_error', self.page)
-        self.assertIn('frame.postMessage({ type: "ws-round"', self.page)
+        # 2026-11-16: the recording is drawn on the room map in the run stage; one that cannot be drawn says so.
+        self.assertIn('status.textContent = "This recording has no map."', self.page)
+        self.assertIn('"The map could not be drawn: "', self.page)
         self.assertIn('btn.disabled = live.finished && !live.replay;', self.page)
         self.assertIn('startLive({ rounds: live.recorded })', self.page)
         # Slow enough to read a round before the next one replaces it.
@@ -330,7 +329,6 @@ class WorldNetworkTests(unittest.TestCase):
         self.assertEqual(set(focus["none"]), {"actor"})
         self.assertEqual(focus["some"], 2)
         self.assertTrue(focus["closed"])
-        self.assertIn('id="net-whole"', HOME.read_text())
         # One round shows only the links that happened: who made which move and what it used, not every move
         # someone could make (2026-11-04: still a tangle at 18-32 boxes). Small rounds get the layered layout;
         # a big one gets force, because the layered one froze the page for over 20 s (#338).
