@@ -174,11 +174,40 @@ function start(R, M) {
       const h = d.offsetHeight + 6; if (isMove) my += h; else ty += h; place[id] = { x, w: CW, y: oy + y + d.offsetHeight / 2 };
     };
     const head = (t, x) => { const h = document.createElement("div"); h.className = "ghead"; h.textContent = t; h.style.cssText = "left:" + x + "px;top:" + (oy + 4) + "px"; box.appendChild(h); };
-    head("Things used", thingsX); head("Moves the rules allow", movesX);
-    const moveIds = GRAPH.graph.nodes.filter(n => n.kind === "action").map(n => n.id);
-    const thingIds = GRAPH.graph.nodes.filter(n => n.kind === "thing").map(n => n.id);
-    moveIds.filter(id => lit.moves[id] || graphAll).forEach(id => col(id, lit.moves[id], true));
-    thingIds.filter(id => lit.things[id] || graphAll).forEach(id => col(id, lit.things[id], false));
+    if (!graphAll) head("Things used", thingsX); head(graphAll ? "Moves (every one the rules allow)" : "Moves the rules allow", movesX);
+    const NODES = GRAPH.graph.nodes, whole = graphAll;
+    const moveIds = NODES.filter(n => n.kind === "action").map(n => n.id);
+    const procIds = NODES.filter(n => n.kind === "process").map(n => n.id);
+    const thingIds = NODES.filter(n => n.kind === "thing").map(n => n.id);
+    const roomOf = id => (R.rooms || []).find(r => "e:" + r.id === id);
+    const homeOf = {}; GRAPH.graph.edges.forEach(e => { if (e.label === "is in" && roomOf(e.target)) homeOf[e.source] = e.target; });
+    moveIds.filter(id => lit.moves[id] || whole).forEach(id => col(id, lit.moves[id], true));
+    const placedThings = new Set(), rowIn = {};
+    if (whole) {  // the whole network: every box sits on the map where it belongs; moves and processes sit in the margin
+      if (procIds.length) { head("Changes the world makes by itself", movesX); my += 20; procIds.forEach(id => col(id, lit.things[id], true)); }
+      thingIds.forEach(id => {
+        const o = (R.objects || []).find(q => "e:" + q.id === id), rm = roomOf(homeOf[id]); if (!o && !rm) return;
+        const k = rm ? (rowIn[rm.id] = (rowIn[rm.id] || 0) + 1) - 1 : 0, w = 170;
+        const [cx, cy] = o ? proj((o.tile[0] + 0.5) * T, (o.tile[1] + 1.6) * T) : proj((rm.x0 + rm.x1 + 1) / 2 * T, (rm.y1 + 0.2 - k * 0.8) * T);
+        const state = lit.things[id] ? stateOf(lit.things[id]) : "none", d = chip(cx - w / 2, cy - 10, gname(id), state, w, lit.things[id] && lit.things[id].changed ? "changed" : "");
+        d.style.fontSize = "11px"; d.style.padding = "1px 6px"; placedThings.add(id); place[id] = { x: cx - w / 2, w, y: cy - 10 + d.offsetHeight / 2, onMap: true };
+      });
+      NODES.filter(n => n.kind === "place" && roomOf(n.id)).forEach(n => {
+        const r = roomOf(n.id), [cx, cy] = proj((r.x0 + r.x1 + 1) / 2 * T, (r.y0 + 1.3) * T), w = 96;
+        const d = chip(cx - w / 2, cy, n.label, "none", w); d.style.fontWeight = "700"; d.style.fontSize = "11px"; d.style.padding = "1px 6px"; d.style.background = "#eef2f6";
+        place[n.id] = { x: cx - w / 2, w, y: cy + d.offsetHeight / 2, onMap: true };
+      });
+    }
+    thingIds.filter(id => !placedThings.has(id) && (lit.things[id] || (whole && !roomOf(homeOf[id])))).forEach(id => col(id, lit.things[id], false));
+    if (whole) {  // every route, faint; this round's tries are drawn bold on top
+      const at = id => { const q = place[id]; if (q) return q.onMap ? [q.x + q.w / 2, q.y] : [q.x + q.w, q.y];
+        const nm = GACT[id], pp = nm && people[nm]; if (pp) { const [a, b] = proj(pp.sprite.x, pp.sprite.y); return [a, b - 20]; } return null; };
+      let drawn = 0;
+      GRAPH.graph.edges.forEach(e => { const a = at(e.source), b = at(e.target); if (!a || !b) return; drawn++;
+        const l = document.createElementNS("http://www.w3.org/2000/svg", "line"); l.setAttribute("x1", a[0]); l.setAttribute("y1", a[1]); l.setAttribute("x2", b[0]); l.setAttribute("y2", b[1]);
+        l.setAttribute("stroke", "#2a3644"); l.setAttribute("stroke-width", 1); l.setAttribute("opacity", .4); svg.appendChild(l); });
+      const n = document.createElement("div"); n.className = "ghead"; n.style.cssText = "left:" + thingsX + "px;bottom:8px"; n.textContent = NODES.length + " boxes, " + drawn + " of " + GRAPH.graph.edges.length + " links drawn here"; box.appendChild(n);
+    }
     const C = (x1, y1, x2, y2, color, dash, w) => { const dx = Math.abs(x2 - x1) / 2, p = document.createElementNS("http://www.w3.org/2000/svg", "path");
       p.setAttribute("d", "M" + x1 + "," + y1 + " C" + (x1 - dx) + "," + y1 + " " + (x2 + dx) + "," + y2 + " " + x2 + "," + y2);
       p.setAttribute("fill", "none"); p.setAttribute("stroke", color); p.setAttribute("stroke-width", w || 2.5); p.setAttribute("opacity", .85); if (dash) p.setAttribute("stroke-dasharray", "5 4"); svg.appendChild(p); };
@@ -196,7 +225,7 @@ function start(R, M) {
       const tag = chip(g.x - 90, y, text, g.s, 180, g.t.because && g.t.because.length ? "refused: " + g.t.because[0] : "");
       const mv = g.t.move && place[g.t.move];
       if (mv) { C(g.x - 90, y + tag.offsetHeight / 2, mv.x + mv.w, mv.y, GCOL[g.s], g.s === "none");
-        g.t.uses.forEach(u => { const th = place[u]; if (th) C(mv.x, mv.y, th.x + th.w, th.y, GCOL[g.s], false, 1.8); }); }
+        g.t.uses.forEach(u => { const th = place[u]; if (th) { if (th.onMap) C(mv.x + mv.w, mv.y, th.x, th.y, GCOL[g.s], false, 1.8); else C(mv.x, mv.y, th.x + th.w, th.y, GCOL[g.s], false, 1.8); } }); }
     });
     if (!lit.tries.length) { const n = document.createElement("div"); n.className = "ghead"; n.style.cssText = "left:" + movesX + "px;top:" + (oy + 24) + "px"; n.textContent = "Nothing tried yet."; box.appendChild(n); }
   }

@@ -347,3 +347,11 @@ def test_the_viewer_wires_wheel_zoom_drag_pan_and_a_reset_button_that_refit_the_
     assert 'id="reset"' in page and "Reset view" in page
     assert 'addEventListener("wheel"' in js and '"pointermove"' in js and '$("reset").onclick' in js
     assert "userZoom" in js and js.count("fitFn()") >= 2  # each refits the map, which redraws the graph
+
+
+@pytest.mark.req("scene-viewer/whole-network-over-the-map")
+def test_the_viewer_has_a_whole_network_mode_that_places_every_box_and_draws_every_link():
+    js = (ROOT / "viewer/smallville/viewer.js").read_text()
+    html = (ROOT / "viewer/smallville/index.html").read_text()
+    assert "Whole network" in html and 'id="graphall"' in html
+    assert "whole = graphAll" in js and "GRAPH.graph.edges.forEach" in js and "onMap" in js
