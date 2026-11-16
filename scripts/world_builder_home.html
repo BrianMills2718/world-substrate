@@ -534,6 +534,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       setTip($("workspace-continue"),catalog.run.can_continue === false ? catalog.run.reason || "This run cannot continue; replay remains available." : "Continue from the latest saved state, preserving actor memories.");
       $("workspace-continue-note").textContent=catalog.run.can_continue === false ? "Continue unavailable: "+(catalog.run.reason || "No restorable checkpoint.") : "";
       $("workspace-branch-note").textContent = cp.options.length ? (atCheckpoint ? "Viewing the completed round checkpoint. Branch preserves this state and actor memories." : "Preview the completed round state before branching; a mid-round event is not a saved checkpoint.") + " Natural-language interventions are a future feature." : "Branch unavailable: "+(catalog.checkpoints.find(c=>c.can_branch===false)?.reason || "No completed-round checkpoint. Older recordings may not retain restorable state.");
+      updateWhatIf();
     }
     async function openCatalogWorld(id, runId) {
       const gen = ++selectionGeneration;
@@ -1678,7 +1679,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const ask = ++mapAsk, mine = live;
     let replay;
     try {
-      if (live.replay) {
+      if (live.replay && !catalog) {
         if (!sharedSceneId) { status.textContent = "This recording has no map."; return; }
         const r = await fetch("/world-builder/api/share/" + encodeURIComponent(sharedSceneId) + "/replay", { headers: ownerKey() ? { "X-World-Builder-Owner": ownerKey() } : {} });
         replay = await r.json(); if (!r.ok) throw new Error(replay.error || r.status);
