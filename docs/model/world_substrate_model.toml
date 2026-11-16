@@ -457,11 +457,11 @@ schedule = "every logged request appends one RunLogEntry; every LLM call reserve
 
 [[processes]]
 name = "share"
-what = "Share link: POST /share names a build id and run ids; the server rebuilds the run from its own run log (one world, rounds 1..N unbroken, status 200, last 3 days) and stores it gzipped in shares.sqlite beside the run log. GET /share/* returns it; the page replays the recorded rounds with no AI call. Two sub-routes under GET /share/* (declared by prefix; scripts/world_builder_service.py:1672 and :1682): GET /share/<id>/replay returns a RoomMapReplay on a generated map (404 when the world declares no layout; report words withheld unless the owner password is given), and GET /share/<id>/graph returns a WorldGraphPayload with no message words."
+what = "Share link: POST /share names a build id and run ids; the server rebuilds the run from its own run log (one world, rounds 1..N unbroken, status 200, last 3 days) and stores it gzipped in shares.sqlite beside the run log. GET /share/* returns it; the page replays the recorded rounds with no AI call. Two sub-routes under GET /share/* (declared by prefix; scripts/world_builder_service.py:1672 and :1682): GET /share/<id>/replay returns a RoomMapReplay on a generated map (404 when the world declares no layout; report words withheld unless the owner password is given), and GET /share/<id>/graph returns a WorldGraphPayload with no message words. POST /live-replay takes the same body as POST /share and returns the RoomMapReplay of the rounds finished so far, without saving anything (the run page asks after every round; a catalog_run_id needs the owner password)."
 reads = ["SharedRun", "WorldLayout"]
 serves = ["RoomMapReplay", "WorldGraphPayload"]
 source = "scripts/world_builder_service.py:474"
-routes = ["POST /share", "GET /share/*"]
+routes = ["POST /share", "POST /live-replay", "GET /share/*"]
 changes = ["SharedRun"]
 writes = ["world-builder-share/v1"]
 schedule = "on request; no LLM; at most 30 shares per visitor per day; authenticated catalog_run_id reads the exact durable prefix instead of recent logs"
