@@ -128,5 +128,77 @@
       "td-86",
       "td-98"
     ]
+  },
+  "public-offices-10": {
+    "label": "Public scene: a meeting room with up to ten offices around it (generated, CC0 tiles)",
+    "tiles": "generated",
+    "kind": "generated",
+    "slots": {
+      "hub": "public-offices-10|hub",
+      "o1": "public-offices-10|o1",
+      "o2": "public-offices-10|o2",
+      "o3": "public-offices-10|o3",
+      "o4": "public-offices-10|o4",
+      "o5": "public-offices-10|o5",
+      "o6": "public-offices-10|o6",
+      "o7": "public-offices-10|o7",
+      "o8": "public-offices-10|o8",
+      "o9": "public-offices-10|o9",
+      "o10": "public-offices-10|o10"
+    },
+    "connections": [
+      [
+        "hub",
+        "o1"
+      ],
+      [
+        "hub",
+        "o2"
+      ],
+      [
+        "hub",
+        "o3"
+      ],
+      [
+        "hub",
+        "o4"
+      ],
+      [
+        "hub",
+        "o5"
+      ],
+      [
+        "hub",
+        "o6"
+      ],
+      [
+        "hub",
+        "o7"
+      ],
+      [
+        "hub",
+        "o8"
+      ],
+      [
+        "hub",
+        "o9"
+      ],
+      [
+        "hub",
+        "o10"
+      ]
+    ],
+    "sprites": [
+      "td-84",
+      "td-85",
+      "td-86",
+      "td-87",
+      "td-88",
+      "td-96",
+      "td-97",
+      "td-98",
+      "td-99",
+      "td-100"
+    ]
   }
 }

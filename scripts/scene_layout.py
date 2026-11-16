@@ -107,3 +107,40 @@ def public_layout(layout: dict[str, Any]) -> dict[str, Any]:
     for person in (out.get("people") or {}).values():
         person.pop("sprite", None)
     return out
+
+
+OFFICES_MAP = "public-offices-10"
+
+
+def office_layout(bundle: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """For a world with no `layout` (no places, no locations): a copy of it drawn as one office per actor around a meeting room.
+
+    Presentation only: the world itself is untouched. Returns (the copy with a layout and public place names, the gathering
+    rule: {"room": the meeting room's id, "entities": ids of the world's meetings}). A person goes to the meeting room in a round
+    where their move names one of those meetings, and is back in their own office otherwise.
+
+    Implements: scene-viewer/every-world-has-a-map"""
+    import copy
+
+    out = copy.deepcopy(bundle)
+    actors = [e for e in out.get("entities") or [] if "actor" in (e.get("categories") or [])]
+    prepared = prepared_maps()[OFFICES_MAP]
+    offices = [s for s in prepared["slots"] if s != "hub"]
+    _need(actors, "this world has no actors to draw, so it has no room map")
+    _need(len(actors) <= len(offices), f"this world has {len(actors)} actors; the office map holds {len(offices)}")
+    declaration = out.setdefault("actor_information", {})
+    declaration.setdefault("actors", {})
+    public = declaration.setdefault("public_entities", [])
+    public += [{"id": e["id"], "label": e.get("label") or e["id"]} for e in actors if e["id"] not in {r["id"] for r in public}]
+    public.append({"id": "meeting-room", "label": "Meeting room"})
+    rooms, doors, people = {"meeting-room": "hub"}, {}, {}
+    for entity, slot in zip(actors, offices):
+        office = f"office-{entity['id']}"
+        public.append({"id": office, "label": entity.get("label") or entity["id"]})
+        declaration["actors"].setdefault(entity["id"], {})
+        rooms[office] = slot
+        doors[f"door-{office}"] = {"between": ["meeting-room", office], "halves": []}
+        people[entity["id"]] = {"start": office}
+    out["layout"] = {"version": 1, "map": OFFICES_MAP, "rooms": rooms, "doors": doors, "people": people}
+    meetings = {e["id"] for e in out.get("entities") or [] if "moment" in (e.get("categories") or [])}
+    return out, {"room": "meeting-room", "entities": meetings, "home": {a: f"office-{a}" for a in people}}

@@ -157,13 +157,73 @@ def test_a_share_replay_uses_the_generated_map_withholds_report_words_and_keeps_
     assert "ville" not in json.dumps(public).lower().replace("the_ville", "")  # no private map name in the public payload
 
 
-@pytest.mark.req("scene-viewer/a-world-with-no-layout-has-no-room-map")
-def test_a_world_with_no_layout_has_no_public_room_map():
+@pytest.mark.req("scene-viewer/a-world-with-nobody-to-draw-has-no-room-map")
+def test_a_world_with_no_layout_and_no_actors_has_no_public_room_map():
     from scripts.world_builder_service import _public_replay
     share = _share_of_the_scripted_pump_run()
     del share["world"]["bundle"]["layout"]
+    share["world"]["bundle"]["entities"] = [e for e in share["world"]["bundle"]["entities"] if "actor" not in (e.get("categories") or [])]
     with pytest.raises(scene_layout.LayoutError):
         _public_replay(share)
+
+
+def _meeting_world():
+    """A world with no places and no locations (like Waltzman's): three groups, a weekly meeting, two rounds."""
+    bundle = {"entities": [{"id": g, "label": g.title(), "categories": ["actor"]} for g in ("alpha", "beta", "gamma")]
+              + [{"id": "weekly", "label": "Weekly meeting", "categories": ["moment"]}], "actions": [], "world": {"label": "Meeting world"}}
+    turn = lambda n, attends: {"turn": n, "actors": {
+        "alpha": {"did": {"actor": "alpha", "kind": "discuss", "meeting": "weekly"}, "status": "accepted", "refused_because": []},
+        "beta": {"did": {"actor": "beta", "kind": "communicate", "recipient": "gamma"}, "status": "accepted", "refused_because": []},
+        "gamma": {"did": {"actor": "gamma", "kind": "discuss", "meeting": "weekly"} if attends else None, "status": "accepted" if attends else "no_action", "refused_because": []}}}
+    return {"world": {"bundle": bundle, "causal_model": None}, "rounds": [turn(1, True), {"turn": 2, "actors": {n: {"did": None, "status": "no_action", "refused_because": []} for n in ("alpha", "beta", "gamma")}}]}
+
+
+@pytest.mark.req("scene-viewer/every-world-has-a-map")
+def test_a_world_with_no_places_gets_an_office_for_each_group_and_a_meeting_room():
+    from scripts.world_builder_service import _public_replay
+    replay = _public_replay(_meeting_world(), owner=True)
+    assert replay["map"] == "public-offices-10"
+    assert {r["label"] for r in replay["rooms"]} == {"Alpha", "Beta", "Gamma", "Meeting room"}
+    assert replay["illustrative"]  # the page says the layout is drawn, not part of the world
+
+
+@pytest.mark.req("scene-viewer/every-world-has-a-map")
+def test_the_viewer_shows_the_note_that_a_drawn_layout_is_illustrative():
+    assert 'id="note"' in (ROOT / "viewer/smallville/index.html").read_text()
+    assert "R.illustrative" in (ROOT / "viewer/smallville/viewer.js").read_text()
+
+
+@pytest.mark.req("scene-viewer/every-world-has-a-map")
+def test_people_stay_in_their_offices_and_walk_to_the_meeting_room_only_for_a_meeting():
+    from scripts.world_builder_service import _public_replay
+    replay = _public_replay(_meeting_world(), owner=True)
+    rooms = {r["label"]: r for r in replay["rooms"]}
+    inside = lambda who, room: rooms[room]["x0"] <= who["movement"][0] <= rooms[room]["x1"] and rooms[room]["y0"] <= who["movement"][1] <= rooms[room]["y1"]
+    first, last = replay["steps"]["0"], replay["steps"][str(len(replay["steps"]) - 1)]
+    assert all(inside(first[n], n) for n in ("Alpha", "Beta", "Gamma"))
+    mid = replay["steps"][str(replay["rounds"][0]["end"])]
+    assert inside(mid["Alpha"], "Meeting room") and inside(mid["Gamma"], "Meeting room") and inside(mid["Beta"], "Beta")
+    assert all(inside(last[n], n) for n in ("Alpha", "Beta", "Gamma"))  # round two: nobody attends, so everyone is back home
+
+
+@pytest.mark.req("scene-viewer/every-world-has-a-map")
+def test_a_message_to_another_group_shows_as_a_chat_line_and_its_words_are_withheld_from_visitors():
+    from scripts.world_builder_service import _public_replay
+    chats = lambda r: [c[1] for f in r["steps"].values() for who in f.values() for c in (who.get("chat") or [])]
+    assert chats(_public_replay(_meeting_world(), owner=True)) and all("words not shown" in c for c in chats(_public_replay(_meeting_world())))
+
+
+@pytest.mark.req("scene-viewer/every-world-has-a-map")
+def test_the_office_map_connects_the_meeting_room_to_every_office_and_holds_ten():
+    from scripts import export_smallville_replay as ex
+    from scripts.generated_map import build
+    prepared = scene_layout.prepared_maps()["public-offices-10"]
+    maze = build("public-offices-10", list(prepared["slots"]))["maze"]
+    assert len(prepared["sprites"]) == 10 and len(set(prepared["sprites"])) == 10
+    for a, b in prepared["connections"]:
+        start, goal = ex.anchor(maze, prepared["slots"][a]), ex.anchor(maze, prepared["slots"][b])
+        assert len(ex.doorway(maze, [start] + ex.walk(maze, start, goal))) == 2
+    assert all(len(ex.spots(maze, prepared["slots"][s], 10)) == 10 for s in prepared["slots"])  # every room has room for everyone
 
 
 CAUSAL = json.loads((ROOT / "examples/world_authoring/pump-facility-causal-v0.json").read_text())
@@ -365,3 +425,9 @@ def test_the_viewer_offers_graph_styles_and_opens_one_from_a_link():
     for v in ("round", "map", "hover", "beside"):
         assert f'<option value="{v}"' in html
     assert 'q.get("graph")' in js and "focusId" in js and "beside" in js
+
+
+@pytest.mark.req("scene-viewer/every-world-has-a-map")
+def test_the_old_graph_page_sends_visitors_to_the_graph_beside_the_room_map():
+    html = (ROOT / "viewer/smallville/graph.html").read_text()
+    assert 'q.set("graph", "beside")' in html and 'location.replace(url)' in html and "index.html" in html

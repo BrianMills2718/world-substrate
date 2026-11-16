@@ -12,6 +12,7 @@ const REPLAY = new URLSearchParams(location.search).get("replay");  // ?replay=s
 const CC0 = "assets-cc0/";
 // ?share=<id> reads a shared run's replay from the World Builder service (generated maps only, report words withheld).
 const SHARE = new URLSearchParams(location.search).get("share");
+const ROW_MIN = 20;  // the least height one box in the beside-the-map columns gets, so long columns never overlap
 const replayUrl = SHARE ? "/world-builder/api/share/" + encodeURIComponent(SHARE) + "/replay"
   : (REPLAY && /^https?:|^\//.test(REPLAY)) ? REPLAY : (REPLAY ? "replay-" + REPLAY + ".json" : "replay.json");
 fetch(replayUrl).then(r => r.json())
@@ -25,6 +26,7 @@ function start(R, M) {
       if (i) d.append(" · "); const a = document.createElement(k === REPLAY ? "b" : "a"); a.textContent = label; if (k !== REPLAY) a.href = "?replay=" + k; d.append(a); });
   }
   if (R.title) { document.getElementById("title").textContent = R.title + " replay"; document.title = R.title + " Replay"; }
+  if (R.illustrative) { const n = document.getElementById("note"); n.textContent = R.illustrative; n.style.display = "block"; }
   const names = R.meta.persona_names, last = R.meta.step, GEN = !!R.grid;
   const q = new URLSearchParams(location.search);  // ?step=N&paused=1 opens a given step (for links and tests)
   let step = Math.min(+q.get("step") || 0, last), playing = !q.has("paused"), timer = null, scene = null;
@@ -189,12 +191,12 @@ function start(R, M) {
     const lines = [];
     if (beside) {  // the whole network laid out beside the map in columns; click a box to see its links and where it is on the map
       const PL = ox + 10, PW = Math.max(300, mapL - ox - 22), cols = [["People", NODES.filter(n => n.kind === "actor")], ["Moves and rules", NODES.filter(n => n.kind === "action" || n.kind === "process")],
-        ["Things", NODES.filter(n => n.kind === "thing")], ["Places", NODES.filter(n => n.kind === "place")]];
-      const gap = 16, cw = (PW - gap * (cols.length - 1)) / cols.length, step = Math.min(52, (H - 56) / Math.max(1, ...cols.map(c => c[1].length)));
+        ["Things", NODES.filter(n => n.kind === "thing")], ["Places", NODES.filter(n => n.kind === "place")]].filter(c => c[1].length);  // no empty column
+      const gap = 16, cw = (PW - gap * (cols.length - 1)) / cols.length, step = Math.min(52, Math.max(ROW_MIN, (H - 56) / Math.max(1, ...cols.map(c => c[1].length))));
       cols.forEach(([title, list], ci) => { const x = PL + ci * (cw + gap); head(title, x);
         list.forEach((n, i) => { const y = oy + 24 + i * step;
           const st = n.kind === "actor" ? (actState[n.id] || "none") : n.kind === "action" ? (lit.moves[n.id] ? stateOf(lit.moves[n.id]) : "none") : n.kind === "process" ? (round && round.fired.includes(n.id) ? "ok" : "none") : n.kind === "thing" ? (lit.things[n.id] ? stateOf(lit.things[n.id]) : "none") : "none";
-          const d = chip(x, y, n.label, st, cw); d.style.fontSize = "11px"; d.style.padding = "1px 5px";
+          const d = chip(x, y, n.label, st, cw); d.style.fontSize = "11px"; d.style.padding = "1px 5px"; d.style.whiteSpace = "nowrap"; d.style.overflow = "hidden"; d.style.textOverflow = "ellipsis"; d.title = n.label;  // one line each; the full name on hover
           place[n.id] = { x, w: cw, y: y + d.offsetHeight / 2, col: ci, el: d }; }); });
     }
     if (!beside) moveIds.filter(id => lit.moves[id] || whole).forEach(id => col(id, lit.moves[id], true));
@@ -259,9 +261,12 @@ function start(R, M) {
     if (!lit.tries.length) { const n = document.createElement("div"); n.className = "ghead"; n.style.cssText = "left:" + movesX + "px;top:" + (oy + 24) + "px"; n.textContent = "Nothing tried yet."; box.appendChild(n); }
   }
   if (GRAPH) { $("graphbtn").style.display = ""; $("gmode").parentElement.style.display = "none";
+    // A long column (70 boxes for a big world) never squeezes its boxes together: the stage grows to hold it and the page scrolls.
+    const sizeStage = () => { const longest = Math.max(0, ...["actor", "action|process", "thing", "place"].map(k => (GRAPH ? GRAPH.graph.nodes : []).filter(n => k.split("|").includes(n.kind)).length));
+      $("stage").style.minHeight = graphOn && gmode === "beside" && longest ? Math.max(320, 24 + longest * ROW_MIN + 56) + "px" : ""; const refit = () => window.dispatchEvent(new Event("resize")); refit(); setTimeout(refit, 150); };  // again once the scrollbar has appeared
     $("graphbtn").onclick = () => { graphOn = !graphOn; $("graphbtn").textContent = graphOn ? "Hide graph" : "Show graph"; $("graphbtn").classList.toggle("on", graphOn);
-      $("gmode").parentElement.style.display = graphOn ? "" : "none"; if (fitFn) fitFn(); drawGraph(); };
-    $("gmode").onchange = e => { gmode = e.target.value; focusId = null; if (fitFn) fitFn(); drawGraph(); };
+      $("gmode").parentElement.style.display = graphOn ? "" : "none"; sizeStage(); if (fitFn) fitFn(); drawGraph(); };
+    $("gmode").onchange = e => { gmode = e.target.value; focusId = null; sizeStage(); if (fitFn) fitFn(); drawGraph(); };
     const want = q.get("graph");  // ?graph=round|map|hover|beside opens the graph in that style (for links and tests)
     if (want && ["round", "map", "hover", "beside"].includes(want)) { gmode = want; $("gmode").value = want; $("graphbtn").click(); } }
 

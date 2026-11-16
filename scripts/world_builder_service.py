@@ -695,19 +695,19 @@ def _catalog_scene(record: dict[str, Any]) -> dict[str, Any]:
 def _public_replay(record: dict[str, Any], owner: bool = False) -> dict[str, Any]:
     """The room-map replay of a shared run, drawn on a generated map with free-licensed tiles only (never the
     private Smallville art or map data). A world whose layout names a private map is drawn on the generated map with
-    the same number of rooms; a world with no layout has no map. Message words are withheld unless `owner`.
+    the same number of rooms; a world with no layout is drawn as an office per actor round a meeting room. Message words are withheld unless `owner`.
 
     Implements: scene-viewer/public-room-map-of-a-shared-run"""
     import copy
     from scripts.export_smallville_replay import export_from_rows, withhold_words
-    from scripts.scene_layout import LayoutError, public_layout
-    bundle = copy.deepcopy(record["world"]["bundle"])
-    layout = bundle.get("layout")
-    if not isinstance(layout, dict):
-        raise LayoutError("this world declares no layout, so it has no room map")
-    bundle["layout"] = public_layout(layout)
+    from scripts.scene_layout import office_layout, public_layout
+    bundle, gather = copy.deepcopy(record["world"]["bundle"]), None
+    if isinstance(bundle.get("layout"), dict):
+        bundle["layout"] = public_layout(bundle["layout"])
+    else:  # no places declared: draw an office per actor round a meeting room (presentation only; raises LayoutError with no actors)
+        bundle, gather = office_layout(bundle)
     replay = export_from_rows([{"result": {"transcript": record.get("rounds") or []}}], bundle, Path("/nonexistent"),
-                                causal=record["world"].get("causal_model"))
+                                causal=record["world"].get("causal_model"), gather=gather)
     if not owner:
         withhold_words(replay)
     return {"ok": True, **replay}
