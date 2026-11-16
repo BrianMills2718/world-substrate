@@ -354,5 +354,14 @@ def test_the_viewer_wires_wheel_zoom_drag_pan_and_a_reset_button_that_refit_the_
 def test_the_viewer_has_a_whole_network_mode_that_places_every_box_and_draws_every_link():
     js = (ROOT / "viewer/smallville/viewer.js").read_text()
     html = (ROOT / "viewer/smallville/index.html").read_text()
-    assert "Whole network" in html and 'id="graphall"' in html
-    assert "whole = graphAll" in js and "GRAPH.graph.edges.forEach" in js and "onMap" in js
+    assert "Whole network" in html and 'id="gmode"' in html
+    assert "whole = gmode" in js and "GRAPH.graph.edges.forEach" in js and "onMap" in js
+
+
+@pytest.mark.req("scene-viewer/the-viewer-offers-the-styles-and-opens-one-from-a-link")
+def test_the_viewer_offers_graph_styles_and_opens_one_from_a_link():
+    js = (ROOT / "viewer/smallville/viewer.js").read_text()
+    html = (ROOT / "viewer/smallville/index.html").read_text()
+    for v in ("round", "map", "hover", "beside"):
+        assert f'<option value="{v}">' in html
+    assert 'q.get("graph")' in js and "focusId" in js and "beside" in js
