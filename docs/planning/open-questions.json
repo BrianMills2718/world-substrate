@@ -2057,7 +2057,8 @@
    "status": "resolved",
    "sources": [
     "roadmap/README.md:43",
-    "scripts/export_smallville_replay.py:213"
+    "scripts/export_smallville_replay.py:213",
+    "commit 11b0b2f (PR #404, 2026-11-14): exporter maps each round to walking steps by round_index"
    ],
    "touches": [
     "replay-export"
@@ -2155,7 +2156,7 @@
    "short": "Viewer D8: embedding and phone width",
    "question": "The workspace is a static page plus API; the viewer should embed as a scene route and work at 390px.",
    "blocks": "whether the room map is part of the workspace rather than a separate page",
-   "resolves_with": "Partly settled: the public room map is its own page linked from the shared-run view (scripts/world_builder_home.html:678), and the facility fits 390px (spec:30). Remaining: not embedded in the workspace; the rules overlay is computer-only (spec:110); the report bubble clips on phones (Q101). Settles with an embed decision and a 390px check.",
+   "resolves_with": "Partly settled: the public room map is its own page linked from the shared-run view (scripts/world_builder_home.html:678), and the facility fits 390px (spec:30). Remaining: not embedded in the workspace; choosing a branch or checkpoint step in the room map is not built (handed on from Q99); the rules overlay is computer-only (spec:110); the report bubble clips on phones (Q101). Settles with an embed decision and a 390px check.",
    "classification": "implementation_gap",
    "dependencies": [],
    "revisit_trigger": "When a world or viewer change touches this difficulty.",
@@ -2205,8 +2206,8 @@
    "owner": "agent",
    "status": "open",
    "sources": [
-    "docs/planning/checks.txt",
-    "docs/planning/planning-package.json"
+    "docs/planning/checks.txt:1057-1065 (durable_docs_check, 7 STALE, exit 1)",
+    "docs/planning/checks.txt:1068-1073 (md_file_cap, md=272, orphans 7, durable 7, exit 1)"
    ],
    "touches": [
     "run-log"

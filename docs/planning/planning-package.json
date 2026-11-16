@@ -123,7 +123,7 @@
             "unknown_ids": 53
           },
           "tracked_by": "Q77",
-          "note": "2026-11-16 (base 3d9194c): exit 1: 460 findings (151 unimplemented, 256 untested, 53 unknown ids such as scene-viewer/smallville-replay-export at tests/test_smallville_replay_export.py:64). Annotation coverage, not demonstrated behavior defects. Tracked by Q77."
+          "note": "2026-11-16 (base 3d9194c): exit 1: 460 findings (151 unimplemented, 256 untested, 53 unknown ids such as scene-viewer/smallville-replay-export at tests/test_smallville_replay_export.py:64). The 53 unknown ids are new since 2026-11-12 (unknown_ids 0 then): Lockstep prints them as references to requirement ids it cannot resolve; not diagnosed. The unimplemented and untested rows are annotation coverage. Tracked by Q77; checks.txt:1104."
         },
         {
           "name": "I0/I1 saved and recorded-build compatibility",
