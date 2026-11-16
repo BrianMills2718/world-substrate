@@ -241,6 +241,33 @@ def export_from_rows(rows: list[dict[str, Any]], bundle: dict[str, Any], maze_di
     replay = export(rows, generated["maze"] if generated else load_maze(maze_dir), rooms=layout["rooms"], people=layout["people"], start_rooms=layout["start_rooms"],
                     labels=layout["labels"], doors=layout["doors"], sprites=layout["sprites"], causal=causal)
     replay["map"], replay["title"] = layout["map"], layout["title"]
+    maze = generated["maze"] if generated else load_maze(maze_dir)
+    names = {e["id"]: e.get("label") or e["id"] for e in bundle.get("entities") or []}
+    replay["rooms"] = []  # each room's name and its floor rectangle, so the viewer can name the rooms
+    for room, arena in layout["rooms"].items():
+        tiles = room_tiles(maze, arena)
+        if tiles:
+            x0, y0, x1, y1 = min(t[0] for t in tiles), min(t[1] for t in tiles), max(t[0] for t in tiles), max(t[1] for t in tiles)
+            doorway_above = any(x0 <= t[0] <= x1 and t[1] == y0 - 1 for d in replay["doors"].values() for t in d["tiles"])
+            replay["rooms"].append({"id": room, "label": names.get(room, room), "x0": x0, "y0": y0, "x1": x1, "y1": y1,
+                                    "label_row": y1 + 1 if doorway_above else y0 - 1})  # the name goes on whichever wall has no doorway
+    # Things that stand in a laid-out room (a pump, a bed), drawn as a generic prop with their name. Only structural categories
+    # decide what is a thing; people, doors and places are drawn already.
+    halves = {h for d in layout["doors"].values() for h in d["halves"]}
+    skip = {"actor", "person", "boundary", "door", "place"}
+    replay["objects"] = []
+    used: set[tuple[int, int]] = set()
+    for e in bundle.get("entities") or []:
+        room = next((r for r in replay["rooms"] if r["id"] == e.get("location")), None)
+        if room is None or e["id"] in halves or skip & set(e.get("categories") or []):
+            continue
+        door_tiles = [tuple(t) for d in replay["doors"].values() for t in d["tiles"]]
+        free = [t for t in room_tiles(maze, layout["rooms"][room["id"]]) if t[1] == room["y1"] and t not in used
+                and all(abs(t[0] - d[0]) + abs(t[1] - d[1]) > 3 for d in door_tiles)]  # clear of the doorways
+        if free:
+            tile = free[(len(free) * (1 + len(used))) // (2 + len(used)) % len(free)]
+            used.add(tile)
+            replay["objects"].append({"id": e["id"], "label": names[e["id"]], "tile": list(tile), "room": room["id"]})
     if causal is not None:  # the whole-system graph, lit round by round, to draw over the map (scene-viewer/world-graph)
         from scripts.world_graph import graph_replay
         turns = [t for _, t in sorted(((t["turn"], t) for r in rows for t in r["result"]["transcript"]), key=lambda x: x[0])]
