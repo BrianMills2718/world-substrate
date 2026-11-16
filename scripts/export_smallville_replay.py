@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """Export a retained World Substrate run as a Smallville replay (`master_movement.json` plus `meta.json`).
 
-Implements: scene-viewer/smallville-replay-export (spike; Brian, 2026-11-14, "yes" to the viewer spike).
+Implements: scene-viewer/smallville-replay-export
+Implements: scene-viewer/rules-overlay
+Implements: scene-viewer/named-rooms-and-objects
+Implements: scene-viewer/graph-over-the-map
+Spike approved by Brian, 2026-11-14, "yes" to the viewer spike.
 
 The substrate knows rooms, not coordinates. A map file (here the Smallville "Ville" maze) supplies each room's tiles;
 this exporter picks an anchor tile per room, finds each walk with a breadth-first search over the map's walkable tiles,
@@ -103,7 +107,9 @@ def doorway(maze: dict[str, Any], path: list[tuple[int, int]], max_width: int = 
 
 
 def _generic(kind: str, did: dict[str, Any], labels: dict[str, str]) -> str:
-    """Any other action in words: its name, then the things it names (people, places, doors) by their labels."""
+    """Any other action in words: its name, then the things it names (people, places, doors) by their labels.
+
+    Implements: scene-viewer/any-world-s-actions-and-doors-show"""
     named = [labels[v] for k, v in did.items() if k not in ("actor", "kind", "base_revision", "controller") and isinstance(v, str) and v in labels]
     return kind.replace("-", " ") + (" (" + ", ".join(named) + ")" if named else "")
 

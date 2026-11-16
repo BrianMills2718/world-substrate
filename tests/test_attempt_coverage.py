@@ -8,7 +8,6 @@ import pytest
 
 from world_substrate import attempt as api
 
-pytestmark = pytest.mark.req("semantic-binding/whole-attempt-coverage")
 TEXT = 'I record "withdraw support" and leave'
 SIGNATURES = [{"kind": "record", "fields": [{"name": "text", "type": "string"}]}]
 
@@ -34,6 +33,7 @@ def test_schema_requires_closed_coverage():
     assert set(coverage["required"]) == {"status", "action_spans", "unrepresented_spans"}
 
 
+@pytest.mark.req("semantic-binding/fresh-missing-assessments-and-historical-unassessed-readings-differ")
 @pytest.mark.parametrize("coverage", [None, {}, {"status": "complete"},
     {"status": "complete", "action_spans": [], "unrepresented_spans": []},
     {"status": "complete", "action_spans": ["absent"], "unrepresented_spans": []},
@@ -52,6 +52,7 @@ def test_malformed_explicit_coverage_rejected_even_in_legacy_mode(coverage):
         assert "asks" not in reading
 
 
+@pytest.mark.req("semantic-binding/fresh-missing-assessments-and-historical-unassessed-readings-differ")
 def test_strict_missing_coverage_and_legacy_compatibility():
     value = response()
     del value["coverage"]
@@ -61,6 +62,7 @@ def test_strict_missing_coverage_and_legacy_compatibility():
     assert "coverage" not in legacy
 
 
+@pytest.mark.req("semantic-binding/multiple-independent-operations-have-no-installed-composite")
 @pytest.mark.parametrize("status", ["requires_decomposition", "partial", "ambiguous"])
 def test_rejections_precede_wait_and_cannot_relay_requests(status):
     value = response(status, [] if status == "ambiguous" else ["record"], ["leave"], kind="wait")
@@ -78,6 +80,7 @@ def test_rejections_precede_wait_and_cannot_relay_requests(status):
     assert "no part" in api.rejection_message(reading).lower()
 
 
+@pytest.mark.req("semantic-binding/content-and-consequences-are-not-extra-operations")
 def test_quoted_content_single_action_and_metadata_not_action_fields():
     text = 'I record "withdraw support"'
     value = response(actions=[text])
@@ -113,6 +116,7 @@ def test_derived_failure_retains_coverage():
     assert result["coverage"] == reading["coverage"]
 
 
+@pytest.mark.req("semantic-binding/fresh-missing-assessments-and-historical-unassessed-readings-differ")
 def test_interpret_requires_coverage_in_existing_single_model_call():
     value = response()
     del value["coverage"]
@@ -130,6 +134,7 @@ def test_interpret_requires_coverage_in_existing_single_model_call():
     assert reading["interpretation_rejection"] == "invalid_coverage"
 
 
+@pytest.mark.req("semantic-binding/multiple-independent-operations-have-no-installed-composite")
 def test_rejected_compound_envelope_is_persisted_and_replays_without_model():
     from reference_worlds.castaway.probe import build_transfer_engine
 
@@ -146,6 +151,7 @@ def test_rejected_compound_envelope_is_persisted_and_replays_without_model():
         assert engine.replay()["ok"]
 
 
+@pytest.mark.req("semantic-binding/an-installed-composite-covers-the-request")
 def test_installed_composite_can_represent_whole_attempt():
     signatures = [{"kind": "record-and-leave", "fields": []}]
     reading = api.read_interpretation({**response(kind="record-and-leave"), "fields": []},

@@ -109,7 +109,7 @@ def reports(engine, who: str) -> list[str]:
 # What a committed report is
 
 
-@pytest.mark.req(REQ)
+@pytest.mark.req("causal-model-authoring/an-action-appends-one-report-record-to-a-participants-list")
 def test_two_reports_append_in_order_and_keep_the_older_entry_byte_for_byte():
     engine, _ = fresh()
     first = send(engine, "ana", "ben", "The pump is dry.")
@@ -134,7 +134,7 @@ def test_two_reports_append_in_order_and_keep_the_older_entry_byte_for_byte():
     assert one["id"] != two["id"] and one["id"].startswith("rpt-")
 
 
-@pytest.mark.req(REQ)
+@pytest.mark.req("causal-model-authoring/an-action-appends-one-report-record-to-a-participants-list")
 def test_each_entry_is_one_json_string_with_exactly_the_declared_keys():
     engine, _ = fresh()
     result = send(engine, "ana", "ben", "Ünï — ok")
@@ -150,7 +150,7 @@ def test_each_entry_is_one_json_string_with_exactly_the_declared_keys():
     assert result["event"]["status"] == "accepted"
 
 
-@pytest.mark.req(REQ)
+@pytest.mark.req("causal-model-authoring/an-action-appends-one-report-record-to-a-participants-list")
 def test_the_id_comes_from_world_revision_and_event_and_is_stable_across_fresh_worlds():
     first, _ = fresh()
     again, _ = fresh()
@@ -168,7 +168,7 @@ def test_the_id_comes_from_world_revision_and_event_and_is_stable_across_fresh_w
     assert len({json.loads(entry)["id"] for entry in reports(first, "ben")}) == 2
 
 
-@pytest.mark.req(REQ)
+@pytest.mark.req("causal-model-authoring/an-action-appends-one-report-record-to-a-participants-list")
 def test_only_the_recipients_list_and_cause_change_and_the_sender_is_the_real_actor():
     engine, _ = fresh()
     before = deepcopy(engine.world.material_dict())
@@ -190,7 +190,7 @@ def test_only_the_recipients_list_and_cause_change_and_the_sender_is_the_real_ac
 # Authority
 
 
-@pytest.mark.req(REQ)
+@pytest.mark.req("causal-model-authoring/an-action-appends-one-report-record-to-a-participants-list")
 def test_compiler_derives_exact_read_and_write_scope_for_the_target_append():
     engine, model = fresh()
     declared = model.mechanics[0]
@@ -211,7 +211,7 @@ def test_compiler_derives_exact_read_and_write_scope_for_the_target_append():
     assert event["declared_read_paths"] == list(declared.read_paths)
 
 
-@pytest.mark.req(REQ)
+@pytest.mark.req("causal-model-authoring/an-action-appends-one-report-record-to-a-participants-list")
 def test_engine_refuses_the_append_when_the_installed_scope_does_not_cover_it():
     engine, _ = fresh()
     rule = engine.registry.action("send-report")
@@ -224,7 +224,7 @@ def test_engine_refuses_the_append_when_the_installed_scope_does_not_cover_it():
     assert engine.world.material_dict() == before
 
 
-@pytest.mark.req(REQ)
+@pytest.mark.req("causal-model-authoring/an-action-appends-one-report-record-to-a-participants-list")
 def test_the_new_op_is_action_only_and_the_legacy_ops_are_unchanged():
     assert EFFECT_OPS == {"set", "add", "subtract"}
     assert ACTION_EFFECT_OPS == ("set", "add", "subtract", "append_report")
@@ -247,12 +247,12 @@ def compile_with(**effect_changes: Any) -> CausalModel:
     return CausalModel.from_dict(causal(mechanic(effects=[effect])), bundle=bundle())
 
 
-@pytest.mark.req(REQ)
+@pytest.mark.req("causal-model-authoring/an-action-appends-one-report-record-to-a-participants-list")
 def test_a_well_formed_declaration_compiles():
     assert compile_with().mechanics[0].effects[0]["op"] == REPORT_OP
 
 
-@pytest.mark.req(REQ)
+@pytest.mark.req("causal-model-authoring/an-action-appends-one-report-record-to-a-participants-list")
 @pytest.mark.parametrize("changes, message", [
     ({"path": "components.inbox.title"}, "string_list target"),
     ({"path": "components.inbox.missing"}, "unsupported or unknown state path"),
@@ -267,14 +267,14 @@ def test_declarations_that_do_not_target_a_list_from_actor_text_are_refused(chan
         compile_with(**changes)
 
 
-@pytest.mark.req(REQ)
+@pytest.mark.req("causal-model-authoring/an-action-appends-one-report-record-to-a-participants-list")
 def test_one_action_declares_at_most_one_report():
     effect = {"participant": "recipient", "path": REPORTS, "op": REPORT_OP, "value": {"action_field": "content"}}
     with pytest.raises(ActionDeclarationError, match="at most one append_report"):
         CausalModel.from_dict(causal(mechanic(effects=[effect, dict(effect, path="components.inbox.notes")])), bundle=bundle())
 
 
-@pytest.mark.req(REQ)
+@pytest.mark.req("causal-model-authoring/an-action-appends-one-report-record-to-a-participants-list")
 def test_the_target_must_belong_to_the_participants_declared_components():
     narrow = mechanic(participants={"recipient": {"categories": ["member"], "components": ["member"]}})
     with pytest.raises(ActionDeclarationError, match="does not require component 'inbox'"):
@@ -293,7 +293,7 @@ def assert_refused_without_mutation(engine, result: dict[str, Any], status: str,
     return result["event"]
 
 
-@pytest.mark.req(REQ)
+@pytest.mark.req("causal-model-authoring/an-action-appends-one-report-record-to-a-participants-list")
 @pytest.mark.parametrize("content", [123, 1.5, True, None, ["a"], {"a": 1}, ""])
 def test_nonstring_or_empty_content_is_refused_visibly_and_nothing_is_written(content):
     engine, _ = fresh()
@@ -305,7 +305,7 @@ def test_nonstring_or_empty_content_is_refused_visibly_and_nothing_is_written(co
     assert len(reports(engine, "ben")) == 1
 
 
-@pytest.mark.req(REQ)
+@pytest.mark.req("causal-model-authoring/an-action-appends-one-report-record-to-a-participants-list")
 @pytest.mark.parametrize("corrupt", ["not a list", None, 7, [1], ["fine", 2]])
 def test_a_target_that_is_not_a_list_of_strings_is_refused_and_nothing_is_written(corrupt):
     engine, _ = fresh()
@@ -319,7 +319,7 @@ def test_a_target_that_is_not_a_list_of_strings_is_refused_and_nothing_is_writte
     assert engine.world.entities["ben"].component("inbox").reports == corrupt
 
 
-@pytest.mark.req(REQ)
+@pytest.mark.req("causal-model-authoring/an-action-appends-one-report-record-to-a-participants-list")
 def test_missing_recipient_and_self_report_are_refused_by_the_ordinary_checks():
     engine, _ = fresh()
     before, events = deepcopy(engine.world.material_dict()), len(engine.world.events)
@@ -330,7 +330,7 @@ def test_missing_recipient_and_self_report_are_refused_by_the_ordinary_checks():
     assert [check["label"] for check in own["checks"] if not check["ok"]] == ["A member does not report to themselves"]
 
 
-@pytest.mark.req(REQ)
+@pytest.mark.req("causal-model-authoring/an-action-appends-one-report-record-to-a-participants-list")
 def test_a_stale_revision_is_refused_and_a_refused_report_leaves_no_trace_in_the_list():
     engine, _ = fresh()
     send(engine, "ana", "ben", "first")

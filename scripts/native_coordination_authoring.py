@@ -293,6 +293,12 @@ def _slug(value: object, label: str) -> str:
 
 
 def validate_native_coordination_draft(value: object) -> dict[str, Any]:
+    """Refuse any draft outside the bounded family or carrying fields the model may not set.
+
+    Implements: native-coordination/authoring-model-authority
+
+    Implements: native-coordination/authoring-supported-family
+    """
     if not isinstance(value, dict):
         raise TypeError("native coordination draft must be an object")
     if value.get("schema_version") != DRAFT_SCHEMA_VERSION:
@@ -461,6 +467,10 @@ def _resource_order(resources: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def draft_to_bundle(draft: dict[str, Any]) -> dict[str, Any]:
+    """Compile a validated draft into the ordinary authoring bundle; the model writes no law.
+
+    Implements: native-coordination/authoring-model-authority
+    """
     draft = validate_native_coordination_draft(draft)
     proposal = draft["proposal"]
     entities: list[dict[str, Any]] = []
@@ -561,6 +571,10 @@ def draft_review(
     *,
     causal_path: Path = DEFAULT_CAUSAL,
 ) -> dict[str, Any]:
+    """Separate requirements, assumptions, unsupported requests and derived mechanics.
+
+    Implements: native-coordination/authoring-intent-completeness-boundary
+    """
     draft = validate_native_coordination_draft(draft)
     bundle = draft_to_bundle(draft)
     causal_value = json.loads(causal_path.read_text())
@@ -662,6 +676,10 @@ def generate_native_coordination_draft(
     max_budget: float = DEFAULT_BUDGET,
     reasoning_effort: str = "low",
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], Any]:
+    """One description to a retained draft, authoring bundle and review.
+
+    Implements: native-coordination/authoring-product-path
+    """
     if not isinstance(description, str) or not description.strip():
         raise ValueError("description must be a nonempty string")
     if len(description) > 8000:

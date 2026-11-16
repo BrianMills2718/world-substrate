@@ -245,6 +245,11 @@ def _flat_copy(value: Any, memo: dict[int, Any]) -> Any:
 
 @dataclass
 class Entity:
+    """A canonical entity record with explicit typed components.
+
+    Implements: transition-engine/core-records-entity
+    """
+
     entity_id: str
     label: str
     category_ids: tuple[str, ...]
@@ -422,6 +427,11 @@ class Entity:
 
 @dataclass
 class World:
+    """The one canonical world record.
+
+    Implements: transition-engine/core-records-world
+    """
+
     world_id: str
     revision: int
     tick: int
@@ -456,7 +466,10 @@ class World:
         return hashlib.sha256(encoded).hexdigest()
 
     def snapshot(self) -> dict[str, Any]:
-        """Return a versioned JSON-serializable canonical-state snapshot."""
+        """Return a versioned JSON-serializable canonical-state snapshot.
+
+        Implements: transition-engine/core-engine-operations-snapshot-and-replay
+        """
         return {
             "schema_version": SNAPSHOT_SCHEMA_VERSION,
             "world": deepcopy(self.material_dict()),

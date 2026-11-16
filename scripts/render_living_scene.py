@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Render a Living Scene v1 profile over retained canonical live projections."""
+"""Render a Living Scene v1 profile over retained canonical live projections.
+
+Implements: living-scene/living-scene-current-implementation-boundary
+"""
 
 from __future__ import annotations
 

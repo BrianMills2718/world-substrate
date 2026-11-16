@@ -106,6 +106,11 @@ class DeclaredAction:
 
 @dataclass(frozen=True)
 class DeclaredActionMechanic:
+    """One validated `world-substrate-action-mechanic/v0` declaration for exactly one action signature.
+
+    Implements: causal-model-authoring/one-declaration-per-action-kind
+    """
+
     mechanic_id: str
     version: str
     action_kind: str
@@ -240,7 +245,10 @@ class DeclaredActionMechanic:
 
 @dataclass(frozen=True)
 class DeclaredTerminal:
-    """State-derived stop condition over a selected set of represented entities."""
+    """State-derived stop condition over a selected set of represented entities.
+
+    Implements: causal-model-authoring/terminal-condition
+    """
 
     mode: str
     selector: dict[str, Any]
@@ -297,6 +305,8 @@ class DeclaredProcess:
     hold has the effects applied, once per round. This is what lets a world
     keep going (plants dry out again, new orders arrive) instead of stopping
     once its actors have done everything once.
+
+    Implements: causal-model-authoring/processes-timing-and-linked-participants-current-code
     """
 
     process_id: str
@@ -519,7 +529,10 @@ class CausalModel:
         return cls(mechanics=mechanics, terminal=terminal, processes=processes)
 
     def as_review(self) -> dict[str, Any]:
-        """Authority-oriented summary suitable for a human review surface."""
+        """Authority-oriented summary suitable for a human review surface.
+
+        Implements: causal-model-authoring/review-and-execution-boundary
+        """
         return {
             "schema_version": CAUSAL_MODEL_SCHEMA_VERSION,
             "mechanics": [
@@ -559,7 +572,12 @@ class CausalModel:
 
 
 class CompiledActionMechanic:
-    """An ActionRule interpreted entirely from a validated declaration."""
+    """An ActionRule interpreted entirely from a validated declaration.
+
+    Reads and writes are derived from the declaration, never supplied by the proposer.
+
+    Implements: causal-model-authoring/authority-is-derived-not-claimed
+    """
 
     def __init__(self, declared: DeclaredActionMechanic) -> None:
         self.declared = declared
@@ -595,6 +613,10 @@ class CompiledActionMechanic:
         return DeclaredAction(deepcopy(value), self.action_kind, revision)
 
     def discover(self, world: World, actor_id: str) -> list[TypedAction]:
+        """Action instances this mechanic offers one actor, at most MAX_DISCOVERED_ACTIONS.
+
+        Implements: causal-model-authoring/discovery-cap-current-code
+        """
         actor = world.entities.get(actor_id)
         if actor is None or not _selector_matches(actor, self.declared.actor_selector):
             return []
@@ -968,6 +990,10 @@ def _require_selector_path(selector: dict[str, Any], path: str, label: str) -> N
 
 
 def _path_type(bundle: dict[str, Any], path: str) -> str:
+    """The type of a supported state path; anything outside the language raises ActionDeclarationError.
+
+    Implements: causal-model-authoring/supported-state-surface
+    """
     if path == "location.location_id":
         return "string"
     if path == "ownership.owner_ref":
@@ -1121,7 +1147,10 @@ def _require_report_effect(
     index: int, participant: str, target_type: str, expr: dict[str, Any], source_type: str | None,
     earlier: list[dict[str, Any]],
 ) -> None:
-    """An append_report effect writes the actor's own words into another participant's string_list field."""
+    """An append_report effect writes the actor's own words into another participant's string_list field.
+
+    Implements: causal-model-authoring/actor-authored-report-exposure
+    """
     label = f"effects[{index}] {REPORT_OP}"
     if participant == "actor":
         raise ActionDeclarationError(f"{label} must target a participant other than the actor (the record names both)")

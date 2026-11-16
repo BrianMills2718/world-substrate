@@ -9,6 +9,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import pytest
+
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
@@ -100,6 +102,7 @@ def reach_drink_checkpoint(engine) -> None:
 
 
 class TransferCheckpointTests(unittest.TestCase):
+    @pytest.mark.req('transition-engine/a-snapshot-holds-material-state-only', existing=True)
     def test_versioned_initial_snapshot_round_trips_through_json(self) -> None:
         engine = build_transfer_engine(REPO)
 
@@ -111,6 +114,7 @@ class TransferCheckpointTests(unittest.TestCase):
         self.assertEqual(restored.commands, [])
         self.assertEqual(restored.events, [])
 
+    @pytest.mark.req('transition-engine/commands-are-replayed-from-a-snapshot', existing=True)
     def test_loaded_snapshot_and_commands_replay_without_source_engine_state(
         self,
     ) -> None:

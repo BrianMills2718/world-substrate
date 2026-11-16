@@ -51,7 +51,10 @@ def build_live_projection(
     analysis: dict[str, Any] | None = None,
     adequacy: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Package canonical run data plus explicitly downstream presentation metadata."""
+    """Package canonical run data plus explicitly downstream presentation metadata.
+
+    Implements: live-projection/wire-shape
+    """
 
     if not branch_id:
         raise ValueError("branch_id must be nonempty")
@@ -95,7 +98,10 @@ def encode_sse(event: str, data: dict[str, Any], *, event_id: str | None = None)
 
 
 def projection_sse_messages(bundle: dict[str, Any]) -> list[str]:
-    """Return the initial snapshot followed by canonical event/delta messages."""
+    """Return the initial snapshot followed by canonical event/delta messages.
+
+    Implements: live-projection/incremental-delivery
+    """
 
     if bundle.get("schema_version") != LIVE_PROJECTION_SCHEMA_VERSION:
         raise ValueError("unsupported live projection bundle")

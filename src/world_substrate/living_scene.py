@@ -3,6 +3,9 @@
 Living Scene profiles describe how retained canonical facts may be presented.
 They never own canonical state, event history, information delivery, or causal
 ancestry.  This module intentionally has no DOM/browser dependency.
+
+Implements: living-scene/living-scene-authority
+Implements: living-scene/living-scene-input-seam
 """
 
 from __future__ import annotations
@@ -98,6 +101,15 @@ def _validate_bindings(value: object, label: str) -> dict[str, str]:
 
 
 def _validate_v1_profile(raw: dict[str, Any]) -> dict[str, Any]:
+    """Validate a living-scene v1 profile and reject authority-bearing fields.
+
+    Implements: living-scene/living-scene-profile-shape
+
+    Implements: living-scene/living-scene-exact-event-bindings
+
+    Implements: living-scene/living-scene-time-boundary-responsive-presentation-overrides
+    """
+
     unknown = sorted(set(raw) - _ALLOWED_TOP_LEVEL)
     if unknown:
         raise ValueError(f"living scene profile has unknown fields: {', '.join(unknown)}")
@@ -203,7 +215,10 @@ def _validate_legacy_profile(raw: dict[str, Any]) -> dict[str, Any]:
 
 
 def load_scene_contract(path: Path) -> dict[str, Any]:
-    """Load either the living-scene v1 contract or an unchanged legacy v0 profile."""
+    """Load either the living-scene v1 contract or an unchanged legacy v0 profile.
+
+    Implements: living-scene/living-scene-compatibility
+    """
 
     raw = json.loads(path.read_text())
     if not isinstance(raw, dict):
@@ -318,6 +333,11 @@ def _information_transmissions(
     operation: dict[str, Any],
     observer_actor_id: str | None,
 ) -> list[dict[str, Any]]:
+    """Resolve a declared information.transmit operation, with content only for authorized observers.
+
+    Implements: living-scene/living-scene-information-and-outcome-presentation
+    """
+
     entities = world.get("entities")
     if not isinstance(entities, dict):
         return []
@@ -383,6 +403,8 @@ def _information_transmissions(
 def _report_log_transmissions(event: dict[str, Any], operation: dict[str, Any]) -> list[dict[str, Any]]:
     """Reports appended to a recipient's own report log by this event (the `append_report` effect).
 
+    Implements: information-delivery/reports-and-refusals-are-visible-scene-effects
+
     The profile's `show_content: true` is its declaration that this scene is a privileged world view; without it
     the message is shown as delivered with its words withheld."""
     shown = operation.get("show_content") is True
@@ -408,6 +430,10 @@ def _report_log_transmissions(event: dict[str, Any], operation: dict[str, Any]) 
 
 
 def _action_feedback(event: dict[str, Any], operation: dict[str, Any]) -> dict[str, Any]:
+    """Frame effect showing a refused move's failed-check reasons.
+
+    Implements: information-delivery/reports-and-refusals-are-visible-scene-effects
+    """
     status = event.get("status")
     if status not in _ACTION_FEEDBACK_STATUSES:
         status = "unknown"
@@ -454,6 +480,11 @@ def _presentation_effects(
 
 
 def _event_visual(event: dict[str, Any], profile: dict[str, Any]) -> dict[str, Any]:
+    """Exact rule_id lookup in event_visuals; an undeclared event gets a neutral generic_event.
+
+    Implements: living-scene/living-scene-exact-event-bindings
+    """
+
     rule_id = event.get("rule_id")
     visual = profile["event_visuals"].get(rule_id) if isinstance(rule_id, str) else None
     if not isinstance(visual, dict):
@@ -504,6 +535,11 @@ def _frame_from_world(
     event: dict[str, Any] | None,
     observer_actor_id: str | None = None,
 ) -> dict[str, Any]:
+    """One logical frame; tick, revision and views come from canonical state, never animation.
+
+    Implements: living-scene/living-scene-time-boundary
+    """
+
     event_visual = _event_visual(event, profile) if event is not None else None
     return {
         "schema_version": LIVING_SCENE_SCHEMA_VERSION,
@@ -539,6 +575,8 @@ def rebuild_living_scene_frame(
 
     ``boundary_index`` is ``-1`` for the initial snapshot and otherwise names
     an event index in the retained projection bundle.
+
+    Implements: living-scene/living-scene-deterministic-frame-reconstruction
     """
 
     _validate_live_projection(bundle, profile)
@@ -564,7 +602,10 @@ def build_living_scene_frames(
     *,
     observer_actor_id: str | None = None,
 ) -> list[dict[str, Any]]:
-    """Build initial plus every canonical event-boundary logical frame."""
+    """Build initial plus every canonical event-boundary logical frame.
+
+    Implements: living-scene/living-scene-deterministic-frame-reconstruction
+    """
 
     _validate_live_projection(bundle, profile)
     world = deepcopy(bundle["initial_snapshot"]["world"])

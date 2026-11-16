@@ -13,7 +13,7 @@ from scripts.run_authored_world import build_engine
 from world_substrate.action_authoring import CausalModel
 
 
-@pytest.mark.req("native-coordination/independent-generated-concern-procedure")
+@pytest.mark.req("native-coordination/claims-and-delivery-do-not-decide-technical-condition-or-assent")
 def test_new_actor_report_records_exposure_without_persuasion_or_physical_effect():
     bundle, causal, _ = world_and_rule()
     engine, _, _ = build_engine(bundle, causal)
@@ -43,7 +43,7 @@ def received_spec():
     return raw
 
 
-@pytest.mark.req("information-delivery/complete-actor-input-boundary")
+@pytest.mark.req("information-delivery/received-information-is-not-awaiting-a-second-delivery")
 def test_initial_exposure_names_source_separately_from_holder_and_changes_no_beliefs():
     spec = ScenarioSpecV1.model_validate(received_spec())
     bundle, causal, _ = compile_spec(spec)

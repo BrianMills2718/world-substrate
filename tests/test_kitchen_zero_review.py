@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 import sys
 import unittest
+
+import pytest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -53,6 +55,8 @@ class KitchenZeroReviewReplay(unittest.TestCase):
         self.assertTrue(t17["progress"]["bo"]["filled"])
         self.assertEqual(t17["items"]["carrot-1"]["state"], "plated")
         self.assertEqual(t17["items"]["onion-1"]["state"], "plated")
+
+    @pytest.mark.req("scene-replay/worlds-replay-through-the-generic-path", existing=True)
 
     def test_zero_review_replay_regenerates_exactly(self):
         profile, world_entities = renderer.load_scene_profile(PROFILE)

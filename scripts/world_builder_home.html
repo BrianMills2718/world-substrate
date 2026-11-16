@@ -1779,7 +1779,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   $("context-actor").addEventListener("change", renderActorContext);
   $("actor-round-select").addEventListener("change", (event) => { if (live && live.replay) selectSavedRound(live.recorded.findIndex((turn) => turn.turn === Number(event.target.value))); });
 
-  // Implements: world-builder-page/Saved recording player. All navigation here reads retained data only.
+  // Implements: world-builder-page/saved-recording-player. All navigation here reads retained data only.
   function savedEventRows(turn) {
     return recordedEvents(turn).map((event, index) => {
       const match = Object.entries(turn.actors || {}).find(([, row]) => row === event || (((row.judge || {}).disposition || {}).settled) === event);

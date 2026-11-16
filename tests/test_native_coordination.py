@@ -4,6 +4,8 @@ import hashlib
 import json
 import tempfile
 import unittest
+
+import pytest
 from pathlib import Path
 
 from scripts.run_native_coordination import (
@@ -70,6 +72,7 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
             self.results["handoff"]["trace"]["mechanic_profile_id"],
         )
 
+    @pytest.mark.req("native-coordination/a-run-is-accepted-on-its-checks")
     def test_executable_acceptance_matrix_passes_for_both_worlds(self):
         for name, result in self.results.items():
             with self.subTest(name=name):
@@ -93,6 +96,7 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                     .issubset({row["category"] for row in evaluated["checks"]})
                 )
 
+    @pytest.mark.req("native-coordination/a-successful-diagnostic-directory")
     def test_diagnostic_bundle_retains_exact_artifacts_and_hash_manifest(self):
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "diagnostic"
@@ -150,6 +154,7 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                 {row["label"] for row in blocked["checks"] if not row["ok"]},
             )
 
+    @pytest.mark.req("native-coordination/a-directory-is-one-immutable-run")
     def test_diagnostic_refuses_nonempty_directory_without_discarding_it(self):
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "diagnostic"
@@ -170,6 +175,7 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
                 {"keep-me.txt"},
             )
 
+    @pytest.mark.req("native-coordination/an-exception-escapes-mid-run")
     def test_compiler_failure_still_leaves_diagnostic_summary(self):
         broken = json.loads(json.dumps(self.causal))
         broken["mechanics"][0]["effects"][0]["path"] = (
@@ -193,6 +199,7 @@ class NativeCoordinationVerticalTests(unittest.TestCase):
             self.assertTrue((output / "input-bundle.json").exists())
             self.assertTrue((output / "causal-model.json").exists())
 
+    @pytest.mark.req("native-coordination/replay-and-presentation-evidence")
     def test_each_run_retains_block_then_recovery_with_zero_provider_spend(self):
         for name, result in self.results.items():
             with self.subTest(name=name):

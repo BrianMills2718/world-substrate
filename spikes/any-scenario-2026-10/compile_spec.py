@@ -619,7 +619,10 @@ def limit_to_work_cycle(mechanics: list[dict[str, Any]], cycle: dict[str, Any] |
 
 # Implements: native-coordination/independent-generated-concern-procedure
 def _independent_family(spec, entities, components, *, all_actor_stances=True):
-    """Validation governs a hold; residents alone record stance and assent."""
+    """Validation governs a hold; residents alone record stance and assent.
+
+    Implements: native-coordination/independent-generated-concern-procedure
+    """
     d = spec.independent_decision
     did = _eid(d.decision_id)
     definitions = {

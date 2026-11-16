@@ -13,6 +13,8 @@ import sys
 import unittest
 from pathlib import Path
 
+import pytest
+
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
@@ -33,6 +35,7 @@ class ObservabilityFieldTests(unittest.TestCase):
             )
         )
 
+    @pytest.mark.req('transition-engine/every-event-names-its-bearer-binding-and-observation', existing=True)
     def test_an_accepted_action_names_its_causal_bearer(self) -> None:
         event = self._fill()["event"]
 
@@ -74,6 +77,7 @@ class ObservabilityFieldTests(unittest.TestCase):
         self.assertEqual(binding["sense_id"], "lc:give_transfer")
         self.assertEqual(binding["roles"]["giver"], "lc.role.donor")
 
+    @pytest.mark.req('transition-engine/every-event-names-its-bearer-binding-and-observation', existing=True)
     def test_an_unbound_action_says_null_rather_than_omitting_the_field(self) -> None:
         # `unheat` is the one M1 action kind with no binding, and it has none
         # because the pinned Linguistic Core subset has no sense for removing a
@@ -121,6 +125,8 @@ class ObservabilityFieldTests(unittest.TestCase):
                     all(role.startswith("lc.role.") for role in binding.roles.values())
                 )
 
+    @pytest.mark.req('transition-engine/every-event-names-its-bearer-binding-and-observation', existing=True)
+    @pytest.mark.req('transition-engine/the-clock-moves-and-processes-run', existing=True)
     def test_a_process_names_itself_as_bearer_and_has_no_observation(self) -> None:
         self.engine.advance(1)
 

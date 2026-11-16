@@ -195,7 +195,10 @@ def declared_label(declaration: dict[str, Any], entity_id: str, engine: Any) -> 
 
 
 def actor_page(engine: Any, bundle: dict[str, Any], actor: str) -> dict[str, Any]:
-    """Known action forms are attempts, independent of hidden executability."""
+    """Known action forms are attempts, independent of hidden executability.
+
+    Implements: information-delivery/offered-action-forms-follow-what-an-actor-can-perceive
+    """
     declaration, _ = _declaration(bundle, actor)
     observation = actor_observation(engine, bundle, actor)
     available = []

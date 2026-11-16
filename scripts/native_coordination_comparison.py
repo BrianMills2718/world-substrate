@@ -54,7 +54,12 @@ def with_approval_threshold(
     baseline_bundle: dict[str, Any],
     required_approvals: int,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Clone a validated baseline and change only gate.required_approvals."""
+    """Clone a validated baseline and change only gate.required_approvals.
+
+    Implements: native-coordination/comparison-purpose
+
+    Implements: native-coordination/comparison-supported-intervention
+    """
 
     baseline = validate_bundle(baseline_bundle)
     if type(required_approvals) is not int:

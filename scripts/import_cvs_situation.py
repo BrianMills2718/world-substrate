@@ -44,7 +44,10 @@ def _source_id(value: object, label: str) -> str:
 
 
 def _slug(source_id: str) -> str:
-    """Create a World Substrate-local ID while retaining source ID separately."""
+    """Create a World Substrate-local ID while retaining source ID separately.
+
+    Implements: cvs-situation-import/identity
+    """
     slug = re.sub(r"[^a-z0-9]+", "-", source_id.lower()).strip("-")
     if not slug or not slug[0].isalpha():
         slug = f"entity-{slug}" if slug else "entity"
@@ -73,6 +76,10 @@ def _evidence_ids(row: dict[str, Any]) -> list[str]:
 
 
 def _component_specs() -> list[dict[str, Any]]:
+    """Typed components that carry the structure the projection retains (identity, inventory, capability, templates, rules).
+
+    Implements: cvs-situation-import/structural-meaning-retained
+    """
     return [
         {
             "name": "external_identity",
@@ -145,6 +152,10 @@ def convert_situation(
     enabled_capabilities: Iterable[str] = (),
     source_ref: str = "CVS Situation IR",
 ) -> dict[str, Any]:
+    """Project one selected scenario of a CVS Situation IR slice into an authoring bundle.
+
+    Implements: cvs-situation-import/implemented-path
+    """
     situation = _as_dict(value, "situation")
     situation_id = _source_id(situation.get("id"), "situation.id")
     situation_name = _source_id(situation.get("name"), "situation.name")

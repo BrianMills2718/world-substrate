@@ -11,6 +11,8 @@ description; neither touches structure or law:
   theme, so variety does not depend on the model's own favourites.
 
 The description then goes through `/generate-world` exactly like typed text.
+
+Implements: world-builder-page/surprise-world-and-clarifying-dialogue
 """
 from __future__ import annotations
 

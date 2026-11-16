@@ -25,7 +25,7 @@ class RecordedResidents:
     def memory_state(self):
         return self.memory
 
-@pytest.mark.req('semantic-binding/whole-attempt-coverage')
+@pytest.mark.req('semantic-binding/multiple-independent-operations-have-no-installed-composite')
 @pytest.mark.parametrize('declared', [True, False])
 @pytest.mark.parametrize('with_judge', [True, False])
 @pytest.mark.parametrize('reader_failure', [True, False])

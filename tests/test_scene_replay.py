@@ -144,6 +144,8 @@ def lab_trace() -> dict:
 
 
 class GenericSceneReplay(unittest.TestCase):
+    @pytest.mark.req("scene-replay/a-mapped-action-moves-things", existing=True)
+    @pytest.mark.req("scene-replay/a-trace-derived-moment-is-labeled", existing=True)
     def test_non_domain_profile_drives_custom_action_and_state(self):
         profile = lab_profile()
         frames = scene.build_frames(lab_trace(), profile)
@@ -167,11 +169,16 @@ class GenericSceneReplay(unittest.TestCase):
                 self.assertNotIn(word, source)
 
 
+    @pytest.mark.req("scene-replay/actor-moves-toward-an-entity", existing=True)
+
+
     def test_actor_can_target_visual_entity_position_from_declared_field(self):
         profile = lab_profile()
         profile["action_visuals"]["take"]["actor_target"] = {"entity_field": "item"}
         frames = scene.build_frames(lab_trace(), profile)
         self.assertEqual(frames[0]["actor_positions"]["rhea"], [50, 50])
+
+    @pytest.mark.req("scene-replay/a-profile-for-another-world", existing=True)
 
     def test_profile_world_must_match_trace_world(self):
         profile = lab_profile()
@@ -179,6 +186,9 @@ class GenericSceneReplay(unittest.TestCase):
         trace["world"] = "other"
         with self.assertRaises(ValueError):
             scene.build_frames(trace, profile)
+
+
+    @pytest.mark.req("scene-replay/slots-and-overflow", existing=True)
 
 
     def test_station_item_layout_uses_relative_slots_and_grid_overflow(self):
@@ -200,6 +210,8 @@ class GenericSceneReplay(unittest.TestCase):
         self.assertEqual(positions["sample-1"], [46.0, 17.5])
         self.assertEqual(len({tuple(point) for point in positions.values()}), 3)
 
+    @pytest.mark.req("scene-replay/a-slot-outside-0-to-1", existing=True)
+
     def test_station_item_layout_rejects_out_of_range_slots(self):
         profile = lab_profile()
         profile["stations"]["scanner"]["item_layout"] = {"slots": [[1.2, 0.5]]}
@@ -208,6 +220,8 @@ class GenericSceneReplay(unittest.TestCase):
             path.write_text(json.dumps(profile))
             with self.assertRaisesRegex(ValueError, "relative 0..1 coordinates"):
                 scene.load_scene_profile(path)
+
+    @pytest.mark.req("scene-replay/one-action-changes-two-entities", existing=True)
 
     def test_action_can_apply_additional_declared_entity_state_effects(self):
         profile = lab_profile()
@@ -224,6 +238,8 @@ class GenericSceneReplay(unittest.TestCase):
         self.assertEqual(frames[1]["items"]["sample-1"]["state"], "analyzed")
         self.assertEqual(frames[1]["items"]["indicator-1"]["state"], "on")
 
+    @pytest.mark.req("scene-replay/one-action-changes-two-entities", existing=True)
+
     def test_additional_state_effect_rejects_unknown_visual_entity(self):
         profile = lab_profile()
         profile["action_visuals"]["scan"]["state_effects"] = [
@@ -231,6 +247,8 @@ class GenericSceneReplay(unittest.TestCase):
         ]
         with self.assertRaisesRegex(ValueError, "unknown visual entity"):
             scene.build_frames(lab_trace(), profile)
+
+    @pytest.mark.req("scene-replay/image-assets", existing=True)
 
     def test_image_assets_are_embedded_for_single_file_replays(self):
         profile = lab_profile()

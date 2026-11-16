@@ -7,6 +7,8 @@ import json
 import sys
 import tempfile
 import unittest
+
+import pytest
 from copy import deepcopy
 from pathlib import Path
 
@@ -157,6 +159,8 @@ class LivingSceneInformationFeedbackTests(unittest.TestCase):
         self.assertTrue(information_visible_in_material_world(delivered, "actor-b", "info-private"))
         self.assertFalse(information_visible_in_material_world(delivered, "actor-c", "info-private"))
 
+    @pytest.mark.req("living-scene/a-transmission-appears-after-delivery", existing=True)
+
     def test_transmission_appears_only_after_canonical_delivery(self):
         frames = build_living_scene_frames(bundle(), checked_profile())
         self.assertEqual(frames[0]["presentation_effects"], [])
@@ -168,6 +172,8 @@ class LivingSceneInformationFeedbackTests(unittest.TestCase):
         self.assertFalse(effects[0]["content_visible"])
         self.assertIsNone(effects[0]["content"])
 
+    @pytest.mark.req("living-scene/a-transmission-appears-after-delivery", existing=True)
+
     def test_authorized_observer_sees_content_and_unauthorized_observer_does_not(self):
         value = bundle()
         cfg = checked_profile()
@@ -177,6 +183,8 @@ class LivingSceneInformationFeedbackTests(unittest.TestCase):
         self.assertIn("Private payload", recipient["presentation_effects"][0]["content"])
         self.assertFalse(outsider["presentation_effects"][0]["content_visible"])
         self.assertIsNone(outsider["presentation_effects"][0]["content"])
+
+    @pytest.mark.req("living-scene/the-public-scene-hides-private-content", existing=True)
 
     def test_public_scene_payload_does_not_embed_actor_scoped_observation_or_private_content(self):
         value = bundle()
@@ -200,6 +208,8 @@ class LivingSceneInformationFeedbackTests(unittest.TestCase):
         self.assertIn("Private payload", recipient_html)
         self.assertNotIn("innerHTML='<strong>'+effect.source_id", recipient_html)
 
+    @pytest.mark.req("living-scene/action-feedback-is-retained-not-invented", existing=True)
+
     def test_information_context_does_not_become_causal_parentage(self):
         value = bundle()
         value["events"][0]["information_context"] = [{"content": "context only"}]
@@ -209,6 +219,8 @@ class LivingSceneInformationFeedbackTests(unittest.TestCase):
         transmission = frame["presentation_effects"][0]
         self.assertNotIn("causal_parent_event_ids", transmission)
         self.assertNotIn("information_context", transmission)
+
+    @pytest.mark.req("living-scene/action-feedback-is-retained-not-invented", existing=True)
 
     def test_rejected_action_feedback_uses_retained_failed_check_label(self):
         frame = build_living_scene_frames(bundle(), checked_profile())[2]
@@ -227,6 +239,8 @@ class LivingSceneInformationFeedbackTests(unittest.TestCase):
         self.assertNotIn("private-slot-operand", encoded)
         self.assertNotIn("private-revision-expectation", encoded)
         self.assertNotIn("private-slot-expectation", encoded)
+
+    @pytest.mark.req("living-scene/action-feedback-is-retained-not-invented", existing=True)
 
     def test_feedback_supports_retained_statuses_without_generating_reasons(self):
         cfg = checked_profile()

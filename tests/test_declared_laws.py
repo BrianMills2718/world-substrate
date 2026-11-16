@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import json
 import unittest
+
+import pytest
 from copy import deepcopy
 from pathlib import Path
 
@@ -48,16 +50,19 @@ def broken(path: list, value) -> dict:
 
 
 class DeclaredLawsTests(unittest.TestCase):
+    @pytest.mark.req("world-authoring-bundle/a-world-declares-resources-and-laws")
     def test_a_world_with_laws_validates_and_keeps_them(self):
         bundle = validate_bundle(SHOP)
         self.assertEqual(bundle["laws"], SHOP["laws"])
         self.assertEqual(bundle["resources"], SHOP["resources"])
 
+    @pytest.mark.req("world-authoring-bundle/a-world-declares-resources-and-laws")
     def test_a_world_without_laws_is_unchanged(self):
         # L7: bundles from before S1 load exactly as they did.
         self.assertEqual(validate_bundle(ORCHARD), ORCHARD)
         self.assertNotIn("laws", validate_bundle(ORCHARD))
 
+    @pytest.mark.req("world-authoring-bundle/a-world-declares-resources-and-laws")
     def test_bad_laws_are_refused_with_the_reason(self):
         cases = {
             "must be a numeric field": broken(["resources", 0, "kept_in"], [{"component": "holdings", "field": "nope"}]),

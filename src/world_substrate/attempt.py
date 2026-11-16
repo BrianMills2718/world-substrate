@@ -106,7 +106,10 @@ def _coerce(field_type: str, raw: str) -> tuple[bool, Any]:
 
 
 def _coverage(value: object, attempt: str) -> dict[str, Any] | None:
-    """Validate evidence shape and exact quotes, without inferring prose meaning."""
+    """Validate evidence shape and exact quotes, without inferring prose meaning.
+
+    Implements: semantic-binding/whole-attempt-coverage
+    """
     if not isinstance(value, dict) or set(value) != {"status", "action_spans", "unrepresented_spans"}:
         return None
     status = value["status"]
@@ -291,7 +294,10 @@ def signatures_for(bundle: dict[str, Any], mechanics: Any) -> list[dict[str, Any
 
 def interpret(attempt: str, *, actor: str, signatures: list[dict[str, Any]], entities: dict[str, str],
               model: str, trace_id: str, max_budget: float) -> tuple[dict[str, Any], float]:
-    """One typed llm_client call reading `attempt`; returns (checked reading, cost). `entities` maps id to label."""
+    """One typed llm_client call reading `attempt`; returns (checked reading, cost). `entities` maps id to label.
+
+    Implements: semantic-binding/preserve-operation-and-referents
+    """
     from llm_client import call_llm_json_schema, render_prompt
 
     messages = render_prompt(PROMPT, actor_id=actor, attempt=attempt,

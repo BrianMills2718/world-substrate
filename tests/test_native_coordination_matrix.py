@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 import tempfile
 import unittest
+
+import pytest
 from pathlib import Path
 
 from scripts.check_native_coordination import run_matrix
@@ -11,6 +13,7 @@ REPO = Path(__file__).resolve().parents[1]
 
 
 class NativeCoordinationMatrixTests(unittest.TestCase):
+    @pytest.mark.req("native-coordination/the-acceptance-matrix-runs")
     def test_matrix_runs_both_worlds_and_requires_one_mechanics_profile(self):
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "matrix"

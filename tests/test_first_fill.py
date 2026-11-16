@@ -6,6 +6,8 @@ import sys
 import unittest
 from pathlib import Path
 
+import pytest
+
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
@@ -30,6 +32,7 @@ def select_fill(engine, volume_ml: int = 1000) -> FillAction:
 
 
 class FirstFillTests(unittest.TestCase):
+    @pytest.mark.req('transition-engine/observation-is-lossy-and-consequence-free', existing=True)
     def test_observation_is_a_lossy_actor_projection(self) -> None:
         engine = build_first_fill_engine(REPO)
         observation = engine.observe("robinson")
@@ -37,6 +40,7 @@ class FirstFillTests(unittest.TestCase):
         self.assertNotIn("hydration", observation["entities"]["friday"]["actor"])
         self.assertIn("hydration", engine.world.entities["friday"].as_dict()["actor"])
 
+    @pytest.mark.req('transition-engine/discovery-lists-what-can-be-done', existing=True)
     def test_discovery_separates_available_and_blocked_candidates(self) -> None:
         engine = build_first_fill_engine(REPO)
         condition = engine.world.entities["clay-pot"].condition
@@ -50,6 +54,7 @@ class FirstFillTests(unittest.TestCase):
             any(row["action"]["vessel"] == "clay-pot" for row in page["blocked"])
         )
 
+    @pytest.mark.req('transition-engine/an-accepted-action-commits-atomically', existing=True)
     def test_discovery_executes_registered_fill_and_conserves_liquid(self) -> None:
         engine = build_first_fill_engine(REPO)
         before = {
@@ -97,6 +102,8 @@ class FirstFillTests(unittest.TestCase):
         self.assertEqual(result["event"]["rule_id"], "mechanism.liquid.fill")
         self.assertTrue(result["event"]["changes"])
 
+    @pytest.mark.req('transition-engine/a-refused-action-changes-nothing-material', existing=True)
+    @pytest.mark.req('transition-engine/an-action-is-checked-and-committed-or-refused', existing=True)
     def test_overfill_rejection_preserves_material_state(self) -> None:
         engine = build_first_fill_engine(REPO)
         before = engine.world.material_dict()
@@ -114,6 +121,7 @@ class FirstFillTests(unittest.TestCase):
         self.assertEqual(result["event"]["changes"], [])
         self.assertEqual(result["event"]["hash_before"], result["event"]["hash_after"])
 
+    @pytest.mark.req('transition-engine/a-refused-action-changes-nothing-material', existing=True)
     def test_stale_revision_is_rejected_without_material_change(self) -> None:
         engine = build_first_fill_engine(REPO)
         current = select_fill(engine, volume_ml=250)
@@ -131,6 +139,7 @@ class FirstFillTests(unittest.TestCase):
         self.assertEqual(result["status"], "stale_revision")
         self.assertEqual(before, engine.world.material_dict())
 
+    @pytest.mark.req('transition-engine/replay-reproduces-the-run', existing=True)
     def test_fill_tick_and_replay_match_exactly(self) -> None:
         engine = build_first_fill_engine(REPO)
         engine.apply(select_fill(engine))

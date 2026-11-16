@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import unittest
+
+import pytest
 from copy import deepcopy
 from pathlib import Path
 
@@ -24,6 +26,7 @@ def gate(bundle: dict) -> dict:
 
 
 class NativeCoordinationComparisonTests(unittest.TestCase):
+    @pytest.mark.req("native-coordination/a-second-run-not-an-edit")
     def test_comparison_is_a_second_fresh_native_run_with_same_mechanics(self):
         baseline_bundle = deepcopy(BASELINE)
         frozen = deepcopy(baseline_bundle)
@@ -56,6 +59,7 @@ class NativeCoordinationComparisonTests(unittest.TestCase):
             comparison["projection"]["projection_final"],
         )
 
+    @pytest.mark.req("native-coordination/a-valid-new-threshold")
     def test_comparison_changes_only_approval_threshold_and_preserves_baseline(self):
         baseline = deepcopy(BASELINE)
         frozen = deepcopy(baseline)
@@ -78,24 +82,29 @@ class NativeCoordinationComparisonTests(unittest.TestCase):
         gate(restored)["components"]["gate"]["required_approvals"] = 2
         self.assertEqual(restored, baseline)
 
+    @pytest.mark.req("native-coordination/an-invalid-threshold-or-baseline")
     def test_comparison_refuses_same_threshold(self):
         with self.assertRaisesRegex(ValueError, "must differ"):
             with_approval_threshold(BASELINE, 2)
 
+    @pytest.mark.req("native-coordination/an-invalid-threshold-or-baseline")
     def test_comparison_refuses_threshold_above_informed_recipient_count(self):
         with self.assertRaisesRegex(ValueError, "between 1 and 2"):
             with_approval_threshold(BASELINE, 3)
 
+    @pytest.mark.req("native-coordination/an-invalid-threshold-or-baseline")
     def test_comparison_refuses_non_integer_threshold(self):
         with self.assertRaisesRegex(ValueError, "must be an integer"):
             with_approval_threshold(BASELINE, 1.5)
 
+    @pytest.mark.req("native-coordination/an-invalid-threshold-or-baseline")
     def test_comparison_refuses_baseline_threshold_above_informed_recipient_count(self):
         baseline = deepcopy(BASELINE)
         gate(baseline)["components"]["gate"]["required_approvals"] = 3
         with self.assertRaisesRegex(ValueError, "baseline approval threshold must be between 1 and 2"):
             with_approval_threshold(baseline, 1)
 
+    @pytest.mark.req("native-coordination/an-invalid-threshold-or-baseline")
     def test_comparison_refuses_delivery_recipient_that_is_not_a_member(self):
         baseline = deepcopy(BASELINE)
         delivery = next(
@@ -106,6 +115,7 @@ class NativeCoordinationComparisonTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "recipient must be a represented member"):
             with_approval_threshold(baseline, 1)
 
+    @pytest.mark.req("native-coordination/an-invalid-threshold-or-baseline")
     def test_comparison_refuses_delivery_info_that_is_not_information(self):
         baseline = deepcopy(BASELINE)
         delivery = next(

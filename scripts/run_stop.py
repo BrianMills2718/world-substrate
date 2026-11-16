@@ -1,6 +1,7 @@
 """When a World Builder run stops by itself: a per-world setting and the check run after each round.
 
 Implements: world-builder-page/a-run-stops-once-nothing-is-changing
+Implements: world-builder-page/a-run-stops-at-a-round-or-spending-limit
 
 Brian, 2026-11-10: "on d1. stop condition should be configurable." (open question Q12). A world carries
 `run_stop`, chosen on the Create page and saved with the world like "Simulate as":

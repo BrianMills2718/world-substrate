@@ -5,6 +5,8 @@ import json
 import sys
 import tempfile
 import unittest
+
+import pytest
 from copy import deepcopy
 from pathlib import Path
 
@@ -167,12 +169,17 @@ def validated_profile(value: dict | None = None) -> dict:
 
 
 class LivingSceneContractTests(unittest.TestCase):
+    @pytest.mark.req("living-scene/the-neutral-fixture-reproduces", existing=True)
     def test_frozen_neutral_fixture_matches_expected_frames(self):
         root = REPO / "tests/fixtures/living_scene"
         profile = load_scene_contract(root / "neutral-profile-v1.json")
         bundle = json.loads((root / "neutral-projection-v0.json").read_text())
         expected = json.loads((root / "neutral-frames-v1.json").read_text())
         self.assertEqual(build_living_scene_frames(bundle, profile), expected)
+
+    @pytest.mark.req("living-scene/a-valid-profile", existing=True)
+
+    @pytest.mark.req("living-scene/frames-cover-every-boundary", existing=True)
 
     def test_v1_profile_projects_canonical_bindings(self):
         profile = validated_profile()
@@ -182,6 +189,8 @@ class LivingSceneContractTests(unittest.TestCase):
         self.assertEqual(frames[1]["views"]["entities"]["resource-a"]["bindings"]["current"], 6)
         self.assertEqual(frames[2]["views"]["activities"]["activity-a"]["bindings"]["status"], "active")
 
+    @pytest.mark.req("living-scene/scrubbing-needs-no-browser-state", existing=True)
+
     def test_direct_rebuild_matches_sequential_frames(self):
         profile = validated_profile()
         bundle = live_bundle()
@@ -190,6 +199,8 @@ class LivingSceneContractTests(unittest.TestCase):
             with self.subTest(boundary=boundary):
                 direct = rebuild_living_scene_frame(bundle, profile, boundary)
                 self.assertEqual(normalized_frame_json(direct), normalized_frame_json(sequential[boundary + 1]))
+
+    @pytest.mark.req("living-scene/scrubbing-needs-no-browser-state", existing=True)
 
     def test_build_and_rebuild_do_not_mutate_canonical_inputs(self):
         profile = validated_profile()
@@ -201,6 +212,8 @@ class LivingSceneContractTests(unittest.TestCase):
         self.assertEqual(bundle, original_bundle)
         self.assertEqual(profile, original_profile)
 
+    @pytest.mark.req("living-scene/an-event-with-no-declaration", existing=True)
+
     def test_unknown_event_has_neutral_visual_and_no_guessed_effect(self):
         profile = validated_profile()
         frames = build_living_scene_frames(live_bundle(), profile)
@@ -210,6 +223,8 @@ class LivingSceneContractTests(unittest.TestCase):
             "operations": [],
         })
         self.assertEqual(frames[2]["views"]["actors"]["actor-a"]["home"], [20.0, 50.0])
+
+    @pytest.mark.req("living-scene/animation-length-changes-nothing-logical", existing=True)
 
     def test_animation_duration_cannot_change_canonical_boundary_state(self):
         fast = living_profile()
@@ -222,6 +237,12 @@ class LivingSceneContractTests(unittest.TestCase):
         self.assertEqual(fast_frame["tick"], slow_frame["tick"])
         self.assertEqual(fast_frame["revision"], slow_frame["revision"])
         self.assertEqual(fast_frame["views"], slow_frame["views"])
+
+    @pytest.mark.req("living-scene/a-profile-with-a-typo-or-an-unsupported-shape", existing=True)
+
+    @pytest.mark.req("living-scene/an-operation-tries-to-carry-authority", existing=True)
+
+    @pytest.mark.req("living-scene/a-profile-tries-to-supply-a-fact", existing=True)
 
     def test_invalid_or_authority_bearing_profile_fields_fail_loud(self):
         cases = []
@@ -245,6 +266,10 @@ class LivingSceneContractTests(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError, message.replace("[", r"\[").replace("]", r"\]")):
                         load_scene_contract(path)
 
+    @pytest.mark.req("living-scene/both-scene-contracts-load", existing=True)
+
+    @pytest.mark.req("living-scene/the-neutral-fixture-reproduces", existing=True)
+
     def test_legacy_kitchen_and_castaway_profiles_remain_unchanged_and_renderable(self):
         fixtures = [
             (
@@ -264,6 +289,8 @@ class LivingSceneContractTests(unittest.TestCase):
                 legacy_profile, world_entities = legacy_scene.load_scene_profile(profile_path)
                 trace = legacy_scene.load_trace(trace_path, expected_world=legacy_profile["world"])
                 self.assertTrue(legacy_scene.build_frames(trace, legacy_profile, world_entities))
+
+    @pytest.mark.req("living-scene/the-generic-runtime-has-no-waltzman-names", existing=True)
 
     def test_generic_runtime_contains_no_waltzman_special_cases(self):
         source = (REPO / "src/world_substrate/living_scene.py").read_text().lower()

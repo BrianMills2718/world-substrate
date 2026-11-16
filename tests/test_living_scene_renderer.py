@@ -5,6 +5,8 @@ from __future__ import annotations
 import importlib.util
 import sys
 import unittest
+
+import pytest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -27,6 +29,8 @@ class LivingSceneRendererTests(unittest.TestCase):
         cls.bundle = load_live_projection_bundle(PROJECTION)
         cls.frames = build_living_scene_frames(cls.bundle, cls.profile)
         cls.html = living_renderer.render_html(cls.bundle, cls.profile, PROFILE.parent)
+
+    @pytest.mark.req("living-scene/what-the-renderer-does", existing=True)
 
     def test_domain_neutral_fixture_renders_embodied_scene_elements(self):
         for expected in (

@@ -4,6 +4,8 @@ import json
 import sys
 import tempfile
 import unittest
+
+import pytest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -74,6 +76,8 @@ class GreenhouseZeroReviewTests(unittest.TestCase):
             self.assertTrue(x <= px <= x + width)
             self.assertTrue(y <= py <= y + height)
 
+    @pytest.mark.req("scene-replay/worlds-replay-through-the-generic-path", existing=True)
+
     def test_water_projection_updates_both_plant_and_can_state(self):
         profile, world_entities = renderer.load_scene_profile(PROFILE)
         frames = renderer.build_frames(load(TRACE), profile, world_entities)
@@ -83,6 +87,10 @@ class GreenhouseZeroReviewTests(unittest.TestCase):
         self.assertEqual(frames[5]["items"]["can-1"]["state"], "filled")
         self.assertEqual(frames[6]["items"]["tomato-1"]["state"], "watered")
         self.assertEqual(frames[6]["items"]["can-1"]["state"], "empty")
+
+    @pytest.mark.req("scene-replay/worlds-replay-through-the-generic-path", existing=True)
+
+    @pytest.mark.req("scene-replay/rendering-a-replay", existing=True)
 
     def test_replay_regenerates_exactly_through_generic_renderer(self):
         with tempfile.TemporaryDirectory() as tmp:

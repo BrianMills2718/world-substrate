@@ -35,7 +35,7 @@ def test_probe_wrapped_job_failure_is_visible_without_a_replacement():
     assert request.call_count == 2
 
 
-@pytest.mark.req("native-coordination/independent-generated-concern-procedure")
+@pytest.mark.req("native-coordination/generated-authoring-preserves-independent-choice")
 def test_probe_refuses_a_legacy_or_forced_procedure_before_resident_calls():
     build = {"bundle": {"actor_information": {}, "entities": [{"components": {name: {} for name in
         ("validation_decision", "actor_position", "technical_condition", "technical_role")}}]},

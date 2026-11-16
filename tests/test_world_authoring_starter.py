@@ -6,6 +6,8 @@ import subprocess
 import sys
 import tempfile
 import unittest
+
+import pytest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -25,12 +27,14 @@ class WorldAuthoringStarterTests(unittest.TestCase):
         schema = json.loads((REPO / "schemas/world-authoring-bundle-v0.schema.json").read_text())
         self.assertEqual(schema["$id"], scaffold.SCHEMA_VERSION)
 
+    @pytest.mark.req("world-authoring-bundle/a-reference-to-nothing")
     def test_entity_reference_must_resolve(self):
         value = self.load()
         value["entities"][2]["components"]["fruit"]["tree_id"] = "missing-tree"
         with self.assertRaisesRegex(scaffold.BundleError, "unknown entity"):
             scaffold.validate_bundle(value)
 
+    @pytest.mark.req("world-authoring-bundle/a-signature-is-not-a-mechanic")
     def test_action_signature_is_not_causal_authority(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -47,6 +51,7 @@ class WorldAuthoringStarterTests(unittest.TestCase):
             subprocess.run([sys.executable, "-c", code], env=env, check=True)
             self.assertIn("always refuse", (package / "mechanics.py").read_text())
 
+    @pytest.mark.req("world-authoring-bundle/a-valid-bundle-is-scaffolded")
     def test_scaffold_compiles_and_preserves_authoring_input(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -57,6 +62,7 @@ class WorldAuthoringStarterTests(unittest.TestCase):
             self.assertEqual(model["world_id"], "orchard-v0")
             self.assertEqual([e["entity_id"] for e in model["entities"]], ["ava", "tree-1", "apple-1"])
 
+    @pytest.mark.req("world-authoring-bundle/the-target-already-exists")
     def test_scaffold_refuses_existing_target(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

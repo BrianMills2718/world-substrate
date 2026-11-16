@@ -4,6 +4,8 @@ A binding explains what an attempt means; it never mutates state itself. Every
 binding here cites the pinned Linguistic Core extraction recorded in
 references/sources.json (`linguistic_core`, via the `castaway_world_systems`
 artifact) rather than inventing a sense or role.
+
+Implements: semantic-binding/initial-worked-binding
 """
 
 from __future__ import annotations
@@ -13,6 +15,15 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class SemanticBinding:
+    """What an attempt or occurrence means; it never changes state, the named mechanic does.
+
+    Implements: semantic-binding/boundary
+
+    Optional role_definition_ids carry predicate-local role compatibility only.
+
+    Implements: semantic-binding/predicate-local-role-compatibility
+    """
+
     binding_id: str
     sense_id: str
     roles: dict[str, str]

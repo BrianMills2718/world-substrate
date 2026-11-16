@@ -52,6 +52,10 @@ FAILURE_CATEGORIES = frozenset({
 
 
 def _require_empty_output_dir(path: Path) -> None:
+    """Refuse a nonempty output directory.
+
+    Implements: native-coordination/diagnostics-hashing-and-reproducibility
+    """
     path.mkdir(parents=True, exist_ok=True)
     existing = sorted(row.name for row in path.iterdir())
     if existing:
@@ -61,6 +65,10 @@ def _require_empty_output_dir(path: Path) -> None:
 
 
 def _write_json(path: Path, value: object) -> None:
+    """Write JSON with sorted keys and a terminal newline.
+
+    Implements: native-coordination/diagnostics-hashing-and-reproducibility
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
         json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
@@ -77,6 +85,10 @@ def _file_hash(path: Path) -> str:
 
 
 def _write_manifest(output_dir: Path, run_id: str) -> dict[str, Any]:
+    """Hash the exact bytes of every other artifact, last.
+
+    Implements: native-coordination/diagnostics-hashing-and-reproducibility
+    """
     rows = {}
     for path in sorted(output_dir.iterdir(), key=lambda row: row.name):
         if not path.is_file() or path.name == "manifest.json":
@@ -137,6 +149,10 @@ def evaluate_acceptance(
     result: dict[str, Any],
     acceptance: dict[str, Any],
 ) -> dict[str, Any]:
+    """Compare declared acceptance expectations with observed evidence without mutating the world.
+
+    Implements: native-coordination/diagnostics-acceptance-authority
+    """
     expected = _acceptance_expectation(acceptance, bundle)
     common = acceptance["common"]
     checks: list[dict[str, Any]] = []
@@ -578,6 +594,16 @@ def run_diagnostic(
     output_dir: Path,
     run_id: str | None = None,
 ) -> dict[str, Any]:
+    """Write one diagnostic directory keyed by one run id, with stage tracking and failure category.
+
+    Implements: native-coordination/diagnostics-diagnostic-run-identity
+
+    Implements: native-coordination/diagnostics-required-artifacts
+
+    Implements: native-coordination/diagnostics-failure-categories
+
+    Implements: native-coordination/diagnostics-stage-discipline
+    """
     run_id = run_id or f"native-coordination/{bundle['world']['id']}/{uuid.uuid4().hex}"
     _require_empty_output_dir(output_dir)
     stage = "input"

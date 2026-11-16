@@ -305,6 +305,11 @@ class UnsupportedAction:
 
 
 class TypedAction(Protocol):
+    """A typed action; accompanying prose is never executable input.
+
+    Implements: transition-engine/core-records-action
+    """
+
     @property
     def kind(self) -> str: ...
 
@@ -315,6 +320,11 @@ class TypedAction(Protocol):
 
 
 class ActionRule(Protocol):
+    """An action rule's declared contract: id, version, kind, read and write paths, checks and effect.
+
+    Implements: transition-engine/core-records-rule
+    """
+
     rule_id: str
     version: str
     action_kind: str
@@ -331,6 +341,11 @@ class ActionRule(Protocol):
 
 
 class ProcessRule(Protocol):
+    """A process rule's declared contract: id, version, order, read and write paths, due and effect.
+
+    Implements: transition-engine/core-records-rule
+    """
+
     rule_id: str
     version: str
     order: int
@@ -385,6 +400,8 @@ class DeclaresCausalParents(Protocol):
 
     This is deliberately opt-in. Temporal precedence, prompt inclusion, or an
     information delivery is not enough to become hard causal ancestry.
+
+    Implements: information-delivery/causality-rule
     """
 
     def causal_parents(self, world: World, action: TypedAction) -> list[str]: ...

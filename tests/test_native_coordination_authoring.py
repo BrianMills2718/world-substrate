@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 import sys
 import unittest
+
+import pytest
 from copy import deepcopy
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
@@ -157,6 +159,7 @@ class NativeCoordinationAuthoringTests(unittest.TestCase):
         self.assertEqual(bundle["world"]["id"], "handoff-review")
         self.assertEqual(result.model, "fake-model")
 
+    @pytest.mark.req("native-coordination/no-model-written-law")
     def test_draft_compiles_to_existing_authoring_bundle_and_shared_mechanics(self):
         value = draft()
         checked = validate_native_coordination_draft(value)
@@ -181,6 +184,8 @@ class NativeCoordinationAuthoringTests(unittest.TestCase):
         )
         self.assertEqual(engine.world.world_id, "handoff-review-live")
 
+    @pytest.mark.req("native-coordination/the-review-separates-what-is-known")
+    @pytest.mark.req("native-coordination/an-unsupported-request")
     def test_review_separates_requirements_assumptions_and_unsupported_requests(self):
         review = draft_review(draft())
         self.assertEqual(
@@ -210,36 +215,42 @@ class NativeCoordinationAuthoringTests(unittest.TestCase):
         self.assertEqual(len(review["assumptions"]), 1)
         self.assertEqual(len(review["mechanics"]["mechanics"]), 4)
 
+    @pytest.mark.req("native-coordination/the-model-proposes-configuration-only")
     def test_validation_refuses_multiple_authorized_members(self):
         value = draft()
         value["proposal"]["members"][0]["authorized"] = True
         with self.assertRaisesRegex(ValueError, "exactly one member"):
             validate_native_coordination_draft(value)
 
+    @pytest.mark.req("native-coordination/the-model-proposes-configuration-only")
     def test_validation_refuses_hidden_second_unhealthy_resource(self):
         value = draft()
         value["proposal"]["resources"][1]["current"] = 0
         with self.assertRaisesRegex(ValueError, "only the one restorable"):
             validate_native_coordination_draft(value)
 
+    @pytest.mark.req("native-coordination/the-model-proposes-configuration-only")
     def test_validation_requires_two_reports_for_comparable_thresholds(self):
         value = draft()
         value["proposal"]["reports"] = value["proposal"]["reports"][:1]
         with self.assertRaisesRegex(ValueError, "2-6 represented reports"):
             validate_native_coordination_draft(value)
 
+    @pytest.mark.req("native-coordination/the-model-proposes-configuration-only")
     def test_validation_refuses_duplicate_report_recipient_below_real_voter_count(self):
         value = draft()
         value["proposal"]["reports"][1]["recipient_id"] = "mara"
         with self.assertRaisesRegex(ValueError, "recipients must be unique"):
             validate_native_coordination_draft(value)
 
+    @pytest.mark.req("native-coordination/the-model-proposes-configuration-only")
     def test_validation_refuses_unknown_model_fields(self):
         value = draft()
         value["proposal"]["members"][0]["secret_plan"] = "hidden"
         with self.assertRaisesRegex(ValueError, "unknown fields"):
             validate_native_coordination_draft(value)
 
+    @pytest.mark.req("native-coordination/the-model-proposes-configuration-only")
     def test_validation_refuses_generated_delivery_id_collision(self):
         value = draft()
         value["proposal"]["reports"][1]["id"] = "delivery-token-report"
