@@ -479,3 +479,24 @@ def test_the_page_follows_the_map_timeline_and_no_longer_shows_its_own_round_con
     page = (ROOT / "scripts/world_builder_home.html").read_text()
     assert 'e.data.type === "ws-round-shown"' in page and "selectSavedRound(index)" in page
     assert '$("saved-navigation").hidden=true;' in page
+
+
+@pytest.mark.req("scene-viewer/one-timeline-follows-the-run-and-the-saved-panels")
+def test_the_map_label_says_following_while_it_plays_toward_the_newest_round():
+    js = (ROOT / "viewer/smallville/viewer.js").read_text()
+    assert "following the run" in js and "step >= last ? \" · newest round\"" in js
+
+
+@pytest.mark.req("scene-viewer/what-if-branches-a-run-from-the-round-on-the-map")
+def test_the_owner_gets_a_what_if_button_that_branches_from_the_round_shown_on_the_map():
+    page = (ROOT / "scripts/world_builder_home.html").read_text()
+    assert 'id="what-if"' in page and "async function whatIf()" in page
+    assert "shownRound" in page and "parent_run_id: catalog.run.id" in page
+    assert "ownerKey()" in page.split("function updateWhatIf", 1)[1][:600]
+
+
+@pytest.mark.req("scene-viewer/what-if-branches-a-run-from-the-round-on-the-map")
+def test_the_branch_plays_beside_the_original_and_the_page_says_it_is_a_new_draw():
+    page = (ROOT / "scripts/world_builder_home.html").read_text()
+    assert 'id="run-map-frame-2"' in page and "Same start, a new draw" in page
+    assert "pinnedOriginal" in page and "Greyed: " in page and "cp.can_branch" in page

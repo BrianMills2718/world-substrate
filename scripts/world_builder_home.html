@@ -205,7 +205,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   .net-key { display: inline-block; width: 16px; height: 12px; border: 2px solid; border-radius: 3px; vertical-align: middle; margin-right: 4px; }
   .net-legend { margin: 4px 0 6px; }
 
-.world-library{margin-top:32px;padding-top:24px;border-top:1px solid var(--line)}.world-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:16px}.world-card{border:1px solid var(--line);border-radius:8px;padding:16px}.world-card p{font-size:14px;color:var(--muted)}.workspace-controls{padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:20px}.workspace-controls .row{margin-top:12px}.workspace-controls button,.world-library button{min-height:44px}.workspace-controls select,.world-library input{min-height:44px;max-width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:7px;padding:9px;font:inherit}.run-map{margin:16px 0}.run-map iframe{width:100%;height:min(86vh,820px);min-height:420px;border:1px solid var(--line);border-radius:10px;background:#0b1013;display:block}.run-map[hidden]{display:none}.world-scene-panel{margin:18px 0 24px}.world-scene-panel iframe{width:100%;height:540px;border:1px solid var(--line);border-radius:10px;background:#0b1013;display:block}.world-scene-panel p{font-size:14px;color:var(--muted)}body.workspace-view main{max-width:1320px}body.workspace-view main>h1,body.workspace-view main>.lede{display:none}
+.world-library{margin-top:32px;padding-top:24px;border-top:1px solid var(--line)}.world-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:16px}.world-card{border:1px solid var(--line);border-radius:8px;padding:16px}.world-card p{font-size:14px;color:var(--muted)}.workspace-controls{padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:20px}.workspace-controls .row{margin-top:12px}.workspace-controls button,.world-library button{min-height:44px}.workspace-controls select,.world-library input{min-height:44px;max-width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:7px;padding:9px;font:inherit}.run-map{margin:16px 0}.run-maps{display:grid;grid-template-columns:1fr;gap:12px}.run-maps.two{grid-template-columns:1fr 1fr}@media(max-width:900px){.run-maps.two{grid-template-columns:1fr}}.run-map-cell{min-width:0}.run-map-cell p{margin:0 0 6px}.what-if-bar{margin:8px 0}.what-if-bar button{min-height:44px}.run-map iframe{width:100%;height:min(86vh,820px);min-height:420px;border:1px solid var(--line);border-radius:10px;background:#0b1013;display:block}.run-map[hidden]{display:none}.world-scene-panel{margin:18px 0 24px}.world-scene-panel iframe{width:100%;height:540px;border:1px solid var(--line);border-radius:10px;background:#0b1013;display:block}.world-scene-panel p{font-size:14px;color:var(--muted)}body.workspace-view main{max-width:1320px}body.workspace-view main>h1,body.workspace-view main>.lede{display:none}
 @media(max-width:720px){.workspace-controls .row{display:grid;grid-template-columns:1fr 1fr}.workspace-controls select,.workspace-controls label{grid-column:1/-1;width:100%}.world-scene-panel iframe{height:420px}.world-cards{grid-template-columns:1fr}.world-library input{width:100%}}
 @media(max-width:720px){body.workspace-view main{padding:12px 12px 30px}body.workspace-view #stage-run{padding:16px}.workspace-controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:12px}.workspace-controls>button{font-size:14px;padding:8px 10px}.workspace-controls>div{flex:1}.workspace-controls details{margin:0}.workspace-controls summary{min-height:44px;padding:10px;font-size:14px}.workspace-controls details[open]{min-width:100%}.workspace-controls:has(details[open])>div{flex-basis:100%}#workspace-status{width:100%;margin:0;font-size:12px}#workspace-continue-note:empty{display:none}#saved-scenario:not(.expanded){display:none}#saved-intro{float:right}#saved-setup-toggle{font-size:12px;padding:8px;min-height:36px}#live-status{font-size:12px;margin:8px 0}#stage-run>.row{gap:6px}#stage-run>.row label{font-size:13px}#world-scene-status:not([data-error=true]){display:none}.saved-navigation{margin-top:10px}.world-scene-panel{margin-top:10px}.world-scene-panel h3{margin:8px 0}#world-scene-panel iframe{height:420px!important}}
 </style>
@@ -354,7 +354,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <div class="rulings" id="rulings-panel" hidden aria-label="The judge’s rulings in this run"></div>
     <section id="run-map" class="run-map" aria-labelledby="run-map-h"><h3 id="run-map-h">The world on the map, with its graph beside it</h3>
     <p class="small muted" id="run-map-status" role="status">The map appears when the first round finishes.</p>
-    <iframe id="run-map-frame" title="Room map and graph of the run" src="room-map/?embed=1&amp;graph=beside" loading="lazy"></iframe>
+    <div class="what-if-bar" id="what-if-bar" hidden><button type="button" class="secondary" id="what-if" title="Play this world again from the round shown on the map, beside the original. The original is not changed.">What if…</button> <span class="small muted" id="what-if-note" role="status"></span></div>
+    <div class="run-maps" id="run-maps"><div class="run-map-cell" id="original-cell" hidden><p class="small" id="original-label"></p><iframe id="run-map-frame-2" title="The original run, kept beside the branch" src="about:blank" loading="lazy"></iframe></div>
+    <div class="run-map-cell"><p class="small" id="branch-label" hidden></p><iframe id="run-map-frame" title="Room map and graph of the run" src="room-map/?embed=1&amp;graph=beside" loading="lazy"></iframe></div></div>
     </section>
     <ol class="feed" id="feed" aria-label="What just happened, newest round first"></ol>
     <ul class="underway" id="underway" aria-label="Tasks that take several rounds: under way, stopped part-way, or finished" hidden></ul>
@@ -1614,10 +1616,58 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     if (e.source !== $("run-map-frame").contentWindow || !e.data) return;
     if (e.data.type === "ws-viewer-ready") { mapReady = true; renderRunMap(); }
     // One timeline: the map's scrubber chooses the round; the saved-run panels below follow it.
+    if (e.data.type === "ws-round-shown") { shownRound = e.data.round; updateWhatIf(); }
     if (e.data.type === "ws-round-shown" && live && live.replay && live.recorded.length) {
       const index = live.recorded.findIndex((t) => t.turn === e.data.round);
       if (index >= 0 && index !== live.replayIndex) selectSavedRound(index);
     }
+  });
+  // What if (scene-viewer/what-if-branches-a-run-from-the-round-on-the-map): the owner branches the run from the round the map
+  // shows. The original stays on the left (frozen) and the branch plays on the right; round numbers mean the same moment in both.
+  // Same start, a new draw: the people are not told anything different; changing one group's brief is not built yet.
+  let shownRound = 0, pinnedOriginal = null, keepPinned = false;
+  function branchPoint() {
+    if (!catalog || !catalog.run || !live) return null;
+    const rows = (catalog.checkpoints || []).filter((c) => checkpointRound(c) > 0 && checkpointRound(c) <= (shownRound || 0));
+    return rows.sort((a, b) => checkpointRound(b) - checkpointRound(a))[0] || null;
+  }
+  function updateWhatIf() {
+    const bar = $("what-if-bar");
+    bar.hidden = !(ownerKey() && catalog && catalog.run && live);
+    if (bar.hidden) return;
+    const cp = branchPoint(), btn = $("what-if"), note = $("what-if-note");
+    if (!cp) { btn.disabled = true; note.textContent = "Move the timeline to a finished round to ask what if."; return; }
+    const ok = cp.can_branch !== false;
+    btn.disabled = !ok; btn.textContent = `What if… (from round ${checkpointRound(cp)})`;
+    note.textContent = ok ? "Same start, a new draw: the same world from this round, played again beside the original. The people may act differently; nothing is changed in the original."
+      : "Greyed: " + (cp.reason || "this round cannot be branched.");
+  }
+  function clearPinned() {
+    pinnedOriginal = null; $("original-cell").hidden = true; $("branch-label").hidden = true; $("run-maps").classList.remove("two");
+    $("run-map-frame-2").src = "about:blank";
+  }
+  async function whatIf() {
+    const cp = branchPoint();
+    if (!cp || cp.can_branch === false || !catalog || !catalog.run) return;
+    const parent = catalog.run, round = checkpointRound(cp), note = $("what-if-note");
+    $("what-if").disabled = true; note.textContent = "Keeping the original and starting the branch…";
+    try {
+      const original = await api("/live-replay", { catalog_run_id: parent.id });
+      const data = await api("/worlds/" + encodeURIComponent(catalog.worldId) + "/runs", { parent_run_id: parent.id, checkpoint_id: cp.id, name: "What if from round " + round });
+      pinnedOriginal = { replay: original, round, name: parent.name || "Run" };
+      keepPinned = true;
+      loadCatalogRecord(data, "continue");
+      $("original-label").textContent = `Original run, kept as it was (${pinnedOriginal.name})`;
+      $("branch-label").textContent = `What if from round ${round}: same start, a new draw, playing live`;
+      $("branch-label").hidden = false; $("original-cell").hidden = false; $("run-maps").classList.add("two");
+      $("run-map-frame-2").src = "room-map/?embed=1&graph=beside";
+    } catch (err) { keepPinned = false; note.textContent = "The branch could not start: " + plainError(err); }
+    updateWhatIf();
+  }
+  $("what-if").addEventListener("click", whatIf);
+  window.addEventListener("message", (e) => {
+    if (e.source !== $("run-map-frame-2").contentWindow || !e.data) return;
+    if (e.data.type === "ws-viewer-ready" && pinnedOriginal) $("run-map-frame-2").contentWindow.postMessage({ type: "ws-replay", replay: pinnedOriginal.replay }, location.origin);
   });
   async function renderRunMap() {
     const box = $("run-map"), status = $("run-map-status");
@@ -2175,6 +2225,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     $("readout-btn").hidden = live.replay && !(world.shared && world.shared.readout);
     $("share-btn").hidden = live.replay;
     delete $("detail").dataset.touched; $("detail").textContent = "";
+    if (!keepPinned) clearPinned();
+    keepPinned = false; shownRound = 0;
     mapReady = false; $("run-map-status").textContent = "The map appears when the first round finishes.";
     $("run-map-frame").src = "room-map/?embed=1&graph=beside";  // a fresh viewer for each run, so no earlier world's map is left in it
     const resume=options&&options.resumeRecord;

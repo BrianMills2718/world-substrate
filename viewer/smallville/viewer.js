@@ -318,9 +318,9 @@ function start(R, M) {
   let baseLabel = "";
   function tag() {
     if (!EMBED) return;
-    const following = followNewest || step >= last;
+    const atNewest = step >= last, following = followNewest || atNewest;
     $("golive").style.display = following ? "none" : "";
-    $("label").textContent = baseLabel + (following ? " · newest round" : " · earlier round");
+    $("label").textContent = baseLabel + (step >= last ? " · newest round" : following ? " · following the run" : " · earlier round");
   }
 
   function panel(frame) {
