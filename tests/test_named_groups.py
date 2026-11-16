@@ -31,6 +31,7 @@ def test_the_check_returns_what_the_description_names_and_what_the_draft_left_ou
 def test_a_missing_group_makes_the_builder_ask_again_with_the_missing_names(monkeypatch):
     import scripts.generate_world_bundle as gwb
     monkeypatch.setattr(gwb, "is_recorded_authoring_replay", lambda: False)
+    monkeypatch.setattr(people_world, "HEDGE_COPIES", 1)
     people = [SimpleNamespace(label="Country A")]
     full = [SimpleNamespace(label="Country A"), SimpleNamespace(label="Legal group")]
     feedbacks = []
