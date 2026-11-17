@@ -397,6 +397,9 @@ class WorldBuilderHomeTests(unittest.TestCase):
         # the detailed screen is hidden, not removed, in the simple view
         for hidden in ("#stage-run.simple .saved-grid", "#stage-run.simple #legacy-run-content"):
             self.assertIn(hidden, page)
+        # Brian, 2026-11-17: "i dont see any graphical depiction": the map stays in the simple view, above the story
+        self.assertNotIn("#stage-run.simple .run-map-cell", page)
+        self.assertLess(page.index('id="run-map-frame"'), page.index('id="simple-view"'))
         self.assertIn('api("/story", { catalog_run_id: run })', page)
         self.assertIn('li.addEventListener("click", pick)', page)  # a round of the story selects that round
         # a live run is told only on a click; a reopened saved run is told once, then kept

@@ -158,7 +158,7 @@ iframe.replay{width:100%;height:640px;border:1px solid var(--line);border-radius
 .simple-view li p{margin:2px 0}
 #stage-run:not(.simple) #simple-view{display:none}
 #stage-run.simple .saved-grid,#stage-run.simple #world-scene-panel,#stage-run.simple #actor-context,#stage-run.simple #saved-advanced,
-#stage-run.simple #legacy-run-content,#stage-run.simple #run-map-h,#stage-run.simple #run-map-status,#stage-run.simple .run-map-cell,
+#stage-run.simple #legacy-run-content,
 #stage-run.simple .context-row,#stage-run.simple #saved-intro{display:none}
 .run-chart{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0;background:#10181d}
 .run-chart[hidden]{display:none}
@@ -338,13 +338,6 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   <section class="panel" id="stage-run" hidden aria-labelledby="run-h">
     <nav id="lib-rail" class="lib-rail" aria-label="Your worlds, runs and branches" hidden><h3>Your worlds</h3><input type="search" id="rail-search" aria-label="Find a world" placeholder="Find a world…" title="Filter your saved worlds by title."><ul id="rail-list"></ul></nav>
     <nav class="workspace-controls" aria-label="World workspace"><button type="button" class="secondary" id="workspace-home" title="Return to creation and your saved world library.">← Your worlds</button><button type="button" class="secondary" id="view-toggle" aria-pressed="false" title="Switch between the plain summary of this run and the full detailed screen.">Advanced view</button><div id="catalog-controls" hidden><details id="workspace-run-tools" open><summary title="Open run selection, new-run, continuation and saved-round branching controls.">Run controls</summary><div class="row"><label for="workspace-run">Run</label><select id="workspace-run" title="Open a saved run without calling a model."></select><button type="button" class="secondary" id="workspace-new-run" title="Start an independent run from the original starting state and rules.">New run</button><button type="button" class="primary" id="workspace-continue" title="Continue the latest saved state, preserving actor memories.">Continue</button><button type="button" class="secondary" id="workspace-replay" title="Replay saved events without calling a model.">Replay</button></div><div class="row"><label for="workspace-checkpoint">Branch after round</label><select id="workspace-checkpoint" title="Choose a completed saved round; its rules, state and actor memories carry into the branch."></select><button type="button" class="secondary" id="workspace-preview-checkpoint" title="Show the completed round state before branching. This selects the last recorded event of the round.">Preview round end</button><button type="button" class="secondary" id="workspace-branch" title="Create a separate run from this completed saved round.">Branch from this checkpoint</button></div><p class="small muted" id="workspace-branch-note"></p></details></div><p id="workspace-status" class="small muted" role="status"></p><p id="workspace-continue-note" class="small muted"></p></nav><h2 id="run-h">Your world is running</h2>
-    <section id="simple-view" class="simple-view" aria-label="What happened, in plain words">
-      <p id="simple-world" class="world-line"></p>
-      <h3 id="simple-story-h">What happened, round by round</h3>
-      <p id="simple-note" class="small muted" role="status"></p>
-      <button type="button" class="secondary" id="simple-tell" hidden title="Have the AI write a plain account of each round so far. One small AI call; it is kept, so opening this run again is free.">Tell me what happened</button>
-      <ol id="simple-story" aria-labelledby="simple-story-h"></ol>
-    </section>
     <div id="saved-intro" hidden><p id="saved-scenario" class="saved-scenario"></p><button type="button" class="secondary small" id="saved-setup-toggle" aria-expanded="false" aria-controls="saved-scenario" title="Expand the complete original scenario description, without a generated summary.">Read full setup</button></div>
         <div class="row live-controls" id="play-controls">
       <button class="primary" type="button" id="play-btn" title="Stop after the current round; the world waits exactly where it is until you press Play">⏸ Pause</button>
@@ -367,6 +360,13 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <section id="run-chart" class="run-chart" aria-label="Support for the decision by round, original and branch" hidden></section>
     <section id="outcome-bar" class="outcome-bar" aria-label="Where the decision stands after the round shown" hidden></section>
     <div class="run-map-cell"><p class="small" id="branch-label" hidden></p><iframe id="run-map-frame" title="Room map and graph of the run" src="room-map/?embed=1&amp;graph=beside" loading="lazy"></iframe></div></div>
+    </section>
+    <section id="simple-view" class="simple-view" aria-label="What happened, in plain words">
+      <p id="simple-world" class="world-line"></p>
+      <h3 id="simple-story-h">What happened, round by round</h3>
+      <p id="simple-note" class="small muted" role="status"></p>
+      <button type="button" class="secondary" id="simple-tell" hidden title="Have the AI write a plain account of each round so far. One small AI call; it is kept, so opening this run again is free.">Tell me what happened</button>
+      <ol id="simple-story" aria-labelledby="simple-story-h"></ol>
     </section>
     <section id="actor-context" hidden aria-label="Authorized actor inputs">
       <p class="small">This is the selected person's recorded input, before their choice. Viewing it does not change the simulation.</p>
