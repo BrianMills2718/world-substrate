@@ -141,7 +141,10 @@ iframe.replay{width:100%;height:640px;border:1px solid var(--line);border-radius
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spinner{animation:none}}
 @media (max-width:640px){h1{font-size:22px}main{padding-top:16px}iframe.replay{height:620px}table.rules td.k{white-space:normal}}
-.chat{display:flex;flex-direction:column;gap:10px;margin:14px 0;max-height:420px;overflow:auto}
+.chat[hidden]{display:none}
+.bubble.draft{border-color:#c77d2e;max-width:100%}
+.bubble.draft strong{display:block;margin-bottom:4px}
+.chat{display:flex;flex-direction:column;gap:10px;margin:14px 0}
 .bubble{border-radius:10px;padding:10px 12px;max-width:85%;font-size:15px}
 .bubble.ai{background:#121a20;border:1px solid var(--line);align-self:flex-start}
 .bubble.me{background:#1d2529;align-self:flex-end}
@@ -222,10 +225,12 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   <section class="panel" id="stage-describe" aria-labelledby="describe-h">
     <div class="create">
       <label class="field" id="describe-h" for="desc">What should happen?</label>
-      <textarea id="desc" maxlength="2000" title="Who is involved, what they share or use, and what they are trying to get done" placeholder="Two cooks share one knife and must finish three salad orders before closing."></textarea>
+      <div class="chat" id="chat" aria-live="polite" hidden></div>
+      <textarea id="desc" maxlength="2000" title="Who is involved, what they share or use, and what they are trying to get done. Press Run to build it as written, or Send to talk it over with the AI first." placeholder="Two cooks share one knife and must finish three salad orders before closing."></textarea>
       <div class="row">
-        <button class="primary" id="build-btn" type="button" title="AI turns your description into rules, then the simulation starts. You can read the rules any time.">Create simulation</button>
-        <button type="button" class="linkish small" id="example-btn" title="Put an example description in the box; edit it or press Create simulation">or try an example</button>
+        <button class="primary" id="build-btn" type="button" title="Build the simulation from the draft (or from what you typed) and start it. You can read the rules any time.">Run</button>
+        <button class="secondary" id="send-btn" type="button" title="Send this to the AI; it asks a few questions here and keeps a draft of your world. Enter also sends.">Send</button>
+        <button type="button" class="linkish small" id="example-btn" title="Put an example description in the box; edit it or press Run">or try an example</button>
       </div>
       <span class="muted small" id="build-hint" role="status"></span>
     </div>
@@ -258,24 +263,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
             <option value="wait">Wait for my approval</option>
           </select></label>
         <span><button type="button" class="linkish" id="surprise-btn" title="The AI invents a world of the kind picked above, creates it and starts it straight away">I’m feeling lucky: the AI makes one up</button></span>
-        <span><button type="button" class="linkish" id="talk-btn" title="The AI asks you a few questions and writes the description with you">Not sure what to write? Let the AI ask you a few questions</button></span>
       </div>
     </details>
-    <div id="dialogue" hidden>
-      <h3>Let’s work it out together</h3>
-      <p class="small muted">Answer the questions (click a suggestion or type your own). The description below updates as you go; edit it any time, then build.</p>
-      <div class="chat" id="chat" aria-live="polite"></div>
-      <div class="row">
-        <textarea id="talk-input" rows="2" maxlength="2000" title="Your answer to the AI; click a suggestion or type your own" style="flex:1;min-height:56px" placeholder="Your answer…"></textarea>
-        <button class="secondary" id="send-btn" type="button" title="Send your answer to the AI (Enter also sends)">Send</button>
-      </div>
-      <h3>Description so far</h3>
-      <textarea class="so-far" id="so-far" maxlength="2000" title="The description the AI has written with you so far; you can edit it"></textarea>
-      <div class="row" style="margin-top:10px">
-        <button class="primary" id="use-btn" type="button" disabled title="Use the description below and create the simulation">Use this description and create</button>
-        <button class="secondary" id="talk-close" type="button" title="Close the conversation; your description so far is kept below">Close</button>
-      </div>
-    </div>
     <div class="status" id="service-status"></div>
 <section id="world-library" class="world-library" aria-labelledby="world-library-h"><div class="row"><h2 id="world-library-h">Your worlds</h2><button type="button" class="secondary" id="library-refresh" title="Refresh your private worlds without running anything.">Refresh</button><button type="button" class="secondary" id="library-login" title="Use owner access to see your private library.">Owner access</button></div><p class="small muted" id="library-status" role="status"></p><input type="search" id="library-search" aria-label="Find your worlds" placeholder="Find a world…" title="Filter saved worlds by title or description." hidden><div id="world-cards" class="world-cards"></div></section>
   </section>
@@ -427,6 +416,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     }
 
     function homeWorkspace(push = true) {
+      resetThread();
       selectionGeneration++;
       if (live) pause();
       catalog = null;
@@ -772,7 +762,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 
   let exampleAt = 0;
   $("example-btn").addEventListener("click", () => {
-    $("desc").value = EXAMPLES[exampleAt % EXAMPLES.length]; exampleAt++;
+    resetThread(); $("desc").value = EXAMPLES[exampleAt % EXAMPLES.length]; exampleAt++;
     refreshBuild(); $("desc").focus();
   });
 
@@ -1082,7 +1072,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   }
   let buildGen = 0;
   async function build() {
-    const description = $("desc").value.trim();
+    const description = (draft || $("desc").value).trim();
     if (!description) {
       $("build-hint").textContent = "Type what should happen first, or try an example.";
       $("desc").focus(); return;
@@ -1113,7 +1103,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     try {
       const s = await api("/surprise", { world_kind: kind() });
       if (gen !== buildGen) return;
-      $("desc").value = s.description;
+      resetThread(); $("desc").value = s.description;
     } catch (err) {
       if (gen !== buildGen) return;
       show("describe");
@@ -2391,7 +2381,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       if(gen!==selectionGeneration)return;
       renderReview({ ...rec.world, description: rec.world.description || "(not recorded)" });
       world.shared = rec;
-      $("desc").value = rec.world.description || "";
+      resetThread(); $("desc").value = rec.world.description || "";
       startLive();
     } catch (err) {
       const n = document.createElement("div"); n.className = "notice"; n.textContent = plainError(err);
@@ -2399,9 +2389,12 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     }
   }
 
-  // Dialogue: the AI asks clarifying questions and keeps a description draft.
-  let talk = [];
+  // One conversation: the box at the bottom is the first message and every follow-up. The AI asks
+  // its questions and keeps a draft of the world in the thread; Run builds the latest draft.
+  let talk = [], draft = "";
+  function resetThread() { talk = []; draft = ""; $("chat").innerHTML = ""; $("chat").hidden = true; }
   function bubble(role, text, questions) {
+    $("chat").hidden = false;
     const b = document.createElement("div"); b.className = "bubble " + (role === "user" ? "me" : "ai");
     const p = document.createElement("div"); p.textContent = text; b.append(p);
     (questions || []).forEach((q) => {
@@ -2411,46 +2404,52 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         const c = document.createElement("button"); c.type = "button"; c.className = "chip"; c.textContent = o;
         c.title = "Use this answer (it is added to your reply below; you can edit it before sending)";
         c.addEventListener("click", () => {
-          const cur = $("talk-input").value.trim();
-          $("talk-input").value = (cur ? cur + "; " : "") + q.question.replace(/\?$/, "") + ": " + o;
-          $("talk-input").focus();
+          const cur = $("desc").value.trim();
+          $("desc").value = (cur ? cur + "; " : "") + q.question.replace(/\?$/, "") + ": " + o;
+          $("desc").focus();
         });
         row.append(c);
       });
       b.append(row);
     });
-    $("chat").append(b); $("chat").scrollTop = $("chat").scrollHeight;
+    $("chat").append(b); 
+  }
+  function showDraft(text) {
+    draft = text;
+    let card = $("draft-card");
+    if (!card) {
+      card = document.createElement("div"); card.id = "draft-card"; card.className = "bubble ai draft";
+      const h = document.createElement("strong"); h.textContent = "Draft world (Run builds this)";
+      const d = document.createElement("div"); d.id = "so-far"; card.append(h, d);
+    }
+    card.querySelector("#so-far").textContent = text;
+    $("chat").append(card); 
   }
   async function sendTurn(text) {
     if (!text.trim()) return;
     talk.push({ role: "user", content: text.trim() });
     bubble("user", text.trim());
-    $("talk-input").value = ""; $("send-btn").disabled = true; $("send-btn").textContent = "Thinking…";
+    $("desc").value = ""; $("send-btn").disabled = true; $("send-btn").textContent = "Thinking…";
     try {
       const r = await api("/clarify", { messages: talk, world_kind: kind() });
       const asked = r.reply + (r.questions.length ? " " + r.questions.map((q) => q.question).join(" ") : "");
       talk.push({ role: "assistant", content: asked + " Draft: " + r.description });
-      bubble("assistant", r.reply + (r.ready ? " This is ready to build whenever you are." : ""), r.questions);
-      $("so-far").value = r.description; $("use-btn").disabled = false;
+      bubble("assistant", r.reply + (r.ready ? " This is ready to run whenever you are." : ""), r.questions);
+      showDraft(r.description);
     } catch (err) {
       talk.pop();
       bubble("assistant", plainError(err));
     } finally { $("send-btn").disabled = false; $("send-btn").textContent = "Send"; }
   }
-  $("talk-btn").addEventListener("click", () => {
-    $("dialogue").hidden = false; talk = []; $("chat").innerHTML = "";
-    const start = $("desc").value.trim();
-    if (start) sendTurn(start);
-    else { bubble("assistant", "Tell me roughly what should happen: who is involved, what they share or use, and what they are trying to get done."); $("talk-input").focus(); }
-  });
-  $("send-btn").addEventListener("click", () => sendTurn($("talk-input").value));
-  $("talk-input").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendTurn($("talk-input").value); } });
-  $("talk-close").addEventListener("click", () => { $("dialogue").hidden = true; });
-  $("use-btn").addEventListener("click", () => { $("desc").value = $("so-far").value.trim(); refreshBuild(); $("dialogue").hidden = true; build(); });
+  $("send-btn").addEventListener("click", () => sendTurn($("desc").value));
   $("rules-btn").addEventListener("click", () => { pause(); show("review"); });
   $("play-btn").addEventListener("click", () => { if (live && live.playing) pause(); else play(); });
   $("strip").addEventListener("click", () => { $("detail").dataset.touched = "1"; });
-  $("desc").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) build(); });
+  $("desc").addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" || e.shiftKey) return;
+    e.preventDefault();
+    if (e.metaKey || e.ctrlKey) build(); else sendTurn($("desc").value);
+  });
   $("change-btn").addEventListener("click", () => show("describe"));
   // A shared run's review leads to a fresh run of the same rules, not the recording again.
   $("approve-btn").addEventListener("click", () => {if(catalog){createCatalogRun();return;}if(world)delete world.shared;startLive();});

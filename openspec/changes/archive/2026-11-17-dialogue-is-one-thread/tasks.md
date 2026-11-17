@@ -1,0 +1,2 @@
+- [x] Test: one thread, one box, Run button
+- [x] Page: merge dialogue into the describe stage

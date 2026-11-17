@@ -49,7 +49,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
     @pytest.mark.req("world-builder-page/a-visitor-lands-on-the-page")
     def test_one_screen_has_one_primary_action(self):
         self.assertEqual(self.page.count('id="build-btn"'), 1)
-        self.assertIn(">Create simulation</button>", self.page)
+        self.assertIn(">Run</button>", self.page)
         self.assertIn('$("build-btn").addEventListener("click", () => build());', self.page)
         self.assertIn('<label class="field" id="describe-h" for="desc">What should happen?</label>', self.page)
         # No step bar, no surprise path, no example chips competing with the button.
@@ -83,9 +83,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn("function renderSteps(steps)", self.page)
 
     def test_dialogue_and_escape_hatches_sit_behind_disclosures(self):
-        self.assertIn(">Not sure what to write? Let the AI ask you a few questions</button>", self.page)
         self.assertIn('api("/clarify", { messages: talk, world_kind: kind() })', self.page)
-        self.assertIn("Use this description and create", self.page)
         self.assertIn('href="play/"', self.page)
         self.assertIn('href="build/"', self.page)
         self.assertIn('title="Optional settings; the defaults work for most descriptions">Options</summary>', self.page)
@@ -497,3 +495,15 @@ class WorldNetworkTests(unittest.TestCase):
 def json_dumps(value) -> str:
     import json
     return json.dumps(value)
+
+
+    @pytest.mark.req("world-builder-page/the-dialogue-is-one-thread")
+    def test_the_dialogue_is_one_thread_with_a_run_button(self):
+        for gone in ('id="dialogue"', 'id="talk-btn"', 'id="talk-input"', 'id="use-btn"', 'id="talk-close"', "Let’s work it out together"):
+            self.assertNotIn(gone, self.page)
+        self.assertEqual(self.page.count('id="desc"'), 1)
+        self.assertEqual(self.page.count('id="send-btn"'), 1)
+        self.assertLess(self.page.index('id="chat"'), self.page.index('id="desc"'))
+        self.assertIn('const description = (draft || $("desc").value).trim();', self.page)
+        self.assertIn("showDraft(r.description);", self.page)
+        self.assertIn("else sendTurn($(\"desc\").value);", self.page)

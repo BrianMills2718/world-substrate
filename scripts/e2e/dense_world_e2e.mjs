@@ -49,7 +49,7 @@ const readPlay = async () => { const t = Date.now(); const label = (await p.text
 try {
   await p.goto('http://wb.test/world-builder/');
   await p.fill('#desc', 'dense world');
-  await p.getByRole('button', { name: 'Create simulation', exact: true }).click();
+  await p.getByRole('button', { name: 'Run', exact: true }).click();
   await p.locator('#stage-run').waitFor({ state: 'visible', timeout: 15000 });
   check('run stage shows', true, 'visible');
   await p.waitForFunction(() => /^Round 2/.test(document.querySelector('#outcome').textContent), null, { timeout: 15000, polling: 200 });

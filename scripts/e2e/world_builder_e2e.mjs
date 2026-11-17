@@ -4,7 +4,7 @@
 //   node world_builder_e2e.mjs <base> <flow...>      e.g. node world_builder_e2e.mjs https://brianmills.dev task open
 //
 // Flows: tooltips (free: every visible control shows a tooltip bubble) | task | ongoing | open | pencil (Create simulation, watch it play live with no review stop; continuing worlds are also paused, checked to stay still, and resumed),
-// example (or try an example, then Create simulation), dialogue (Options > Not sure what to write?, two turns, then create).
+// example (or try an example, then Create simulation), dialogue (Send, two turns in the one thread, then Run).
 // E2E_AI=1 also switches a playing continuing world to AI moves for two rounds (costs a few cents).
 // Screenshots go to $E2E_OUT (default ./out). Spends real model money on the target.
 // Prints one line per step and `RESULT passed=N failed=M`; exits 1 if any flow failed.
@@ -75,7 +75,7 @@ for (const flow of flows.length ? flows : ['task']) {
       await p.locator('#stage-describe details.more > summary').click();
       await p.check(`input[name="kind"][value="${flow === 'task' ? 'task' : 'ongoing'}"]`);
       await p.fill('#desc', DESCRIPTIONS[flow]);
-      await p.getByRole('button', { name: 'Create simulation', exact: true }).click();
+      await p.getByRole('button', { name: 'Run', exact: true }).click();
       await buildAndRun(p, flow === 'task' ? 'task' : 'ongoing', log);
     } else if (flow === 'tooltips') {
       // Costs nothing: hover every visible control and require a visible tooltip bubble.
@@ -94,7 +94,7 @@ for (const flow of flows.length ? flows : ['task']) {
       log('hovered', `${n} controls, ${n - missing.length} showed a tooltip`);
       if (missing.length) throw new Error('no visible tooltip on: ' + missing.join(' | '));
       // An empty box never builds anything: the button asks for a description instead.
-      await p.getByRole('button', { name: 'Create simulation', exact: true }).click();
+      await p.getByRole('button', { name: 'Run', exact: true }).click();
       const hint = (await p.textContent('#build-hint')).trim();
       log('empty create', hint);
       if (!/Type what should happen first/.test(hint)) throw new Error('empty box did not ask for a description');
@@ -102,20 +102,18 @@ for (const flow of flows.length ? flows : ['task']) {
     } else if (flow === 'example') {
       await p.getByRole('button', { name: 'or try an example' }).click();
       log('example', await p.inputValue('#desc'));
-      await p.getByRole('button', { name: 'Create simulation', exact: true }).click();
+      await p.getByRole('button', { name: 'Run', exact: true }).click();
       await buildAndRun(p, 'task', log);
     } else if (flow === 'dialogue') {
       await p.fill('#desc', 'some kids and a lemonade stand');
-      await p.locator('#stage-describe details.more > summary').click();
-      await p.getByRole('button', { name: 'Not sure what to write? Let the AI ask you a few questions' }).click();
+      await p.getByRole('button', { name: 'Send' }).click();
       await p.locator('#chat .bubble.ai').first().waitFor({ timeout: LONG });
       log('ai', await p.locator('#chat .bubble.ai').first().innerText());
       const chip = p.locator('#chat .bubble.ai .chip').first();
-      if (await chip.count()) await chip.click(); else await p.fill('#talk-input', 'two kids, one pitcher, sell ten cups');
+      if (await chip.count()) await chip.click(); else await p.fill('#desc', 'two kids, one pitcher, sell ten cups');
       await p.getByRole('button', { name: 'Send' }).click();
       await p.locator('#chat .bubble.ai').nth(1).waitFor({ timeout: LONG });
-      log('draft', await p.inputValue('#so-far'));
-      await p.getByRole('button', { name: 'Use this description and create' }).click();
+      log('draft', await p.innerText('#so-far'));
       await buildAndRun(p, 'task', log);
     } else throw new Error('unknown flow ' + flow);
     if (errors.length) throw new Error('page errors: ' + errors.join(' | '));
