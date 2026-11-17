@@ -37,3 +37,12 @@ A stranger can open the Waltzman run and say, from the Simple view alone, who tr
 ## Out of scope
 
 Simulation rules; the Advanced view's content; per-person memories.
+
+## Slice 3 findings (2026-11-17, live Waltzman run 28046e, story trace world-builder-live/story/c67196efb0374bdf99df91831f478549)
+
+Read rounds 2 to 4 of the story against the recorded rows (status, `did.why`, `refused_because`, changed paths) for 28 cited event ids. One call read 41 events; no sentence dropped.
+
+- Each cited id matched its sentence: the "recorded support" sentences cite accepted moves that change `group_decision.support`; the "audience not recognized" sentences cite `unsupported_action` rows whose `did.why` says `recipient='other groups' names no entity`; the "not in the needed position" sentences cite `the actor does not support it yet`.
+- The reason you could not read before ("The stated message is the allowed statement", round 3, Country Group 2) is told as "was not an allowed statement". Faithful, but it is the model's reading of a check name; the row does not say what the message was.
+- Limit: three of five rounds read, one run, one model; the support totals in the sentences ("six", "eight", "nine") were matched to the outcome bar after round 4 (9), not recounted for rounds 2 and 3.
+- Story cost: not measured here (the trace is on the server). Worked-out estimate in the plan stands.
