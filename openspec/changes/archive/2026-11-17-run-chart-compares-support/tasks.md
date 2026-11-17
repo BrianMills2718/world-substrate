@@ -1,0 +1,2 @@
+- [x] Test: series start the branch from the original at the fork
+- [x] Page: chart, hooked to the round slider, after What if and on reopening a branch

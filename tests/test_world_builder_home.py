@@ -355,6 +355,36 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('id="outcome-bar"', page)
 
 
+    @pytest.mark.req("world-builder-page/the-run-chart-compares-support-by-round")
+    def test_the_run_chart_series_start_the_branch_from_the_original_at_the_fork(self):
+        import json, shutil, subprocess
+        node = shutil.which("node")
+        if node is None:
+            self.skipTest("node is not installed")
+        page = HOME.read_text()
+        parts = []
+        for name in ("recordedEvents", "applyRound", "outcomeSummary", "runSeries", "compareSeries"):
+            match = re.search(rf"^  function {name}\(.*?^  \}}$", page, re.S | re.M)
+            self.assertIsNotNone(match, f"the page needs one {name}")
+            parts.append(match.group(0))
+        entities = [{"id": "d", "label": "Decision", "components": {"group_decision": {"question": "Q?", "status": "open", "support": 0, "conditional": 0, "needed": 6, "deadline_id": "m"}}},
+                    {"id": "m", "label": "Deadline", "components": {"moment": {"occurrences": 0}}}]
+        def rnd(turn, support):
+            return {"turn": turn, "world_events": [{"event_id": f"r{turn}-e1", "changes": [{"path": "entities.d.components.group_decision.support", "after": support}]}]}
+        original = [rnd(1, 2), rnd(2, 4), rnd(3, 5), rnd(4, 9)]
+        branch = [rnd(3, 1), rnd(4, 2)]  # a branch from after round 2 plays rounds 3 and 4 again
+        script = "\n".join(parts) + f"\nconsole.log(JSON.stringify(compareSeries({json.dumps(entities)}, {json.dumps(original)}, {json.dumps(branch)}, 2)));"
+        got = json.loads(subprocess.run([node, "-"], input=script, capture_output=True, text=True, check=True).stdout)
+        self.assertEqual([(p["round"], p["support"]) for p in got["original"]], [(1, 2), (2, 4), (3, 5), (4, 9)])
+        # The branch line starts at the original's value at the fork round, then its own rounds.
+        self.assertEqual([(p["round"], p["support"]) for p in got["branch"]], [(2, 4), (3, 1), (4, 2)])
+        self.assertEqual(got["needed"], 6)
+        self.assertEqual(got["fork"], 2)
+        self.assertIn('id="run-chart"', page)
+        self.assertIn("renderRunChart(", page)
+        self.assertIn("function chartOriginal()", page)  # a reopened saved branch charts against its parent too
+
+
 if __name__ == "__main__":
     unittest.main()
 

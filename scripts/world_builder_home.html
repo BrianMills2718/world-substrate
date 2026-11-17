@@ -143,6 +143,10 @@ iframe.replay{width:100%;height:640px;border:1px solid var(--line);border-radius
 @media (max-width:640px){h1{font-size:22px}main{padding-top:16px}iframe.replay{height:620px}table.rules td.k{white-space:normal}}
 .outcome-bar{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0;background:#10181d;display:grid;gap:6px}
 .outcome-bar[hidden]{display:none}
+.run-chart{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0;background:#10181d}
+.run-chart[hidden]{display:none}
+.run-chart svg{width:100%;height:auto;display:block}
+.run-chart .legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;margin-top:6px}
 .outcome-bar .q{font-weight:700}
 .outcome-bar .row2{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px}
 .outcome-bar .tag{display:inline-block;border-radius:6px;padding:1px 8px;font-weight:700;border:1px solid #6aa7e8;color:#cfe3fb}
@@ -333,6 +337,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         <select id="what-if-group" title="Pick a group whose brief gets one extra line in the branch. Leave on No change to just play the round again with a new draw."><option value="">No change: just play it again</option></select>
         <input type="text" id="what-if-brief" maxlength="600" aria-label="What changes for that group" placeholder="e.g. Its data-sharing concern was settled last week." title="One sentence added to that group's own brief, only in the branch. The original run is not changed." hidden></div></div>
     <div class="run-maps" id="run-maps"><div class="run-map-cell" id="original-cell" hidden><p class="small" id="original-label"></p><iframe id="run-map-frame-2" title="The original run, kept beside the branch" src="about:blank" loading="lazy"></iframe></div>
+    <section id="run-chart" class="run-chart" aria-label="Support for the decision by round, original and branch" hidden></section>
     <section id="outcome-bar" class="outcome-bar" aria-label="Where the decision stands after the round shown" hidden></section>
     <div class="run-map-cell"><p class="small" id="branch-label" hidden></p><iframe id="run-map-frame" title="Room map and graph of the run" src="room-map/?embed=1&amp;graph=beside" loading="lazy"></iframe></div></div>
     </section>
@@ -1672,7 +1677,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     if (e.source !== $("run-map-frame").contentWindow || !e.data) return;
     if (e.data.type === "ws-viewer-ready") { mapReady = true; renderRunMap(); }
     // One timeline: the map's scrubber chooses the round; the saved-run panels below follow it.
-    if (e.data.type === "ws-round-shown") { shownRound = e.data.round; updateWhatIf(); }
+    if (e.data.type === "ws-round-shown") { shownRound = e.data.round; updateWhatIf(); renderRunChart(); }
     if (e.data.type === "ws-round-shown" && live && live.replay && live.recorded.length) {
       const index = live.recorded.findIndex((t) => t.turn === e.data.round);
       if (index >= 0 && index !== live.replayIndex) selectSavedRound(index);
@@ -1703,7 +1708,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       : "Greyed: " + (cp.reason || "this round cannot be branched.");
   }
   function clearPinned() {
-    pinnedOriginal = null; $("original-cell").hidden = true; $("branch-label").hidden = true; $("run-maps").classList.remove("two");
+    pinnedOriginal = null; $("run-chart").hidden = true; $("original-cell").hidden = true; $("branch-label").hidden = true; $("run-maps").classList.remove("two");
     $("run-map-frame-2").src = "about:blank";
   }
   async function whatIf() {
@@ -1717,7 +1722,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     try {
       const original = await api("/live-replay", { catalog_run_id: parent.id });
       const data = await api("/worlds/" + encodeURIComponent(catalog.worldId) + "/runs", { parent_run_id: parent.id, checkpoint_id: cp.id, name: "What if from round " + round + (change ? ": " + labelFor(group) + " changed" : "") });
-      pinnedOriginal = { replay: original, round, name: parent.name || "Run" };
+      pinnedOriginal = { replay: original, round, name: parent.name || "Run", rounds: [] };
+      try { pinnedOriginal.rounds = (await api("/worlds/" + encodeURIComponent(catalog.worldId) + "/runs/" + encodeURIComponent(parent.id))).record.rounds || []; } catch (e) { /* the chart simply stays hidden */ }
       keepPinned = true; pendingBriefChange = change;
       loadCatalogRecord(data, "continue");
       $("original-label").textContent = `Original run, kept as it was (${pinnedOriginal.name})`;
@@ -1960,6 +1966,80 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     return { question: d.question, status: d.status, support: d.support, conditional: d.conditional, needed: d.needed, stances,
       meetings: moments.length, meetingsHeld: moments.filter(reached).length,
       deadlineLabel: deadline ? deadline.label : "", deadlineReached: reached(deadline) };
+  }
+  // Support by round for a run (Brian, 2026-11-17: compare runs as numbers): one point per recorded round, from the
+  // world state's typed group_decision component, never from prose.
+  function runSeries(startEntities, rounds) {
+    const entities = JSON.parse(JSON.stringify(startEntities)), out = [];
+    for (const turn of rounds) {
+      applyRound(entities, turn);
+      const s = outcomeSummary(entities);
+      if (s) out.push({ round: turn.turn, support: s.support, conditional: s.conditional, needed: s.needed, status: s.status });
+    }
+    return out;
+  }
+  // The original over all its rounds; the branch starts from the original's value at the fork round, then its own rounds.
+  function compareSeries(startEntities, originalRounds, branchRounds, forkRound) {
+    const original = runSeries(startEntities, originalRounds);
+    const atFork = original.filter((p) => p.round <= forkRound).at(-1);
+    const own = runSeries(startEntities, originalRounds.filter((t) => t.turn <= forkRound)
+      .concat(branchRounds.filter((t) => t.turn > forkRound))).filter((p) => p.round > forkRound);
+    const branch = (atFork ? [atFork] : []).concat(own);
+    return { original, branch, needed: (original.at(-1) || branch.at(-1) || {}).needed, fork: forkRound };
+  }
+  // The run this one branched from: kept in the page right after What if, or fetched once when a saved branch is opened.
+  const parentRuns = {};
+  function chartOriginal() {
+    if (pinnedOriginal && pinnedOriginal.rounds) return pinnedOriginal;
+    const run = catalog && catalog.run;
+    if (!run || !run.parent_run_id) return null;
+    if (parentRuns[run.id]) return parentRuns[run.id];
+    if (parentRuns[run.id] === undefined) {
+      parentRuns[run.id] = false;
+      const fork = (catalog.checkpoints || []).find((c) => c.id === run.fork_checkpoint_id);
+      api("/worlds/" + encodeURIComponent(catalog.worldId) + "/runs/" + encodeURIComponent(run.parent_run_id))
+        .then((d) => { parentRuns[run.id] = { rounds: d.record.rounds || [], round: fork ? checkpointRound(fork) : 0 }; renderRunChart(); })
+        .catch(() => { /* the chart simply stays hidden */ });
+    }
+    return null;
+  }
+  function renderRunChart() {
+    const box = $("run-chart");
+    box.replaceChildren(); box.hidden = true;
+    const original = chartOriginal();
+    if (!original || !world || !live || !live.recorded) return;
+    const c = compareSeries(world.bundle.entities, original.rounds, live.recorded, original.round);
+    if (!c.original.length) return;
+    box.hidden = false;
+    const W = 600, H = 220, L = 40, R = 16, T = 14, B = 34, NS = "http://www.w3.org/2000/svg";
+    const all = c.original.concat(c.branch), rounds = all.map((p) => p.round);
+    const r0 = Math.min(...rounds), r1 = Math.max(...rounds, r0 + 1), top = Math.max(c.needed || 0, ...all.map((p) => p.support + p.conditional), 1) + 1;
+    const X = (r) => L + (r - r0) / (r1 - r0) * (W - L - R), Y = (v) => H - B - v / top * (H - B - T);
+    const svg = document.createElementNS(NS, "svg"); svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.setAttribute("role", "img");
+    const mk = (tag, attrs, text) => { const e = document.createElementNS(NS, tag); Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v)); if (text !== undefined) e.textContent = text; svg.append(e); return e; };
+    mk("line", { x1: L, y1: Y(0), x2: W - R, y2: Y(0), stroke: "#8a949c" });
+    for (let v = 0; v <= top; v += top > 8 ? 2 : 1) mk("text", { x: L - 6, y: Y(v) + 4, "text-anchor": "end", "font-size": 11, fill: "#c5ccd1" }, String(v));
+    for (let r = Math.ceil(r0); r <= r1; r += Math.max(1, Math.round((r1 - r0) / 8))) mk("text", { x: X(r), y: H - B + 16, "text-anchor": "middle", "font-size": 11, fill: "#c5ccd1" }, String(r));
+    mk("text", { x: (L + W - R) / 2, y: H - 4, "text-anchor": "middle", "font-size": 11, fill: "#c5ccd1" }, "Round");
+    if (c.needed) {
+      mk("line", { x1: L, y1: Y(c.needed), x2: W - R, y2: Y(c.needed), stroke: "#8a949c", "stroke-dasharray": "2 4" });
+      mk("text", { x: W - R, y: Y(c.needed) - 4, "text-anchor": "end", "font-size": 11, fill: "#c5ccd1" }, `${c.needed} needed`);
+    }
+    mk("line", { x1: X(c.fork), y1: T, x2: X(c.fork), y2: Y(0), stroke: "#8a949c" });
+    mk("text", { x: X(c.fork) + 4, y: T + 10, "font-size": 11, fill: "#c5ccd1" }, `branch starts after round ${c.fork}`);
+    const line = (pts, stroke, dash, shape) => {
+      if (!pts.length) return;
+      mk("polyline", { points: pts.map((p) => `${X(p.round)},${Y(p.support)}`).join(" "), fill: "none", stroke, "stroke-width": 2.5, "stroke-dasharray": dash });
+      pts.forEach((p) => shape === "circle" ? mk("circle", { cx: X(p.round), cy: Y(p.support), r: 4, fill: stroke })
+        : mk("rect", { x: X(p.round) - 4, y: Y(p.support) - 4, width: 8, height: 8, fill: stroke }));
+    };
+    line(c.original, "#6aa7e8", "", "circle"); line(c.branch, "#e8a24a", "6 4", "square");
+    const last = (a) => a.at(-1) ? `round ${a.at(-1).round}: ${a.at(-1).support} supporting` : "no rounds yet";
+    const title = document.createElement("div"); title.className = "q"; title.textContent = "Groups supporting, by round: original and branch";
+    svg.setAttribute("aria-label", `Original ${last(c.original)}; branch ${last(c.branch)}; ${c.needed} needed`);
+    const legend = document.createElement("div"); legend.className = "legend";
+    [`Original (blue line, circles): ${last(c.original)}`, `Branch (orange dashed line, squares): ${last(c.branch)}`].forEach((t) => { const s = document.createElement("span"); s.textContent = t; legend.append(s); });
+    box.append(title, svg, legend);
   }
   function renderOutcomeBar(entities, round) {
     const bar = $("outcome-bar"), s = entities ? outcomeSummary(entities) : null;
