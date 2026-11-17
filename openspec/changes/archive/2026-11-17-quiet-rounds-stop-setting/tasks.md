@@ -1,0 +1,1 @@
+- [x] Test, quiet streak in catalog eligibility

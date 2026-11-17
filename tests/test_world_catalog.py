@@ -117,6 +117,20 @@ class WorldCatalogTests(unittest.TestCase):
         with self.assertRaises(CatalogUnavailable):
             self.catalog.resume(rid)
 
+    @pytest.mark.req("world-catalog/a-quiet-round-does-not-end-a-run-before-its-stop-setting")
+    def test_a_quiet_round_continues_until_the_quiet_rounds_setting_is_reached(self):
+        world = self.catalog.save_world({**WORLD, "run_stop": {"mode": "quiet", "quiet_rounds": 3}}, "fp-quiet", build_trace_id="build-q")
+        rid = self.catalog.create_run(world["id"])["run"]["id"]
+        cp = None
+        for n in (1, 2, 3):
+            quiet = result(n)
+            quiet["summary"].update(accepted_actions=0, active_at_end=False)
+            cp = self.catalog.append(rid, cp["id"] if cp else None, {"turn_offset": n - 1}, quiet)
+            if n < 3:
+                self.assertEqual(self.catalog.resume(rid)["checkpoint"]["id"], cp["id"])
+        with self.assertRaises(CatalogUnavailable):
+            self.catalog.resume(rid)
+
     def test_initial_recovery_is_atomic_and_idempotent(self):
         request = {'continued': False}
         first = self.catalog.import_initial_run(self.world['id'], 'old-1', request, result(1))
