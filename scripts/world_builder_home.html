@@ -2392,9 +2392,11 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   // One conversation: the box at the bottom is the first message and every follow-up. The AI asks
   // its questions and keeps a draft of the world in the thread; Run builds the latest draft.
   let talk = [], draft = "";
-  function resetThread() { talk = []; draft = ""; $("chat").innerHTML = ""; $("chat").hidden = true; }
+  const START_HINT = $("desc").placeholder;
+  const REPLY_HINT = "Reply here, or press Run to build the draft above.";
+  function resetThread() { talk = []; draft = ""; $("chat").innerHTML = ""; $("chat").hidden = true; $("desc").placeholder = START_HINT; }
   function bubble(role, text, questions) {
-    $("chat").hidden = false;
+    $("chat").hidden = false; $("desc").placeholder = REPLY_HINT;
     const b = document.createElement("div"); b.className = "bubble " + (role === "user" ? "me" : "ai");
     const p = document.createElement("div"); p.textContent = text; b.append(p);
     (questions || []).forEach((q) => {
