@@ -233,6 +233,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         <button type="button" class="linkish small" id="example-btn" title="Put an example description in the box; edit it or press Run">or try an example</button>
       </div>
       <span class="muted small" id="build-hint" role="status"></span>
+      <div class="notice" id="visitor-note" hidden>Not signed in as owner: this world and its runs will not be saved to your library.
+        <button type="button" class="secondary small" id="visitor-login" title="Enter the owner password so your worlds and runs are saved to your library">Turn on owner access</button></div>
     </div>
     <details class="more"><summary title="Optional settings; the defaults work for most descriptions">Options</summary>
       <div class="inner">
@@ -769,7 +771,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   // Owner override: the owner password, if entered, rides on every request and
   // spends from a separate owner allowance instead of the shared visitor budget.
   function ownerKey() { try { return localStorage.getItem("wb-owner") || ""; } catch (e) { return ""; } }
-  function setOwnerKey(v) { try { if (v) localStorage.setItem("wb-owner", v); else localStorage.removeItem("wb-owner"); } catch (e) { /* storage unavailable */ } }
+  function updateVisitorNote() { $("visitor-note").hidden = !!ownerKey(); }
+  function setOwnerKey(v) { try { if (v) localStorage.setItem("wb-owner", v); else localStorage.removeItem("wb-owner"); } catch (e) { /* storage unavailable */ } updateVisitorNote(); }
   function authHeaders(extra) {
     const h = { ...(extra || {}) };
     const k = ownerKey(); if (k) h["X-World-Builder-Owner"] = k;
@@ -2444,6 +2447,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     } finally { $("send-btn").disabled = false; $("send-btn").textContent = "Send"; }
   }
   $("send-btn").addEventListener("click", () => sendTurn($("desc").value));
+  $("visitor-login").addEventListener("click", () => $("owner-btn").click());
+  updateVisitorNote();
   $("rules-btn").addEventListener("click", () => { pause(); show("review"); });
   $("play-btn").addEventListener("click", () => { if (live && live.playing) pause(); else play(); });
   $("strip").addEventListener("click", () => { $("detail").dataset.touched = "1"; });

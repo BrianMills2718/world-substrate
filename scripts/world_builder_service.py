@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import traceback
 import contextvars
 from contextlib import closing
 import hashlib
@@ -1831,6 +1832,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 responder._error(HTTPStatus.UNPROCESSABLE_ENTITY, str(error)[:500])
             except Exception as error:  # final job boundary
                 print(f"world-builder-api: job {job_id} error: {type(error).__name__}: {str(error)[:300]}", flush=True)
+                traceback.print_exc()  # the full trace, so a 500 can be diagnosed from the container log
                 plain = _provider_failure(error)
                 responder._error(*(plain or (HTTPStatus.INTERNAL_SERVER_ERROR, "internal world-builder error")))
             with _JOBS_LOCK:
