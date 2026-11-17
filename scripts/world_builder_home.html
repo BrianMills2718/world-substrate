@@ -154,11 +154,16 @@ iframe.replay{width:100%;height:640px;border:1px solid var(--line);border-radius
 .simple-view li{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#10181d}
 .simple-view li{cursor:pointer}
 .simple-view li.now{border-color:#6aa7e8;box-shadow:inset 3px 0 0 #6aa7e8}
-.simple-view li h4{margin:0 0 4px;font-size:14px;color:#c5ccd1}
-.simple-view li p{margin:2px 0}
+.simple-view li summary{cursor:pointer;list-style:none;font-size:15px;line-height:1.4}
+.simple-view li summary::-webkit-details-marker{display:none}
+.simple-view li summary::before{content:"▸ ";color:#8a949c}
+.simple-view li[open] summary::before{content:"▾ "}
+.simple-view li .rno{color:#c5ccd1;font-weight:600;margin-right:6px}
+.simple-view li ul{margin:8px 0 2px 4px;padding-left:20px;list-style:disc;display:grid;gap:4px}
+.simple-view .more-btn{background:none;border:0;color:#6aa7e8;font:inherit;cursor:pointer;padding:0 0 0 6px;text-decoration:underline}
 #stage-run:not(.simple) #simple-view{display:none}
 #stage-run.simple .saved-grid,#stage-run.simple #world-scene-panel,#stage-run.simple #actor-context,#stage-run.simple #saved-advanced,
-#stage-run.simple #legacy-run-content,
+#stage-run.simple #legacy-run-content,#stage-run.simple #lib-rail,
 #stage-run.simple .context-row,#stage-run.simple #saved-intro{display:none}
 .run-chart{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0;background:#10181d}
 .run-chart[hidden]{display:none}
@@ -362,7 +367,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     <div class="run-map-cell"><p class="small" id="branch-label" hidden></p><iframe id="run-map-frame" title="Room map and graph of the run" src="room-map/?embed=1&amp;graph=beside" loading="lazy"></iframe></div></div>
     </section>
     <section id="simple-view" class="simple-view" aria-label="What happened, in plain words">
-      <p id="simple-world" class="world-line"></p>
+      <p class="world-line"><span id="simple-world"></span><button type="button" class="more-btn" id="simple-world-more" hidden title="Show or hide the full description of this world.">Read more</button></p>
       <h3 id="simple-story-h">What happened, round by round</h3>
       <p id="simple-note" class="small muted" role="status"></p>
       <button type="button" class="secondary" id="simple-tell" hidden title="Have the AI write a plain account of each round so far. One small AI call; it is kept, so opening this run again is free.">Tell me what happened</button>
@@ -2081,6 +2086,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   function setSimple(on) {
     $("stage-run").classList.toggle("simple", on);
     $("view-toggle").textContent = on ? "Advanced view" : "Simple view";
+    const tools = $("workspace-run-tools"); if (tools) tools.open = !on && !matchMedia("(max-width:720px)").matches;
     $("view-toggle").setAttribute("aria-pressed", String(!on));
     try { localStorage.setItem("wb-view", on ? "simple" : "advanced"); } catch (e) { /* the choice just is not remembered */ }
     if (on) window.dispatchEvent(new Event("resize"));
@@ -2088,28 +2094,34 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   function renderStory() {
     const list = $("simple-story"), note = $("simple-note"), tell = $("simple-tell");
     list.replaceChildren(); tell.hidden = true;
-    const text = world && world.description ? String(world.description) : "";
-    $("simple-world").textContent = text.length > 320 ? text.slice(0, 317) + "..." : text;
+    const text = world && world.description ? String(world.description) : "", more = $("simple-world-more");
+    const showWorld = (full) => { $("simple-world").textContent = full || text.length <= 200 ? text : text.slice(0, 197) + "..."; more.textContent = full ? "Show less" : "Read more"; more.dataset.full = full ? "1" : ""; };
+    showWorld(false); more.hidden = text.length <= 200; more.onclick = () => showWorld(!more.dataset.full);
     if (!catalog || !catalog.run) { note.textContent = "This run is not saved in your library yet, so there is no written account. Use Advanced view to follow it live."; return; }
     if (!story) { note.textContent = story === false ? "The account could not be written." : "Not written yet."; tell.hidden = false; tell.textContent = story === false ? "Try again" : "Tell me what happened"; return; }
     const lost = story.not_told_rounds && story.not_told_rounds.length;
     note.textContent = lost ? `Rounds ${story.not_told_rounds[0]} to ${story.not_told_rounds.at(-1)} could not be written; Advanced view shows them.` :
       story.dropped_sentences ? `${story.dropped_sentences} sentence${story.dropped_sentences > 1 ? "s" : ""} left out because the recording did not support ${story.dropped_sentences > 1 ? "them" : "it"}.` : "";
     story.rounds.forEach((r) => {
-      const li = document.createElement("li"); li.dataset.round = r.round;
-      li.tabIndex = 0; li.setAttribute("role", "button"); li.title = "Show the outcome after this round";
-      const pick = () => { const i = live && live.recorded ? live.recorded.findIndex((t) => t.turn === r.round) : -1; if (i >= 0) selectSavedRound(i); };
-      li.addEventListener("click", pick); li.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
-      const h = document.createElement("h4"); h.textContent = `Round ${r.round}`; li.append(h);
-      const lines = r.told ? r.sentences.map((s) => s.text) : [r.recorded ? "Nothing was written for this round; Advanced view has its moves." : "Nobody did anything this round."];
-      lines.forEach((t) => { const p = document.createElement("p"); p.textContent = t; li.append(p); });
+      const li = document.createElement("li"), d = document.createElement("details"), sum = document.createElement("summary");
+      li.dataset.round = r.round; d.dataset.round = r.round;
+      const no = document.createElement("span"); no.className = "rno"; no.textContent = `Round ${r.round}`;
+      sum.title = "Show what happened in this round and move the map and the numbers to it.";
+      sum.append(no, r.told ? (r.headline || r.sentences[0].text) : (r.recorded ? "Nothing written for this round" : "Nobody did anything"));
+      const ul = document.createElement("ul");
+      (r.told ? r.sentences.map((s) => s.text) : [r.recorded ? "Advanced view has the moves of this round." : "No moves were recorded."]).forEach((t) => { const b = document.createElement("li"); b.textContent = t; ul.append(b); });
+      d.append(sum, ul); li.append(d);
+      sum.addEventListener("click", (e) => {
+        const i = live && live.recorded ? live.recorded.findIndex((t) => t.turn === r.round) : -1;
+        if (i >= 0) { e.preventDefault(); selectSavedRound(i); } // the map moves; markStoryRound opens this round, closes the rest
+      });
       list.append(li);
     });
     markStoryRound(shownRoundNumber());
   }
   function shownRoundNumber() { return Number(($("saved-player") && $("saved-player").dataset.round) || 0); }
   function markStoryRound(round) {
-    $("simple-story").querySelectorAll("li").forEach((li) => li.classList.toggle("now", Number(li.dataset.round) === Number(round)));
+    $("simple-story").querySelectorAll(":scope > li").forEach((li) => { const now = Number(li.dataset.round) === Number(round); li.classList.toggle("now", now); li.firstElementChild.open = now; });
   }
   async function loadStory(force) {
     if (!catalog || !catalog.run) { story = null; renderStory(); return; }

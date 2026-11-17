@@ -2986,7 +2986,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         if request is not None:
             request["summary"].update(catalog_run_id=record["catalog_run_id"], checkpoint_id=record["checkpoint_id"])
         saved = _catalog().story(record["checkpoint_id"])
-        if saved:
+        from scripts.run_story import STORY_VERSION
+        if saved and saved.get("version") == STORY_VERSION:
             from scripts.run_story import clean_story
             self._json(200, {"ok": True, "story": clean_story(saved), "cached": True})
             return

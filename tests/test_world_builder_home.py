@@ -384,6 +384,10 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn("renderRunChart(", page)
         self.assertIn("function chartOriginal()", page)  # a reopened saved branch charts against its parent too
 
+    @pytest.mark.req("world-builder-page/simple-view-story")
+    @pytest.mark.req("world-builder-page/simple-view-discloses-progressively")
+    def test_simple_view_discloses_progressively_marker(self):
+        self.assertIn("#stage-run.simple #lib-rail", HOME.read_text())
 
     @pytest.mark.req("world-builder-page/simple-view-story")
     def test_run_page_opens_in_a_simple_story_view_with_the_detailed_screen_as_advanced(self):
@@ -401,7 +405,13 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertNotIn("#stage-run.simple .run-map-cell", page)
         self.assertLess(page.index('id="run-map-frame"'), page.index('id="simple-view"'))
         self.assertIn('api("/story", { catalog_run_id: run })', page)
-        self.assertIn('li.addEventListener("click", pick)', page)  # a round of the story selects that round
+        # progressive disclosure (Brian, 2026-11-17): rounds are collapsed cards with a headline, bullets inside, only the
+        # shown round open; the list of every world and branch and the run controls are folded away in the simple view
+        self.assertIn('sum.addEventListener("click"', page)
+        self.assertIn("li.firstElementChild.open = now", page)
+        self.assertIn("#stage-run.simple #lib-rail", page)
+        self.assertIn("tools.open = !on", page)
+        self.assertIn('id="simple-world-more"', page)
         # a live run is told only on a click; a reopened saved run is told once, then kept
         self.assertIn('mode === "replay" && (data.record.rounds || []).length) loadStory()', page)
 
