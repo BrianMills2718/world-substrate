@@ -141,6 +141,13 @@ iframe.replay{width:100%;height:640px;border:1px solid var(--line);border-radius
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spinner{animation:none}}
 @media (max-width:640px){h1{font-size:22px}main{padding-top:16px}iframe.replay{height:620px}table.rules td.k{white-space:normal}}
+.outcome-bar{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0;background:#10181d;display:grid;gap:6px}
+.outcome-bar[hidden]{display:none}
+.outcome-bar .q{font-weight:700}
+.outcome-bar .row2{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px}
+.outcome-bar .tag{display:inline-block;border-radius:6px;padding:1px 8px;font-weight:700;border:1px solid #6aa7e8;color:#cfe3fb}
+.outcome-bar .tag.done{border-color:#e8a24a;color:#fbe1b8}
+.outcome-bar .tag.wait{border-color:#8a949c;color:#c5ccd1}
 .chat[hidden]{display:none}
 .bubble.draft{border-color:#c77d2e;max-width:100%}
 .bubble.draft strong{display:block;margin-bottom:4px}
@@ -326,6 +333,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
         <select id="what-if-group" title="Pick a group whose brief gets one extra line in the branch. Leave on No change to just play the round again with a new draw."><option value="">No change: just play it again</option></select>
         <input type="text" id="what-if-brief" maxlength="600" aria-label="What changes for that group" placeholder="e.g. Its data-sharing concern was settled last week." title="One sentence added to that group's own brief, only in the branch. The original run is not changed." hidden></div></div>
     <div class="run-maps" id="run-maps"><div class="run-map-cell" id="original-cell" hidden><p class="small" id="original-label"></p><iframe id="run-map-frame-2" title="The original run, kept beside the branch" src="about:blank" loading="lazy"></iframe></div>
+    <section id="outcome-bar" class="outcome-bar" aria-label="Where the decision stands after the round shown" hidden></section>
     <div class="run-map-cell"><p class="small" id="branch-label" hidden></p><iframe id="run-map-frame" title="Room map and graph of the run" src="room-map/?embed=1&amp;graph=beside" loading="lazy"></iframe></div></div>
     </section>
     <section id="actor-context" hidden aria-label="Authorized actor inputs">
@@ -1939,6 +1947,34 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       if (record.output) savedParagraph(box, "Response after receiving these inputs", record.output);
     });
   }
+  // The outcome bar (Brian, 2026-11-17: adopt the always-visible outcome strip): where the group decision stands after
+  // the round the map shows. Read from the world state's typed components (group_decision, support, moment), never from prose.
+  function outcomeSummary(entities) {
+    const has = (e, c) => e.components && e.components[c];
+    const decision = entities.find((e) => has(e, "group_decision"));
+    if (!decision) return null;
+    const d = decision.components.group_decision, stances = {};
+    entities.forEach((e) => { if (has(e, "support")) { const s = e.components.support.stance; stances[s] = (stances[s] || 0) + 1; } });
+    const moments = entities.filter((e) => has(e, "moment")), deadline = entities.find((e) => e.id === d.deadline_id);
+    const reached = (m) => !!(m && m.components && m.components.moment && m.components.moment.occurrences > 0);
+    return { question: d.question, status: d.status, support: d.support, conditional: d.conditional, needed: d.needed, stances,
+      meetings: moments.length, meetingsHeld: moments.filter(reached).length,
+      deadlineLabel: deadline ? deadline.label : "", deadlineReached: reached(deadline) };
+  }
+  function renderOutcomeBar(entities, round) {
+    const bar = $("outcome-bar"), s = entities ? outcomeSummary(entities) : null;
+    bar.replaceChildren(); bar.hidden = !s; if (!s) return;
+    const q = document.createElement("div"); q.className = "q"; q.textContent = s.question;
+    const status = document.createElement("span"); status.className = "tag " + (s.status === "open" ? "wait" : "done"); status.textContent = words(s.status);
+    q.append(" ", status);
+    const position = Object.entries(s.stances).map(([k, n]) => `${n} ${k === "none" ? "no position yet" : words(k)}`).join(" · ");
+    const r1 = document.createElement("div"); r1.className = "row2";
+    [`After round ${round}`, `Support: ${s.support} supporting, ${s.conditional} conditional (needs ${s.needed})`, position,
+      `Meetings held: ${s.meetingsHeld} of ${s.meetings}`,
+      s.deadlineLabel ? `Deadline: ${s.deadlineLabel.replace(/\.$/, "")} (${s.deadlineReached ? "reached" : "not yet reached"})` : ""]
+      .filter(Boolean).forEach((t) => { const span = document.createElement("span"); span.textContent = t; r1.append(span); });
+    bar.append(q, r1);
+  }
   function renderSavedWorld(entities, turn, selected) {
     const box = $("saved-world-state"); box.replaceChildren(); box.dataset.round = turn.turn; box.dataset.eventId = selected.key;
     $("saved-state-caption").textContent = `After the selected event in round ${turn.turn}. Later events in this round have not been applied.`;
@@ -2025,7 +2061,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     if (!turn) {
       $("saved-player").dataset.round = ""; $("saved-events").textContent = "This recording contains no rounds.";
       ["saved-event-detail", "saved-world-state", "saved-actor-input", "saved-event-select"].forEach((id) => { $(id).replaceChildren(); $(id).dataset.round = ""; $(id).dataset.eventId = ""; });
-      $("saved-event-h").textContent = "No recorded event"; $("saved-state-caption").textContent = "No event state is available.";
+      renderOutcomeBar(null, 0); $("saved-event-h").textContent = "No recorded event"; $("saved-state-caption").textContent = "No event state is available.";
       $("saved-event-select").disabled = true; renderActorContext(); return;
     }
     $("saved-player").dataset.round = turn.turn;
@@ -2038,6 +2074,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       live.selectedEvent = selected.key; live.savedEntities = savedStateAt(turn, selected);
       live.savedFocusTurn = { turn: turn.turn, actors: selected.actor ? { [selected.actor]: selected.event } : {}, reactions: selected.actor ? [] : [selected.event], world_events: [], world_changes: [] };
       renderSavedEvent(turn, selected, rows); renderSavedWorld(live.savedEntities, turn, selected);
+      renderOutcomeBar(savedStateAt(turn, rows[rows.length - 1]), turn.turn);
     } else { $("saved-event-detail").textContent = "No event records are available for this round."; $("saved-world-state").replaceChildren(); $("saved-actor-input").replaceChildren(); }
     $("outcome").textContent = `Historical views for round ${turn.turn}. The map shows the whole recording.`;
     const feed = $("feed"); feed.replaceChildren();

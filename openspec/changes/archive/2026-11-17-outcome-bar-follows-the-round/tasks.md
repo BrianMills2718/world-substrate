@@ -1,0 +1,2 @@
+- [x] Test: outcomeSummary counts and absent for other worlds
+- [x] Page: outcome bar above the map, updated with the round

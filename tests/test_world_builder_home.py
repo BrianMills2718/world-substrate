@@ -326,6 +326,33 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('$("visitor-note").hidden = !accessKnown || !!ownerKey();', self.page)
 
 
+    @pytest.mark.req("world-builder-page/the-outcome-bar-follows-the-round")
+    def test_the_outcome_bar_counts_stances_and_names_the_deadline(self):
+        import json, shutil, subprocess
+        node = shutil.which("node")
+        if node is None:
+            self.skipTest("node is not installed")
+        page = HOME.read_text()
+        match = re.search(r"^  function outcomeSummary\(.*?^  \}$", page, re.S | re.M)
+        self.assertIsNotNone(match, "the page needs one outcomeSummary")
+        entities = [
+            {"id": "d", "label": "Decision", "components": {"group_decision": {"question": "Activate the shared early-warning system?", "status": "open", "support": 3, "conditional": 1, "needed": 6, "deadline_id": "m8"}}},
+            {"id": "m1", "label": "Weekly meeting, round 1.", "components": {"moment": {"occurrences": 1}}},
+            {"id": "m8", "label": "Weekly meeting, round 8.", "components": {"moment": {"occurrences": 0}}},
+        ] + [{"id": f"s{i}", "label": f"S{i}", "components": {"support": {"stance": stance}}}
+             for i, stance in enumerate(["full", "full", "full", "conditional", "none", "none"])]
+        script = match.group(0) + f"\nconsole.log(JSON.stringify(outcomeSummary({json.dumps(entities)})));\nconsole.log(JSON.stringify(outcomeSummary([{{id:'x',components:{{member:{{}}}}}}])));"
+        out = subprocess.run([node, "-"], input=script, capture_output=True, text=True, check=True).stdout.splitlines()
+        got = json.loads(out[0])
+        self.assertEqual(got["stances"], {"full": 3, "conditional": 1, "none": 2})
+        self.assertEqual((got["support"], got["conditional"], got["needed"], got["status"]), (3, 1, 6, "open"))
+        self.assertEqual((got["meetingsHeld"], got["meetings"]), (1, 2))
+        self.assertEqual((got["deadlineLabel"], got["deadlineReached"]), ("Weekly meeting, round 8.", False))
+        self.assertEqual(json.loads(out[1]), None)  # a world with no group decision shows no bar
+        self.assertIn("renderOutcomeBar(", page)
+        self.assertIn('id="outcome-bar"', page)
+
+
 if __name__ == "__main__":
     unittest.main()
 
