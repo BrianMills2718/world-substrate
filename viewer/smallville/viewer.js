@@ -21,7 +21,12 @@ const replayUrl = SHARE ? "/world-builder/api/share/" + encodeURIComponent(SHARE
 const EMBED = new URLSearchParams(location.search).get("embed") === "1";
 let onReplay = null;  // set by start(): takes a longer replay of the same world
 if (EMBED) {
+  // The Simple view of the World Builder page asks for the plain map only: no graph, no per-person cards (they carry the engine's check names).
+  const simpleStyle = document.createElement("style");
+  simpleStyle.textContent = "body.simple #people, body.simple #graphbtn, body.simple #rules, body.simple #gov, body.simple #rulebox{display:none!important}";
+  document.head.append(simpleStyle);
   addEventListener("message", e => {
+    if (e.origin === location.origin && e.data && e.data.type === "ws-simple") { document.body.classList.toggle("simple", !!e.data.on); return; }
     if (e.origin !== location.origin || !e.data || e.data.type !== "ws-replay" || !e.data.replay || !e.data.replay.grid) return;
     if (onReplay) onReplay(e.data.replay); else start(e.data.replay, null);
   });

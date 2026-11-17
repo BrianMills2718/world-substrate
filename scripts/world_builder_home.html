@@ -1713,7 +1713,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   let mapReady = false, mapAsk = 0;
   window.addEventListener("message", (e) => {
     if (e.source !== $("run-map-frame").contentWindow || !e.data) return;
-    if (e.data.type === "ws-viewer-ready") { mapReady = true; renderRunMap(); }
+    if (e.data.type === "ws-viewer-ready") { mapReady = true; renderRunMap(); syncFrameMode(); }
     // One timeline: the map's scrubber chooses the round; the saved-run panels below follow it.
     if (e.data.type === "ws-round-shown") { shownRound = e.data.round; updateWhatIf(); renderRunChart(); }
     if (e.data.type === "ws-round-shown" && live && live.replay && live.recorded.length) {
@@ -1802,7 +1802,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     if (ask !== mapAsk || mine !== live) return;
     status.textContent = replay.illustrative || "";
     live.mapSent = true;
-    $("run-map-frame").contentWindow.postMessage({ type: "ws-replay", replay }, location.origin);
+    $("run-map-frame").contentWindow.postMessage({ type: "ws-replay", replay }, location.origin); syncFrameMode();
   }
 
   // Ruling to rule (ai-judge plan J3): every ruling of the run as the last round ended, with Approve and Reject for a held
@@ -2082,6 +2082,10 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   // Simple view (Brian, 2026-11-17: "we need a simple and advanced interface"): the default is a plain account of the
   // run, round by round, written once by /story and kept with the saved run; the detailed screen is the advanced view.
   let story = null;
+  // The embedded map shows only the plain map in the Simple view (no graph, no per-person cards).
+  function syncFrameMode() {
+    [$("run-map-frame"), $("run-map-frame-2")].forEach((f) => { try { f.contentWindow.postMessage({ type: "ws-simple", on: simpleOn() }, location.origin); } catch (e) { /* frame not ready */ } });
+  }
   function simpleOn() { return $("stage-run").classList.contains("simple"); }
   function setSimple(on) {
     $("stage-run").classList.toggle("simple", on);
@@ -2089,6 +2093,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const tools = $("workspace-run-tools"); if (tools) tools.open = !on && !matchMedia("(max-width:720px)").matches;
     $("view-toggle").setAttribute("aria-pressed", String(!on));
     try { localStorage.setItem("wb-view", on ? "simple" : "advanced"); } catch (e) { /* the choice just is not remembered */ }
+    syncFrameMode();
     if (on) window.dispatchEvent(new Event("resize"));
   }
   function renderStory() {

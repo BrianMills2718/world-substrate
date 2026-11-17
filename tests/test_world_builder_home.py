@@ -408,6 +408,9 @@ class WorldBuilderHomeTests(unittest.TestCase):
         # progressive disclosure (Brian, 2026-11-17): rounds are collapsed cards with a headline, bullets inside, only the
         # shown round open; the list of every world and branch and the run controls are folded away in the simple view
         self.assertIn('sum.addEventListener("click"', page)
+        # the embedded map shows only the plain map in the simple view: no graph, no per-person cards with check names
+        self.assertIn('type: "ws-simple"', page)
+        self.assertIn("body.simple #people", (HOME.parent.parent / "viewer/smallville/viewer.js").read_text())
         self.assertIn("li.firstElementChild.open = now", page)
         self.assertIn("#stage-run.simple #lib-rail", page)
         self.assertIn("tools.open = !on", page)
