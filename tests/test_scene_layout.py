@@ -562,3 +562,10 @@ def test_the_embedded_viewer_reports_its_height_and_the_page_sizes_the_frame_to_
 def test_the_viewer_keeps_reporting_its_height_as_content_grows():
     viewer = (ROOT / "viewer/smallville/viewer.js").read_text()
     assert "setInterval(reportSize" in viewer and "ResizeObserver(reportSize)" not in viewer
+
+
+@pytest.mark.req("scene-viewer/the-map-frame-shows-the-whole-viewer")
+def test_the_embedded_stage_does_not_stretch_and_the_map_sits_at_the_top_beside_the_graph():
+    viewer = (ROOT / "viewer/smallville/viewer.js").read_text()
+    assert 'style.flex = stageH ? "0 0 auto"' in viewer and "style.height = stageH" in viewer
+    assert "const midY = EMBED && graphOn" in viewer
