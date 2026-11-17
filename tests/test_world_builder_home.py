@@ -291,6 +291,18 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertEqual(json.loads(result.stdout), {"allowed": 2, "refused": 2, "held": 0})
 
 
+    @pytest.mark.req("world-builder-page/the-dialogue-is-one-thread")
+    def test_the_dialogue_is_one_thread_with_a_run_button(self):
+        for gone in ('id="dialogue"', 'id="talk-btn"', 'id="talk-input"', 'id="use-btn"', 'id="talk-close"', "Let’s work it out together"):
+            self.assertNotIn(gone, self.page)
+        self.assertEqual(self.page.count('id="desc"'), 1)
+        self.assertEqual(self.page.count('id="send-btn"'), 1)
+        self.assertLess(self.page.index('id="chat"'), self.page.index('id="desc"'))
+        self.assertIn('const description = (draft || $("desc").value).trim();', self.page)
+        self.assertIn("showDraft(r.description);", self.page)
+        self.assertIn("else sendTurn($(\"desc\").value);", self.page)
+
+
 if __name__ == "__main__":
     unittest.main()
 
@@ -496,14 +508,3 @@ def json_dumps(value) -> str:
     import json
     return json.dumps(value)
 
-
-    @pytest.mark.req("world-builder-page/the-dialogue-is-one-thread")
-    def test_the_dialogue_is_one_thread_with_a_run_button(self):
-        for gone in ('id="dialogue"', 'id="talk-btn"', 'id="talk-input"', 'id="use-btn"', 'id="talk-close"', "Let’s work it out together"):
-            self.assertNotIn(gone, self.page)
-        self.assertEqual(self.page.count('id="desc"'), 1)
-        self.assertEqual(self.page.count('id="send-btn"'), 1)
-        self.assertLess(self.page.index('id="chat"'), self.page.index('id="desc"'))
-        self.assertIn('const description = (draft || $("desc").value).trim();', self.page)
-        self.assertIn("showDraft(r.description);", self.page)
-        self.assertIn("else sendTurn($(\"desc\").value);", self.page)
