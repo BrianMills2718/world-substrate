@@ -1,0 +1,1 @@
+- [x] Test, viewer ws-size message, page frame height

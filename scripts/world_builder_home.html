@@ -1721,6 +1721,11 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     } catch (err) { keepPinned = false; note.textContent = "The branch could not start: " + plainError(err); }
     updateWhatIf();
   }
+  window.addEventListener("message", (e) => {
+    if (e.origin !== location.origin || !e.data || e.data.type !== "ws-size" || !(e.data.height > 0)) return;
+    const frame = [$("run-map-frame"), $("run-map-frame-2")].find((f) => f.contentWindow === e.source);
+    if (frame) frame.style.setProperty("height", Math.min(Math.ceil(e.data.height) + 4, 3200) + "px", "important");
+  });
   $("what-if-group").addEventListener("change", () => { $("what-if-brief").hidden = !$("what-if-group").value; if (!$("what-if-brief").hidden) $("what-if-brief").focus(); });
   $("what-if").addEventListener("click", whatIf);
   window.addEventListener("message", (e) => {
