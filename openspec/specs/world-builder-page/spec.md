@@ -485,6 +485,15 @@ The run page SHALL open a saved run in a Simple view that says what the world is
 
 Source: Brian, 2026-11-17: "no one would be able to be dropped in here and udnerstnad htis. i feel like we need a simple and advanced interface probably"; then "i approve" to the simple-by-default option.
 
+### Requirement: Your worlds is its own tab
+The page SHALL show two tabs, "New world" (describe and run) and "Your worlds" (the saved library), and the library SHALL NOT appear on the describe page. Leaving a run for the library SHALL open the "Your worlds" tab.
+
+#### Scenario: your-worlds-is-its-own-tab
+- **WHEN** a person opens the page
+- **THEN** the describe page has no library under it, and the "Your worlds" tab shows the saved worlds
+
+Source: Brian, 2026-11-17: "your worlds should be a differnt tab then the generate page"
+
 ## Feedback log
 
 The dated log of critiques behind these rules, kept from the feedback log:

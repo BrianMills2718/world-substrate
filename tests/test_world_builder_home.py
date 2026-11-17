@@ -402,6 +402,19 @@ class WorldBuilderHomeTests(unittest.TestCase):
         # a live run is told only on a click; a reopened saved run is told once, then kept
         self.assertIn('mode === "replay" && (data.record.rounds || []).length) loadStory()', page)
 
+    @pytest.mark.req("world-builder-page/your-worlds-is-its-own-tab")
+    def test_your_worlds_is_a_separate_tab_from_the_describe_page(self):
+        page = HOME.read_text()
+        describe = page[page.index('id="stage-describe"'):page.index('id="stage-library"')]
+        self.assertNotIn('id="world-library"', describe)  # the library is no longer under the describe box
+        library = page[page.index('id="stage-library"'):page.index('id="stage-working"')]
+        self.assertIn('id="world-library"', library)
+        for tab in ('id="tab-describe"', 'id="tab-library"'):
+            self.assertIn(tab, page)
+        self.assertIn('["describe", "library", "working", "review", "run"]', page)
+        # the run page's "← Your worlds" opens the library tab
+        self.assertIn('homeWorkspace(); show("library")', page)
+
 if __name__ == "__main__":
     unittest.main()
 
