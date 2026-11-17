@@ -4,7 +4,7 @@
 
 World Substrate is a persistent, observable world engine in which people (AI, scripted or human) express intents and **installed mechanics, not model prose, decide canonical consequences**. A generative builder sits on top: describe a world in plain words, and it proposes the world's structure, its laws and its rules as data that a local compiler checks before anything runs.
 
-- **World Builder:** <https://brianmills.dev/world-builder/>: natural-language creation, a private owner world library and a spatial studio with play, replay and saved-round branches. Pressing Create simulation is approval; the world is built, its rules reviewed by a second model and tested for free, then played one round at a time. Natural-language fork interventions and configuring a saved world’s starting conditions are future features ([product context](PRODUCT.md)).
+- **World Builder:** <https://brianmills.dev/world-builder/>: natural-language creation in one chat thread with a Run button, a shared world library (everyone has owner access since 2026-11-17) and a spatial studio with play, replay and saved-round branches. Pressing Run is approval; the world is built, its rules reviewed by a second model and tested for free, then played one round at a time. Natural-language fork interventions and configuring a saved world’s starting conditions are future features ([product context](PRODUCT.md)).
 - **Native composed Coordination Hall:** <https://brianmills.dev/waltzman/world-substrate>
 - **Waltzman donor demo (fallback):** <https://brianmills.dev/waltzman/>
 - **Earlier native event replay:** <https://brianmills.dev/world-substrate-visualization/>

@@ -39,8 +39,8 @@ Brian's reason for keeping consequences in rules rather than an AI judge is scal
 full in [arc42 section 1](../architecture/arc42.md#architectural-thesis)): facts must carry their
 implications and blockers down long causal chains automatically.
 
-The public surface is the **World Builder** at <https://brianmills.dev/world-builder/>: one box and one
-Create simulation button. Pressing it is the approval (Brian, 2026-10-15). The builder makes the world,
+The public surface is the **World Builder** at <https://brianmills.dev/world-builder/>: one chat thread (the
+box is also where you talk to the AI) and a Run button. Pressing Run is the approval (Brian, 2026-10-15). The builder makes the world,
 its declared laws and its rules, has another model review the rules, runs a free scripted test, then
 plays the world live one round at a time with Concordia residents. **Waltzman Coordination Lab**
 (Rand Waltzman's bio-surveillance coordination scenario) is the showcase world; the older donor-backed
@@ -186,7 +186,7 @@ would settle it, its owner and sources. The ones that shape the next work:
 ## Architecture and workflow
 
 ```text
-plain-language description  --(Create simulation = approval)-->
+plain-language description  --(Run = approval)-->
   structure + declared laws (authoring bundle)      rules (causal model)
                  \                                   /
                   compiler derives authority; laws checked; rules reviewed by a second model
