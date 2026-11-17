@@ -61,6 +61,9 @@ class WorldCatalog:
               run_id TEXT NOT NULL REFERENCES catalog_runs(id));
             CREATE TABLE IF NOT EXISTS catalog_finishes (run_id TEXT PRIMARY KEY REFERENCES catalog_runs(id),
               recorded TEXT NOT NULL, response BLOB NOT NULL);
+            -- Post-run analysis, kept apart from the checkpoint it describes (the checkpoint body is canonical state).
+            CREATE TABLE IF NOT EXISTS catalog_stories (checkpoint_id TEXT PRIMARY KEY REFERENCES catalog_checkpoints(id),
+              created TEXT NOT NULL, trace_id TEXT NOT NULL, story BLOB NOT NULL);
             """)
 
     @contextmanager
@@ -204,6 +207,17 @@ class WorldCatalog:
             if row["world_id"] != wid:
                 raise CatalogNotFound("run not found in this world")
             return self._detail(db, row)
+
+    def story(self, checkpoint_id):
+        """The saved plain story of one checkpoint, or None (Implements: world-builder-page/simple-view-story)."""
+        with self._db() as db:
+            row = db.execute("SELECT story, trace_id FROM catalog_stories WHERE checkpoint_id=?", (checkpoint_id,)).fetchone()
+            return {**_unpack(row["story"]), "trace_id": row["trace_id"]} if row else None
+
+    def save_story(self, checkpoint_id, trace_id, story):
+        with self._db() as db:
+            db.execute("INSERT OR REPLACE INTO catalog_stories VALUES (?,?,?,?)",
+                       (checkpoint_id, _now(), trace_id, _pack(story)))
 
     def run_by_id(self, rid):
         with self._db() as db:

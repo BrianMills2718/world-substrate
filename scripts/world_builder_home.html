@@ -143,6 +143,17 @@ iframe.replay{width:100%;height:640px;border:1px solid var(--line);border-radius
 @media (max-width:640px){h1{font-size:22px}main{padding-top:16px}iframe.replay{height:620px}table.rules td.k{white-space:normal}}
 .outcome-bar{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0;background:#10181d;display:grid;gap:6px}
 .outcome-bar[hidden]{display:none}
+.simple-view{margin:10px 0}
+.simple-view .world-line{font-size:16px;margin:4px 0 12px}
+.simple-view ol{list-style:none;margin:8px 0;padding:0;display:grid;gap:8px}
+.simple-view li{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#10181d}
+.simple-view li.now{border-color:#6aa7e8;box-shadow:inset 3px 0 0 #6aa7e8}
+.simple-view li h4{margin:0 0 4px;font-size:14px;color:#c5ccd1}
+.simple-view li p{margin:2px 0}
+#stage-run:not(.simple) #simple-view{display:none}
+#stage-run.simple .saved-grid,#stage-run.simple #world-scene-panel,#stage-run.simple #actor-context,#stage-run.simple #saved-advanced,
+#stage-run.simple #legacy-run-content,#stage-run.simple #run-map-h,#stage-run.simple #run-map-status,#stage-run.simple .run-map-cell,
+#stage-run.simple .context-row,#stage-run.simple #saved-intro{display:none}
 .run-chart{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0;background:#10181d}
 .run-chart[hidden]{display:none}
 .run-chart svg{width:100%;height:auto;display:block}
@@ -317,14 +328,21 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 
   <section class="panel" id="stage-run" hidden aria-labelledby="run-h">
     <nav id="lib-rail" class="lib-rail" aria-label="Your worlds, runs and branches" hidden><h3>Your worlds</h3><input type="search" id="rail-search" aria-label="Find a world" placeholder="Find a world…" title="Filter your saved worlds by title."><ul id="rail-list"></ul></nav>
-    <nav class="workspace-controls" aria-label="World workspace"><button type="button" class="secondary" id="workspace-home" title="Return to creation and your saved world library.">← Your worlds</button><div id="catalog-controls" hidden><details id="workspace-run-tools" open><summary title="Open run selection, new-run, continuation and saved-round branching controls.">Run controls</summary><div class="row"><label for="workspace-run">Run</label><select id="workspace-run" title="Open a saved run without calling a model."></select><button type="button" class="secondary" id="workspace-new-run" title="Start an independent run from the original starting state and rules.">New run</button><button type="button" class="primary" id="workspace-continue" title="Continue the latest saved state, preserving actor memories.">Continue</button><button type="button" class="secondary" id="workspace-replay" title="Replay saved events without calling a model.">Replay</button></div><div class="row"><label for="workspace-checkpoint">Branch after round</label><select id="workspace-checkpoint" title="Choose a completed saved round; its rules, state and actor memories carry into the branch."></select><button type="button" class="secondary" id="workspace-preview-checkpoint" title="Show the completed round state before branching. This selects the last recorded event of the round.">Preview round end</button><button type="button" class="secondary" id="workspace-branch" title="Create a separate run from this completed saved round.">Branch from this checkpoint</button></div><p class="small muted" id="workspace-branch-note"></p></details></div><p id="workspace-status" class="small muted" role="status"></p><p id="workspace-continue-note" class="small muted"></p></nav><h2 id="run-h">Your world is running</h2>
+    <nav class="workspace-controls" aria-label="World workspace"><button type="button" class="secondary" id="workspace-home" title="Return to creation and your saved world library.">← Your worlds</button><button type="button" class="secondary" id="view-toggle" aria-pressed="false" title="Switch between the plain summary of this run and the full detailed screen.">Advanced view</button><div id="catalog-controls" hidden><details id="workspace-run-tools" open><summary title="Open run selection, new-run, continuation and saved-round branching controls.">Run controls</summary><div class="row"><label for="workspace-run">Run</label><select id="workspace-run" title="Open a saved run without calling a model."></select><button type="button" class="secondary" id="workspace-new-run" title="Start an independent run from the original starting state and rules.">New run</button><button type="button" class="primary" id="workspace-continue" title="Continue the latest saved state, preserving actor memories.">Continue</button><button type="button" class="secondary" id="workspace-replay" title="Replay saved events without calling a model.">Replay</button></div><div class="row"><label for="workspace-checkpoint">Branch after round</label><select id="workspace-checkpoint" title="Choose a completed saved round; its rules, state and actor memories carry into the branch."></select><button type="button" class="secondary" id="workspace-preview-checkpoint" title="Show the completed round state before branching. This selects the last recorded event of the round.">Preview round end</button><button type="button" class="secondary" id="workspace-branch" title="Create a separate run from this completed saved round.">Branch from this checkpoint</button></div><p class="small muted" id="workspace-branch-note"></p></details></div><p id="workspace-status" class="small muted" role="status"></p><p id="workspace-continue-note" class="small muted"></p></nav><h2 id="run-h">Your world is running</h2>
+    <section id="simple-view" class="simple-view" aria-label="What happened, in plain words">
+      <p id="simple-world" class="world-line"></p>
+      <h3 id="simple-story-h">What happened, round by round</h3>
+      <p id="simple-note" class="small muted" role="status"></p>
+      <button type="button" class="secondary" id="simple-tell" hidden title="Have the AI write a plain account of each round so far. One small AI call; it is kept, so opening this run again is free.">Tell me what happened</button>
+      <ol id="simple-story" aria-labelledby="simple-story-h"></ol>
+    </section>
     <div id="saved-intro" hidden><p id="saved-scenario" class="saved-scenario"></p><button type="button" class="secondary small" id="saved-setup-toggle" aria-expanded="false" aria-controls="saved-scenario" title="Expand the complete original scenario description, without a generated summary.">Read full setup</button></div>
         <div class="row live-controls" id="play-controls">
       <button class="primary" type="button" id="play-btn" title="Stop after the current round; the world waits exactly where it is until you press Play">⏸ Pause</button>
     </div>
     <p class="notice" id="build-warning" role="status" hidden></p>
     <p class="small muted" id="live-status" role="status"></p>
-    <div class="row">
+    <div class="row context-row">
       <label for="context-mode">Context view</label>
       <select id="context-mode" title="Analyst shows the whole run. Actor shows only the retained inputs supplied to one person."><option value="analyst">Analyst: whole run</option><option value="actor">Actor: authorized inputs</option></select>
       <label for="context-actor">Person</label>
@@ -659,6 +677,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       }
       updateWorkspaceControls();
       refreshScene();
+      story = null; renderStory();
+      if (mode === "replay" && (data.record.rounds || []).length) loadStory();
     }
     async function openCatalogRun(id, mode = "replay") {
       const gen = ++selectionGeneration,
@@ -2041,6 +2061,51 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     [`Original (blue line, circles): ${last(c.original)}`, `Branch (orange dashed line, squares): ${last(c.branch)}`].forEach((t) => { const s = document.createElement("span"); s.textContent = t; legend.append(s); });
     box.append(title, svg, legend);
   }
+  // Simple view (Brian, 2026-11-17: "we need a simple and advanced interface"): the default is a plain account of the
+  // run, round by round, written once by /story and kept with the saved run; the detailed screen is the advanced view.
+  let story = null;
+  function simpleOn() { return $("stage-run").classList.contains("simple"); }
+  function setSimple(on) {
+    $("stage-run").classList.toggle("simple", on);
+    $("view-toggle").textContent = on ? "Advanced view" : "Simple view";
+    $("view-toggle").setAttribute("aria-pressed", String(!on));
+    try { localStorage.setItem("wb-view", on ? "simple" : "advanced"); } catch (e) { /* the choice just is not remembered */ }
+    if (on) window.dispatchEvent(new Event("resize"));
+  }
+  function renderStory() {
+    const list = $("simple-story"), note = $("simple-note"), tell = $("simple-tell");
+    list.replaceChildren(); tell.hidden = true;
+    const text = world && world.description ? String(world.description) : "";
+    $("simple-world").textContent = text.length > 320 ? text.slice(0, 317) + "..." : text;
+    if (!catalog || !catalog.run) { note.textContent = "This run is not saved in your library yet, so there is no written account. Use Advanced view to follow it live."; return; }
+    if (!story) { note.textContent = story === false ? "The account could not be written." : "Not written yet."; tell.hidden = false; tell.textContent = story === false ? "Try again" : "Tell me what happened"; return; }
+    const lost = story.not_told_rounds && story.not_told_rounds.length;
+    note.textContent = lost ? `Rounds ${story.not_told_rounds[0]} to ${story.not_told_rounds.at(-1)} could not be written; Advanced view shows them.` :
+      story.dropped_sentences ? `${story.dropped_sentences} sentence${story.dropped_sentences > 1 ? "s" : ""} left out because the recording did not support ${story.dropped_sentences > 1 ? "them" : "it"}.` : "";
+    story.rounds.forEach((r) => {
+      const li = document.createElement("li"); li.dataset.round = r.round;
+      const h = document.createElement("h4"); h.textContent = `Round ${r.round}`; li.append(h);
+      const lines = r.told ? r.sentences.map((s) => s.text) : [r.recorded ? "Nothing was written for this round; Advanced view has its moves." : "Nobody did anything this round."];
+      lines.forEach((t) => { const p = document.createElement("p"); p.textContent = t; li.append(p); });
+      list.append(li);
+    });
+    markStoryRound(shownRoundNumber());
+  }
+  function shownRoundNumber() { return Number(($("saved-player") && $("saved-player").dataset.round) || 0); }
+  function markStoryRound(round) {
+    $("simple-story").querySelectorAll("li").forEach((li) => li.classList.toggle("now", Number(li.dataset.round) === Number(round)));
+  }
+  async function loadStory(force) {
+    if (!catalog || !catalog.run) { story = null; renderStory(); return; }
+    const run = catalog.run.id, checkpoint = catalog.checkpointId;
+    $("simple-note").textContent = "Writing a plain account of each round...";
+    try {
+      const d = await api("/story", { catalog_run_id: run });
+      if (!catalog || !catalog.run || catalog.run.id !== run) return;
+      story = d.story;
+    } catch (err) { story = false; }
+    renderStory();
+  }
   function renderOutcomeBar(entities, round) {
     const bar = $("outcome-bar"), s = entities ? outcomeSummary(entities) : null;
     bar.replaceChildren(); bar.hidden = !s; if (!s) return;
@@ -2155,6 +2220,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       live.savedFocusTurn = { turn: turn.turn, actors: selected.actor ? { [selected.actor]: selected.event } : {}, reactions: selected.actor ? [] : [selected.event], world_events: [], world_changes: [] };
       renderSavedEvent(turn, selected, rows); renderSavedWorld(live.savedEntities, turn, selected);
       renderOutcomeBar(savedStateAt(turn, rows[rows.length - 1]), turn.turn);
+      markStoryRound(turn.turn);
     } else { $("saved-event-detail").textContent = "No event records are available for this round."; $("saved-world-state").replaceChildren(); $("saved-actor-input").replaceChildren(); }
     $("outcome").textContent = `Historical views for round ${turn.turn}. The map shows the whole recording.`;
     const feed = $("feed"); feed.replaceChildren();
@@ -2170,6 +2236,10 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   $("saved-round-prev").addEventListener("click", () => selectSavedRound(live.replayIndex - 1));
   $("saved-round-next").addEventListener("click", () => selectSavedRound(live.replayIndex + 1));
   $("saved-round-select").addEventListener("change", (event) => selectSavedRound(event.target.value));
+  $("view-toggle").addEventListener("click", () => setSimple(!simpleOn()));
+  $("simple-tell").addEventListener("click", () => loadStory());
+  { let pref = "simple"; try { pref = localStorage.getItem("wb-view") || "simple"; } catch (e) { /* default */ }
+    setSimple(pref !== "advanced"); }
   $("saved-round-range").addEventListener("input", (event) => selectSavedRound(event.target.value));
   $("saved-event-select").addEventListener("change", (event) => selectSavedRound(live.replayIndex, event.target.value));
   $("saved-setup-toggle").addEventListener("click", () => { const expanded = $("saved-scenario").classList.toggle("expanded"); $("saved-setup-toggle").setAttribute("aria-expanded", String(expanded)); $("saved-setup-toggle").textContent = expanded ? "Collapse setup" : "Read full setup"; });

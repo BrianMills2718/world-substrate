@@ -162,6 +162,7 @@ DIALOGUE_REQUESTS_PER_HOUR = 30
 DIALOGUE_BUDGET = 0.02
 # One "What happened" readout reads every recorded event of a run (a 40-round, ten-person run is about 40k tokens).
 READOUT_BUDGET = 0.10
+STORY_BUDGET = 0.10  # one call (or about three slices) of the same size as a readout
 # 2026-10-18 live Waltzman fYUjOhb2z1VC: one lock held for every whole build and round made the site run one AI job
 # at a time, so round 1 waited ~100 s behind another visitor's build (C1: within 150 s). Ledger updates are atomic
 # under _BUDGET_LOCK and every job reserves its whole cap first, so concurrent jobs cannot overspend.
@@ -389,7 +390,7 @@ def _prune_jobs() -> None:
 # the run outcome, errors and cost. Read it with GET /runs (owner only) or
 # scripts/world_builder_runs.py.
 LOGGED_PATHS = ("/generate-world", "/run", "/clarify", "/surprise", "/generate-draft",
-                "/generate-mechanics", "/compare-native-coordination", "/readout")
+                "/generate-mechanics", "/compare-native-coordination", "/readout", "/story")
 CLIENT_HEADER = "X-World-Builder-Client"
 _REQUEST: contextvars.ContextVar[dict[str, Any] | None] = contextvars.ContextVar("world_builder_request", default=None)
 _RUN_LOG_LOCK = threading.Lock()
@@ -577,6 +578,8 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
         return {k: value.get(k) for k in ("reply", "questions", "description", "ready")}
     if path == "/readout":
         return {"readout": value.get("readout")}
+    if path == "/story":
+        return _full_result(value)
     if path == "/surprise":
         return {k: value.get(k) for k in ("theme", "description")}
     # Gap G4: these logged only key names. Keep the full result; cost and trace id
@@ -1954,6 +1957,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             if path == "/readout":
                 self._readout(client, body)
                 return
+            if path == "/story":
+                self._story(client, body)
+                return
             self._error(HTTPStatus.NOT_FOUND, "not found")
         except CatalogError as error:
             self._error(error.status, str(error))
@@ -2966,6 +2972,34 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             return {"readout": readout}, result
 
         self._dialogue_call(client, "readout", call, budget=READOUT_BUDGET)
+
+    def _story(self, client: str, body: dict[str, Any]) -> None:
+        """The plain round-by-round story of a saved catalog run for the Simple view. Kept per checkpoint, so
+        reopening makes no AI call. Implements: world-builder-page/simple-view-story"""
+        if not _is_owner():
+            self._error(403, "reading a private catalog run needs the owner password")
+            return
+        if not isinstance(body.get("catalog_run_id"), str):
+            raise ValueError("catalog_run_id is required")
+        record = _catalog().run_by_id(body["catalog_run_id"])["record"]
+        request = _REQUEST.get()
+        if request is not None:
+            request["summary"].update(catalog_run_id=record["catalog_run_id"], checkpoint_id=record["checkpoint_id"])
+        saved = _catalog().story(record["checkpoint_id"])
+        if saved:
+            self._json(200, {"ok": True, "story": saved, "cached": True})
+            return
+        from scripts.run_story import tell_run
+        model = _requested_model(body)
+
+        def call(trace_id: str, budget: float) -> tuple[dict[str, Any], Any]:
+            story, results = tell_run(record["rounds"], people=record["world"].get("people"),
+                                      world_sentence=str(record["world"].get("description") or "")[:600],
+                                      model=model, trace_id=trace_id, max_budget=budget)
+            _catalog().save_story(record["checkpoint_id"], trace_id, story)
+            return {"story": {**story, "trace_id": trace_id}, "cached": False}, results
+
+        self._dialogue_call(client, "story", call, budget=STORY_BUDGET)
 
     def _share(self, client: str, body: dict[str, Any]) -> None:
         """Save a finished run for a link. No AI call: the rounds come from this server's own run log."""

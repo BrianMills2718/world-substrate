@@ -94,6 +94,32 @@ class CatalogServiceTests(unittest.TestCase):
         self.assertEqual(status, 200, shared)
         self.assertNotIn('readout', self.request('/share/' + shared['share_id'], owner=False)[1])
 
+    @pytest.mark.req("world-builder-page/simple-view-story")
+    def test_story_is_saved_per_checkpoint_and_reopening_makes_no_ai_call(self):
+        rid = self.new_run()
+        status, first = self.step(rid)
+        self.assertEqual(status, 200, first)
+        calls = []
+        def fake_dialogue(handler, client, kind, call, **kwargs):
+            payload, _ = call('story-test', 0)
+            handler._json(200, {'ok': True, **payload, 'trace_id': service.TRACE_ROOT + '/story/' + 'b' * 32})
+        def fake_tell(rounds, **kwargs):
+            calls.append(len(rounds))
+            return {'schema': 'x', 'rounds': [{'round': 1, 'sentences': [], 'recorded': True, 'told': False}],
+                    'not_told_rounds': [], 'dropped_sentences': 0, 'events_read': 1, 'calls': 1}, []
+        from scripts import run_story
+        with patch.object(service.WorldBuilderHandler, '_dialogue_call', fake_dialogue), patch.object(run_story, 'tell_run', fake_tell):
+            status, one = self.request('/story', {'catalog_run_id': rid})
+            self.assertEqual((status, one['cached']), (200, False), one)
+            status, two = self.request('/story', {'catalog_run_id': rid})
+            self.assertEqual((status, two['cached']), (200, True), two)
+            self.assertEqual(len(calls), 1)  # the second open read the saved story
+            status, nxt = self.step(rid, first['checkpoint_id'])
+            self.assertEqual(status, 200, nxt)
+            status, three = self.request('/story', {'catalog_run_id': rid})
+            self.assertEqual(three['cached'], False)  # a new checkpoint is a different run state: told again
+        self.assertEqual(len(calls), 2)
+
     @pytest.mark.req("world-catalog/owner-created-worlds-remain-available-after-reload")
     def test_private_catalog_requires_owner_for_reads_creates_and_runs(self):
         self.assertEqual(self.request('/worlds', owner=False)[0], 403)
