@@ -310,6 +310,14 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('$("desc").placeholder = START_HINT;', self.page)
 
 
+    @pytest.mark.req("world-builder-page/a-visitor-is-told-runs-are-not-saved")
+    def test_a_visitor_is_told_next_to_run_that_nothing_is_saved(self):
+        self.assertLess(self.page.index('id="build-btn"'), self.page.index('id="visitor-note"'))
+        self.assertIn("will not be saved to your library", self.page)
+        self.assertIn('$("visitor-note").hidden = !!ownerKey();', self.page)
+        self.assertIn('$("visitor-login").addEventListener("click", () => $("owner-btn").click());', self.page)
+
+
 if __name__ == "__main__":
     unittest.main()
 
