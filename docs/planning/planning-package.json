@@ -157,7 +157,14 @@
           "revision": "7b0638fe0aef41c772bb181996516f98be479597",
           "mapping": "docs/model/metamodel-mapping.json"
         }
-      }
+      },
+      "units": [
+        "src/world_substrate/*",
+        "scripts/world_*",
+        "scripts/people_world.py",
+        "viewer/smallville",
+        "spikes/any-scenario-2026-10/*.py"
+      ]
     },
     "domain_model": {
       "status": "present",
@@ -266,6 +273,11 @@
         {
           "path": "docs/model/metamodel.graph.json",
           "question": "What kinds of things can any world's rules relate (entities, components, places, moves, checks, effects, processes, attempts, observations), and which are built?"
+        },
+        {
+          "path": "docs/model/system-map.md",
+          "question": "Which code units is the World Builder made of, and what does each do?",
+          "kind": "system_map"
         }
       ]
     },
