@@ -2094,6 +2094,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     $("view-toggle").setAttribute("aria-pressed", String(!on));
     try { localStorage.setItem("wb-view", on ? "simple" : "advanced"); } catch (e) { /* the choice just is not remembered */ }
     syncFrameMode();
+    $("run-map-h").textContent = on ? "The world, as of the round shown" : "The world on the map, with its graph beside it";
     if (on) window.dispatchEvent(new Event("resize"));
   }
   function renderStory() {

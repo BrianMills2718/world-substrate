@@ -19,6 +19,7 @@ const replayUrl = SHARE ? "/world-builder/api/share/" + encodeURIComponent(SHARE
 // ({type:"ws-replay", replay}); the viewer tells the page it is ready ({type:"ws-viewer-ready"}) and follows the newest round
 // unless the person has scrubbed back. Implements: scene-viewer/a-running-world-is-drawn-on-the-map-as-it-plays
 const EMBED = new URLSearchParams(location.search).get("embed") === "1";
+let simpleHidGraph = false;  // the simple view closed the graph, so the advanced view opens it again
 let onReplay = null;  // set by start(): takes a longer replay of the same world
 if (EMBED) {
   // The Simple view of the World Builder page asks for the plain map only: no graph, no per-person cards (they carry the engine's check names).
@@ -26,7 +27,17 @@ if (EMBED) {
   simpleStyle.textContent = "body.simple #people, body.simple #graphbtn, body.simple #rules, body.simple #gov, body.simple #rulebox{display:none!important}";
   document.head.append(simpleStyle);
   addEventListener("message", e => {
-    if (e.origin === location.origin && e.data && e.data.type === "ws-simple") { document.body.classList.toggle("simple", !!e.data.on); return; }
+    if (e.origin === location.origin && e.data && e.data.type === "ws-simple") {
+      document.body.classList.toggle("simple", !!e.data.on);
+      // The graph also takes its half of the stage: close it in the simple view, and open it again for the advanced one.
+      const gb = document.getElementById("graphbtn");
+      if (gb && gb.onclick) {
+        const shown = gb.textContent.startsWith("Hide");
+        if (e.data.on && shown) { gb.click(); simpleHidGraph = true; }
+        else if (!e.data.on && !shown && simpleHidGraph) { gb.click(); simpleHidGraph = false; }
+      }
+      return;
+    }
     if (e.origin !== location.origin || !e.data || e.data.type !== "ws-replay" || !e.data.replay || !e.data.replay.grid) return;
     if (onReplay) onReplay(e.data.replay); else start(e.data.replay, null);
   });
@@ -294,7 +305,7 @@ function start(R, M) {
       $("gmode").parentElement.style.display = graphOn ? "" : "none"; sizeStage(); if (fitFn) fitFn(); drawGraph(); };
     $("gmode").onchange = e => { gmode = e.target.value; focusId = null; sizeStage(); if (fitFn) fitFn(); drawGraph(); };
     const want = EMBED && innerWidth < 700 ? null : q.get("graph");  // ?graph=round|map|hover|beside opens the graph in that style (for links and tests)
-    if (want && ["round", "map", "hover", "beside"].includes(want)) { gmode = want; $("gmode").value = want; $("graphbtn").click(); } }
+    if (want && ["round", "map", "hover", "beside"].includes(want)) { gmode = want; $("gmode").value = want; if (document.body.classList.contains("simple")) simpleHidGraph = true; else $("graphbtn").click(); } }
 
   function drawDoors(s) {
     const st = doorAt(s);
