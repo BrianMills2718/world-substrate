@@ -349,6 +349,8 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertEqual((got["meetingsHeld"], got["meetings"]), (1, 2))
         self.assertEqual((got["deadlineLabel"], got["deadlineReached"]), ("Weekly meeting, round 8.", False))
         self.assertEqual(json.loads(out[1]), None)  # a world with no group decision shows no bar
+        self.assertIn("Scheduled moments reached:", page)
+        self.assertNotIn("Meetings held:", page)  # the count includes every scheduled moment, not only meetings
         self.assertIn("renderOutcomeBar(", page)
         self.assertIn('id="outcome-bar"', page)
 
