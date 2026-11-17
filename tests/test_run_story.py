@@ -44,7 +44,7 @@ class RunStoryTests(unittest.TestCase):
     def test_sentences_without_a_real_event_of_that_round_are_dropped(self):
         events = run_story.story_events(ROUNDS)
         parsed = {"rounds": [
-            {"round": 1, "sentences": [{"text": "Ana tried to tell the others; the world has no such group.",
+            {"round": 1, "headline": "Nobody could reach the others (r1-e00001)", "sentences": [{"text": "Ana tried to tell the others; the world has no such group.",
                                         "event_ids": ["r1-e00001"]},
                                        {"text": "Invented.", "event_ids": ["r9-e00001"]},
                                        {"text": "No citation.", "event_ids": []}]},
@@ -52,9 +52,10 @@ class RunStoryTests(unittest.TestCase):
         out = run_story.validate_story(parsed, events, [1, 2])
         self.assertEqual([r["round"] for r in out["rounds"]], [1, 2])
         self.assertEqual(len(out["rounds"][0]["sentences"]), 1)
+        self.assertEqual(out["rounds"][0]["headline"], "Nobody could reach the others")  # the id is taken out
         self.assertEqual(out["dropped_sentences"], 2)
         # round 2 has only no_action rows: marked from the recording, not from the model's silence
-        self.assertEqual(out["rounds"][1], {"round": 2, "sentences": [], "recorded": False, "told": False})
+        self.assertEqual(out["rounds"][1], {"round": 2, "headline": "", "sentences": [], "recorded": False, "told": False})
 
     def test_event_ids_are_taken_out_of_the_sentence_but_kept_as_evidence(self):
         events = run_story.story_events(ROUNDS)

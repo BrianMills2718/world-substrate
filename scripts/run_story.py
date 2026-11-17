@@ -14,6 +14,7 @@ import json
 from typing import Any
 
 STORY_SCHEMA = "world-builder-story/v1"
+STORY_VERSION = 2  # 2: each round has a one-line headline; a saved story of an older version is written again
 # About 40k tokens is a 40-round ten-person run (scripts/world_builder_service.py, READOUT_BUDGET comment); a slice
 # stays near 15 rounds so one call always fits, and the characters figure keeps the estimate checkable before the call.
 MAX_PROMPT_CHARS = 90_000
@@ -85,9 +86,12 @@ def story_prompt(people: list[dict[str, Any]] | None, events: list[dict[str, Any
         "names (for example 'Information is not active yet' means the message was not available to send yet); for "
         "an unmatched attempt, say the world has no rule for what they tried and use the plain reason given. Never "
         "show ids, check names, field names or the words 'precondition' or 'unsupported'. Write one to three short "
-        "sentences per round, only for the rounds listed. Put ids only in the event_ids field, never in the text. Every sentence must cite at least one event_id from the "
+        "sentences per round, only for the rounds listed, each under 25 words and about one group or one reason, so it "
+        "reads as a bullet. Give each round a headline of at most 12 words saying what changed or stalled, with the "
+        "numbers when the events give them (for example: Four more groups back the plan, 6 of 10). Put ids only in the "
+        "event_ids field, never in the text or the headline. Every sentence must cite at least one event_id from the "
         "events that shows it. "
-        'Return only JSON: {"rounds": [{"round": int, "sentences": [{"text": str, "event_ids": [str]}]}]}.'
+        'Return only JSON: {"rounds": [{"round": int, "headline": str, "sentences": [{"text": str, "event_ids": [str]}]}]}.'
     )
     user = (f"The world: {world_sentence or '(not recorded)'}\n\nPeople:\n{cast or '- (not recorded)'}\n\n"
             f"Rounds to tell: {rounds_wanted}\n\nEvents ({len(events)}, in order):\n" + "\n".join(
@@ -121,9 +125,11 @@ def validate_story(parsed: Any, events: list[dict[str, Any]], rounds_wanted: lis
         raise ValueError("the story reply was not an object")
     known = {e["event_id"]: e for e in events}
     given: dict[int, list[Any]] = {}
+    headlines: dict[int, str] = {}
     for item in parsed.get("rounds") or []:
         if isinstance(item, dict) and isinstance(item.get("round"), int):
             given.setdefault(item["round"], []).extend(item.get("sentences") or [])
+            headlines[item["round"]] = plain_text(str(item.get("headline") or "").strip()[:140], list(known))
     with_events = {e["round"] for e in events}
     out, dropped = [], 0
     for number in rounds_wanted:
@@ -139,7 +145,7 @@ def validate_story(parsed: Any, events: list[dict[str, Any]], rounds_wanted: lis
                 kept.append({"text": text, "event_ids": real})
             else:
                 dropped += 1
-        out.append({"round": number, "sentences": kept[:3],
+        out.append({"round": number, "headline": headlines.get(number, "") if kept else "", "sentences": kept[:3],
                     "recorded": number in with_events, "told": bool(kept)})
     return {"rounds": out, "dropped_sentences": dropped}
 
@@ -174,6 +180,6 @@ def tell_run(rounds: list[dict[str, Any]], *, people: list[dict[str, Any]] | Non
         told.update({r["round"]: r for r in checked["rounds"]})
     if not results:
         raise RuntimeError("the story could not be written for any round")
-    return {"schema": STORY_SCHEMA, "rounds": [told[n] for n in all_rounds if n in told],
+    return {"schema": STORY_SCHEMA, "version": STORY_VERSION, "rounds": [told[n] for n in all_rounds if n in told],
             "not_told_rounds": sorted(failed_rounds), "dropped_sentences": dropped,
             "events_read": len(events), "calls": len(parts)}, results

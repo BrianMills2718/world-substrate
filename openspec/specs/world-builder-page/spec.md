@@ -494,6 +494,15 @@ The page SHALL show two tabs, "New world" (describe and run) and "Your worlds" (
 
 Source: Brian, 2026-11-17: "your worlds should be a differnt tab then the generate page"
 
+### Requirement: The Simple view discloses progressively
+The Simple view SHALL show only what a newcomer needs first: the world in a short clamped description with a Read more control, the outcome, the map, and one collapsed card per round with a one-line headline. Opening a round SHALL show its sentences as short bullets, only the round shown on the map SHALL be open, and choosing a round SHALL move the map and the numbers to it. The list of every world and branch and the run controls SHALL be folded away in the Simple view and remain in the Advanced view.
+
+#### Scenario: simple-view-discloses-progressively
+- **WHEN** a person opens a saved run
+- **THEN** the list of worlds and branches is not shown, the rounds are collapsed cards with headlines, and only the shown round is open
+
+Source: Brian, 2026-11-17: "you ened to use progressive disclosure more. why is it showing the list of every world and branch after pickign a world? the text should be more bulletpotined and easy to read"
+
 ## Feedback log
 
 The dated log of critiques behind these rules, kept from the feedback log:

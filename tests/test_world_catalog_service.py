@@ -105,7 +105,7 @@ class CatalogServiceTests(unittest.TestCase):
             handler._json(200, {'ok': True, **payload, 'trace_id': service.TRACE_ROOT + '/story/' + 'b' * 32})
         def fake_tell(rounds, **kwargs):
             calls.append(len(rounds))
-            return {'schema': 'x', 'rounds': [{'round': 1, 'sentences': [], 'recorded': True, 'told': False}],
+            return {'schema': 'x', 'version': 2, 'rounds': [{'round': 1, 'sentences': [], 'recorded': True, 'told': False}],
                     'not_told_rounds': [], 'dropped_sentences': 0, 'events_read': 1, 'calls': 1}, []
         from scripts import run_story
         with patch.object(service.WorldBuilderHandler, '_dialogue_call', fake_dialogue), patch.object(run_story, 'tell_run', fake_tell):
