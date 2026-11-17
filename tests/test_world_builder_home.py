@@ -385,6 +385,22 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn("function chartOriginal()", page)  # a reopened saved branch charts against its parent too
 
 
+    @pytest.mark.req("world-builder-page/simple-view-story")
+    def test_run_page_opens_in_a_simple_story_view_with_the_detailed_screen_as_advanced(self):
+        page = HOME.read_text()
+        self.assertIn('id="simple-view"', page)
+        self.assertIn('id="view-toggle"', page)
+        self.assertIn('Advanced view', page)
+        # simple is the default: only an explicit saved "advanced" choice turns it off
+        self.assertIn('localStorage.getItem("wb-view") || "simple"', page)
+        self.assertIn('setSimple(pref !== "advanced")', page)
+        # the detailed screen is hidden, not removed, in the simple view
+        for hidden in ("#stage-run.simple .saved-grid", "#stage-run.simple #legacy-run-content"):
+            self.assertIn(hidden, page)
+        self.assertIn('api("/story", { catalog_run_id: run })', page)
+        # a live run is told only on a click; a reopened saved run is told once, then kept
+        self.assertIn('mode === "replay" && (data.record.rounds || []).length) loadStory()', page)
+
 if __name__ == "__main__":
     unittest.main()
 
