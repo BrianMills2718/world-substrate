@@ -569,3 +569,13 @@ def test_the_embedded_stage_does_not_stretch_and_the_map_sits_at_the_top_beside_
     viewer = (ROOT / "viewer/smallville/viewer.js").read_text()
     assert 'style.flex = stageH ? "0 0 auto"' in viewer and "style.height = stageH" in viewer
     assert "const midY = EMBED && graphOn" in viewer
+
+
+@pytest.mark.req("scene-viewer/the-map-frame-shows-the-whole-viewer")
+def test_the_viewer_script_has_no_syntax_error():
+    import shutil, subprocess
+    node = shutil.which("node")
+    if node is None:
+        pytest.skip("node is not installed here")
+    done = subprocess.run([node, "--check", str(ROOT / "viewer/smallville/viewer.js")], capture_output=True, text=True)
+    assert done.returncode == 0, done.stderr[:400]

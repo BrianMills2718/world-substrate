@@ -282,7 +282,9 @@ function start(R, M) {
     const sizeStage = () => { const longest = Math.max(0, ...["actor", "action|process", "thing", "place"].map(k => (GRAPH ? GRAPH.graph.nodes : []).filter(n => k.split("|").includes(n.kind)).length));
       const stageH = graphOn && gmode === "beside" && longest ? Math.max(320, 24 + longest * ROW_MIN + 56) + "px" : "";
       $("stage").style.minHeight = stageH;
-      if (EMBED) { $("stage").style.flex = stageH ? "0 0 auto" : ""; $("stage").style.height = stageH; }  // the page sizes its frame to this, so the stage must not stretch to fill the frame and grow it again const refit = () => window.dispatchEvent(new Event("resize")); refit(); setTimeout(refit, 150); };  // again once the scrollbar has appeared
+      // the page sizes its frame to the stage, so the embedded stage must not stretch to fill the frame and grow it again
+      if (EMBED) { $("stage").style.flex = stageH ? "0 0 auto" : ""; $("stage").style.height = stageH; }
+      const refit = () => window.dispatchEvent(new Event("resize")); refit(); setTimeout(refit, 150); };  // again once the scrollbar has appeared
     $("graphbtn").onclick = () => { graphOn = !graphOn; $("graphbtn").textContent = graphOn ? "Hide graph" : "Show graph"; $("graphbtn").classList.toggle("on", graphOn);
       $("gmode").parentElement.style.display = graphOn ? "" : "none"; sizeStage(); if (fitFn) fitFn(); drawGraph(); };
     $("gmode").onchange = e => { gmode = e.target.value; focusId = null; sizeStage(); if (fitFn) fitFn(); drawGraph(); };
