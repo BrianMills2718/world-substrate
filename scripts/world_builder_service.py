@@ -416,6 +416,28 @@ def _canon(value: Any) -> Any:
     return value
 
 
+def apply_brief_changes(actor_state: dict[str, Any], changes: Any) -> dict[str, Any]:
+    """A what-if branch can change one group's brief: one line is added to that group's own brief, the rest are untouched.
+
+    Implements: world-builder-page/a-what-if-branch-can-change-one-groups-brief
+    """
+    briefs = actor_state.get("briefs") or {}
+    if not isinstance(changes, dict) or not changes or len(changes) > 4:
+        raise ValueError("brief_changes must name one to four groups")
+    new = dict(briefs)
+    for actor, text in changes.items():
+        if actor not in briefs:
+            raise ValueError(f"brief_changes names {actor!r}, which is not a group in this world")
+        if not isinstance(text, str) or not text.strip():
+            raise ValueError("a brief change needs some text")
+        added = text.strip()
+        merged = briefs[actor] + "\n\nFor this what-if branch: " + added
+        if len(added) > 1000 or len(merged) > MAX_BRIEF_CHARS:
+            raise ValueError(f"a brief change must be at most 1000 characters and keep the brief within {MAX_BRIEF_CHARS}")
+        new[actor] = merged
+    return {**actor_state, "briefs": new}
+
+
 def _snapshot_seal(snapshot: Any, bundle: Any, causal: Any, approval: Any = None, rulings: Any = None, actor_state: Any = None) -> str:
     """Issue #127 (G11): a keyed hash of the world state a round ended in, under these exact rules.
 
@@ -2995,6 +3017,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 run_spent_usd=trace.get("run_spent_usd", 0), turn_offset=saved["checkpoint"]["round"])
                 if response.get("actor_state") is not None:
                     hydrated["actor_state"] = response["actor_state"]
+                    if body.get("brief_changes") is not None:
+                        hydrated["actor_state"] = apply_brief_changes(hydrated["actor_state"], body["brief_changes"])
                 else:
                     for key in ("resident_memory", "underway"):
                         hydrated[key] = trace.get(key) or ({} if key == "resident_memory" else [])

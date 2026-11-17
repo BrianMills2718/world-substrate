@@ -538,3 +538,12 @@ def test_a_stalling_world_is_flagged_on_the_run_page_and_the_build_time_is_hones
     assert '$("build-warning")' in review
     assert "max-height:30vh" in page
     assert "about a minute" not in page and "two to three minutes" in page
+
+
+@pytest.mark.req("world-builder-page/a-what-if-branch-can-change-one-groups-brief")
+def test_what_if_offers_one_group_brief_change_and_sends_it_with_the_first_round():
+    page = (ROOT / "scripts/world_builder_home.html").read_text()
+    assert 'id="what-if-group"' in page and 'id="what-if-brief"' in page
+    body = page.split("async function whatIf()", 1)[1][:3500]
+    assert "pendingBriefChange = change" in body and "is told" in body
+    assert "brief_changes:pendingBriefChange" in page and "pendingBriefChange=null" in page

@@ -296,3 +296,18 @@ class CatalogServiceTests(unittest.TestCase):
         self.assertEqual(bodies[0]['turn_offset'], 1)
         self.assertNotIn('resident_memory', bodies[0])
         self.assertEqual(second['actor_state']['briefs'], {'ava': 'My own profile'})
+
+
+class BriefChangeTests(unittest.TestCase):
+    @pytest.mark.req("world-builder-page/a-what-if-branch-can-change-one-groups-brief")
+    def test_a_brief_change_adds_one_line_to_one_group_and_is_checked(self):
+        state = {'resident_memory': {}, 'recent': [], 'underway': [], 'turn_offset': 2,
+                 'briefs': {'legal-group': 'You are the legal group.', 'community-group': 'You are the community group.'}}
+        changed = service.apply_brief_changes(state, {'legal-group': 'Its data-sharing concern was settled last week.'})
+        self.assertIn('You are the legal group.', changed['briefs']['legal-group'])
+        self.assertIn('data-sharing concern was settled', changed['briefs']['legal-group'])
+        self.assertEqual(changed['briefs']['community-group'], state['briefs']['community-group'])
+        self.assertEqual(state['briefs']['legal-group'], 'You are the legal group.')
+        for bad in ({'nobody': 'x'}, {'legal-group': ''}, {'legal-group': 'x' * (service.MAX_BRIEF_CHARS + 1)}, ['legal-group']):
+            with self.assertRaises(ValueError):
+                service.apply_brief_changes(state, bad)
