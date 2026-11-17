@@ -126,7 +126,19 @@ class WorldCatalog:
             checkpoint_id = cp["parent_checkpoint_id"]
         return list(reversed(chain))
 
-    def _eligibility(self, world, cp):
+    @staticmethod
+    def _quiet_streak(chain):
+        """How many rounds at the end of the chain accepted nothing and left no move open."""
+        streak = 0
+        for cp in reversed(chain):
+            summary = (cp["response"] or {}).get("summary") or {}
+            if summary.get("active_at_end") is False and not summary.get("accepted_actions"):
+                streak += 1
+            else:
+                break
+        return streak
+
+    def _eligibility(self, world, cp, quiet_streak=1):
         if cp is None:
             return True, None
         response = cp["response"]
@@ -144,14 +156,18 @@ class WorldCatalog:
             why = stopped.get("why")
             return False, (why or "The saved run stop setting was reached.") + " A branch preserves this stop setting; choose an earlier checkpoint or New run."
         if (response.get("summary") or {}).get("active_at_end") is False:
-            return False, "This world has no active moves at this saved round."
+            # The world's own stop setting decides how many quiet rounds end a run, not the first one.
+            stop = world["definition"].get("run_stop") or {}
+            limit = int(stop.get("quiet_rounds") or 6) if stop.get("mode", "quiet") == "quiet" else None
+            if limit is None or quiet_streak >= limit:
+                return False, "This world has no active moves at this saved round."
         return True, None
 
     def _detail(self, db, row):
         world = self._world(db, row["world_id"])
         chain = self._chain(db, row["checkpoint_id"])
         legacy = _unpack(row["legacy_record"]) if row["legacy_record"] else None
-        can, reason = self._eligibility(world, chain[-1] if chain else None)
+        can, reason = self._eligibility(world, chain[-1] if chain else None, self._quiet_streak(chain))
         if legacy is not None:
             can, reason = False, "Recovered recording: no authenticated continuation checkpoint was retained."
         finish = db.execute("SELECT response FROM catalog_finishes WHERE run_id=?", (row["id"],)).fetchone()
@@ -164,14 +180,14 @@ class WorldCatalog:
             summary.update(status="finished", finish_summary=_unpack(finish[0]).get("summary"))
         record = legacy or {"schema": "world-builder-share/v1", "created": row["created"], "world": world["definition"], "rounds": [], "actor_inputs": {}, "runs": [], "world_fingerprint": world["fingerprint"]}
         checkpoints = []
-        for cp in chain:
+        for index, cp in enumerate(chain):
             response, trace = cp["response"], cp["response"].get("trace") or {}
             record["rounds"].extend(trace.get("transcript") or [])
             for actor, inputs in (trace.get("actor_inputs") or {}).items():
                 record["actor_inputs"].setdefault(actor, []).extend(inputs)
             record["actor_information_mode"] = trace.get("actor_information_mode", "legacy-unrestricted")
             record["runs"].append({"trace_id": response.get("trace_id"), "policy": cp["request"].get("policy"), **(response.get("summary") or {})})
-            eligible, why = self._eligibility(world, cp)
+            eligible, why = self._eligibility(world, cp, self._quiet_streak(chain[:index + 1]))
             checkpoints.append({"id": cp["id"], "round": cp["round"], "can_branch": eligible, "reason": why})
         record.update(catalog_world_id=row["world_id"], catalog_run_id=row["id"], checkpoint_id=row["checkpoint_id"], event_namespace=row["id"])
         return {"ok": True, "run": summary, "record": record, "checkpoints": checkpoints}
@@ -207,10 +223,11 @@ class WorldCatalog:
                 parent = self._runrow(db, parent_run_id)
                 if parent["world_id"] != wid:
                     raise CatalogConflict("parent belongs to a different world")
-                cp = next((c for c in self._chain(db, parent["checkpoint_id"]) if c["id"] == checkpoint_id), None)
+                parent_chain = self._chain(db, parent["checkpoint_id"])
+                cp = next((c for c in parent_chain if c["id"] == checkpoint_id), None)
                 if cp is None:
                     raise CatalogConflict("checkpoint is not in the parent's history")
-                can, reason = self._eligibility(world, cp)
+                can, reason = self._eligibility(world, cp, self._quiet_streak(parent_chain[:parent_chain.index(cp) + 1]))
                 if not can:
                     raise CatalogUnavailable(reason)
             rid, now = uuid.uuid4().hex, _now()
