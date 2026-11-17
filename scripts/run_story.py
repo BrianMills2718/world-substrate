@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
-STORY_SCHEMA = "world-substrate.run-story.v1"
+STORY_SCHEMA = "world-builder-story/v1"
 # About 40k tokens is a 40-round ten-person run (scripts/world_builder_service.py, READOUT_BUDGET comment); a slice
 # stays near 15 rounds so one call always fits, and the characters figure keeps the estimate checkable before the call.
 MAX_PROMPT_CHARS = 90_000
