@@ -70,6 +70,16 @@ OWNER_DAILY_BUDGET = float(os.environ.get("WORLD_BUILDER_OWNER_DAILY_BUDGET") or
 _LEDGER: contextvars.ContextVar[str] = contextvars.ContextVar("world_builder_ledger", default="visitor")
 
 
+def _open_access() -> bool:
+    """Everyone gets owner access (Brian, 2026-11-17: "A everyone ahs owner level"): no password, one shared
+    library and one owner ledger. Off unless WORLD_BUILDER_OPEN_ACCESS=1; set it to 0 or remove it to restore the
+    owner password.
+
+    Implements: world-builder-page/everyone-has-owner-access
+    """
+    return os.environ.get("WORLD_BUILDER_OPEN_ACCESS") == "1"
+
+
 def _owner_password() -> str | None:
     return os.environ.get("WORLD_BUILDER_OWNER_PASSWORD") or None
 
@@ -1672,6 +1682,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         """True: owner ledger selected. False: no owner password sent.
         None: a password was sent and it is wrong (caller must refuse)."""
         _LEDGER.set("visitor")
+        if _open_access():
+            _LEDGER.set("owner")
+            return True
         supplied = self.headers.get(OWNER_HEADER)
         if not supplied:
             return False
@@ -1689,6 +1702,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "service": "world-builder",
                 "build_commit": os.environ.get("WORLD_SUBSTRATE_BUILD_COMMIT"),
                 "owner": bool(owner),
+                "open_access": _open_access(),
             }
             if owner is None:
                 payload["owner_error"] = "That owner password is not right."

@@ -1287,6 +1287,23 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertFalse(wrong["owner"])
         self.assertIn("not right", wrong["owner_error"])
 
+    @pytest.mark.req("world-builder-page/everyone-has-owner-access")
+    def test_open_access_makes_every_visitor_the_owner_without_a_password(self):
+        with patch.dict(service.os.environ, {"WORLD_BUILDER_OPEN_ACCESS": "1", "WORLD_BUILDER_OWNER_PASSWORD": "correct horse"}):
+            with urllib.request.urlopen(urllib.request.Request(self.base + "/health"), timeout=5) as response:
+                none = json.loads(response.read())
+            request = urllib.request.Request(self.base + "/health", headers={service.OWNER_HEADER: "nope"})
+            with urllib.request.urlopen(request, timeout=5) as response:
+                wrong = json.loads(response.read())
+        for health in (none, wrong):
+            self.assertTrue(health["owner"])
+            self.assertTrue(health["open_access"])
+        with patch.dict(service.os.environ, {"WORLD_BUILDER_OPEN_ACCESS": "0", "WORLD_BUILDER_OWNER_PASSWORD": "correct horse"}):
+            with urllib.request.urlopen(urllib.request.Request(self.base + "/health"), timeout=5) as response:
+                off = json.loads(response.read())
+        self.assertFalse(off["owner"])
+        self.assertFalse(off["open_access"])
+
     def test_owner_skips_per_visitor_rate_limits_and_async_jobs_keep_owner_ledger(self):
         import time
         service._LLM_REQUESTS["127.0.0.1"].extend([time.time()] * service.LLM_REQUESTS_PER_HOUR)

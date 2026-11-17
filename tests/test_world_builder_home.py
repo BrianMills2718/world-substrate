@@ -314,8 +314,16 @@ class WorldBuilderHomeTests(unittest.TestCase):
     def test_a_visitor_is_told_next_to_run_that_nothing_is_saved(self):
         self.assertLess(self.page.index('id="build-btn"'), self.page.index('id="visitor-note"'))
         self.assertIn("will not be saved to your library", self.page)
-        self.assertIn('$("visitor-note").hidden = !!ownerKey();', self.page)
+        self.assertIn('$("visitor-note").hidden = !accessKnown || !!ownerKey();', self.page)
         self.assertIn('$("visitor-login").addEventListener("click", () => $("owner-btn").click());', self.page)
+
+
+    @pytest.mark.req("world-builder-page/everyone-has-owner-access")
+    def test_open_access_hides_the_owner_controls_and_opens_the_library(self):
+        self.assertIn("openAccess = !!h.open_access; accessKnown = true;", self.page)
+        self.assertIn('$("owner-btn").hidden = openAccess;', self.page)
+        self.assertIn('(openAccess ? "open" : "")', self.page)
+        self.assertIn('$("visitor-note").hidden = !accessKnown || !!ownerKey();', self.page)
 
 
 if __name__ == "__main__":
