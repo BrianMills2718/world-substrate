@@ -311,3 +311,13 @@ class BriefChangeTests(unittest.TestCase):
         for bad in ({'nobody': 'x'}, {'legal-group': ''}, {'legal-group': 'x' * (service.MAX_BRIEF_CHARS + 1)}, ['legal-group']):
             with self.assertRaises(ValueError):
                 service.apply_brief_changes(state, bad)
+
+
+    @pytest.mark.req("world-builder-page/a-what-if-branch-can-change-one-groups-brief")
+    def test_a_brief_change_keeps_the_request_briefs_equal_to_the_saved_state_briefs(self):
+        """The run check refuses a state whose briefs differ from the request's, so both must carry the change."""
+        state = {'resident_memory': {}, 'recent': [], 'underway': [], 'turn_offset': 2, 'briefs': {'legal-group': 'You are legal.'}}
+        hydrated = {'briefs': {'legal-group': 'You are legal.'}, 'actor_state': state}
+        service.hydrate_brief_changes(hydrated, {'legal-group': 'Settled.'})
+        self.assertEqual(hydrated['briefs'], hydrated['actor_state']['briefs'])
+        self.assertIn('Settled.', hydrated['briefs']['legal-group'])
