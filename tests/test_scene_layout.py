@@ -579,3 +579,10 @@ def test_the_viewer_script_has_no_syntax_error():
         pytest.skip("node is not installed here")
     done = subprocess.run([node, "--check", str(ROOT / "viewer/smallville/viewer.js")], capture_output=True, text=True)
     assert done.returncode == 0, done.stderr[:400]
+
+
+@pytest.mark.req("scene-viewer/a-narrow-embed-shows-the-map-alone")
+def test_a_narrow_embedded_viewer_does_not_open_the_graph_by_itself():
+    js = (ROOT / "viewer/smallville/viewer.js").read_text()
+    line = [l for l in js.splitlines() if 'q.get("graph")' in l][0]
+    assert "EMBED" in line and "innerWidth" in line, line
