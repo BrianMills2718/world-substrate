@@ -476,6 +476,15 @@ writes = ["world-builder-readout/v1"]
 schedule = "on request; one LLM call capped at $0.10"
 
 [[processes]]
+name = "story"
+what = "Plain round-by-round account of a saved catalog run for the Simple view: POST /story reads the server's own record of the run, one light LLM call (about three for a very long run) writes one to three sentences per round from every recorded move including refused and unmatched attempts, and each sentence must cite events of that round or it is dropped and counted. Kept per checkpoint in catalog_stories, apart from the checkpoint body; reopening makes no AI call. Detachable analysis: never changes the world."
+source = "scripts/run_story.py:128"
+routes = ["POST /story"]
+changes = ["SharedRun"]
+writes = ["world-builder-story/v1"]
+schedule = "on request; one LLM call capped at $0.10 per run state, kept after the first"
+
+[[processes]]
 name = "reference_tooling"
 what = "Maintained, not extended (Decision 006 item 3): native-coordination acceptance/diagnostics, Waltzman reference demo and replays, contested Kitchen/Greenhouse runs, CVS import and simulation."
 source = "scripts/run_native_coordination.py:985"
@@ -761,6 +770,12 @@ name = "world-builder-readout/v1"
 scope = "product"
 written_by = ["readout"]
 writers = [{ file = "scripts/run_readout.py", function = "<module>", line = 15 }]
+
+[[records]]
+name = "world-builder-story/v1"
+scope = "product"
+written_by = ["story"]
+writers = [{ file = "scripts/run_story.py", function = "<module>", line = 16 }]
 
 [[records]]
 name = "world-substrate-live-projection/v0"
@@ -1243,10 +1258,10 @@ paths = { world_builder = "no", native_coordination_draft = "no", any_scenario_p
 [run_log]
 writer = "scripts/world_builder_service.py:376 (_record_response)"
 file = "<WORLD_BUILDER_RUN_LOG_DIR or ~/.local/state/world-builder/runs>/runs_<UTC date>.jsonl"
-logged_paths = ["/generate-world", "/run", "/clarify", "/surprise", "/generate-draft", "/generate-mechanics", "/compare-native-coordination", "/readout"]
+logged_paths = ["/generate-world", "/run", "/clarify", "/surprise", "/generate-draft", "/generate-mechanics", "/compare-native-coordination", "/readout", "/story"]
 # Paths whose result keeps a real summary. The other logged paths keep only the
 # sorted response key names (world_builder_service.py:374): see gap G4.
-summarised_paths = ["/generate-world", "/run", "/clarify", "/surprise", "/readout", "/generate-mechanics", "/generate-draft", "/compare-native-coordination"]
+summarised_paths = ["/generate-world", "/run", "/clarify", "/surprise", "/readout", "/generate-mechanics", "/generate-draft", "/compare-native-coordination", "/story"]
 
 # -------------------------------------------------------------------- views --
 
