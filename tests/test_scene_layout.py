@@ -556,3 +556,9 @@ def test_the_embedded_viewer_reports_its_height_and_the_page_sizes_the_frame_to_
     assert "ws-size" in viewer and "scrollHeight" in viewer.split("ws-size", 1)[1][:400] + viewer.split("ws-size", 1)[0][-400:]
     handler = page.split('"ws-size"', 1)[1][:600]
     assert "setProperty" in handler and "important" in handler and "contentWindow" in handler
+
+
+@pytest.mark.req("scene-viewer/the-map-frame-shows-the-whole-viewer")
+def test_the_viewer_keeps_reporting_its_height_as_content_grows():
+    viewer = (ROOT / "viewer/smallville/viewer.js").read_text()
+    assert "setInterval(reportSize" in viewer and "ResizeObserver(reportSize)" not in viewer

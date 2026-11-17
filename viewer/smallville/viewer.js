@@ -29,7 +29,7 @@ if (EMBED) {
   // Tell the page how tall the whole viewer is, so its frame can show the round slider and the whole graph instead of hiding them behind an inner scroll.
   let sentHeight = 0;
   const reportSize = () => { const h = Math.ceil(document.documentElement.scrollHeight); if (Math.abs(h - sentHeight) > 6) { sentHeight = h; parent.postMessage({ type: "ws-size", height: h }, location.origin); } };
-  new ResizeObserver(reportSize).observe(document.documentElement); addEventListener("load", reportSize);
+  setInterval(reportSize, 400); addEventListener("load", reportSize);  // content grows after the replay loads and when a graph opens; the page box itself never changes, so poll
 } else fetch(replayUrl).then(r => r.json())
   .then(R => R.grid ? start(R, null) : fetch(A + "map.json").then(r => r.json()).then(M => start(R, M)))
   .catch(e => fail(SHARE ? "This shared run has no room map: " + e : "Could not load the replay or map assets. For Smallville maps run scripts/setup_smallville_viewer.py first. " + e));
