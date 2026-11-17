@@ -50,4 +50,6 @@ Independent planning-compliance-reviewer: pass at `7bfd786a5a03b21b14000587cba5a
 
 ## 2026-11-17 third review, revision 28dd2bf8b094
 
-Verdict: pass. Earlier rounds the same day returned revise (map omitted run_authored_world and generate_world_bundle; no acceptance for chat, library, branch, stall warning; domain graph lacked catalog, checkpoint, branch; cost basis lacked world-dialogue and world-surprise); then one blocking finding (W1-W4 router record), fixed. Not blocking: provenance anchor two lines off; the 2026-11-16 revise report was not saved.
+Earlier rounds the same day returned revise (map omitted run_authored_world and generate_world_bundle; no acceptance for chat, library, branch, stall warning; domain graph lacked catalog, checkpoint, branch; cost basis lacked world-dialogue and world-surprise), then one blocking finding (W1-W4 router record), fixed. Not blocking: provenance anchor two lines off; the 2026-11-16 revise report was not saved.
+
+Verdict: pass
