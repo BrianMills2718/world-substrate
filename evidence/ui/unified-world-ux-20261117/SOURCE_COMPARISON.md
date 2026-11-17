@@ -11,7 +11,7 @@ Built world: `6c347f95` "Shared Early-Warning System Vote", run `efd18749`, bran
 | Weekly meeting | Yes, a "Weekly meeting" thing and a moment that counts down each round | |
 | Deadline | Partly: a countdown exists, but the deadline's effect (what happens at round 8) is not a rule; the run never reached it | omission |
 | Decision rule (6 of 10) | Partly: support is recorded per group, but no move closes the decision, which stays `open` with 8 of 10 supports | omission, and the cause of the stall (TRACE_READ.md finding 3) |
-| Activation effect (share alerts and coordinate) | Not modelled; the build lists it under "left out" | omission |
+| Activation effect (share alerts and coordinate) | Not modelled; the build's own "left out" list says no alert format, sharing protocol or response-coordination procedure was specified | omission |
 | Asymmetric information between groups | No: nobody can see the tally or others' positions | omission versus the Waltzman lab |
 | Four prerequisites with commitments | No | omission versus the Waltzman lab |
 | Stabilization intervention | No | omission versus the Waltzman lab |
