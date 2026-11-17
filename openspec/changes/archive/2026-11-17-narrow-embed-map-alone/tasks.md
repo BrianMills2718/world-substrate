@@ -1,0 +1,2 @@
+- [x] Test: narrow embed skips the graph param
+- [x] viewer.js: skip `?graph=` when embedded and narrower than 700 px

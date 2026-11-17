@@ -288,7 +288,7 @@ function start(R, M) {
     $("graphbtn").onclick = () => { graphOn = !graphOn; $("graphbtn").textContent = graphOn ? "Hide graph" : "Show graph"; $("graphbtn").classList.toggle("on", graphOn);
       $("gmode").parentElement.style.display = graphOn ? "" : "none"; sizeStage(); if (fitFn) fitFn(); drawGraph(); };
     $("gmode").onchange = e => { gmode = e.target.value; focusId = null; sizeStage(); if (fitFn) fitFn(); drawGraph(); };
-    const want = q.get("graph");  // ?graph=round|map|hover|beside opens the graph in that style (for links and tests)
+    const want = EMBED && innerWidth < 700 ? null : q.get("graph");  // ?graph=round|map|hover|beside opens the graph in that style (for links and tests)
     if (want && ["round", "map", "hover", "beside"].includes(want)) { gmode = want; $("gmode").value = want; $("graphbtn").click(); } }
 
   function drawDoors(s) {
