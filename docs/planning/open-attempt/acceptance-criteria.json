@@ -499,7 +499,7 @@
       "failure_example": "Broken: a second dialogue box opens, or Run builds the old text instead of the draft.",
       "representation": {
         "view": "chat-thread",
-        "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
+        "router_record": "docs/planning/open-attempt/router/world-builder-page.recommendation.json"
       },
       "entrypoint": "https://brianmills.dev/world-builder/",
       "status": "built",
@@ -519,7 +519,7 @@
       "failure_example": "Broken: opening a world starts a new run, or a run does not appear under its world.",
       "representation": {
         "view": "library-list",
-        "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
+        "router_record": "docs/planning/open-attempt/router/world-builder-page.recommendation.json"
       },
       "entrypoint": "https://brianmills.dev/world-builder/",
       "status": "built",
@@ -534,14 +534,14 @@
       ],
       "demonstration": [
         "Open a finished run, scrub to a round.",
-        "Pick a group, type one sentence, press What if.",
+        "Pick a group, type one sentence, press What if from round N (the Branch from this checkpoint control shows the saved round first).",
         "Watch both maps."
       ],
       "expected": "A new run starts from that round's saved state with only that group's brief changed; the original stays beside it.",
       "failure_example": "Broken: the branch starts from a different round, or changes any other group.",
       "representation": {
         "view": "side-by-side-maps",
-        "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
+        "router_record": "docs/planning/open-attempt/router/world-builder-page.recommendation.json"
       },
       "entrypoint": "https://brianmills.dev/world-builder/",
       "status": "built",
@@ -561,7 +561,7 @@
       "failure_example": "Broken: the run starts silently and ends after one quiet round.",
       "representation": {
         "view": "status-notice",
-        "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
+        "router_record": "docs/planning/open-attempt/router/world-builder-page.recommendation.json"
       },
       "entrypoint": "https://brianmills.dev/world-builder/",
       "status": "built",
