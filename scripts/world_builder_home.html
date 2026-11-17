@@ -143,6 +143,11 @@ iframe.replay{width:100%;height:640px;border:1px solid var(--line);border-radius
 @media (max-width:640px){h1{font-size:22px}main{padding-top:16px}iframe.replay{height:620px}table.rules td.k{white-space:normal}}
 .outcome-bar{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0;background:#10181d;display:grid;gap:6px}
 .outcome-bar[hidden]{display:none}
+.main-tabs{display:flex;gap:6px;margin:12px 0 10px;border-bottom:1px solid var(--line)}
+.main-tabs[hidden]{display:none}
+.main-tabs button{background:none;border:0;border-bottom:3px solid transparent;color:inherit;font:inherit;padding:8px 14px;cursor:pointer;border-radius:6px 6px 0 0}
+.main-tabs button[aria-selected="true"]{border-bottom-color:#6aa7e8;font-weight:600}
+#stage-library .world-library{margin:0;padding:0;border:0}
 .simple-view{margin:10px 0}
 .simple-view .world-line{font-size:16px;margin:4px 0 12px}
 .simple-view ol{list-style:none;margin:8px 0;padding:0;display:grid;gap:8px}
@@ -245,6 +250,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   <h1>Simulate any small world</h1>
   <p class="lede">Say who is involved and what they are trying to do. AI writes the rules and the simulation starts.</p>
 
+  <nav class="main-tabs" id="main-tabs" role="tablist" aria-label="World Builder"><button type="button" role="tab" id="tab-describe" aria-selected="true" aria-controls="stage-describe" title="Describe a new world and run it.">New world</button><button type="button" role="tab" id="tab-library" aria-selected="false" aria-controls="stage-library" title="Open a world or run you made before.">Your worlds</button></nav>
+
   <section class="panel" id="stage-describe" aria-labelledby="describe-h">
     <div class="create">
       <label class="field" id="describe-h" for="desc">What should happen?</label>
@@ -291,8 +298,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       </div>
     </details>
     <div class="status" id="service-status"></div>
-<section id="world-library" class="world-library" aria-labelledby="world-library-h"><div class="row"><h2 id="world-library-h">Your worlds</h2><button type="button" class="secondary" id="library-refresh" title="Refresh your private worlds without running anything.">Refresh</button><button type="button" class="secondary" id="library-login" title="Use owner access to see your private library.">Owner access</button></div><p class="small muted" id="library-status" role="status"></p><input type="search" id="library-search" aria-label="Find your worlds" placeholder="Find a world…" title="Filter saved worlds by title or description." hidden><div id="world-cards" class="world-cards"></div></section>
   </section>
+
+  <section class="panel" id="stage-library" hidden><section id="world-library" class="world-library" aria-labelledby="world-library-h"><div class="row"><h2 id="world-library-h">Your worlds</h2><button type="button" class="secondary" id="library-refresh" title="Refresh your private worlds without running anything.">Refresh</button><button type="button" class="secondary" id="library-login" title="Use owner access to see your private library.">Owner access</button></div><p class="small muted" id="library-status" role="status"></p><input type="search" id="library-search" aria-label="Find your worlds" placeholder="Find a world…" title="Filter saved worlds by title or description." hidden><div id="world-cards" class="world-cards"></div></section></section>
 
   <section class="panel wait" id="stage-working" hidden aria-live="polite">
     <h2><span class="spinner" aria-hidden="true"></span><span id="working-h">Creating simulation…</span> <span id="elapsed" class="muted time">0 s</span></h2>
@@ -765,7 +773,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       if (d.type === "ws-scene-height" && Number.isFinite(d.height)) $("world-scene").style.height = Math.max(360, Math.min(760, d.height)) + "px";
       if (d.type === "ws-scene-select") $("world-scene-selection").textContent = "Selected: " + labelFor(d.entity_id);
     });
-    $("workspace-home").onclick = () => homeWorkspace();
+    $("workspace-home").onclick = () => { homeWorkspace(); show("library"); refreshLibrary(); };
+    $("tab-describe").onclick = () => show("describe");
+    $("tab-library").onclick = () => { show("library"); refreshLibrary(); };
     $("library-refresh").onclick = refreshLibrary;
     $("library-login").onclick = () => $("owner-btn").click();
     $("library-search").oninput = drawLibrary;
@@ -790,7 +800,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     $("workspace-continue").onclick = () => openCatalogRun(catalog.run.id, "continue");
     $("workspace-replay").onclick = () => openCatalogRun(catalog.run.id);
   function show(stage) {
-    ["describe", "working", "review", "run"].forEach((s) => { $("stage-" + s).hidden = s !== stage; });
+    ["describe", "library", "working", "review", "run"].forEach((s) => { $("stage-" + s).hidden = s !== stage; });
+    $("main-tabs").hidden = stage !== "describe" && stage !== "library";
+    ["describe", "library"].forEach((t) => $("tab-" + t).setAttribute("aria-selected", String(stage === t)));
     document.body.classList.toggle("workspace-view", stage === "run");
     document.body.classList.toggle("saved-view", stage === "run" && Boolean(live && live.replay));
     window.scrollTo({ top: 0, behavior: "smooth" });
