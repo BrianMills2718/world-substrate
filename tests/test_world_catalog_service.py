@@ -318,6 +318,16 @@ class BriefChangeTests(unittest.TestCase):
         """The run check refuses a state whose briefs differ from the request's, so both must carry the change."""
         state = {'resident_memory': {}, 'recent': [], 'underway': [], 'turn_offset': 2, 'briefs': {'legal-group': 'You are legal.'}}
         hydrated = {'briefs': {'legal-group': 'You are legal.'}, 'actor_state': state}
-        service.hydrate_brief_changes(hydrated, {'legal-group': 'Settled.'})
+        service.hydrate_saved_actor_state(hydrated, state, {'legal-group': 'Settled.'})
         self.assertEqual(hydrated['briefs'], hydrated['actor_state']['briefs'])
         self.assertIn('Settled.', hydrated['briefs']['legal-group'])
+
+
+    @pytest.mark.req("world-builder-page/a-what-if-branch-can-change-one-groups-brief")
+    def test_later_rounds_of_a_branch_carry_the_changed_brief_from_the_saved_state(self):
+        saved = {'resident_memory': {}, 'recent': [], 'underway': [], 'turn_offset': 3,
+                 'briefs': {'legal-group': 'You are legal.\n\nFor this what-if branch: Settled.'}}
+        hydrated = {'briefs': {'legal-group': 'You are legal.'}}
+        service.hydrate_saved_actor_state(hydrated, saved)
+        self.assertEqual(hydrated['briefs'], saved['briefs'])
+        self.assertEqual(hydrated['actor_state'], saved)

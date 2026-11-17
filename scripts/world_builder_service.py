@@ -438,10 +438,13 @@ def apply_brief_changes(actor_state: dict[str, Any], changes: Any) -> dict[str, 
     return {**actor_state, "briefs": new}
 
 
-def hydrate_brief_changes(hydrated: dict[str, Any], changes: Any) -> None:
-    """Apply a branch's brief change to the saved actor state and to the request's own briefs, which the run check compares."""
-    hydrated["actor_state"] = apply_brief_changes(hydrated["actor_state"], changes)
-    hydrated["briefs"] = dict(hydrated["actor_state"]["briefs"])
+def hydrate_saved_actor_state(hydrated: dict[str, Any], actor_state: dict[str, Any], changes: Any = None) -> None:
+    """Load a saved actor state into a run request. The state's own briefs are the ones in force (a branch may have
+    changed one), and the run check compares them with the request's briefs, so both carry the same text."""
+    state = apply_brief_changes(actor_state, changes) if changes is not None else actor_state
+    hydrated["actor_state"] = state
+    if state.get("briefs") is not None:
+        hydrated["briefs"] = dict(state["briefs"])
 
 
 def _snapshot_seal(snapshot: Any, bundle: Any, causal: Any, approval: Any = None, rulings: Any = None, actor_state: Any = None) -> str:
@@ -3022,9 +3025,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 rulings=trace.get("rulings") or [], stop_history=trace.get("stop_history"),
                                 run_spent_usd=trace.get("run_spent_usd", 0), turn_offset=saved["checkpoint"]["round"])
                 if response.get("actor_state") is not None:
-                    hydrated["actor_state"] = response["actor_state"]
-                    if body.get("brief_changes") is not None:
-                        hydrate_brief_changes(hydrated, body["brief_changes"])
+                    hydrate_saved_actor_state(hydrated, response["actor_state"], body.get("brief_changes"))
                 else:
                     for key in ("resident_memory", "underway"):
                         hydrated[key] = trace.get(key) or ({} if key == "resident_memory" else [])
