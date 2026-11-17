@@ -1,0 +1,3 @@
+- [x] Test: health and ledger under open access
+- [x] Service flag
+- [x] Page: hide owner controls, open library

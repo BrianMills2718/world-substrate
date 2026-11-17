@@ -770,8 +770,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 
   // Owner override: the owner password, if entered, rides on every request and
   // spends from a separate owner allowance instead of the shared visitor budget.
-  function ownerKey() { try { return localStorage.getItem("wb-owner") || ""; } catch (e) { return ""; } }
-  function updateVisitorNote() { $("visitor-note").hidden = !!ownerKey(); }
+  let openAccess = false, accessKnown = false;  // open access: the server gives everyone owner access, no password
+  function ownerKey() { try { return localStorage.getItem("wb-owner") || (openAccess ? "open" : ""); } catch (e) { return openAccess ? "open" : ""; } }
+  function updateVisitorNote() { $("visitor-note").hidden = !accessKnown || !!ownerKey(); }
   function setOwnerKey(v) { try { if (v) localStorage.setItem("wb-owner", v); else localStorage.removeItem("wb-owner"); } catch (e) { /* storage unavailable */ } updateVisitorNote(); }
   function authHeaders(extra) {
     const h = { ...(extra || {}) };
@@ -862,8 +863,12 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   async function checkService() {
     try {
       const h = await api("/health");
+      openAccess = !!h.open_access; accessKnown = true;
+      $("owner-btn").hidden = openAccess; updateVisitorNote(); refreshLibrary();
       if (h.owner_error) { setOwnerKey(""); }
-      $("owner-state").textContent = h.owner
+      $("owner-state").textContent = h.owner && openAccess
+        ? `$${Math.max(0, h.owner_daily_budget_usd - h.owner_daily_committed_usd).toFixed(2)} of $${h.owner_daily_budget_usd.toFixed(2)} shared daily allowance left today.`
+        : h.owner
         ? `Owner mode: $${Math.max(0, h.owner_daily_budget_usd - h.owner_daily_committed_usd).toFixed(2)} of $${h.owner_daily_budget_usd.toFixed(2)} owner allowance left today.`
         : (h.owner_error ? h.owner_error : "");
       $("owner-btn").textContent = h.owner ? "Leave owner mode" : "Owner access";
