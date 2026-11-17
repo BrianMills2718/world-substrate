@@ -547,3 +547,12 @@ def test_what_if_offers_one_group_brief_change_and_sends_it_with_the_first_round
     body = page.split("async function whatIf()", 1)[1][:3500]
     assert "pendingBriefChange = change" in body and "is told" in body
     assert "brief_changes:pendingBriefChange" in page and "pendingBriefChange=null" in page
+
+
+@pytest.mark.req("scene-viewer/the-map-frame-shows-the-whole-viewer")
+def test_the_embedded_viewer_reports_its_height_and_the_page_sizes_the_frame_to_it():
+    viewer = (ROOT / "viewer/smallville/viewer.js").read_text()
+    page = (ROOT / "scripts/world_builder_home.html").read_text()
+    assert "ws-size" in viewer and "scrollHeight" in viewer.split("ws-size", 1)[1][:400] + viewer.split("ws-size", 1)[0][-400:]
+    handler = page.split('"ws-size"', 1)[1][:600]
+    assert "setProperty" in handler and "important" in handler and "contentWindow" in handler
