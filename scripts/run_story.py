@@ -85,7 +85,7 @@ def story_prompt(people: list[dict[str, Any]] | None, events: list[dict[str, Any
         "names (for example 'Information is not active yet' means the message was not available to send yet); for "
         "an unmatched attempt, say the world has no rule for what they tried and use the plain reason given. Never "
         "show ids, check names, field names or the words 'precondition' or 'unsupported'. Write one to three short "
-        "sentences per round, only for the rounds listed. Every sentence must cite at least one event_id from the "
+        "sentences per round, only for the rounds listed. Put ids only in the event_ids field, never in the text. Every sentence must cite at least one event_id from the "
         "events that shows it. "
         'Return only JSON: {"rounds": [{"round": int, "sentences": [{"text": str, "event_ids": [str]}]}]}.'
     )
@@ -93,6 +93,25 @@ def story_prompt(people: list[dict[str, Any]] | None, events: list[dict[str, Any
             f"Rounds to tell: {rounds_wanted}\n\nEvents ({len(events)}, in order):\n" + "\n".join(
                 json.dumps(e, separators=(",", ":")) for e in events))
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+
+
+def plain_text(text: str, event_ids: list[str]) -> str:
+    """The sentence without the event ids the model wrote into it (2026-11-17 live Waltzman: "(r1-e00002, r1-e00010)"
+    after each sentence). Only the ids the sentence itself cites are removed, as plain strings; the ids stay on the
+    sentence as its evidence."""
+    for event_id in sorted(event_ids, key=len, reverse=True):
+        text = text.replace(event_id, "")
+    for empty in ("(, , , , )", "(, , , )", "(, , )", "(, )", "( )", "()", "[]"):
+        text = text.replace(empty, "")
+    return " ".join(text.replace(" ,", ",").replace(" .", ".").replace(" ;", ";").split())
+
+
+def clean_story(story: dict[str, Any]) -> dict[str, Any]:
+    """A saved story with ids taken out of its sentences, so one saved before this existed reads the same."""
+    for item in story.get("rounds") or []:
+        for sentence in item.get("sentences") or []:
+            sentence["text"] = plain_text(sentence["text"], sentence.get("event_ids") or [])
+    return story
 
 
 def validate_story(parsed: Any, events: list[dict[str, Any]], rounds_wanted: list[int]) -> dict[str, Any]:
@@ -115,7 +134,7 @@ def validate_story(parsed: Any, events: list[dict[str, Any]], rounds_wanted: lis
                 continue
             cited = [str(i) for i in sentence.get("event_ids") or []]
             real = [i for i in dict.fromkeys(cited) if i in known and known[i]["round"] == number][:6]
-            text = str(sentence.get("text") or "").strip()[:400]
+            text = plain_text(str(sentence.get("text") or "").strip()[:400], real)
             if text and real:
                 kept.append({"text": text, "event_ids": real})
             else:

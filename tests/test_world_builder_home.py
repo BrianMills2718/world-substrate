@@ -398,6 +398,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
         for hidden in ("#stage-run.simple .saved-grid", "#stage-run.simple #legacy-run-content"):
             self.assertIn(hidden, page)
         self.assertIn('api("/story", { catalog_run_id: run })', page)
+        self.assertIn('li.addEventListener("click", pick)', page)  # a round of the story selects that round
         # a live run is told only on a click; a reopened saved run is told once, then kept
         self.assertIn('mode === "replay" && (data.record.rounds || []).length) loadStory()', page)
 
