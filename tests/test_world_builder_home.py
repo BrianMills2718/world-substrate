@@ -303,6 +303,13 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn("else sendTurn($(\"desc\").value);", self.page)
 
 
+    @pytest.mark.req("world-builder-page/the-dialogue-is-one-thread")
+    def test_the_box_stops_showing_the_example_once_the_thread_starts(self):
+        self.assertIn("const START_HINT = $(\"desc\").placeholder;", self.page)
+        self.assertIn('$("desc").placeholder = REPLY_HINT;', self.page)
+        self.assertIn('$("desc").placeholder = START_HINT;', self.page)
+
+
 if __name__ == "__main__":
     unittest.main()
 
