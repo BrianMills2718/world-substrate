@@ -56,6 +56,16 @@ class RunStoryTests(unittest.TestCase):
         # round 2 has only no_action rows: marked from the recording, not from the model's silence
         self.assertEqual(out["rounds"][1], {"round": 2, "sentences": [], "recorded": False, "told": False})
 
+    def test_event_ids_are_taken_out_of_the_sentence_but_kept_as_evidence(self):
+        events = run_story.story_events(ROUNDS)
+        parsed = {"rounds": [{"round": 1, "sentences": [
+            {"text": "Ana tried and failed. (r1-e00001, r1-e00002)", "event_ids": ["r1-e00001", "r1-e00002"]}]}]}
+        sentence = run_story.validate_story(parsed, events, [1])["rounds"][0]["sentences"][0]
+        self.assertEqual(sentence["text"], "Ana tried and failed.")
+        self.assertEqual(sentence["event_ids"], ["r1-e00001", "r1-e00002"])
+        saved = {"rounds": [{"round": 1, "sentences": [{"text": "A. (r1-e00001)", "event_ids": ["r1-e00001"]}]}]}
+        self.assertEqual(run_story.clean_story(saved)["rounds"][0]["sentences"][0]["text"], "A.")
+
     def test_a_long_list_is_split_by_rounds_and_a_short_one_is_one_call(self):
         events = run_story.story_events(ROUNDS)
         self.assertEqual(len(run_story.slices(ROUNDS, events, [])), 1)

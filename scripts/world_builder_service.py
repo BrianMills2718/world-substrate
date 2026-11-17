@@ -2987,7 +2987,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
             request["summary"].update(catalog_run_id=record["catalog_run_id"], checkpoint_id=record["checkpoint_id"])
         saved = _catalog().story(record["checkpoint_id"])
         if saved:
-            self._json(200, {"ok": True, "story": saved, "cached": True})
+            from scripts.run_story import clean_story
+            self._json(200, {"ok": True, "story": clean_story(saved), "cached": True})
             return
         from scripts.run_story import tell_run
         model = _requested_model(body)

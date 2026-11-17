@@ -147,6 +147,7 @@ iframe.replay{width:100%;height:640px;border:1px solid var(--line);border-radius
 .simple-view .world-line{font-size:16px;margin:4px 0 12px}
 .simple-view ol{list-style:none;margin:8px 0;padding:0;display:grid;gap:8px}
 .simple-view li{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#10181d}
+.simple-view li{cursor:pointer}
 .simple-view li.now{border-color:#6aa7e8;box-shadow:inset 3px 0 0 #6aa7e8}
 .simple-view li h4{margin:0 0 4px;font-size:14px;color:#c5ccd1}
 .simple-view li p{margin:2px 0}
@@ -2084,6 +2085,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       story.dropped_sentences ? `${story.dropped_sentences} sentence${story.dropped_sentences > 1 ? "s" : ""} left out because the recording did not support ${story.dropped_sentences > 1 ? "them" : "it"}.` : "";
     story.rounds.forEach((r) => {
       const li = document.createElement("li"); li.dataset.round = r.round;
+      li.tabIndex = 0; li.setAttribute("role", "button"); li.title = "Show the outcome after this round";
+      const pick = () => { const i = live && live.recorded ? live.recorded.findIndex((t) => t.turn === r.round) : -1; if (i >= 0) selectSavedRound(i); };
+      li.addEventListener("click", pick); li.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
       const h = document.createElement("h4"); h.textContent = `Round ${r.round}`; li.append(h);
       const lines = r.told ? r.sentences.map((s) => s.text) : [r.recorded ? "Nothing was written for this round; Advanced view has its moves." : "Nobody did anything this round."];
       lines.forEach((t) => { const p = document.createElement("p"); p.textContent = t; li.append(p); });
