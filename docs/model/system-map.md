@@ -53,9 +53,8 @@ flowchart LR
 | `world_harness` | Write a people world's rules inside an agent harness (Decision 008). |
 | `world_scene_bridge` | Read-only adapter from authored worlds/retained rounds to the existing scene. |
 | `people_world` | People worlds for the World Builder: the scenario-spec path (docs/model/ODD.md section 10; the plan docs/plans/scenario_spec_adoption.md is retired). |
-
-| `run_authored_world` | Builds the Engine from a world's bundle and runs each round; the service's run path goes through it (scripts/run_authored_world.py:700). |
-| `generate_world_bundle` | Designs a world's bundle from a description (scripts/generate_world_bundle.py:53). |
+| `run_authored_world` | Builds the Engine from a world's bundle and runs each round; the service's run path goes through it (scripts/run_authored_world.py:88). |
+| `generate_world_bundle` | Designs a world's bundle from a description (scripts/generate_world_bundle.py:298). |
 
 ## Scene viewer
 

@@ -1,0 +1,49 @@
+{
+  "record_type": "representation_recommendation",
+  "provenance": {
+    "by": "agent",
+    "date": "2026-11-17",
+    "method": "Representation Router planning-review principles applied to the four World Builder page views already built; records the choice, not a tool-generated score or visual certification. No sketch set was put to Brian for these views; the chat thread follows his words of 2026-11-17.",
+    "source": "openspec/specs/world-builder-page/spec.md:429"
+  },
+  "question": "Can a person describe a world in one conversation and run it, find earlier worlds and runs, branch from a round beside the original, and be told before running when a world would stall?",
+  "views": [
+    {
+      "id": "chat-thread",
+      "question": "How do I describe a world and refine it?",
+      "primary": "chat-thread",
+      "rationale": "Describing and refining is a conversation: one message box under a thread of messages, with the AI's questions as suggestion chips and the current draft as a card; Run builds the latest draft. Brian, 2026-11-17: \"the ui should just be more like chatgpt with a run button so that its not really a fully separate dialogue box\".",
+      "alternatives": [
+        "A separate dialogue box beside a description box (the previous design; rejected by Brian 2026-11-17)."
+      ]
+    },
+    {
+      "id": "library-list",
+      "question": "Which worlds and runs do I have?",
+      "primary": "library-list",
+      "rationale": "A name-ordered list with each world's runs and branches nested under it, searchable and pinnable; a list answers 'which one' better than a graph.",
+      "alternatives": [
+        "A graph of worlds and runs (kept for a single world's run ancestry only if the list proves too deep)."
+      ]
+    },
+    {
+      "id": "side-by-side-maps",
+      "question": "How did this branch differ from the original?",
+      "primary": "side-by-side-maps",
+      "rationale": "Comparing two runs of one world from the same round is a spatial comparison: the two room maps side by side at the same round, with one slider.",
+      "alternatives": [
+        "A diff table of events (answers what, not where)."
+      ]
+    },
+    {
+      "id": "status-notice",
+      "question": "Will this world run, or stall?",
+      "primary": "status-notice",
+      "rationale": "A single plain-words notice above the run status, shown before any round is paid for; a chart would add nothing.",
+      "alternatives": [
+        "Silent run that ends after a quiet round (the previous behaviour)."
+      ]
+    }
+  ],
+  "availability": "built: https://brianmills.dev/world-builder/"
+}
