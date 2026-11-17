@@ -162,6 +162,8 @@
         "src/world_substrate/*",
         "scripts/world_*",
         "scripts/people_world.py",
+        "scripts/run_authored_world.py",
+        "scripts/generate_world_bundle.py",
         "viewer/smallville",
         "spikes/any-scenario-2026-10/*.py"
       ]
@@ -251,7 +253,10 @@
         "replay-export": "scripts/export_smallville_replay.py:232",
         "world-graph": "scripts/world_graph.py:122",
         "rules-overlay": "viewer/smallville/viewer.js:125",
-        "proposed-layout": "scripts/layout_proposal.py:53"
+        "proposed-layout": "scripts/layout_proposal.py:53",
+        "catalog": "scripts/world_catalog.py:41",
+        "checkpoint": "scripts/world_catalog.py:238",
+        "branch": "scripts/world_catalog.py:212"
       },
       "spectrum": "docs/model/semantic-spectrum.json"
     },
@@ -447,6 +452,20 @@
             "cost_per_run_usd": 0.0002,
             "basis": "measured",
             "evidence": "llm-cost estimate --task world-substrate-layout (run 2026-11-16): 3 successful priced calls on 2026-11-14, model openrouter/openai/gpt-6-luna, median $0.0002, p90 $0.0003, total $0.0007; median 841 input tokens (0.0% cached, recorded on 3 of 3), 247 output tokens. Called by scripts/layout_proposal.py:61 (call_llm task=world-substrate-layout, at most 2 attempts when the first reply fails validation); spend allowance MAX_BUDGET = $0.03 on top of the build's own spend (scripts/layout_proposal.py:19, scripts/world_builder_service.py:654). Three calls is a small sample, not a general bound."
+          },
+          {
+            "step": "world-substrate-world-dialogue (clarify turns of the chat thread)",
+            "calls_per_run": 17,
+            "cost_per_run_usd": 0.0046,
+            "basis": "measured",
+            "evidence": "llm-cost cost --group-by task on the live World Builder container (personal-vps), 2026-11-17: task=world-substrate-world-dialogue, 17 calls, $0.0046 in total across those calls. Historical total, not a per-run bound."
+          },
+          {
+            "step": "world-substrate-world-surprise (the I'm feeling lucky world idea)",
+            "calls_per_run": 3,
+            "cost_per_run_usd": 0.0007,
+            "basis": "measured",
+            "evidence": "llm-cost cost --group-by task on the live World Builder container (personal-vps), 2026-11-17: task=world-substrate-world-surprise, 3 calls, $0.0007 in total across those calls. Historical total, not a per-run bound."
           }
         ],
         "cheapest_design": "Use recorded commands and deterministic replay without model calls for structural checks. Authoring creates checkable artifacts in the existing harness; actors and interpretation retain their current single-call boundaries. A new comparison needs a named decision that argument and retained evidence cannot settle. Fixture costs establish neither semantic-review benefit nor future workload cost. I0/I1 reuses the existing semantic review call for actual initial actor contexts; no additional cognition or review stage is introduced. Free paired-input, authority and replay checks precede the minimum real generated/resident demonstration."

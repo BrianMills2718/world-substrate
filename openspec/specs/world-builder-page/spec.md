@@ -201,9 +201,9 @@ Source: Brian's standing preference (red-green colorblind)
 - **THEN** allowed is solid blue and refused is orange dashed with a word
 - **AND** red is never set against green
 
-### Requirement: One box and one Create simulation button
+### Requirement: One box and one Run button
 
-The landing page is one box and one Create simulation button; pressing it is the approval and the run starts. Everything else (world kind, AI moves, the dialogue, I'm feeling lucky, example runs, the editor, owner access) sits behind Options or More.
+The landing page is one message box and one Run button (the box also sends messages to the AI in the same thread); pressing Run is the approval and the run starts. Everything else (world kind, AI moves, the dialogue, I'm feeling lucky, example runs, the editor, owner access) sits behind Options or More.
 
 Where it is enforced: `scripts/world_builder_home.html`; `tests/test_world_builder_home.py::test_one_screen_has_one_primary_action`.
 

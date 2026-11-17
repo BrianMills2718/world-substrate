@@ -8,7 +8,10 @@ flowchart LR
   service --> catalog[world_catalog]
   service --> people[people_world]
   people --> compile[compile_spec]
-  service --> engine[engine]
+  bundle --> engine
+  service --> run[run_authored_world]
+  service --> bundle[generate_world_bundle]
+  run --> engine[engine]
   page --> viewer[smallville viewer]
 ```
 
@@ -49,8 +52,10 @@ flowchart LR
 | `world_graph` | The whole system of a world as one graph, plus what each round lit up in it. |
 | `world_harness` | Write a people world's rules inside an agent harness (Decision 008). |
 | `world_scene_bridge` | Read-only adapter from authored worlds/retained rounds to the existing scene. |
-
 | `people_world` | People worlds for the World Builder: the scenario-spec path (docs/model/ODD.md section 10; the plan docs/plans/scenario_spec_adoption.md is retired). |
+
+| `run_authored_world` | Builds the Engine from a world's bundle and runs each round; the service's run path goes through it (scripts/run_authored_world.py:700). |
+| `generate_world_bundle` | Designs a world's bundle from a description (scripts/generate_world_bundle.py:53). |
 
 ## Scene viewer
 
@@ -62,7 +67,7 @@ flowchart LR
 
 | Unit | What it does |
 | --- | --- |
-| `c2_extreme` | C2: the extreme-conditions check (a needed resource set to zero) on the full model and on the same model |
+| `c2_extreme` | C2: the extreme-conditions check (a needed resource set to zero) on the full model and on the same model with the resource removed |
 | `checks` | Layer 1 checks (Decision 007) on a compiled world model, by simulation, not by reading code. |
 | `compile_spec` | Compile a ScenarioSpecV1 into a World Substrate bundle and causal model (plan scenario-spec-adoption, check S2). |
 | `midrun` | Layer 3 (Decision 007): the game master writes a rule mid-run when a resident attempts something no rule covers. |
