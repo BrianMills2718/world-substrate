@@ -438,6 +438,12 @@ def apply_brief_changes(actor_state: dict[str, Any], changes: Any) -> dict[str, 
     return {**actor_state, "briefs": new}
 
 
+def hydrate_brief_changes(hydrated: dict[str, Any], changes: Any) -> None:
+    """Apply a branch's brief change to the saved actor state and to the request's own briefs, which the run check compares."""
+    hydrated["actor_state"] = apply_brief_changes(hydrated["actor_state"], changes)
+    hydrated["briefs"] = dict(hydrated["actor_state"]["briefs"])
+
+
 def _snapshot_seal(snapshot: Any, bundle: Any, causal: Any, approval: Any = None, rulings: Any = None, actor_state: Any = None) -> str:
     """Issue #127 (G11): a keyed hash of the world state a round ended in, under these exact rules.
 
@@ -3018,7 +3024,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 if response.get("actor_state") is not None:
                     hydrated["actor_state"] = response["actor_state"]
                     if body.get("brief_changes") is not None:
-                        hydrated["actor_state"] = apply_brief_changes(hydrated["actor_state"], body["brief_changes"])
+                        hydrate_brief_changes(hydrated, body["brief_changes"])
                 else:
                     for key in ("resident_memory", "underway"):
                         hydrated[key] = trace.get(key) or ({} if key == "resident_memory" else [])
