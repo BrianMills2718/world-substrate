@@ -47,3 +47,7 @@ Both shared page sets were rebuilt: six rendered hub/review/questions pages show
 ## Scene-viewer catch-up review: 2026-11-16
 
 Independent planning-compliance-reviewer: pass at `7bfd786a5a03b21b14000587cba5a6c83419bd31` (PR #418), after an earlier revise at `8d0092a` with six blocking items (viewer concepts in the domain and system models, the layout step in the cost basis, acceptance entries V1 to V6, viewer open questions Q97 to Q105 with the stop lift, current check counts). All six verified fixed by rerunning the recorded checks. Remaining notes, not blocking: V2 and V5 now carry full URLs (fixed in this commit); `asked_by` and `followup_scope` still carry only the attempt quotes; V6 rests on the spec and roadmap, not a Brian quote; the coverage judge has not been re-run on V1 to V6. The markdown cap, durable-documents and lockstep-trace checks still exit 1 and are tracked in Q106 and Q77.
+
+## 2026-11-17 third review, revision 28dd2bf8b094
+
+Verdict: pass. Earlier rounds the same day returned revise (map omitted run_authored_world and generate_world_bundle; no acceptance for chat, library, branch, stall warning; domain graph lacked catalog, checkpoint, branch; cost basis lacked world-dialogue and world-surprise); then one blocking finding (W1-W4 router record), fixed. Not blocking: provenance anchor two lines off; the 2026-11-16 revise report was not saved.
