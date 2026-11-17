@@ -5,7 +5,7 @@ How it ran: the live page https://brianmills.dev/world-builder/ (live revision 3
 means all ten share alerts and coordinate), draft read, Create pressed. Build world `871f40df`, run `28046eca`. The script watched the map's round label and pressed Pause when the
 map showed "Round 4 · step 8/8 · newest round" (the round then under way finished, so the original also holds round 5). It dragged the round slider back to "Round 2 · step 4/8 · earlier round",
 pressed What if (from round 2), and the branch played rounds 3 to 8 beside the original ("Original run, kept as it was" left, "What if from round 2: same start, a new draw" right). The library list shows the world
-"Vote on the Shared Early-Warning System · 2 runs". `run-log.jsonl` is the server's own log for these calls (14 rows). Measured cost from the rows: dialogue 2 x $0.0003, build $0.1433, original rounds
+"Shared Early-Warning System Activation · 2 runs" (the title the builder gave it). `run-log.jsonl` is the server's own log for these calls (14 rows). Measured cost from the rows: dialogue 2 x $0.0003, build $0.1433, original rounds
 $0.0147 + $0.0310 + $0.0085 + $0.0085 + $0.0164 (rounds 1 to 5), branch rounds $0.0085 + $0.0053 + $0.0156 + $0.0060 + $0.0173 + $0.0163 (about $0.30 in all). The raw per-call prompts in the trace store were not opened one by one;
 the rows embed each call's transcript, the game master's rulings, the engine events and the final world state, which were read.
 
@@ -20,6 +20,8 @@ Traces named by the log: `world-builder-live/clarify/ed4911e2b0d7435590de6690c91
    This is the same rule defect as in the first walk; it is in the rules the builder writes, which this goal does not change.
 4. **Most refusals come from people repeating moves.** After a group has given support, its repeat give-support is refused (precondition failed) round after round, and some free-text attempts ("state my position") match no rule and are ruled out by the game master. Rounds 5 onward have 0 or 1 accepted moves.
 5. **The branch differs from the original** at the same round (e.g. round 3: original accepted two moves, branch accepted two different groups), so a new draw really does diverge; it does not change any group's brief (named gap).
+
+6. **Reopened from the library.** In a fresh browser session with no run open, the world's card was clicked in the library, then the rail item "Run · round 5" (opened run `28046eca`, map label "Round 5 · step 10/10 · newest round", `desktop-reopened-original.png`) and the item "What if from round 2 · round 8" (opened run `3a23db4f`, URL `worldRun=3a23db4f...`, map label "Round 8 · step 16/16 · newest round", `desktop-reopened-branch.png`, which also shows "parent 28046e · after round 2"). Eight other saved worlds share near-identical titles in the list, so the person has to tell worlds apart by their runs; an earlier click landed on a different world with a similar title (known polish gap, not fixed).
 
 ## Round 1
 
