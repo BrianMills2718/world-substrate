@@ -519,6 +519,28 @@
         "layout proposal",
         "Builder-proposed layout"
       ]
+    },
+    {
+      "id": "catalog",
+      "kind": "Substrate",
+      "aliases": [
+        "world library",
+        "saved worlds"
+      ]
+    },
+    {
+      "id": "checkpoint",
+      "kind": "Substrate",
+      "aliases": [
+        "round-boundary checkpoint"
+      ]
+    },
+    {
+      "id": "branch",
+      "kind": "Substrate",
+      "aliases": [
+        "what-if branch"
+      ]
     }
   ],
   "classes": [

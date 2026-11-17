@@ -483,6 +483,89 @@
       "entrypoint": "https://brianmills.dev/world-builder/room-map/?replay=public",
       "status": "built",
       "status_note": "Served from committed git on the public site; checked 2026-11-16 only by fetching the page (HTTP 200) and its data route. No human has judged it pass or fail. Object state (pump calibrated) is not drawn (Q100)."
+    },
+    {
+      "id": "W1",
+      "criterion": "I describe a world in one conversation and press Run; if I want questions, it is the same thread.",
+      "grounded_in": [
+        "openspec/specs/world-builder-page/spec.md:429"
+      ],
+      "demonstration": [
+        "Open the page and type a world description.",
+        "Press Send; read the AI's questions and the draft card.",
+        "Answer in the same box, then press Run."
+      ],
+      "expected": "One thread: my messages, the AI's questions with suggestion chips and a 'Draft world' card, and one box; Run builds the latest draft.",
+      "failure_example": "Broken: a second dialogue box opens, or Run builds the old text instead of the draft.",
+      "representation": {
+        "view": "chat-thread",
+        "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
+      },
+      "entrypoint": "https://brianmills.dev/world-builder/",
+      "status": "built",
+      "status_note": "Served from committed git. Checked 2026-11-17 by the author in a browser at laptop and phone width; no human has judged it pass or fail."
+    },
+    {
+      "id": "W2",
+      "criterion": "I can reopen earlier worlds and their runs from a library beside the page.",
+      "grounded_in": [
+        "openspec/specs/world-builder-page/spec.md:363"
+      ],
+      "demonstration": [
+        "Open the page as the owner.",
+        "Pick a world in the Your worlds list, then one of its runs."
+      ],
+      "expected": "The world opens read-only with its runs listed; opening a run shows its map without starting a new run.",
+      "failure_example": "Broken: opening a world starts a new run, or a run does not appear under its world.",
+      "representation": {
+        "view": "library-list",
+        "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
+      },
+      "entrypoint": "https://brianmills.dev/world-builder/",
+      "status": "built",
+      "status_note": "Served from committed git. Checked 2026-11-17 by the author in a browser at laptop and phone width; no human has judged it pass or fail."
+    },
+    {
+      "id": "W3",
+      "criterion": "I can branch from any round, change one group, and see the branch beside the original.",
+      "grounded_in": [
+        "openspec/specs/world-builder-page/spec.md:419",
+        "openspec/specs/world-builder-page/spec.md:384"
+      ],
+      "demonstration": [
+        "Open a finished run, scrub to a round.",
+        "Pick a group, type one sentence, press What if.",
+        "Watch both maps."
+      ],
+      "expected": "A new run starts from that round's saved state with only that group's brief changed; the original stays beside it.",
+      "failure_example": "Broken: the branch starts from a different round, or changes any other group.",
+      "representation": {
+        "view": "side-by-side-maps",
+        "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
+      },
+      "entrypoint": "https://brianmills.dev/world-builder/",
+      "status": "built",
+      "status_note": "Served from committed git. Checked 2026-11-17 by the author in a browser at laptop and phone width; no human has judged it pass or fail."
+    },
+    {
+      "id": "W4",
+      "criterion": "If a world would stall, the page tells me before I run it.",
+      "grounded_in": [
+        "openspec/specs/world-builder-page/spec.md:408"
+      ],
+      "demonstration": [
+        "Build a world with no moves that stay available.",
+        "Read the notice above the run status."
+      ],
+      "expected": "A plain notice says nobody has an active move, before any rounds are played.",
+      "failure_example": "Broken: the run starts silently and ends after one quiet round.",
+      "representation": {
+        "view": "status-notice",
+        "router_record": "docs/planning/open-attempt/router/scene-viewer.recommendation.json"
+      },
+      "entrypoint": "https://brianmills.dev/world-builder/",
+      "status": "built",
+      "status_note": "Served from committed git. Checked 2026-11-17 by the author in a browser at laptop and phone width; no human has judged it pass or fail."
     }
   ],
   "coverage": {
