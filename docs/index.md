@@ -102,6 +102,7 @@ plan, audit, research note and architecture page with its successor and the comm
 - [Waltzman simulator lineage and recommendations (2026-11-07)](audits/waltzman-lineage-review-2026-11-07.md):
   assessment; its recommendations are not adopted.
 - [Cybernetic Influence lineage review](research/cybernetic-influence-lineage-review.md)
+- [UI survey for the World Builder page (2026-11-17)](research/ui-survey-20261117.md) and [World Builder vs earlier Waltzman UIs](research/ui-comparison-waltzman-20261117.md)
 - [Prior art for a flexible world simulator (2026-10)](research/flexible-simulator-prior-art-2026-10.md),
   with its surveys of [formal methods](research/flexible-simulator-prior-art-2026-10/formal.md),
   [games and interactive fiction](research/flexible-simulator-prior-art-2026-10/games.md) and
