@@ -330,7 +330,10 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     </div>
     <section id="run-map" class="run-map" aria-labelledby="run-map-h"><h3 id="run-map-h">The world on the map, with its graph beside it</h3>
     <p class="small muted" id="run-map-status" role="status">The map appears when the first round finishes.</p>
-    <div class="what-if-bar" id="what-if-bar" hidden><button type="button" class="secondary" id="what-if" title="Play this world again from the round shown on the map, beside the original. The original is not changed.">What if…</button> <span class="small muted" id="what-if-note" role="status"></span></div>
+    <div class="what-if-bar" id="what-if-bar" hidden><button type="button" class="secondary" id="what-if" title="Play this world again from the round shown on the map, beside the original. The original is not changed.">What if…</button> <span class="small muted" id="what-if-note" role="status"></span>
+      <div class="row what-if-change"><label class="small" for="what-if-group">Change one group for this branch</label>
+        <select id="what-if-group" title="Pick a group whose brief gets one extra line in the branch. Leave on No change to just play the round again with a new draw."><option value="">No change: just play it again</option></select>
+        <input type="text" id="what-if-brief" maxlength="600" aria-label="What changes for that group" placeholder="e.g. Its data-sharing concern was settled last week." title="One sentence added to that group's own brief, only in the branch. The original run is not changed." hidden></div></div>
     <div class="run-maps" id="run-maps"><div class="run-map-cell" id="original-cell" hidden><p class="small" id="original-label"></p><iframe id="run-map-frame-2" title="The original run, kept beside the branch" src="about:blank" loading="lazy"></iframe></div>
     <div class="run-map-cell"><p class="small" id="branch-label" hidden></p><iframe id="run-map-frame" title="Room map and graph of the run" src="room-map/?embed=1&amp;graph=beside" loading="lazy"></iframe></div></div>
     </section>
@@ -1678,6 +1681,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const rows = (catalog.checkpoints || []).filter((c) => checkpointRound(c) > 0 && checkpointRound(c) <= (shownRound || 0));
     return rows.sort((a, b) => checkpointRound(b) - checkpointRound(a))[0] || null;
   }
+  let pendingBriefChange = null;
   function updateWhatIf() {
     const bar = $("what-if-bar");
     bar.hidden = !(ownerKey() && catalog && catalog.run && live);
@@ -1685,6 +1689,9 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const cp = branchPoint(), btn = $("what-if"), note = $("what-if-note");
     if (!cp) { btn.disabled = true; note.textContent = "Move the timeline to a finished round to ask what if."; return; }
     const ok = cp.can_branch !== false;
+    const sel = $("what-if-group"), ids = Object.keys(((world && world.bundle && world.bundle.actor_information) || {}).actors || {});
+    if (sel.options.length - 1 !== ids.length) { sel.length = 1; ids.forEach((id) => { const o = document.createElement("option"); o.value = id; o.textContent = labelFor(id); sel.append(o); }); }
+    $("what-if-group").closest(".what-if-change").hidden = !ids.length;
     btn.disabled = !ok; btn.textContent = `What if… (from round ${checkpointRound(cp)})`;
     note.textContent = ok ? "Same start, a new draw: the same world from this round, played again beside the original. The people may act differently; nothing is changed in the original."
       : "Greyed: " + (cp.reason || "this round cannot be branched.");
@@ -1697,20 +1704,24 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const cp = branchPoint();
     if (!cp || cp.can_branch === false || !catalog || !catalog.run) return;
     const parent = catalog.run, round = checkpointRound(cp), note = $("what-if-note");
+    const group = $("what-if-group").value, said = $("what-if-brief").value.trim();
+    if (group && !said) { note.textContent = "Write the one change for " + labelFor(group) + ", or pick No change."; return; }
+    const change = group ? { [group]: said } : null;
     $("what-if").disabled = true; note.textContent = "Keeping the original and starting the branch…";
     try {
       const original = await api("/live-replay", { catalog_run_id: parent.id });
-      const data = await api("/worlds/" + encodeURIComponent(catalog.worldId) + "/runs", { parent_run_id: parent.id, checkpoint_id: cp.id, name: "What if from round " + round });
+      const data = await api("/worlds/" + encodeURIComponent(catalog.worldId) + "/runs", { parent_run_id: parent.id, checkpoint_id: cp.id, name: "What if from round " + round + (change ? ": " + labelFor(group) + " changed" : "") });
       pinnedOriginal = { replay: original, round, name: parent.name || "Run" };
-      keepPinned = true;
+      keepPinned = true; pendingBriefChange = change;
       loadCatalogRecord(data, "continue");
       $("original-label").textContent = `Original run, kept as it was (${pinnedOriginal.name})`;
-      $("branch-label").textContent = `What if from round ${round}: same start, a new draw, playing live`;
+      $("branch-label").textContent = change ? `What if from round ${round}: ${labelFor(group)} is told “${said}”, playing live` : `What if from round ${round}: same start, a new draw, playing live`;
       $("branch-label").hidden = false; $("original-cell").hidden = false; $("run-maps").classList.add("two");
       $("run-map-frame-2").src = "room-map/?embed=1&graph=beside";
     } catch (err) { keepPinned = false; note.textContent = "The branch could not start: " + plainError(err); }
     updateWhatIf();
   }
+  $("what-if-group").addEventListener("change", () => { $("what-if-brief").hidden = !$("what-if-group").value; if (!$("what-if-brief").hidden) $("what-if-brief").focus(); });
   $("what-if").addEventListener("click", whatIf);
   window.addEventListener("message", (e) => {
     if (e.source !== $("run-map-frame-2").contentWindow || !e.data) return;
@@ -2122,7 +2133,8 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     if (live.snapshot && sentDecisions.length) request.decisions = sentDecisions.map((d) => ({ id: d.id, decision: d.decision }));
     if (live.snapshot) { request.continue_from = live.snapshot; request.continue_seal = live.seal; request.approval = live.approval; request.turn_offset = live.lastTurn; if (!world.bundle.actor_information) request.recent = recentMoves(); if (live.underway) request.underway = live.underway; }
     // AI rounds take a few seconds and go through a job.
-    const payload=catalog?{catalog_run_id:catalog.run.id,expected_checkpoint_id:catalog.checkpointId,approved:true,policy:"resident",turns:1,...(request.decisions?{decisions:request.decisions}:{})}:request;
+    const payload=catalog?{catalog_run_id:catalog.run.id,expected_checkpoint_id:catalog.checkpointId,approved:true,policy:"resident",turns:1,...(request.decisions?{decisions:request.decisions}:{}),...(pendingBriefChange?{brief_changes:pendingBriefChange}:{})}:request;
+    pendingBriefChange=null;
     const target=catalog; if(target)catalogPending++; let run;
     try{run=await apiJob("/run",payload,1000);}finally{if(target)catalogPending--;updateWorkspaceControls();}
     if(target&&run.checkpoint_id){target.checkpointId=run.checkpoint_id;target.run.checkpoint_id=run.checkpoint_id;target.run.latest_round=run.summary.last_turn;
