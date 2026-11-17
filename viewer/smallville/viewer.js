@@ -98,7 +98,8 @@ function start(R, M) {
         L = Math.min(2.2, Math.max(1, 0.95 / c.zoom));
         names.forEach(n => { people[n].emoji.setScale(L); people[n].chat.setScale(L); });
         if (step !== null && people[names[0]].tile) show(step, false);
-        c.setScroll((v.x + v.w / 2) * T - c.width / 2 - (lm / 2 - panX) / c.zoom, (v.y + v.h / 2) * T - c.height / 2 + panY / c.zoom);
+        const midY = EMBED && graphOn && gmode === "beside" ? v.y * T + (c.height / 2 - 12) / c.zoom : (v.y + v.h / 2) * T;  // in the embedded page the map sits at the top, not in the middle of a tall column
+        c.setScroll((v.x + v.w / 2) * T - c.width / 2 - (lm / 2 - panX) / c.zoom, midY - c.height / 2 + panY / c.zoom);
         drawGraph(); requestAnimationFrame(drawGraph);  // the camera's midpoint updates on the next frame
       };
       fitFn = fit; this.scale.on("resize", fit); fit(); this.time.delayedCall(400, fit);  // the page settles after the first fit
@@ -279,7 +280,9 @@ function start(R, M) {
   if (GRAPH) { $("graphbtn").style.display = ""; $("gmode").parentElement.style.display = "none";
     // A long column (70 boxes for a big world) never squeezes its boxes together: the stage grows to hold it and the page scrolls.
     const sizeStage = () => { const longest = Math.max(0, ...["actor", "action|process", "thing", "place"].map(k => (GRAPH ? GRAPH.graph.nodes : []).filter(n => k.split("|").includes(n.kind)).length));
-      $("stage").style.minHeight = graphOn && gmode === "beside" && longest ? Math.max(320, 24 + longest * ROW_MIN + 56) + "px" : ""; const refit = () => window.dispatchEvent(new Event("resize")); refit(); setTimeout(refit, 150); };  // again once the scrollbar has appeared
+      const stageH = graphOn && gmode === "beside" && longest ? Math.max(320, 24 + longest * ROW_MIN + 56) + "px" : "";
+      $("stage").style.minHeight = stageH;
+      if (EMBED) { $("stage").style.flex = stageH ? "0 0 auto" : ""; $("stage").style.height = stageH; }  // the page sizes its frame to this, so the stage must not stretch to fill the frame and grow it again const refit = () => window.dispatchEvent(new Event("resize")); refit(); setTimeout(refit, 150); };  // again once the scrollbar has appeared
     $("graphbtn").onclick = () => { graphOn = !graphOn; $("graphbtn").textContent = graphOn ? "Hide graph" : "Show graph"; $("graphbtn").classList.toggle("on", graphOn);
       $("gmode").parentElement.style.display = graphOn ? "" : "none"; sizeStage(); if (fitFn) fitFn(); drawGraph(); };
     $("gmode").onchange = e => { gmode = e.target.value; focusId = null; sizeStage(); if (fitFn) fitFn(); drawGraph(); };
