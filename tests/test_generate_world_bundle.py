@@ -155,7 +155,12 @@ class GenerateWorldBundleTests(unittest.TestCase):
         # S2 pencil Fw7SHbEtW3Un: the design it revised declared 17 laws, the redesign none.
         from tests.test_declared_laws import SHOP
         lawless = {k: v for k, v in SHOP.items() if k not in ("resources", "laws")}
-        module, call = fake_llm(json.dumps(fresh_shop(lawless)), json.dumps(fresh_shop(SHOP)))
+        # the kept design is one the designer may return now: the payer (`actor`) starts the move (#282)
+        buyer = json.loads(json.dumps(SHOP))
+        buyer["actions"][0]["fields"] = [{"name": "seller", "type": "entity_ref"}]
+        buyer["laws"][2].update(gives={"resource": "pencils", "from": "seller", "to": "actor"},
+                                pays={"resource": "money", "from": "actor", "to": "seller"})
+        module, call = fake_llm(json.dumps(fresh_shop(lawless)), json.dumps(fresh_shop(buyer)))
         with patch.dict(sys.modules, {"llm_client": module}):
             bundle, _, _ = generate_world_bundle("A shop sells pencils.", trace_id="t", max_budget=0.01,
                                                  feedback="sell-pencil was never possible.", previous=SHOP)
