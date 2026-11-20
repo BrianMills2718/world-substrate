@@ -109,6 +109,26 @@ def _coverage(value: object, attempt: str) -> dict[str, Any] | None:
     """Validate evidence shape and exact quotes, without inferring prose meaning.
 
     Implements: semantic-binding/whole-attempt-coverage
+
+    Requirement text (generated):
+        semantic-binding/whole-attempt-coverage: Fresh open-attempt interpretations MUST assess
+            whether one identified operation represents the whole utterance, before binding even a
+            wait. The existing interpreter call MUST return coverage status (`complete`,
+            `requires_decomposition`, `partial`, or `ambiguous`), exact nonblank action substrings,
+            and exact nonblank unrepresented substrings. Complete requires an identified operation
+            and no unrepresented spans; incomplete requires unrepresented spans, and only ambiguous
+            may have no identified action span. Missing or malformed fresh assessments MUST fail
+            closed. Exact quote checks validate evidence shape, not semantic truth. A concrete means
+            MUST be bound rather than substituted with the goal it serves. Expressed stance, assent
+            and withholding or revoking assent MUST remain distinct. Quoted speech, coordinated
+            instruments, motives and expected consequences do not themselves add independent
+            operations. An impossible single operation remains complete and is submitted to the
+            installed mechanics. An incomplete interpretation MUST preserve the original utterance
+            and available coverage, execute no part, invoke no rule judge and deliver no request.
+            The actor MUST receive a constant clarification without privileged model reasoning;
+            analyst evidence retains the reading. A complete operation with no installed rule
+            remains eligible for the existing unmatched-attempt judge/request path. Historical
+            records without coverage MUST remain readable without inventing an assessment.
     """
     if not isinstance(value, dict) or set(value) != {"status", "action_spans", "unrepresented_spans"}:
         return None
@@ -146,6 +166,16 @@ def read_interpretation(value: object, attempt: str, signatures: list[dict[str, 
     them). Never says whether the move will work.
 
     Implements: ai-judge/pass-1-reports-what-installed-rules-compute-for-the-people-an-attempt-involves
+
+    Requirement text (generated):
+        ai-judge/pass-1-reports-what-installed-rules-compute-for-the-people-an-attempt-involves: For
+            an attempt no installed rule covers, the consequence report's pass 1 SHALL list the
+            moves of the person acting and of each person the attempt names, as `Engine.discover`
+            gives them (each available and blocked move with every check, its value and what it
+            requires), and the current values of the person acting and of every person and thing the
+            attempt names. A person's moves appear only on that person's own page. The names come
+            from the attempt interpreter's reading, which lists every person or thing in the world
+            the attempt's words name; each run records pass 1 with each unmatched attempt.
     """
     # Implements: semantic-binding/whole-attempt-coverage
     # Gate before parsing even a wait: no chosen prefix or request may escape an incomplete reading.
@@ -297,6 +327,25 @@ def interpret(attempt: str, *, actor: str, signatures: list[dict[str, Any]], ent
     """One typed llm_client call reading `attempt`; returns (checked reading, cost). `entities` maps id to label.
 
     Implements: semantic-binding/preserve-operation-and-referents
+
+    Requirement text (generated):
+        semantic-binding/preserve-operation-and-referents: The interpreter MUST match the complete
+            attempted operation, preserving its object, polarity and qualifications. Recording
+            non-assent MUST NOT be represented as recording positive assent merely because both use
+            a recording verb. Negation of an operation, uncertainty about its success, and negative
+            content quoted within another operation MUST remain distinct. If no installed operation
+            represents the meaning, the reading MUST remain unmatched rather than execute the
+            opposite. The speaker, an authority/credential they hold and their recorded position
+            MUST remain distinct referents. A self-reference MUST supply the actor identity only
+            when that field denotes the person; an object/role field MUST resolve to its own
+            represented identity. Ambiguous referents MUST NOT be guessed. For declared
+            actor-information worlds, interpretation MUST retain the public example field bindings
+            from the same visibility-filtered action forms supplied to the actor. An example is
+            interpretive context, not a forced filler or proof of executability. Explicitly named
+            different participants or objects MUST NOT be overwritten. Unseen form
+            identities/descriptions and hidden canonical singleton/derived values MUST NOT enter the
+            model input. Mechanical checks alone still decide feasibility; this contract does not
+            claim semantic infallibility.
     """
     from llm_client import call_llm_json_schema, render_prompt
 

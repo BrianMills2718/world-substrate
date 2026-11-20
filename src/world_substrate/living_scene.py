@@ -105,6 +105,25 @@ def _validate_v1_profile(raw: dict[str, Any]) -> dict[str, Any]:
 
     Implements: living-scene/living-scene-profile-shape
 
+    Requirement text (generated):
+        living-scene/living-scene-profile-shape: Required top-level objects are: - `assets` —
+            explicit presentation assets; - `zones` — illustrative rectangles and optional anchors;
+            - `actors` — canonical entity bindings plus optional presentation homes; - `entities` —
+            canonical entity bindings plus optional presentation homes; - `activities` — canonical
+            activity entity bindings and anchors; - `institutions` — canonical institution entity
+            bindings and anchors; - `event_visuals` — exact rule-id keyed presentation declarations;
+            - `state_styles` — downstream appearance metadata. `scene` and `presentation` are
+            optional downstream metadata objects. Unknown top-level fields fail loud so a typo
+            cannot silently become an assumed contract. Each actor/entity/activity/institution
+            declaration may name an explicit canonical `entity`; otherwise the visual id is used as
+            the canonical entity id. Its `bindings` map presentation field names to dotted read
+            paths relative to that canonical entity. Example: ```json { "schema_version":
+            "world-substrate-living-scene/v1", "scene_id": "neutral-lab-v1", "world": "neutral-lab",
+            "assets": {}, "zones": { "room": {"rect": [0, 0, 100, 100], "anchor": [50, 50]} },
+            "actors": { "actor-a": { "home": [20, 50], "bindings": {"stance":
+            "components.commitment.stance"} } }, "entities": {}, "activities": {}, "institutions":
+            {}, "event_visuals": {}, "state_styles": {} } ```
+
     Implements: living-scene/living-scene-exact-event-bindings
 
     Implements: living-scene/living-scene-time-boundary-responsive-presentation-overrides
@@ -218,6 +237,13 @@ def load_scene_contract(path: Path) -> dict[str, Any]:
     """Load either the living-scene v1 contract or an unchanged legacy v0 profile.
 
     Implements: living-scene/living-scene-compatibility
+
+    Requirement text (generated):
+        living-scene/living-scene-compatibility: `load_scene_contract()` accepts both: -
+            `world-substrate-living-scene/v1`; and - legacy `world-substrate-scene-profile/v0`.
+            Legacy profiles are returned unchanged after their minimal contract shape is validated.
+            The existing generic `render_scene_replay.py` path continues to own v0 rendering
+            semantics; Living Scene v1 does not silently reinterpret those profiles.
     """
 
     raw = json.loads(path.read_text())
@@ -336,6 +362,24 @@ def _information_transmissions(
     """Resolve a declared information.transmit operation, with content only for authorized observers.
 
     Implements: living-scene/living-scene-information-and-outcome-presentation
+
+    Requirement text (generated):
+        living-scene/living-scene-information-and-outcome-presentation: Living Scene frames expose a
+            presentation-safe event summary rather than copying the full retained event object.
+            Actor-scoped `observation`, raw `changes`, and `information_context` content remain
+            evidence-layer data and are not embedded in the generic public scene payload. Stable
+            event/rule/tick/revision/status identity and mechanic-declared causal parent ids may
+            remain visible as metadata. An exact declared `information.transmit` operation resolves
+            canonical `information` + `delivery` records. Source, recipient, channel, and topic may
+            be shown as represented transmission metadata. Message content is included only when the
+            information is public or the requested observer is authorized by the canonical
+            information-delivery visibility rules. A public scene with no observer therefore cannot
+            expose direct/private content merely because a delivery exists. Message content is
+            assigned to the DOM with `textContent`, never injected as markup. An exact declared
+            `action.feedback` operation may display the retained event status and failed check
+            labels. It does not generate a new explanation and does not infer causal ancestry from
+            those labels. Rendering a transmission or cognition context never promotes that
+            information into `causal_parent_event_ids`.
     """
 
     entities = world.get("entities")
@@ -483,6 +527,18 @@ def _event_visual(event: dict[str, Any], profile: dict[str, Any]) -> dict[str, A
     """Exact rule_id lookup in event_visuals; an undeclared event gets a neutral generic_event.
 
     Implements: living-scene/living-scene-exact-event-bindings
+
+    Requirement text (generated):
+        living-scene/living-scene-exact-event-bindings: `event_visuals` is keyed by exact canonical
+            `rule_id`. The logical projector does not infer semantics from action or rule names. If
+            a retained event has no matching declaration, the frame exposes a neutral
+            `generic_event` with no presentation operations. Declared operations are presentation
+            records. They may name an `op`, optional presentation metadata, and dotted `read_paths`.
+            Authority-bearing mutation fields such as `changes`, `after`, `before`,
+            `causal_parent_event_ids`, `information_context`, or canonical/world state payloads are
+            rejected in a profile operation. Later renderer work may add reusable operation
+            semantics, but those operations remain downstream of the retained event and cannot
+            become mechanics.
     """
 
     rule_id = event.get("rule_id")
@@ -538,6 +594,12 @@ def _frame_from_world(
     """One logical frame; tick, revision and views come from canonical state, never animation.
 
     Implements: living-scene/living-scene-time-boundary
+
+    Requirement text (generated):
+        living-scene/living-scene-time-boundary: Simulation tick, event order, activity start/end
+            ticks, and status are canonical facts. Animation duration is presentation metadata only.
+            Changing animation milliseconds cannot change the logical view at a canonical event
+            boundary.
     """
 
     event_visual = _event_visual(event, profile) if event is not None else None
@@ -577,6 +639,18 @@ def rebuild_living_scene_frame(
     an event index in the retained projection bundle.
 
     Implements: living-scene/living-scene-deterministic-frame-reconstruction
+
+    Requirement text (generated):
+        living-scene/living-scene-deterministic-frame-reconstruction: `build_living_scene_frames()`
+            returns the initial frame followed by one logical frame for every retained event
+            boundary. `rebuild_living_scene_frame()` reconstructs any requested boundary directly
+            from the initial canonical snapshot plus retained changes through that event. Scrubbing
+            therefore does not depend on accumulated browser state. Logical frames include: - exact
+            scene/world/branch identity; - canonical boundary index, tick, and revision; - a
+            presentation-safe retained event summary at that boundary; - its exact declared or
+            neutral event presentation record; and - read-only projected
+            actor/entity/activity/institution bindings. `normalized_frame_json()` supplies stable
+            sorted serialization for regression and retained evidence comparisons.
     """
 
     _validate_live_projection(bundle, profile)
@@ -605,6 +679,18 @@ def build_living_scene_frames(
     """Build initial plus every canonical event-boundary logical frame.
 
     Implements: living-scene/living-scene-deterministic-frame-reconstruction
+
+    Requirement text (generated):
+        living-scene/living-scene-deterministic-frame-reconstruction: `build_living_scene_frames()`
+            returns the initial frame followed by one logical frame for every retained event
+            boundary. `rebuild_living_scene_frame()` reconstructs any requested boundary directly
+            from the initial canonical snapshot plus retained changes through that event. Scrubbing
+            therefore does not depend on accumulated browser state. Logical frames include: - exact
+            scene/world/branch identity; - canonical boundary index, tick, and revision; - a
+            presentation-safe retained event summary at that boundary; - its exact declared or
+            neutral event presentation record; and - read-only projected
+            actor/entity/activity/institution bindings. `normalized_frame_json()` supplies stable
+            sorted serialization for regression and retained evidence comparisons.
     """
 
     _validate_live_projection(bundle, profile)

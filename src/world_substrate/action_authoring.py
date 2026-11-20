@@ -109,6 +109,19 @@ class DeclaredActionMechanic:
     """One validated `world-substrate-action-mechanic/v0` declaration for exactly one action signature.
 
     Implements: causal-model-authoring/one-declaration-per-action-kind
+
+    Requirement text (generated):
+        causal-model-authoring/one-declaration-per-action-kind: Each
+            `world-substrate-action-mechanic/v0` declaration names exactly one action signature from
+            the authoring bundle and declares: - `mechanic_id`, `version`, `action_kind`, and a
+            review rationale; - an actor selector and one selector for every `entity_ref` action
+            field; - finite choices for every scalar action parameter; - causal checks over
+            literals, action fields, participant state, participant identities, and represented
+            ownership references; - effects that `set`, `add`, or `subtract` a supported represented
+            state field; - known limits, declared tests, and optional semantic bindings. Selectors
+            must constrain at least one category or component. A component path may only be read or
+            written through a participant selector that requires that component. Scalar parameter
+            choices are finite so discovery remains bounded.
     """
 
     mechanic_id: str
@@ -248,6 +261,13 @@ class DeclaredTerminal:
     """State-derived stop condition over a selected set of represented entities.
 
     Implements: causal-model-authoring/terminal-condition
+
+    Requirement text (generated):
+        causal-model-authoring/terminal-condition: The causal model may declare one state-derived
+            terminal predicate: select a represented class of entities, apply typed checks, and
+            require either all or any to satisfy them. The compiler refuses empty selectors. `null`
+            is valid when no represented terminal can be justified; reaching a turn ceiling or
+            exhausting available actions is not silently converted into world completion.
     """
 
     mode: str
@@ -307,6 +327,19 @@ class DeclaredProcess:
     once its actors have done everything once.
 
     Implements: causal-model-authoring/processes-timing-and-linked-participants-current-code
+
+    Requirement text (generated):
+        causal-model-authoring/processes-timing-and-linked-participants-current-code: Since the
+            contract was written the rule language gained optional `processes`: things the world
+            does by itself with no actor, in the same selector, check and effect language, compiled
+            to ordinary process rules with installer-checked scopes. A causal model may declare up
+            to 28 processes (`MAX_PROCESSES`, `src/world_substrate/action_authoring.py:29`). Each
+            process has a `timing` of `each_round` (the default, once per round) or `immediately` (a
+            same-moment knock-on reaction under Decision 009) (`PROCESS_TIMINGS`,
+            `action_authoring.py:30`), and may name linked participants resolved from the matching
+            entity so one process event can change linked entities (`action_authoring.py:265-330`).
+            Rule generation asks the model for a JSON object (`response_format={"type":
+            "json_object"}`, `scripts/generate_causal_model.py:733`).
     """
 
     process_id: str
@@ -532,6 +565,15 @@ class CausalModel:
         """Authority-oriented summary suitable for a human review surface.
 
         Implements: causal-model-authoring/review-and-execution-boundary
+
+        Requirement text (generated):
+            causal-model-authoring/review-and-execution-boundary: The World Builder displays the
+                compiled rationale, derived reads/writes, checks, effects, limits, tests, terminal,
+                model, and cost. A fresh run requires a separate explicit **Approve mechanics for
+                run** action. Editing the represented world after generation makes the mechanics
+                stale and revokes that approval. Declared tests are review obligations, not evidence
+                that arbitrary model-written tests executed. Interaction completeness remains
+                fallible; the existing mechanic-profile and causal-closure doctrine still applies.
         """
         return {
             "schema_version": CAUSAL_MODEL_SCHEMA_VERSION,
@@ -577,6 +619,17 @@ class CompiledActionMechanic:
     Reads and writes are derived from the declaration, never supplied by the proposer.
 
     Implements: causal-model-authoring/authority-is-derived-not-claimed
+
+    Requirement text (generated):
+        causal-model-authoring/authority-is-derived-not-claimed: The proposer does **not** provide
+            `reads` or `writes`. The compiler derives them from selectors, checks, and effects and
+            exposes them in the mechanics review. Every touched entity also receives the engine's
+            causal event id through the compiler; an authored effect cannot write
+            `last_cause_event_id` itself. A compiled declaration is an ordinary action rule. Before
+            a live run it is installed through `MechanicProfile`, the profile is frozen, and every
+            accepted action still crosses `Engine.submit()` and the engine write-scope/atomic-commit
+            boundary. A declaration therefore does not gain more authority because an LLM proposed
+            it.
     """
 
     def __init__(self, declared: DeclaredActionMechanic) -> None:
@@ -616,6 +669,13 @@ class CompiledActionMechanic:
         """Action instances this mechanic offers one actor, at most MAX_DISCOVERED_ACTIONS.
 
         Implements: causal-model-authoring/discovery-cap-current-code
+
+        Requirement text (generated):
+            causal-model-authoring/discovery-cap-current-code: Action discovery offers at most 256
+                action instances per actor (`MAX_DISCOVERED_ACTIONS`,
+                `src/world_substrate/action_authoring.py:31`). Instances past the cap are dropped
+                without a visible refusal; making overflow visible is an open hardening item (open
+                questions ledger).
         """
         actor = world.entities.get(actor_id)
         if actor is None or not _selector_matches(actor, self.declared.actor_selector):
@@ -993,6 +1053,17 @@ def _path_type(bundle: dict[str, Any], path: str) -> str:
     """The type of a supported state path; anything outside the language raises ActionDeclarationError.
 
     Implements: causal-model-authoring/supported-state-surface
+
+    Requirement text (generated):
+        causal-model-authoring/supported-state-surface: Action declarations may currently address: -
+            `location.location_id`; - `ownership.owner_ref`; - `portable.portable`; - fields under
+            `components.<declared-component>.<field>`. `last_cause_event_id` may be inspected but is
+            engine-owned for writes. Revision, commands, events, registry state, arbitrary Python
+            attributes, and undeclared components are outside the language. Expression forms are
+            deliberately small: `literal`, `action_field`, participant `path`, participant
+            `entity_id`, participant `owner_ref`, and `event_id`. Checks support
+            equality/inequality, numeric ordering, and bounded `contains` semantics. Effects support
+            `set`, `add`, and `subtract`, with type compatibility checked at compile time.
     """
     if path == "location.location_id":
         return "string"

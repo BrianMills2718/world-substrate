@@ -308,6 +308,12 @@ class TypedAction(Protocol):
     """A typed action; accompanying prose is never executable input.
 
     Implements: transition-engine/core-records-action
+
+    Requirement text (generated):
+        transition-engine/core-records-action: A typed action contains: - actor ID; - rule/action
+            kind; - object references; - validated parameters; - base world revision; and -
+            controller identity. Natural-language text may accompany an action as explanation but is
+            never executable input.
     """
 
     @property
@@ -323,6 +329,12 @@ class ActionRule(Protocol):
     """An action rule's declared contract: id, version, kind, read and write paths, checks and effect.
 
     Implements: transition-engine/core-records-rule
+
+    Requirement text (generated):
+        transition-engine/core-records-rule: Every action or process rule declares: - stable rule ID
+            and version; - action/process kind; - required categories/components; - read and write
+            paths; - preconditions; - effect function; - sources, sinks, or conserved quantities; -
+            timing; - emitted event schema; and - explicit unsupported boundaries.
     """
 
     rule_id: str
@@ -344,6 +356,12 @@ class ProcessRule(Protocol):
     """A process rule's declared contract: id, version, order, read and write paths, due and effect.
 
     Implements: transition-engine/core-records-rule
+
+    Requirement text (generated):
+        transition-engine/core-records-rule: Every action or process rule declares: - stable rule ID
+            and version; - action/process kind; - required categories/components; - read and write
+            paths; - preconditions; - effect function; - sources, sinks, or conserved quantities; -
+            timing; - emitted event schema; and - explicit unsupported boundaries.
     """
 
     rule_id: str
@@ -402,6 +420,17 @@ class DeclaresCausalParents(Protocol):
     information delivery is not enough to become hard causal ancestry.
 
     Implements: information-delivery/causality-rule
+
+    Requirement text (generated):
+        information-delivery/causality-rule: Information lineage and hard causal ancestry are
+            distinct. Engine events may retain `information_context` derived from the actor's
+            bounded observation. That means the information was represented in the actor's context;
+            it does **not** claim the information mechanically caused the action. A rule may opt
+            into `DeclaresCausalParents` or `DeclaresProcessCausalParents` and name retained event
+            IDs only when that rule mechanically consumes or otherwise explicitly justifies those
+            parents. The Engine stores those IDs as `causal_parent_event_ids` separately from
+            `information_context`. Temporal precedence and prompt inclusion are insufficient to
+            promote a message to hard ancestry.
     """
 
     def causal_parents(self, world: World, action: TypedAction) -> list[str]: ...

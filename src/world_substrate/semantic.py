@@ -6,6 +6,14 @@ references/sources.json (`linguistic_core`, via the `castaway_world_systems`
 artifact) rather than inventing a sense or role.
 
 Implements: semantic-binding/initial-worked-binding
+
+Requirement text (generated):
+    semantic-binding/initial-worked-binding: For an ordinary transfer: - sense: the reviewed
+        Linguistic Core `give` sense; - roles: giver, transferred object, recipient; - causal class:
+        primitive intentional action; - bearer: the giver; - mechanic: installed possession-transfer
+        mechanic. An observed reciprocal pair may later be classified as exchange. That derived
+        classification performs no transfer. If an escrow institution couples the assets, the
+        institution and its release transition receive their own binding and authority.
 """
 
 from __future__ import annotations
@@ -18,6 +26,29 @@ class SemanticBinding:
     """What an attempt or occurrence means; it never changes state, the named mechanic does.
 
     Implements: semantic-binding/boundary
+
+    Requirement text (generated):
+        semantic-binding/boundary: A semantic binding explains what an attempt or occurrence means.
+            A mechanic determines whether and how it changes persistent state. A conforming binding
+            contains: | Field | Requirement | | --- | --- | | `binding_id` | Stable identity for the
+            binding | | `sense_id` | Pinned Linguistic Core predicate sense or an explicitly
+            reviewed overlay | | `roles` | Consumer participant name to reusable Linguistic Core
+            `lc.role.*` identity | | `role_definition_ids` | Optional profile metadata mapping
+            participant names to predicate-local `lc.roledef.*` identities; keys must exactly match
+            `roles`; intentionally not serialized by the v0 event binding | | `specialization` |
+            Optional more specific sense or world-profile specialization | | `causal_class` |
+            Primitive action, autonomous process, state relation, composite, analytic pattern,
+            declaration, or installed institution | | `causal_bearer` | Agent, process, disposition,
+            institution, or explicit exogenous input; absent for a purely derived view | |
+            `mechanic_id` | Installed mechanic selected for a state-changing binding; absent for a
+            derived-only binding | | `interpretation_limits` | Ambiguity, unsupported senses, or
+            abstraction limits exposed to the trace | Free text may accompany a binding but cannot
+            substitute for the sense, roles, bearer, and mechanic identity required by the selected
+            profile. Predicate-local role-definition IDs are semantic compatibility metadata only:
+            they refine which role position of a sense the consumer means, but they do not supply
+            effects or authority. They are deliberately omitted from `SemanticBinding.as_dict()` in
+            v0 so existing retained event/evidence identity remains stable; trace-level publication
+            requires an explicit versioned contract/evidence change.
 
     Optional role_definition_ids carry predicate-local role compatibility only.
 

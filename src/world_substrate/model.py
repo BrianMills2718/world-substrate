@@ -248,6 +248,14 @@ class Entity:
     """A canonical entity record with explicit typed components.
 
     Implements: transition-engine/core-records-entity
+
+    Requirement text (generated):
+        transition-engine/core-records-entity: An entity declares: - stable ID and category IDs; -
+            component records with typed values; - location and ownership relations where
+            applicable; and - provenance linking content definitions to their source pack.
+            Components are explicit contracts, not an unconstrained prose bag. The first vertical
+            needs identity, location, ownership, material, mass, container, liquid, temperature,
+            condition, heat-source, and process-attachment components.
     """
 
     entity_id: str
@@ -430,6 +438,13 @@ class World:
     """The one canonical world record.
 
     Implements: transition-engine/core-records-world
+
+    Requirement text (generated):
+        transition-engine/core-records-world: A world contains: - `world_id`, `revision`, and
+            integer `tick`; - entity records indexed by stable ID; - relation records indexed by
+            stable ID; - active process records; - actor knowledge/observation records; - accepted
+            and rejected command records; - causal events; and - pinned content, rule, and engine
+            identities.
     """
 
     world_id: str
@@ -469,6 +484,24 @@ class World:
         """Return a versioned JSON-serializable canonical-state snapshot.
 
         Implements: transition-engine/core-engine-operations-snapshot-and-replay
+
+        Requirement text (generated):
+            transition-engine/core-engine-operations-snapshot-and-replay: `World.snapshot() ->
+                SnapshotV1` emits a JSON-serializable object containing `schema_version:
+                world-substrate-snapshot/v1` and the complete canonical material state. That state
+                includes the engine ID, content ID, and rule-version map; commands and events are
+                intentionally absent. `World.from_snapshot()` accepts only that version and
+                reconstructs canonical state with empty history. It may also receive a world-local
+                component-type map. Those types override same- named process-global component
+                registrations for that load only, so runtime- authored worlds can replay without
+                mutating or colliding with the global world- pack registry.
+                `Engine.replay_commands(initial_snapshot, commands, registry, component_types=None)
+                -> Engine` starts from the loaded snapshot and re-applies recorded accepted,
+                rejected, invalid, and advance commands without policy calls. The supplied
+                executable registry must match the snapshot's rule-version map. A durable replay
+                bundle also names the registry configuration identity because rule versions alone do
+                not encode constructor parameters. Evidence compares the reconstructed final
+                material hash and complete event sequence with the retained outputs.
         """
         return {
             "schema_version": SNAPSHOT_SCHEMA_VERSION,

@@ -6,6 +6,16 @@ actor may receive a representation without that representation automatically
 becoming the cause of every later action.
 
 Implements: information-delivery/representation
+
+Requirement text (generated):
+    information-delivery/representation: An information item records: - represented content; -
+        `source_id`; - `channel_id`; - `visibility` (`direct` or `public` in v0); - an optional
+        topic; - an optional `derived_from_info_id` lineage edge; and - whether the item is active
+        in the represented world. A delivery records: - the information item; - recipient; -
+        channel; - status (`pending`, `delivered`, or `observed` are the v0 states consumed by the
+        visibility seam); and - the canonical tick at delivery when available. These records are
+        world facts only because a selected world chooses to represent them. They do not imply a
+        resident belief state.
 """
 
 from __future__ import annotations
@@ -60,6 +70,16 @@ def information_visible_to_actor(world: World, actor_id: str, entity: Entity) ->
     """Whether an information entity belongs in an actor-authorized observation.
 
     Implements: information-delivery/observation-rule
+
+    Requirement text (generated):
+        information-delivery/observation-rule: For actor-local observation: 1. a represented source
+            can inspect its own information item; 2. a direct recipient does not receive the item or
+            its delivery record until the delivery is `delivered` or `observed`; 3. a public active
+            item is visible to local actors; and 4. unrelated actors do not gain a direct item
+            merely because it exists in canonical state. The Waltzman acceptance fixture proves
+            asymmetric delivery: a system briefing can be delivered to Mara without Ari seeing it,
+            and a later represented Mara → Ari message becomes visible to Ari only after the
+            communication mechanic commits.
     """
 
     info = entity.component("information")

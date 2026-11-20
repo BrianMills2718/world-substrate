@@ -54,6 +54,17 @@ def build_live_projection(
     """Package canonical run data plus explicitly downstream presentation metadata.
 
     Implements: live-projection/wire-shape
+
+    Requirement text (generated):
+        live-projection/wire-shape: `schema_version` is `world-substrate-live-projection/v0`. A
+            projection bundle contains: - one `world-substrate-snapshot/v1` initial snapshot; - the
+            ordered retained Engine events with stable event IDs and leaf deltas; - a branch ID; -
+            downstream scene/presentation metadata; - optional event annotations; - optional
+            detachable analysis; and - optional bounded causal-adequacy reporting. The material
+            world at any event can be reconstructed by applying each retained `changes` row to the
+            initial material state in order. The Waltzman acceptance fixture verifies that this
+            reconstruction equals the final canonical material world and hash for both baseline and
+            intervention branches.
     """
 
     if not branch_id:
@@ -101,6 +112,13 @@ def projection_sse_messages(bundle: dict[str, Any]) -> list[str]:
     """Return the initial snapshot followed by canonical event/delta messages.
 
     Implements: live-projection/incremental-delivery
+
+    Requirement text (generated):
+        live-projection/incremental-delivery: `projection_sse_messages()` encodes the one-way stream
+            as: ```text snapshot world-event world-event ... complete ```
+            `scripts/waltzman_demo_service.py` exposes that stream as `text/event-stream`. SSE is
+            sufficient for the current read-only requirement; WebSocket or bidirectional control is
+            not part of v0.
     """
 
     if bundle.get("schema_version") != LIVE_PROJECTION_SCHEMA_VERSION:
