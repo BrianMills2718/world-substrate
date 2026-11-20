@@ -1,0 +1,12 @@
+{
+  "need": "Residents of a people build must be told about generated moves whose fields are free text, so they can try them.",
+  "searched": [
+    {"place": "own", "where": "world-substrate spikes/any-scenario-2026-10/compile_spec.py (decision-move forms) and scripts/actor_information.py", "query": "how public action forms are declared and offered", "found": "Compiled decision moves already get forms bound by participant categories (itertools.product over matching entities); generated moves got none, and forms required every field bound."},
+    {"place": "outside", "where": "Concordia 2.4 documentation (gdm-concordia)", "query": "action specs with free-text arguments offered to agents", "found": "Concordia's free action spec lets an agent write any action text; it has no typed form with some fields left open, so the form shape stays World Builder's own."}
+  ],
+  "candidates": [
+    {"name": "compile_spec decision-move form loop (existing)", "url": "https://github.com/BrianMills2718/world-substrate", "covers": "Binding a move's referent fields to entities its rule accepts, one form per binding.", "verdict": "adopt", "reason": "The same binding method, applied to generated moves; only open text fields are added."}
+  ],
+  "decision": "adopt",
+  "decided": "2026-11-20"
+}
