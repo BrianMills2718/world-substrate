@@ -1,0 +1,14 @@
+{
+  "need": "A repeated async /run request from the same caller returns the first job's id instead of starting a second paid run.",
+  "searched": [
+    {"place": "own", "where": "scripts/world_builder_service.py (_start_job, _JOBS, _JobResponder, catalog expected_checkpoint_id)", "query": "existing job lookup, idempotency, dedup", "found": "Jobs are an in-memory dict with a TTL and lock; nothing looks a job up by request. Catalog runs already reject a stale expected_checkpoint_id but only after a second run starts."},
+    {"place": "own", "where": "~/code2/workspace/docs/capabilities.md", "query": "idempotency key, request dedup", "found": "no listed capability covers request deduplication"},
+    {"place": "outside", "where": "IETF draft-ietf-httpapi-idempotency-key-header; Stripe API idempotent requests", "query": "idempotency key header semantics", "found": "A client-sent Idempotency-Key header; the server stores the first response per key and replays it, and errors are replayed only when processing began."}
+  ],
+  "candidates": [
+    {"name": "Idempotency-Key header (IETF draft, as used by Stripe)", "url": "https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/", "covers": "Replays the first response for a repeated request.", "misses": "Needs every client, including the page, to send a key; today none does, so protection would be absent for the requests that matter.", "verdict": "reject", "reason": "Same semantics are kept, but the key is derived server-side from caller and body so no client change is needed."},
+    {"name": "Server-derived request hash with in-memory job lookup", "url": "scripts/world_builder_service.py", "covers": "Protects every client with no change to them, inside the existing job table.", "misses": "Lost on restart (running jobs also end then).", "verdict": "adopt", "reason": "Smallest change that closes the gap; adds no engine or scheduler capability."}
+  ],
+  "decision": "adopt",
+  "decided": "2026-11-20"
+}
