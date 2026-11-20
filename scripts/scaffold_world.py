@@ -106,6 +106,22 @@ def _validate_laws(value: dict[str, Any], component_map: dict[str, dict[str, Any
                 if isinstance(changer, str) and changer.startswith("process:") and changer[8:].strip(): continue
                 if changer not in actions: raise BundleError(f"law {lid} may_change_by names unknown move {changer!r}")
 
+def pairing_starter_problems(bundle: dict[str, Any]) -> list[str]:
+    """One plain sentence per pairing law whose payer is not the actor (issue #282).
+
+    Only a newly designed bundle is held to this; `validate_bundle` does not call it, so saved worlds still load.
+
+    Implements: world-authoring-bundle/a-seller-started-sale-is-refused
+    """
+    return [
+        f"law {law['law_id']}: the one who pays must be the one who makes the {law['move']} move "
+        f"(pays.from must be 'actor', not {law['pays']['from']!r}); rewrite it as the payer's own move, "
+        "for example a sale the seller starts becomes a buy- move with the seller as an entity_ref"
+        for law in bundle.get("laws", [])
+        if "move" in law and law["pays"]["from"] != "actor"
+    ]
+
+
 def validate_bundle(value: object) -> dict[str, Any]:
     """Validate a world-substrate-authoring-bundle/v0 beyond what the JSON Schema can express.
 

@@ -9,7 +9,7 @@ from copy import deepcopy
 from pathlib import Path
 
 from scripts.generate_causal_model import _context
-from scripts.scaffold_world import BundleError, validate_bundle
+from scripts.scaffold_world import BundleError, pairing_starter_problems, validate_bundle
 
 REPO = Path(__file__).resolve().parents[1]
 ORCHARD = json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text())
@@ -85,6 +85,53 @@ class DeclaredLawsTests(unittest.TestCase):
         self.assertEqual(context["resources"], SHOP["resources"])
         self.assertTrue(any("keep the world's laws" in rule for rule in context["authority_rules"]))
         self.assertEqual(_context(validate_bundle(ORCHARD))["laws"], [])
+
+    @pytest.mark.req("world-authoring-bundle/a-seller-started-sale-is-refused")
+    def test_a_seller_started_sale_is_named_by_the_starter_check(self):
+        problems = pairing_starter_problems(validate_bundle(SHOP))
+        self.assertEqual(len(problems), 1)
+        self.assertIn("a-sale-is-paid", problems[0])
+
+    @pytest.mark.req("world-authoring-bundle/a-buyer-started-purchase-is-accepted")
+    def test_a_buyer_started_purchase_passes_the_starter_check(self):
+        bundle = deepcopy(SHOP)
+        bundle["actions"][0] = {"kind": "sell-pencil", "description": "Buy one pencil from the shop.", "fields": [{"name": "seller", "type": "entity_ref"}]}
+        bundle["laws"][2] = {"law_id": "a-sale-is-paid", "says": "A purchase hands a pencil over for money.", "move": "sell-pencil",
+                             "gives": {"resource": "pencils", "from": "seller", "to": "actor"}, "pays": {"resource": "money", "from": "actor", "to": "seller"}}
+        self.assertEqual(pairing_starter_problems(validate_bundle(bundle)), [])
+
+    @pytest.mark.req("world-authoring-bundle/saved-worlds-still-load")
+    def test_saved_worlds_still_load(self):
+        saved = json.loads((REPO / "tests/fixtures/pencil-s3-kept.json").read_text())
+        validate_bundle(saved["bundle"])
+
+    @pytest.mark.req("world-authoring-bundle/a-seller-started-sale-is-refused")
+    def test_the_designer_is_asked_again_when_the_seller_starts_a_sale(self):
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        import scripts.generate_world_bundle as gwb
+        fixed = deepcopy(SHOP)
+        fixed["actions"][0] = {"kind": "sell-pencil", "description": "Buy one pencil from the shop.", "fields": [{"name": "seller", "type": "entity_ref"}]}
+        fixed["laws"][2] = {"law_id": "a-sale-is-paid", "says": "A purchase hands a pencil over for money.", "move": "sell-pencil",
+                            "gives": {"resource": "pencils", "from": "seller", "to": "actor"}, "pays": {"resource": "money", "from": "actor", "to": "seller"}}
+        answers = [SimpleNamespace(content=json.dumps(SHOP)), SimpleNamespace(content=json.dumps(fixed))]
+        calls = []
+
+        def fake_call(model, messages, **kwargs):
+            calls.append(messages)
+            return answers[len(calls) - 1]
+
+        fake = SimpleNamespace(call_llm=fake_call, safe_json_loads=json.loads)
+        with patch.dict("sys.modules", {"llm_client": fake}), patch.object(gwb, "is_recorded_authoring_replay", return_value=True):
+            bundle, _, _ = gwb.generate_world_bundle("a pencil shop", world_kind="ongoing")
+        self.assertEqual(len(calls), 2)
+        self.assertIn("a-sale-is-paid", calls[1][-1]["content"])
+        self.assertEqual(bundle["laws"][2]["pays"]["from"], "actor")
+
+    @pytest.mark.req("causal-model-authoring/the-rules-writer-is-told-who-acts-in-a-trade")
+    def test_the_rules_writer_is_told_the_payer_is_the_actor(self):
+        rules = _context(validate_bundle(SHOP))["authority_rules"]
+        self.assertTrue(any("actor selector" in r and "pays" in r for r in rules))
 
     def test_the_designer_is_asked_for_laws(self):
         from scripts.generate_world_bundle import _messages

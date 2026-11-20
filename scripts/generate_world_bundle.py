@@ -24,7 +24,7 @@ sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
 from scripts.actor_information import validate_actor_information
-from scripts.scaffold_world import FIELD_TYPES, SCHEMA_VERSION, BundleError, validate_bundle
+from scripts.scaffold_world import FIELD_TYPES, SCHEMA_VERSION, BundleError, pairing_starter_problems, validate_bundle
 
 DEFAULT_MODEL = "openrouter/openai/gpt-6-luna"
 DEFAULT_BUDGET = 0.08
@@ -157,6 +157,8 @@ def _contract() -> dict[str, Any]:
             "gives: {resource, from, to}, pays: {resource, from, to}} means that move always hands one thing over "
             "in return for another, where from and to are 'actor' or one of that action's entity_ref field names "
             "and whoever gives is whoever is paid (a sale: gives pencils shop->customer, pays money customer->shop). "
+            "In a pairing law the one who pays is `actor`; a sale the seller starts is written as the buyer's "
+            "`buy-...` move. "
             "Use [] for both when nothing in the description is kept count of."
         ),
         "not_modeled": (
@@ -361,6 +363,9 @@ def generate_world_bundle(
             if "actor_information" not in parsed and not is_recorded_authoring_replay():
                 raise BundleError("fresh world proposal must declare actor_information version 1")
             bundle = validate_bundle(parsed)
+            starter_problems = pairing_starter_problems(bundle)
+            if starter_problems:
+                raise BundleError("; ".join(starter_problems))
             validate_actor_information(bundle)
             if "actor_information" in bundle:
                 information = bundle["actor_information"]
