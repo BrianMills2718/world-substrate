@@ -1053,6 +1053,17 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       box.append(sum, list);
       nm.append(box);
     }
+    // Things the builder added that the description does not state, so the world can run (#241); never in "Left out".
+    if ((data.added_to_run || []).length) {
+      const box = document.createElement("details"); box.className = "picture";
+      const sum = document.createElement("summary"); const k = data.added_to_run.length;
+      sum.textContent = `Added to make it run (${k} thing${k === 1 ? "" : "s"})`;
+      sum.title = "Things the builder added that your description does not state, so the world can run";
+      const list = document.createElement("p"); list.className = "small muted";
+      list.textContent = data.added_to_run.map((x) => String(x).replace(/[.\s]+$/, "")).join("; ") + ".";
+      box.append(sum, list);
+      nm.append(box);
+    }
     // The laws the world designer declared for this world (declared-laws plan S1).
     const laws = (b && b.laws) || [];
     if (laws.length) {

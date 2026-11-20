@@ -47,6 +47,18 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn("Run with these rules", self.page)
 
     @pytest.mark.req("world-builder-page/a-visitor-lands-on-the-page")
+    @pytest.mark.req("world-builder-page/the-page-shows-two-separate-lists")
+    @pytest.mark.req("world-builder-page/nothing-was-added")
+    def test_added_items_get_their_own_disclosure(self):
+        self.assertIn("Added to make it run", self.page)
+        self.assertIn("data.added_to_run", self.page)
+        self.assertIn("Left out of the simulation (", self.page)
+        left = self.page.index("Left out of the simulation (")
+        added = self.page.index("Added to make it run (")
+        self.assertIn("data.not_modeled", self.page[left - 400:left])
+        self.assertNotIn("data.added_to_run", self.page[left - 400:left + 200])
+        self.assertIn("(data.added_to_run || []).length", self.page[added - 600:added])
+
     def test_one_screen_has_one_primary_action(self):
         self.assertEqual(self.page.count('id="build-btn"'), 1)
         self.assertIn(">Run</button>", self.page)

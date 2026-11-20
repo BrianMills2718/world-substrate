@@ -533,6 +533,7 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             "dry_run": value.get("dry_run"),
             "dry_run_attempts": value.get("dry_run_attempts"),
             "not_modeled": value.get("not_modeled"),
+            "added_to_run": value.get("added_to_run"),
             "group_check": value.get("group_check"),
             # The world's own declared laws (declared-laws plan S1); the full bundle below carries them too.
             "laws": [law.get("law_id") for law in bundle.get("laws") or []],
@@ -2072,13 +2073,15 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 return
             try:
                 self._progress("doing", "Reading your description")
+                added: list[str] = []
                 bundle, not_modeled, _ = generate_world_bundle(
                     description, model=model, trace_id=trace_id, max_budget=budget, world_kind=world_kind,
+                    added_out=added,
                 )
                 attempts: list[dict[str, Any]] = []
                 # Keep the best attempt: reaching the finish line beats merely
                 # allowing actions, which beats allowing nothing.
-                best: tuple[tuple[int, int, int], dict[str, Any], CausalModel, dict[str, Any], dict[str, Any], list[str]] | None = None
+                best: tuple[tuple[int, int, int], dict[str, Any], CausalModel, dict[str, Any], dict[str, Any], list[str], list[str]] | None = None
                 # An ongoing world whose best rules still leave a step impossible or an actor idle gets its structure
                 # redesigned once from that evidence: rule rewrites cannot add a missing action or field (#187).
                 structures = STRUCTURE_ATTEMPTS if world_kind != "task" else 1
@@ -2098,10 +2101,12 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         self._progress("doing", "Redesigning what each one can do",
                                        "the test run showed steps that could never happen")
                         try:
+                            redesign_added: list[str] = []
                             bundle, not_modeled, _ = generate_world_bundle(
                                 description, model=model, trace_id=trace_id, max_budget=budget, world_kind=world_kind,
-                                feedback=redesign_feedback, previous=bundle,
+                                feedback=redesign_feedback, previous=bundle, added_out=redesign_added,
                             )
+                            added = redesign_added
                         except Exception as error:
                             # The first design's rules still stand; a failed redesign must not end the build.
                             if best is None or not (isinstance(error, ValueError)
@@ -2119,6 +2124,8 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                     )
                     if not_modeled:
                         self._progress("note", "Left out of the simulation", "", [str(x).rstrip(". ") for x in not_modeled])
+                    if added:
+                        self._progress("note", "Added to make it run", "", [str(x).rstrip(". ") for x in added])
                     if bundle.get("laws"):
                         self._progress("note", "Laws this world keeps", "", [str(law.get("says", "")).rstrip(". ") for law in bundle["laws"]])
                     guidance = ""
@@ -2455,10 +2462,10 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         self._progress("done", "Test run: " + _dry_run_sentence(result_row, world_kind))
                         rank = _attempt_rank(score, result_row)
                         if best is None or rank > best[0]:
-                            best = (rank, candidate, candidate_compiled, result_row, bundle, not_modeled)
+                            best = (rank, candidate, candidate_compiled, result_row, bundle, not_modeled, added)
                         if structure_best is None or rank > structure_best[0]:
                             structure_best = (rank, guidance, candidate)
-                            structure_best_entry = (rank, candidate, candidate_compiled, result_row, bundle, not_modeled)
+                            structure_best_entry = (rank, candidate, candidate_compiled, result_row, bundle, not_modeled, added)
                         out_of_budget = out_of_budget or _trace_cost(trace_id) >= budget - 0.01
                         if (score >= top and not result_row.get("review_findings")) or last_try or out_of_budget:
                             break
@@ -2467,9 +2474,9 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         # No try of this structure was reviewed: the last try by number failed to compile, so the
                         # gate above never fired (pencil s3p2, 2026-10-29: the kept world was never reviewed). Review
                         # the structure's best try now, so its findings reach the redesign and the build record.
-                        _, rules_b, compiled_b, row_b, bundle_b, not_modeled_b = structure_best_entry
+                        _, rules_b, compiled_b, row_b, bundle_b, not_modeled_b, added_b = structure_best_entry
                         found = review_try(row_b, rules_b, bundle_b)
-                        reranked = (_attempt_rank(row_b["score"], row_b), rules_b, compiled_b, row_b, bundle_b, not_modeled_b)
+                        reranked = (_attempt_rank(row_b["score"], row_b), rules_b, compiled_b, row_b, bundle_b, not_modeled_b, added_b)
                         if best is None or best[3] is row_b or reranked[0] > best[0]:
                             best = reranked
                         structure_best = (reranked[0], _review_findings_first(structure_best[1], found) if found
@@ -2487,7 +2494,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                         break
                     redesign_feedback = structure_feedback
                 assert best is not None
-                _, causal, compiled, best_row, bundle, not_modeled = best
+                _, causal, compiled, best_row, bundle, not_modeled, added_to_run = best
                 if "actor_information" in bundle and not best_row.get("actor_inputs_reviewed"):
                     found, _ = review_rules(description, bundle, causal, trace_id=trace_id, max_budget=budget)
                     best_row["review_findings"] = found
@@ -2507,6 +2514,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "run_stop": run_stop,
                 "judge_rulings": judge_rulings,
                 "not_modeled": not_modeled,
+                "added_to_run": added_to_run,
                 "bundle": bundle,
                 "causal_model": causal,
                 "review": compiled.as_review(),

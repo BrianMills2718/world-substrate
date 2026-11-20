@@ -205,6 +205,43 @@ class GenerateWorldBundleTests(unittest.TestCase):
                     generate_world_bundle(bad, trace_id="t", max_budget=0.01)
         call.assert_not_called()
 
+    @pytest.mark.req("world-authoring-bundle/the-contract-names-both-fields")
+    def test_contract_names_added_to_run_and_keeps_not_modeled_for_unrepresented_parts(self):
+        from scripts.generate_world_bundle import _contract
+        contract = _contract()
+        self.assertIn("added_to_run", contract)
+        self.assertIn("never", contract["not_modeled"].lower())
+        self.assertIn("added", contract["not_modeled"])
+
+    @pytest.mark.req("world-authoring-bundle/additions-are-returned-beside-the-bundle")
+    def test_added_to_run_is_returned_through_added_out_and_not_stored(self):
+        reply = json.dumps(dict(FRESH_ORCHARD, added_to_run=["a doorway"], not_modeled=["before noon"]))
+        module, _ = fake_llm(reply, reply)
+        out: list[str] = []
+        with patch.dict(sys.modules, {"llm_client": module}):
+            bundle, not_modeled, _ = generate_world_bundle("orchard", trace_id="t", added_out=out)
+            self.assertEqual(out, ["a doorway"])
+            self.assertEqual(not_modeled, ["before noon"])
+            self.assertNotIn("added_to_run", bundle)
+            self.assertNotIn("not_modeled", bundle)
+            self.assertEqual(len(generate_world_bundle("orchard", trace_id="t")), 3)
+
+    @pytest.mark.req("world-authoring-bundle/a-malformed-additions-list-is-repaired")
+    def test_malformed_added_to_run_drives_one_repair(self):
+        bad = json.dumps(dict(FRESH_ORCHARD, added_to_run="a doorway"))
+        module, call = fake_llm(bad, json.dumps(FRESH_ORCHARD))
+        with patch.dict(sys.modules, {"llm_client": module}):
+            generate_world_bundle("orchard", trace_id="t")
+        self.assertEqual(call.call_count, 2)
+        self.assertIn("added_to_run", call.call_args_list[1].args[1][-1]["content"])
+
+    @pytest.mark.req("world-authoring-bundle/a-redesign-keeps-earlier-additions")
+    def test_redesign_message_keeps_earlier_additions(self):
+        module, call = fake_llm(json.dumps(FRESH_ORCHARD))
+        with patch.dict(sys.modules, {"llm_client": module}):
+            generate_world_bundle("orchard", trace_id="t", feedback="x", previous=FRESH_ORCHARD)
+        self.assertIn("added_to_run", call.call_args_list[0].args[1][-1]["content"])
+
 
 if __name__ == "__main__":
     unittest.main()
