@@ -1249,6 +1249,97 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 200, payload)
         self.assertTrue(payload["summary"]["terminal_reached"])
 
+    def _stub_run(self, *, fail=False, gate=None):
+        """A stand-in for the run step: counts calls, optionally waits on `gate`, no model is called."""
+        calls = []
+
+        def stub(handler, client, body):
+            calls.append(body)
+            if gate is not None:
+                gate.wait(10)
+            if fail:
+                handler._error(422, "x")
+            else:
+                handler._json(200, {"ok": True})
+
+        return calls, patch.object(service.WorldBuilderHandler, "_run", stub)
+
+    @pytest.mark.req("world-builder-page/the-same-request-twice-while-the-run-is-going")
+    def test_same_run_request_twice_while_running_returns_the_first_job(self):
+        release = threading.Event()
+        calls, stub = self._stub_run(gate=release)
+        body = {"bundle": BUNDLE, "turns": 1, "async": True}
+        with stub:
+            status, first = self.post("/run", body)
+            status2, second = self.post("/run", dict(body))
+            release.set()
+            self.wait_for_job(first["job_id"])
+        self.assertEqual((status, status2), (202, 202))
+        self.assertEqual(first["job_id"], second["job_id"])
+        self.assertTrue(second.get("deduplicated"))
+        self.assertEqual(len(calls), 1)
+
+    @pytest.mark.req("world-builder-page/a-repeated-continued-round-after-it-finished")
+    def test_repeated_continued_round_after_it_finished_returns_the_first_job(self):
+        calls, stub = self._stub_run()
+        body = {"continue_from": {"round": 1}, "async": True}
+        with stub:
+            _, first = self.post("/run", body)
+            self.wait_for_job(first["job_id"])
+            _, second = self.post("/run", body)
+        self.assertEqual(first["job_id"], second["job_id"])
+        self.assertEqual(len(calls), 1)
+
+    @pytest.mark.req("world-builder-page/a-repeat-after-a-failed-job-starts-a-new-run")
+    def test_repeat_after_a_failed_job_starts_a_new_run(self):
+        calls, stub = self._stub_run(fail=True)
+        body = {"continue_from": {"round": 1}, "async": True}
+        with stub:
+            _, first = self.post("/run", body)
+            self.wait_for_job(first["job_id"])
+            _, second = self.post("/run", body)
+            self.wait_for_job(second["job_id"])
+        self.assertNotEqual(first["job_id"], second["job_id"])
+        self.assertEqual(len(calls), 2)
+
+    @pytest.mark.req("world-builder-page/a-finished-fresh-run-is-not-reused")
+    def test_finished_fresh_run_is_not_reused(self):
+        calls, stub = self._stub_run()
+        body = {"bundle": BUNDLE, "turn_offset": 0, "async": True}
+        with stub:
+            _, first = self.post("/run", body)
+            self.wait_for_job(first["job_id"])
+            _, second = self.post("/run", body)
+            self.wait_for_job(second["job_id"])
+        self.assertNotEqual(first["job_id"], second["job_id"])
+        self.assertEqual(len(calls), 2)
+
+    @pytest.mark.req("world-builder-page/a-different-request-is-not-deduplicated")
+    def test_different_run_requests_are_not_deduplicated(self):
+        release = threading.Event()
+        calls, stub = self._stub_run(gate=release)
+        base = {"continue_from": {"round": 1}, "async": True}
+        bodies = [
+            (base, None),
+            (dict(base, turn_offset=1), None),
+            (dict(base, turn_offset=2), None),
+            ({"catalog_run_id": "r1", "expected_checkpoint_id": "c1", "async": True}, None),
+            ({"catalog_run_id": "r1", "expected_checkpoint_id": "c2", "async": True}, None),
+            (base, {service.OWNER_HEADER: "correct horse"}),
+        ]
+        ids = []
+        with self._owner_env(), stub:
+            for body, headers in bodies:
+                status, started = self.post("/run", body, extra_headers=headers)
+                self.assertEqual(status, 202, started)
+                self.assertFalse(started.get("deduplicated"))
+                ids.append(started["job_id"])
+            release.set()
+            for job_id in ids:
+                self.wait_for_job(job_id)
+        self.assertEqual(len(set(ids)), len(bodies))
+        self.assertEqual(len(calls), len(bodies))
+
     def _owner_env(self):
         return patch.dict(service.os.environ, {"WORLD_BUILDER_OWNER_PASSWORD": "correct horse"})
 
