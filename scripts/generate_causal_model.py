@@ -506,9 +506,11 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
             "{owner_ref: X} for a thing X on the left of a check (that would ask whether X owns itself).",
             "Terminal, if present, must be derivable from represented state and must not duplicate a completion flag.",
             "Limits and tests must name omissions and refusal/boundary cases honestly.",
-            "Every check label is a short plain-English condition a visitor understands, using entity labels "
-            "(e.g. \"the watering can is free\", \"Ava is holding the knife\"); never jargon such as actor, "
-            "owner_ref, context, entity, component or participant.",
+            "Every check label is a short plain-English requirement a visitor understands, using entity labels "
+            "(e.g. \"the watering can must be free\", \"Ava must be holding the knife\", \"only the dispatcher can "
+            "request training\"); never jargon such as actor, owner_ref, context, entity, component or participant. "
+            "A refusal shows the failed check's label as the unmet need, so never word a label as a claim about the "
+            "person trying (\"you are the dispatcher\"): name the requirement, not the person's state.",
         ],
     }
 

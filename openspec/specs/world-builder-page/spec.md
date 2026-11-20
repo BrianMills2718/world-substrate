@@ -90,19 +90,28 @@ Source: Cold first-visit review, 2026-10-05 (headline promised refusals; none vi
 
 ### Requirement: Rule checks read as plain English
 
-Rule checks read as plain English with the things' names, never jargon.
+Rule checks read as plain English with the things' names, never jargon. A check's label states the requirement
+("only the dispatcher can request training"), never a claim about the person trying ("you are the dispatcher"), because
+a refusal shows the label as the unmet need.
 
 Where it is enforced: label rule in `scripts/generate_causal_model.py`.
 
 Router heuristic: existing: `every-label-explains-itself`.
 
-Source: Cold first-visit review, 2026-10-05 ("ownership context", "Actor is available")
+Source: Cold first-visit review, 2026-10-05 ("ownership context", "Actor is available"); requirement wording inferred
+by agent from world-substrate#245.
 
 #### Scenario: A rule check is shown
 
 - **WHEN** the page shows a rule check
 - **THEN** it reads as plain English with the things' names
 - **AND** it uses no internal jargon such as "ownership context"
+
+#### Scenario: A refusal names the unmet requirement
+
+- **WHEN** a move is refused because a role check failed
+- **THEN** the reason reads as the requirement ("only the dispatcher can request training")
+- **AND** it does not read as a statement about the person trying ("you are the dispatcher")
 
 ### Requirement: Surprise world and clarifying dialogue
 
@@ -396,108 +405,130 @@ The existing native composed scene SHALL be the primary world presentation, sync
 - **AND** causal and actor-input inspection retain the same selected context
 
 ### Requirement: The draft keeps every named group
+
 When a description names people or groups, the builder checks the draft against it, asks again once for any it left out, and says in plain words how many of the named groups are in the draft and which are not.
 
 Source: Brian, 2026-11-16: "i want you to build out the whole ux/ui using best practices and considering designs for simliar projgrams" (docs/goals/unified-world-ux.md, increment 6).
 
 #### Scenario: the-draft-keeps-every-named-group
+
 - **WHEN** a description names ten groups and the first draft has four
 - **THEN** the builder asks again with the six missing names
 - **AND** the draft says how many named groups it holds and lists any still left out
 
 ### Requirement: A world that will stall says so on the run page
+
 When the quick test of a freshly built world went quiet, left groups unable to act, or got stuck on one move, the run page shows that warning in plain words before the person plays, and the build wait message gives an honest time.
 
 Source: Brian, 2026-11-16: "i want you to build out the whole ux/ui using best practices and considering designs for simliar projgrams" (docs/goals/unified-world-ux.md, increment 7).
 
 #### Scenario: a-world-that-will-stall-says-so-on-the-run-page
+
 - **WHEN** a build goes straight to the run and its quick test ended with nobody able to act
 - **THEN** the run page shows the warning above the run controls
 - **AND** the build wait message says it usually takes two to three minutes
 - **AND** on a narrow screen the library list is capped in height so the map is not pushed off the first screen
 
 ### Requirement: A what-if branch can change one group's brief
+
 When the owner branches a run at a finished round, they may name one group and write one sentence; the branch's groups play on with that sentence added to that group's own brief, and the branch says which group was changed and what it was told. No other group's brief and no rule changes, and the original run is unchanged.
 
 Source: Brian, 2026-11-16: "i want you to build out the whole ux/ui using best practices and considering designs for simliar projgrams" (docs/goals/unified-world-ux.md, canonical example: "branches with one change").
 
 #### Scenario: a-what-if-branch-can-change-one-groups-brief
+
 - **WHEN** the owner picks the legal group, writes "Its data-sharing concern was settled last week", and presses What if from round 2
 - **THEN** the branch's first round runs with that sentence added to the legal group's brief only
 - **AND** the branch label names the legal group and the sentence, and the original run is unchanged
 
 ### Requirement: The dialogue is one thread
+
 The describe stage is a single conversation with one message box and a Run button; talking to the AI continues the same thread instead of opening a separate dialogue.
 
 Source: Brian, 2026-11-17: "the ui should just be more like chatgpt with a run button so that its not really a fully separate dialogue box if you want dialogue its just a continuation of the origianl"
 
 #### Scenario: the-dialogue-is-one-thread
+
 - **WHEN** a person sends a message and the AI answers
 - **THEN** the answer, its questions and a draft of the world appear in the thread above the same message box
 - **AND** Run builds the latest draft, or the typed text when there is no draft yet
 
 ### Requirement: A visitor is told runs are not saved
+
 When no owner password is set in the browser, the describe stage shows beside Run that the world and its runs will not be saved, with a button that opens owner access; the notice is hidden once owner access is on.
 
 Source: Brian, 2026-11-17: "also it doesnt seem to save runs"
 
 #### Scenario: a-visitor-is-told-runs-are-not-saved
+
 - **WHEN** a person without owner access opens the page
 - **THEN** the notice and its Turn on owner access button show next to Run
 - **AND** after owner access is entered the notice is hidden
 
 ### Requirement: Everyone has owner access
+
 When the server runs with open access on, every visitor is treated as the owner: worlds and runs are saved to one shared library everyone sees, spending comes from the one owner daily allowance, and the page shows no password control. Turning the setting off restores the owner password.
 
 Source: Brian, 2026-11-17: "A everyone gets owner level."
 
 #### Scenario: everyone-has-owner-access
+
 - **WHEN** open access is on and a person opens the page with no password
 - **THEN** the service reports owner mode and open access
 - **AND** the page shows no Owner access control and no not-saved notice, and the library is shown
 
 ### Requirement: The outcome bar follows the round
+
 For a world with a group decision, the run page shows above the map where the decision stands after the round the map shows: the question, its status, support and conditional counts against the number needed, each position counted, meetings held and the deadline meeting. It changes when the round slider moves and is absent for a world with no group decision.
 
 Source: Brian, 2026-11-17: "on decision 2 i apprbe yourr ecommendatino"
 
 #### Scenario: the-outcome-bar-follows-the-round
+
 - **WHEN** a run of a world with a group decision is open and the round slider moves from round 1 to a later round
 - **THEN** the bar shows the counts after that round
 - **AND** a world with no group decision shows no bar
 
 ### Requirement: The run chart compares support by round
+
 For a branch of a world with a group decision, the run page shows a chart of the number of groups supporting it by round for the original run and the branch, with the number needed and the fork round marked. The two lines differ by style and are named in words, not colour alone. The branch line starts at the original's value at the fork round.
 
 Source: Brian, 2026-11-17: "on decision 2 i apprbe yourr ecommendatino"
 
 #### Scenario: the-run-chart-compares-support-by-round
+
 - **WHEN** a saved branch of a world with a group decision is open
 - **THEN** a chart shows the original and the branch by round, with the fork round marked
 - **AND** a run that is not a branch shows no chart
 
 ### Requirement: The run page opens in a plain Simple view
+
 The run page SHALL open a saved run in a Simple view that says what the world is, shows the outcome bar and support chart, and tells what happened in plain sentences round by round. The detailed screen SHALL remain available, unchanged, as the Advanced view behind a switch, and the choice SHALL be remembered per browser. The account SHALL be written once per saved checkpoint, from the server's own record of the run, by an AI step whose every sentence cites events of that round; a sentence without a supporting event SHALL be dropped and counted, and a round or slice that could not be written SHALL be named.
 
 #### Scenario: simple-view-story
+
 - **WHEN** a person reopens a saved run
 - **THEN** the page shows the plain per-round account by default, the detailed screen is one switch away, and opening the same run again makes no AI call
 
 Source: Brian, 2026-11-17: "no one would be able to be dropped in here and udnerstnad htis. i feel like we need a simple and advanced interface probably"; then "i approve" to the simple-by-default option.
 
 ### Requirement: Your worlds is its own tab
+
 The page SHALL show two tabs, "New world" (describe and run) and "Your worlds" (the saved library), and the library SHALL NOT appear on the describe page. Leaving a run for the library SHALL open the "Your worlds" tab.
 
 #### Scenario: your-worlds-is-its-own-tab
+
 - **WHEN** a person opens the page
 - **THEN** the describe page has no library under it, and the "Your worlds" tab shows the saved worlds
 
 Source: Brian, 2026-11-17: "your worlds should be a differnt tab then the generate page"
 
 ### Requirement: The Simple view discloses progressively
+
 The Simple view SHALL show only what a newcomer needs first: the world in a short clamped description with a Read more control, the outcome, the map, and one collapsed card per round with a one-line headline. Opening a round SHALL show its sentences as short bullets, only the round shown on the map SHALL be open, and choosing a round SHALL move the map and the numbers to it. The list of every world and branch and the run controls SHALL be folded away in the Simple view and remain in the Advanced view.
 
 #### Scenario: simple-view-discloses-progressively
+
 - **WHEN** a person opens a saved run
 - **THEN** the list of worlds and branches is not shown, the rounds are collapsed cards with headlines, and only the shown round is open
 

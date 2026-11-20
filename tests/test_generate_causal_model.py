@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+
+import pytest
 import sys
 import unittest
 from types import ModuleType, SimpleNamespace
@@ -57,6 +59,19 @@ class CausalModelGenerationSchemaTests(unittest.TestCase):
         self.assertTrue(any("there is no 'or'" in rule for rule in rules))
         # pencil czt5uoGw5t3L: a purchase across continents is an order from afar, not a meeting
         self.assertTrue(any("sent from afar" in rule and "no same-place check" in rule for rule in rules))
+
+    @pytest.mark.req("world-builder-page/a-refusal-names-the-unmet-requirement")
+    def test_check_labels_are_worded_as_requirements_not_facts(self):
+        # #245: a refusal shows the failed check's label, so "you are the dispatcher" read as a false statement
+        # about Sam. The context must ask for the requirement itself ("only the dispatcher can request training").
+        from scripts.generate_causal_model import _context
+        bundle = validate_bundle(json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text()))
+        rules = _context(bundle)["authority_rules"]
+        label_rules = [rule for rule in rules if "check label" in rule]
+        self.assertEqual(len(label_rules), 1)
+        self.assertIn("requirement", label_rules[0])
+        self.assertIn("only the dispatcher can request training", label_rules[0])
+        self.assertIn("never", label_rules[0])  # never "you are ...": a refusal shows the label as the unmet need
 
     def test_rules_writer_can_declare_knock_on_processes(self):
         # open_attempt S2: a process may run immediately; the context says when to choose it.
