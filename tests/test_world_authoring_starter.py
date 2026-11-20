@@ -81,3 +81,26 @@ class WorldAuthoringStarterTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+@pytest.mark.req("world-authoring-bundle/a-bundle-is-checked-in-two-layers")
+def test_reserved_delivery_component_must_declare_the_fields_the_engine_reads():
+    """#457: a world's own `delivery` component without recipient_id crashed observation; it is a bundle finding."""
+    import copy
+    import json
+    from pathlib import Path
+
+    from scripts.scaffold_world import BundleError, validate_bundle
+
+    path = Path(__file__).resolve().parents[1] / "examples/native_coordination/constrained-handoff-v0.json"
+    bundle = json.loads(path.read_text())
+    validate_bundle(copy.deepcopy(bundle))
+    broken = copy.deepcopy(bundle)
+    delivery = next(c for c in broken["components"] if c["name"] == "delivery")
+    delivery["fields"] = [f for f in delivery["fields"] if f["name"] != "recipient_id"]
+    for entity in broken["entities"]:
+        values = (entity.get("components") or {}).get("delivery")
+        if values:
+            values.pop("recipient_id", None)
+    with pytest.raises(BundleError, match="delivery.*recipient_id"):
+        validate_bundle(broken)

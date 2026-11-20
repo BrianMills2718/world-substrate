@@ -20,6 +20,13 @@ FIELD_TYPES = {
 ACTION_TYPES = {"string": "str", "integer": "int", "number": "float", "boolean": "bool", "entity_ref": "str"}
 RESERVED_ACTION_FIELDS = {"actor", "kind", "base_revision", "controller"}
 
+# Components the engine's observation filter reads by name: a world that declares one must declare at least the
+# fields it reads, or observing the world raises AttributeError (issue #457).
+ENGINE_READ_FIELDS = {
+    "information": ("source_id", "visibility", "active"),
+    "delivery": ("info_id", "recipient_id", "status"),
+}
+
 class BundleError(ValueError):
     pass
 
@@ -133,6 +140,10 @@ def validate_bundle(value: object) -> dict[str, Any]:
             if kind not in FIELD_TYPES: raise BundleError(f"unsupported field type {kind!r} at {name}.{fname}")
             if "default" not in field or not _type_ok(kind, field.get("default")):
                 raise BundleError(f"default for {name}.{fname} does not match {kind}")
+        missing = [f for f in ENGINE_READ_FIELDS.get(name, ()) if f not in seen]
+        if missing:
+            raise BundleError(f"component {name} is read by the engine's information rules and must also declare {missing}; "
+                              f"declare those fields or use another component name")
         component_map[name] = comp
 
     entities = value.get("entities")
