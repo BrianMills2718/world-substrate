@@ -1,0 +1,12 @@
+{
+  "need": "The page lists what the world builder added to make a world run apart from what it left out.",
+  "searched": [
+    {"place": "own", "where": "scripts/generate_world_bundle.py, scripts/world_builder_home.html, scripts/people_world.py", "query": "not_modeled, Left out of the simulation", "found": "One list (not_modeled) is the only channel; nothing carries additions."},
+    {"place": "own", "where": "~/code2/workspace/docs/capabilities.md", "query": "builder assumptions, added items, left-out list", "found": "Nothing listed for separating added items from unrepresented ones."}
+  ],
+  "candidates": [
+    {"name": "Classify not_modeled items after the fact", "url": "https://github.com/BrianMills2718/world-substrate/issues/241", "covers": "Needs no contract change.", "misses": "Needs regex over prose or an extra AI call per build.", "verdict": "reject", "reason": "Core rule forbids regex on prose; the designer already knows which is which, so a field fixes it at the origin."}
+  ],
+  "decision": "adapt",
+  "decided": "2026-11-20"
+}
