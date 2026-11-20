@@ -1,0 +1,12 @@
+{
+  "need": "A refused move's reason reads as the unmet requirement, not as a claim about the person.",
+  "searched": [
+    {"place": "own", "where": "scripts/generate_causal_model.py label rule; scripts/run_authored_world.py refused_because", "query": "where the refusal text comes from", "found": "The reason is the rule writer's check label, copied unchanged to every surface; the only place to word it is the label rule in the prompt."},
+    {"place": "own", "where": "~/code2/workspace/docs/capabilities.md", "query": "refusal text, label rewriting", "found": "Nothing listed for rewording refusal reasons."}
+  ],
+  "candidates": [
+    {"name": "Reword labels at refusal time", "url": "https://github.com/BrianMills2718/world-substrate/issues/245", "covers": "Fixes old saved worlds too.", "misses": "Needs an AI call per refusal or regex over prose, which the core rules forbid.", "verdict": "reject", "reason": "Cost and rule; the prompt fix is at the origin."}
+  ],
+  "decision": "adapt",
+  "decided": "2026-11-20"
+}
