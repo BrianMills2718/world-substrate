@@ -631,6 +631,8 @@ class RecordedWaltzmanRunTests(unittest.TestCase):  # S5/S6: claims in the Asses
         recorded = json.loads((RUN2 / "run/bundle_after_run.json").read_text())
         bundle["actions"] = recorded["actions"]
         bundle["components"] = recorded["components"]
+        for entity in bundle["entities"]:  # the recorded run predates dropping member.authorized/approved (#231)
+            entity["components"].get("member", {}).update(authorized=False, approved=False)
         for entity in bundle["entities"]:  # the recorded run predates the moment's happening_now field
             entity["components"].get("moment", {}).pop("happening_now", None)
         causal, pinned = pin_named_slots(spec, json.loads((RUN2 / "run/causal_after_run.json").read_text()))

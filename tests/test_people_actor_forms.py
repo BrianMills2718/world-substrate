@@ -33,3 +33,16 @@ def test_replay_records_old_missing_privacy_verdict_as_stopped_without_approval(
         result = replay_build.replay(tmp_path)
     assert result['kept'] is None
     assert result['stopped'] == 'ActorInputPrivacyError: actor-input review is missing or malformed'
+
+
+def test_people_member_record_has_no_unwritten_authorized_or_approved_fields():
+    """Issue #231: nothing writes member.authorized/approved, and residents read them as 'not approved'."""
+    calls = [json.loads(line) for line in (ROOT / 'evidence/i0-i1/local-integration-1/llm-calls.jsonl').read_text().splitlines()]
+    spec = ScenarioSpecV1.model_validate_json(calls[0]['response'])
+    bundle, _, _ = compile_spec(spec)
+    member = next(c for c in bundle['components'] if c['name'] == 'member')
+    assert {f['name'] for f in member['fields']} == {'role', 'aware'}
+    people = [e for e in bundle['entities'] if 'member' in e['components']]
+    assert people
+    for e in people:
+        assert set(e['components']['member']) == {'role', 'aware'}
