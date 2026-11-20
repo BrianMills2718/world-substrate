@@ -24,6 +24,18 @@ class WorldBuilderHomeTests(unittest.TestCase):
         # Slow enough to read a round before the next one replaces it.
         self.assertGreaterEqual(int(re.search(r"REPLAY_PAUSE_MS = (\d+)", self.page).group(1)), 2000)
 
+    @pytest.mark.req("world-builder-page/the-page-shows-two-separate-lists")
+    @pytest.mark.req("world-builder-page/nothing-was-added")
+    def test_added_items_get_their_own_disclosure(self):
+        # #241: what the builder added is not "left out".
+        self.assertIn("Added to make it run", self.page)
+        self.assertIn("data.added_to_run", self.page)
+        self.assertIn("if ((data.added_to_run || []).length)", self.page)
+        left_out = self.page.split("if ((data.not_modeled || []).length)")[1].split("if ((data.added_to_run || []).length)")[0]
+        self.assertIn("Left out of the simulation", left_out)
+        self.assertIn("data.not_modeled", left_out)
+        self.assertNotIn("added_to_run", left_out)
+
     @pytest.mark.req("causal-model-authoring/create-simulation-starts-the-run")
     @pytest.mark.req("world-builder-page/a-world-is-built-from-a-description")
     def test_create_simulation_generates_then_plays_without_a_review_stop(self):

@@ -166,7 +166,13 @@ def _contract() -> dict[str, Any]:
             "represent with this format. Almost everything can be: money, prices, revenue, wages, feelings and "
             "distances are number fields; places are entities; packaging and small materials are entities or "
             "counted stock; delivery and travel times and deadlines are round counts. List only what truly cannot "
-            "be (dice-roll chance, real clock time). Use [] when everything was represented."
+            "be (dice-roll chance, real clock time). Never list here something you added to the world: put that in "
+            "added_to_run. Use [] when everything was represented."
+        ),
+        "added_to_run": (
+            "Optional top-level list of short plain-English strings naming each thing you ADDED that the "
+            "description does not state, so the world can run (for example a doorway to give the actors a passable "
+            "route). Use [] when you added nothing."
         ),
         "rules": [
             "actor_information is REQUIRED for every fresh proposal, including a redesign. Use version 1 and a "
@@ -307,13 +313,18 @@ def generate_world_bundle(
     world_kind: str = "task",
     feedback: str = "",
     previous: dict[str, Any] | None = None,
+    added_out: list[str] | None = None,
 ) -> tuple[dict[str, Any], list[str], Any]:
     """Return (validated bundle, parts of the description not represented, last LLM result).
 
     With ``feedback`` and the ``previous`` bundle, the model redesigns that structure from what a test run of
     rules written for it showed; rule rewrites alone cannot add a missing action or field.
 
+    Things the designer added that the description does not state (``added_to_run``) are written into
+    ``added_out`` in place when the caller passes a list; the return shape is unchanged.
+
     Implements: world-builder-page/unrepresentable-parts-are-listed
+    Implements: world-builder-page/builder-additions-are-listed-apart-from-what-was-left-out
     """
     if not isinstance(description, str) or not description.strip():
         raise ValueError("description must be a nonempty string")
@@ -337,7 +348,8 @@ def generate_world_bundle(
                     "fields let every step and every actor happen, keeping what already worked. Keep the world's "
                     "resources and laws, updated for every action you add, rename or change: a move that makes or "
                     "uses up a resource belongs in that law's may_change_by, and a trade its pairing law names must "
-                    "still exist."
+                    "still exist. Return the full added_to_run list: keep earlier items that still hold, and add "
+                    "anything new you add. Never put an addition in not_modeled."
                 ),
             },
         ]
@@ -360,6 +372,9 @@ def generate_world_bundle(
             not_modeled = parsed.pop("not_modeled", [])
             if not isinstance(not_modeled, list) or not all(isinstance(x, str) for x in not_modeled):
                 raise BundleError("not_modeled must be a list of strings")
+            added = parsed.pop("added_to_run", [])
+            if not isinstance(added, list) or not all(isinstance(x, str) for x in added):
+                raise BundleError("added_to_run must be a list of strings")
             if "actor_information" not in parsed and not is_recorded_authoring_replay():
                 raise BundleError("fresh world proposal must declare actor_information version 1")
             bundle = validate_bundle(parsed)
@@ -379,6 +394,8 @@ def generate_world_bundle(
                 raise BundleError(
                     "the redesign dropped the world's resources and laws; return them, updated for the new actions"
                 )
+            if added_out is not None:
+                added_out[:] = [x.strip() for x in added if x.strip()][:8]
             return bundle, [x.strip() for x in not_modeled if x.strip()][:8], result
         except (BundleError, ValueError, TypeError, KeyError) as error:
             last_error = error
