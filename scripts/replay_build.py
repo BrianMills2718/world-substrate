@@ -33,7 +33,9 @@ def recorded_llm_client(calls: list[dict[str, Any]], asked: list[dict[str, Any]]
     """A stand-in llm_client whose calls return the recorded replies, matched by prompt, oldest first."""
     import llm_client as real
 
-    ordered = sorted(calls, key=lambda c: c["id"])
+    # Evidence may keep only figures for play calls (s4-waltzman-5 kept text for build and judge calls only); a row
+    # without its prompt and reply cannot answer a build call.
+    ordered = sorted((c for c in calls if c.get("messages") and "response" in c), key=lambda c: c["id"])
     keys = {call["id"]: _key(json.loads(call["messages"])) for call in ordered}
     used: set[int] = set()
 
@@ -114,6 +116,12 @@ def replay(folder: Path, follow_record: bool = False) -> dict[str, Any]:
         # as a stopped replay, never manufacture approval or abort later worlds.
         out["stopped"] = f"{type(error).__name__}: {error}"
         out["source_draft_review"] = error.review
+    except ValueError as error:
+        # Old replies today's world checks reject (2026-11-20: #282 made the payer start a purchase, and the
+        # s2-pencil-4 replies stopped validating) are a stopped replay, not a crash that hides every later world.
+        if not str(error).startswith("world proposal remained invalid"):
+            raise
+        out["stopped"] = f"today's checks reject the recorded world: {error}"[:600]
     finally:
         service.RULES_SIDE_BY_SIDE = side_by_side
         if real is None:
