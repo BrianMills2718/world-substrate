@@ -39,5 +39,6 @@
     }
   ],
   "decision": "build",
-  "decided": "2026-11-20"
+  "decided": "2026-11-20",
+  "gap": "No candidate carries a builder's own additions apart from the parts of a description it could not represent; this needs one field in our world-design contract and one heading on our page."
 }
