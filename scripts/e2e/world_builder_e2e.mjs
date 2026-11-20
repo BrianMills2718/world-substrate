@@ -25,7 +25,11 @@ const LONG = 600000;
 async function buildAndRun(p, kind, log) {
   // Create simulation goes straight to the running world (2026-10-15); the rules open only when they cannot run.
   await Promise.race([p.locator('#stage-run').waitFor({ state: 'visible', timeout: LONG }), p.locator('#stage-review').waitFor({ state: 'visible', timeout: LONG }), p.locator('#stage-describe .notice').waitFor({ timeout: LONG })]);
-  if (await p.locator('#stage-review').isVisible()) throw new Error('rules cannot run: ' + (await p.textContent('#dry-notice')));
+  // The page can show the rules panel for a moment before the running world (#475): fail only if it stays up.
+  if (await p.locator('#stage-review').isVisible()) {
+    await p.locator('#stage-run').waitFor({ state: 'visible', timeout: 30000 }).catch(() => {});
+    if (!(await p.locator('#stage-run').isVisible())) throw new Error('rules cannot run: ' + (await p.textContent('#dry-notice')));
+  }
   if (!(await p.locator('#stage-run').isVisible())) throw new Error('build failed: ' + (await p.textContent('#service-status')));
   log('quick test', (await p.textContent('#dry-notice')).trim());
   // Live play: rounds appear one by one while you watch.
