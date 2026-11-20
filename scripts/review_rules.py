@@ -192,7 +192,10 @@ def starting_values(bundle: dict[str, Any]) -> dict[str, dict[str, Any]]:
 def review_rules(description: str, bundle: dict[str, Any], causal_model: dict[str, Any], *, trace_id: str,
                  max_budget: float, model: str = REVIEW_MODEL,
                  reasoning_effort: str = "medium") -> tuple[list[dict[str, str]], float]:
-    """(findings, cost); required source reviews fail closed on missing, invalid or rejected judgments."""
+    """(findings, cost); required source reviews fail closed on missing, invalid or rejected judgments.
+
+    Implements: causal-model-authoring/a-source-repair-also-passes-on-the-review-s-rule-findings
+    """
     from llm_client import call_llm_json_schema, render_prompt
 
     ids = rule_ids(causal_model)
@@ -256,6 +259,7 @@ def review_rules(description: str, bundle: dict[str, Any], causal_model: dict[st
         error = next((e for e in failures if not e.repairable), failures[0])
         error.feedback = "\n".join(e.feedback for e in failures)
         error.full_review = value
+        error.findings = findings  # the rule findings of the same review go to the one rewrite as well (#474)
         raise error
     return findings, float(getattr(result, "cost", 0.0) or 0.0)
 

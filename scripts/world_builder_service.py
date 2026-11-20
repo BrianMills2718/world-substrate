@@ -2720,13 +2720,17 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                                 guidance = _review_findings_first(guidance, found)
                         except Exception as error:
                             if isinstance(error, SourceDraftReviewError):
+                                rule_findings = list(getattr(error, "findings", None) or [])
+                                dry_row["review_findings"] = rule_findings
                                 feedback = retain_source_rejection(error, built, dry_row)
                                 best = None  # An invalid source draft can never become the kept fallback.
                                 if error.repairable and attempt == 0 and _trace_cost(trace_id) < budget - 0.15:
                                     self._progress("doing", "Repairing the world definition from the independent check",
                                                    str(error), [feedback])
                                     prepared, law_notes = prepare_source(feedback)
-                                    guidance = ""
+                                    # The same review's rule findings (s4w4: the deadline decision was missing) go to
+                                    # the one rewrite too; before #474 it heard the privacy feedback alone.
+                                    guidance = _review_findings_first("", rule_findings) if rule_findings else ""
                                     continue  # Reuse the existing second attempt and the same reservation and trace.
                                 raise
                             if "actor_information" in built["bundle"]:

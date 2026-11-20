@@ -1,0 +1,12 @@
+{
+  "need": "When the review rejects a draft's actor inputs, the one rewrite must also hear the same review's findings about rules the description asks for.",
+  "searched": [
+    {"place": "own", "where": "world-substrate scripts/world_builder_service.py (_review_findings_first, the normal rewrite path) and scripts/review_rules.py", "query": "how review findings reach a rewrite", "found": "The normal path already puts findings first with _review_findings_first; only the source-repair branch dropped them."},
+    {"place": "outside", "where": "Concordia and llm_client documentation", "query": "repair loops that merge several review verdicts", "found": "Neither offers a build-repair loop; the loop is World Builder's own."}
+  ],
+  "candidates": [
+    {"name": "_review_findings_first (existing)", "url": "https://github.com/BrianMills2718/world-substrate", "covers": "Formatting review findings first in rewrite guidance.", "verdict": "adopt", "reason": "The same helper the normal rewrite path uses; the fix only calls it on the repair path."}
+  ],
+  "decision": "adopt",
+  "decided": "2026-11-20"
+}
