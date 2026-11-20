@@ -533,6 +533,7 @@ def _result_summary(path: str, status: int, value: dict[str, Any]) -> dict[str, 
             "dry_run": value.get("dry_run"),
             "dry_run_attempts": value.get("dry_run_attempts"),
             "not_modeled": value.get("not_modeled"),
+            "group_check": value.get("group_check"),
             # The world's own declared laws (declared-laws plan S1); the full bundle below carries them too.
             "laws": [law.get("law_id") for law in bundle.get("laws") or []],
             # Full artifacts, so the exact world can be rebuilt and re-run later.
@@ -2795,6 +2796,7 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
                 "coverage": built["coverage"],
                 "dropped_generated_rules": built["dropped_generated_rules"],
                 "law_notes": law_notes,
+                "group_check": prepared.get("group_check"),  # #474: did the named-groups check run, and what it found
                 "dry_run": dry_row,
                 "dry_run_attempts": attempts,
                 "cost_usd": trace_cost,
