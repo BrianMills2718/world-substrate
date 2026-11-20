@@ -851,6 +851,51 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertEqual(status, 200, payload)
         self.assertNotIn("progress", payload)
 
+    def _steps_while_rules_are_written(self, world_double):
+        import threading
+        import time
+        release = threading.Event()
+
+        def slow_rules(*args, **kwargs):
+            release.wait(5)
+            return (CAUSAL, FakeResult())
+
+        with patch.object(service, "_trace_cost", return_value=0.004), patch.object(
+            service, "generate_world_bundle", **world_double,
+        ), patch.object(service, "generate_causal_model", side_effect=slow_rules):
+            status, started = self.post("/generate-world", {"description": "orchard", "async": True})
+            self.assertEqual(status, 202, started)
+            for _ in range(100):
+                status, running = self.get(f"/jobs/{started['job_id']}")
+                if any(st["step"] == "Writing the rules" for st in running.get("progress", [])):
+                    break
+                time.sleep(0.05)
+            steps = running["progress"]
+            release.set()
+            status, payload = self.wait_for_job(started["job_id"])
+        self.assertEqual(status, 200, payload)
+        return steps, payload
+
+    @pytest.mark.req("world-builder-page/the-builder-adds-a-doorway")
+    def test_generate_world_returns_added_to_run_apart_from_not_modeled(self):
+        doorway = "A doorway between the office and hangar"
+
+        def designer(description, **kw):
+            kw["added_out"][:] = [doorway]
+            return (BUNDLE, ["before noon"], FakeResult())
+
+        steps, payload = self._steps_while_rules_are_written({"side_effect": designer})
+        self.assertEqual(payload["added_to_run"], [doorway])
+        self.assertEqual(payload["not_modeled"], ["before noon"])
+        self.assertEqual(next(st for st in steps if st["step"] == "Added to make it run")["items"], [doorway])
+        self.assertEqual(next(st for st in steps if st["step"] == "Left out of the simulation")["items"], ["before noon"])
+
+    @pytest.mark.req("world-builder-page/nothing-was-added")
+    def test_no_added_step_when_nothing_was_added(self):
+        steps, payload = self._steps_while_rules_are_written({"return_value": (BUNDLE, ["before noon"], FakeResult())})
+        self.assertEqual(payload["added_to_run"], [])
+        self.assertFalse([st for st in steps if st["step"] == "Added to make it run"])
+
     def _people_built(self):
         return {"bundle": BUNDLE, "causal_model": CAUSAL, "briefs": {"ava": "You are Ava (picker). You want apples."},
                 "people": [{"id": "ava", "label": "Ava", "position": "picker"}], "coverage": {"rows": []},
