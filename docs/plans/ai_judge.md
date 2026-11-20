@@ -601,6 +601,12 @@ What the judge reads, measured from saved worlds (2026-11-09):
   (29,110 characters, about 8,600 tokens). The most steps in one round of any saved run today is 24.
 - **Worst case per judge call:** about 42,200 + 8,600 + 2,000 (attempt, pass 1 and instructions) = 53,000 input
   tokens and about 1,300 output tokens, so 53,000 x $0.10/M + 1,300 x $0.50/M = about $0.006.
+- **Pass 1, measured 2026-11-19 (world-substrate#473).** The estimate above allowed about 2,000 tokens for pass 1.
+  In `s4-waltzman-4` it was 1,161,410 characters (indented; for the person acting and the four people named, every
+  blocked binding of `communicate`, 80 each, with every check), so judge call 24925 read 285,114 input tokens, past
+  the 272k price step, for $0.0572. The judge now reads pass 1 grouped (`consequence_report.pass_one_reading`: each
+  move's blocked bindings as one entry with its count and failed checks, no passing checks): 40,865 characters for
+  the same pass 1, a 77,182-character prompt. The run record keeps pass 1 in full.
 
 Cost per run:
 

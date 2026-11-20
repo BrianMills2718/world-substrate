@@ -8,6 +8,9 @@ An attempt no installed rule covers commits no event, and knock-on effects start
   acting and of every person and thing the attempt names. `discover` lists only the moves of the person asked, so an
   officer's "sign release: blocked, the crate is inspected (false)" appears on the officer's page, never the trader's.
   The names come from the interpreter's reading (`world_substrate.attempt`, `names`).
+  `pass_one_reading` is what the judge reads of it: each person's blocked bindings of one move grouped, with
+  no passing checks (#473: 5 people x 80 blocked bindings made a 285,000-token judge prompt); the run
+  record keeps `pass_one` in full.
 - **Pass 2, a proposed rule** (`pass_two`): the rule, written in the declaration language every World Builder rule
   uses (`action-mechanic/v0`), goes through the same rules check a build's rules go through (`validate_bundle`, the
   causal compiler `CausalModel.from_dict`, the mechanic installer: `build_engine`), and is then test-run on a copy of
@@ -20,9 +23,11 @@ Nothing here calls a model or changes the real world: pass 1 reads it, pass 2 ru
 Implements: ai-judge/pass-1-reports-what-installed-rules-compute-for-the-people-an-attempt-involves
 Implements: ai-judge/pass-2-test-runs-a-proposed-rule-on-a-copy-of-the-world
 Implements: ai-judge/a-proposed-rule-goes-through-the-world-builder-s-rules-check
+Implements: ai-judge/the-judge-is-concordia-s-game-master-conditioned-on-the-world-and-the-consequence-report
 """
 from __future__ import annotations
 
+import json
 import sys
 from copy import deepcopy
 from pathlib import Path
@@ -82,6 +87,40 @@ def pass_one(engine: Engine, actor: str, named: Iterable[str], *, people: Iterab
         "values": {eid: _values(entities[eid]) for eid in [actor] + names},
     }
 
+
+
+def pass_one_reading(one: dict[str, Any]) -> dict[str, Any]:
+    """Pass 1 as the judge reads it. A person's blocked moves are grouped by move: how many bindings (choices of who
+    and what) are blocked, the first binding as an example, and each failed check with its value, what it requires
+    and how many bindings it stopped. Moves open to a person are given without their checks, which all pass. The
+    run record keeps `one` in full; nothing here changes it.
+
+    Implements: ai-judge/the-judge-is-concordia-s-game-master-conditioned-on-the-world-and-the-consequence-report
+    """
+    moves: dict[str, dict[str, list[dict[str, Any]]]] = {}
+    for person, page in one["moves"].items():
+        groups: dict[str, dict[str, Any]] = {}
+        for row in page.get("blocked") or []:
+            kind = str(row["action"].get("kind"))
+            group = groups.setdefault(kind, {"kind": kind, "bindings": 0, "example": dict(row["action"]), "failed": {}})
+            group["bindings"] += 1
+            seen: set[str] = set()
+            for check in row["checks"]:
+                if check.get("ok"):
+                    continue
+                key = json.dumps([check.get("label"), check.get("actual"), check.get("required")], default=str)
+                if key in seen:
+                    continue
+                seen.add(key)
+                failed = group["failed"].setdefault(key, {"check": check.get("label"), "actual": check.get("actual"),
+                                                          "required": check.get("required"), "bindings": 0})
+                failed["bindings"] += 1
+        moves[person] = {
+            "available": [{"action_id": row["action_id"], "action": dict(row["action"])}
+                          for row in page.get("available") or []],
+            "blocked": [{**group, "failed": list(group["failed"].values())} for group in groups.values()],
+        }
+    return {"actor": one["actor"], "named": list(one["named"]), "moves": moves, "values": deepcopy(one["values"])}
 
 # Implements: native-coordination/independent-generated-concern-procedure
 _INDEPENDENT_COMPONENTS = frozenset({"information", "delivery", "technical_condition", "validation_decision", "actor_position", "technical_role", "claim_provenance", "report_log"})
@@ -293,4 +332,5 @@ def summary(report: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-__all__ = ["grouped", "net_changes", "pass_one", "pass_two", "rules_check", "summary", "with_rule"]
+__all__ = ["grouped", "net_changes", "pass_one", "pass_one_reading", "pass_two", "rules_check", "summary",
+           "with_rule"]
