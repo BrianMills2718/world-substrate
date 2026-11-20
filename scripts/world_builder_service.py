@@ -381,6 +381,21 @@ def _prune_jobs() -> None:
         del _JOBS[min(_JOBS, key=lambda k: _JOBS[k]["created"])]
 
 
+def _run_request_key(body: dict[str, Any], allowance: str, client: str) -> str:
+    """Identify a /run request by its caller and exact body (without `async`).
+
+    Implements: world-builder-page/a-repeated-run-request-gets-the-first-job-back
+    """
+    canonical = json.dumps({k: v for k, v in body.items() if k != "async"}, sort_keys=True, separators=(",", ":"))
+    material = "\n".join((canonical, allowance, _fingerprint(client)))
+    return hashlib.sha256(material.encode()).hexdigest()
+
+
+def _is_continued_round(body: dict[str, Any]) -> bool:
+    """A continued round (saved snapshot, saved catalog run or later turn) may be answered from its finished job."""
+    return "continue_from" in body or "catalog_run_id" in body or body.get("turn_offset", 0) not in (0, None)
+
+
 # --- Run log ----------------------------------------------------------------
 #
 # Every build, run, dialogue turn and surprise leaves one durable JSONL record
@@ -1826,9 +1841,29 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
 
     def _start_job(self, client: str, path: str, body: dict[str, Any]) -> None:
         job_id = uuid.uuid4().hex
+        record: dict[str, Any] = {"status": "running", "created": time.time()}
+        key = None
+        if path == "/run":
+            allowance = (_REQUEST.get() or {}).get("allowance") or ("owner" if _is_owner() else "visitor")
+            key = _run_request_key(body, allowance, client)
+            record.update(key=key, reusable=_is_continued_round(body))
+        found = None
         with _JOBS_LOCK:
             _prune_jobs()
-            _JOBS[job_id] = {"status": "running", "created": time.time()}
+            if key is not None:
+                for other_id, other in _JOBS.items():
+                    if other.get("key") != key:
+                        continue
+                    if other["status"] == "running" or (
+                        other["status"] == "done" and other.get("http_status", 500) < 400 and other.get("reusable")
+                    ):
+                        found = other_id
+                        break
+            if found is None:
+                _JOBS[job_id] = record
+        if found is not None:
+            self._json(HTTPStatus.ACCEPTED, {"ok": True, "status": "running", "job_id": found, "deduplicated": True})
+            return
         responder = _JobResponder(job_id)
         # The handler methods only use _json/_error/_llm_budget on self, so a
         # job runs the exact same code with the responder standing in.
