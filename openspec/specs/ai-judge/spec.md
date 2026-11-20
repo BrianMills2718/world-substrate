@@ -1,6 +1,7 @@
 # ai-judge Specification
 
 ## Purpose
+
 The AI judge rules on attempts no installed rule covers, from what the engine computes rather than from its own guess: the consequence report (slice J1 of `docs/plans/ai_judge.md`) gives it, in two passes, what installed rules already say about the people involved and what a proposed rule would do when test-run on a copy of the world. The judge itself (slice J2) is Concordia's game master: it proposes a rule for the attempt, reads its test run and confirms, revises once or withdraws, and sends another person's choice to that person. A confirmed ruling becomes a rule (slice J3): installed into the running engine at once under the world's default setting "Approved by Create", or held with its attempts pending until the owner presses Approve or Reject under "Wait for my approval"; a ruling the rule language cannot express is refused and listed as a language gap. Installed rulings travel with the run as sealed run state beside the world's own rules.
 
 ## Requirements

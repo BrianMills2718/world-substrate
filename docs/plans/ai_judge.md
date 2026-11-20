@@ -96,7 +96,6 @@ Verdict: compliant, 2 pending
 - [x] freshness package is current: ok
 <!-- /planning-compliance-checklist -->
 
-
 **Status:** adopted. Brian approved its direction on 2026-11-09 ("i approve", after Decided 5) and building it on
 2026-11-10 ("yes if ti si planned out and you have no quesitons for me"). J0 built 2026-11-10 (no knock-on cap;
 PR #362, live at `d89a446`; saved runs in `evidence/ai-judge/j0/`, live share links in
