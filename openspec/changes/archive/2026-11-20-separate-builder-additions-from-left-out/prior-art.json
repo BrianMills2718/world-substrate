@@ -1,12 +1,43 @@
 {
   "need": "The page lists what the world builder added to make a world run apart from what it left out.",
   "searched": [
-    {"place": "own", "where": "scripts/generate_world_bundle.py, scripts/world_builder_home.html, scripts/people_world.py", "query": "not_modeled, Left out of the simulation", "found": "One list (not_modeled) is the only channel; nothing carries additions."},
-    {"place": "own", "where": "~/code2/workspace/docs/capabilities.md", "query": "builder assumptions, added items, left-out list", "found": "Nothing listed for separating added items from unrepresented ones."}
+    {
+      "place": "own",
+      "where": "scripts/generate_world_bundle.py, scripts/world_builder_home.html, scripts/people_world.py",
+      "query": "not_modeled, Left out of the simulation",
+      "found": "One list (not_modeled) is the only channel; nothing carries additions."
+    },
+    {
+      "place": "own",
+      "where": "~/code2/workspace/docs/capabilities.md",
+      "query": "builder assumptions, added items, left-out list",
+      "found": "Nothing listed for separating added items from unrepresented ones."
+    },
+    {
+      "place": "outside",
+      "where": "web search (2026-11-20)",
+      "query": "LLM generated simulation world report assumptions added versus omitted from description structured output field",
+      "found": "No tool or pattern that reports a generator's additions apart from omissions; closest is LLM-Sim's 'Added'/'Modified' state-difference JSON (arXiv 2406.06485), which records world state changes, not description coverage."
+    }
   ],
   "candidates": [
-    {"name": "Classify not_modeled items after the fact", "url": "https://github.com/BrianMills2718/world-substrate/issues/241", "covers": "Needs no contract change.", "misses": "Needs regex over prose or an extra AI call per build.", "verdict": "reject", "reason": "Core rule forbids regex on prose; the designer already knows which is which, so a field fixes it at the origin."}
+    {
+      "name": "Classify not_modeled items after the fact",
+      "url": "https://github.com/BrianMills2718/world-substrate/issues/241",
+      "covers": "Needs no contract change.",
+      "misses": "Needs regex over prose or an extra AI call per build.",
+      "verdict": "reject",
+      "reason": "Core rule forbids regex on prose; the designer already knows which is which, so a field fixes it at the origin."
+    },
+    {
+      "name": "LLM-Sim state-difference output",
+      "url": "https://arxiv.org/abs/2406.06485",
+      "covers": "A JSON shape that separates added items from changed ones.",
+      "misses": "It is about state changes during a step, not what a builder added beyond a user's description; nothing to install.",
+      "verdict": "reject",
+      "reason": "Only the idea of a separate 'added' list carries over, and that is one field in our own contract."
+    }
   ],
-  "decision": "adapt",
+  "decision": "build",
   "decided": "2026-11-20"
 }
