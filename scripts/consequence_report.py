@@ -8,9 +8,9 @@ An attempt no installed rule covers commits no event, and knock-on effects start
   acting and of every person and thing the attempt names. `discover` lists only the moves of the person asked, so an
   officer's "sign release: blocked, the crate is inspected (false)" appears on the officer's page, never the trader's.
   The names come from the interpreter's reading (`world_substrate.attempt`, `names`).
-  `pass_one_reading` is what the judge reads of it: each person's blocked bindings of one move grouped, with
-  no passing checks (#473: 5 people x 80 blocked bindings made a 285,000-token judge prompt); the run
-  record keeps `pass_one` in full.
+  `pass_one_reading` is what the judge reads of it: each person's blocked bindings of one move grouped, each
+  failed check once by its label with a few example values, and no passing checks (#473: 5 people x 80 blocked
+  bindings made a 285,000-token judge prompt); the run record keeps `pass_one` in full.
 - **Pass 2, a proposed rule** (`pass_two`): the rule, written in the declaration language every World Builder rule
   uses (`action-mechanic/v0`), goes through the same rules check a build's rules go through (`validate_bundle`, the
   causal compiler `CausalModel.from_dict`, the mechanic installer: `build_engine`), and is then test-run on a copy of
@@ -89,34 +89,49 @@ def pass_one(engine: Engine, actor: str, named: Iterable[str], *, people: Iterab
 
 
 
+EXAMPLES = 3
+"""How many example values the judge reads for one failed check of one move (`pass_one_reading`)."""
+
+_ENGINE_FIELDS = ("base_revision", "controller")
+
+
+def _move(action: dict[str, Any]) -> dict[str, Any]:
+    """A move as the judge reads it: its kind, who and what, without the engine's bookkeeping fields."""
+    return {k: v for k, v in action.items() if k not in _ENGINE_FIELDS}
+
+
 def pass_one_reading(one: dict[str, Any]) -> dict[str, Any]:
-    """Pass 1 as the judge reads it. A person's blocked moves are grouped by move: how many bindings (choices of who
-    and what) are blocked, the first binding as an example, and each failed check with its value, what it requires
-    and how many bindings it stopped. Moves open to a person are given without their checks, which all pass. The
-    run record keeps `one` in full; nothing here changes it.
+    """Pass 1 as the judge reads it, bounded by the world's moves and checks, not by how many bindings (choices of
+    who and what) they have. A person's blocked moves are grouped by move: how many bindings are blocked, the first
+    binding as an example, and each failed check once, by its label, with how many bindings it stopped and up to
+    `EXAMPLES` of its values and what it requires. Moves open to a person are given without their checks, which all
+    pass. The run record keeps `one` in full; nothing here changes it.
 
     Implements: ai-judge/the-judge-is-concordia-s-game-master-conditioned-on-the-world-and-the-consequence-report
+    Implements: ai-judge/the-judge-s-input-is-bounded-and-its-unchanging-part-comes-first
     """
     moves: dict[str, dict[str, list[dict[str, Any]]]] = {}
     for person, page in one["moves"].items():
         groups: dict[str, dict[str, Any]] = {}
         for row in page.get("blocked") or []:
             kind = str(row["action"].get("kind"))
-            group = groups.setdefault(kind, {"kind": kind, "bindings": 0, "example": dict(row["action"]), "failed": {}})
+            group = groups.setdefault(kind, {"kind": kind, "bindings": 0, "example": _move(row["action"]),
+                                             "failed": {}})
             group["bindings"] += 1
             seen: set[str] = set()
             for check in row["checks"]:
                 if check.get("ok"):
                     continue
-                key = json.dumps([check.get("label"), check.get("actual"), check.get("required")], default=str)
-                if key in seen:
-                    continue
-                seen.add(key)
-                failed = group["failed"].setdefault(key, {"check": check.get("label"), "actual": check.get("actual"),
-                                                          "required": check.get("required"), "bindings": 0})
-                failed["bindings"] += 1
+                label = str(check.get("label"))
+                failed = group["failed"].setdefault(label, {"check": label, "bindings": 0, "examples": []})
+                if label not in seen:
+                    seen.add(label)
+                    failed["bindings"] += 1
+                example = {"actual": check.get("actual"), "required": check.get("required")}
+                if len(failed["examples"]) < EXAMPLES and example not in failed["examples"]:
+                    failed["examples"].append(example)
         moves[person] = {
-            "available": [{"action_id": row["action_id"], "action": dict(row["action"])}
+            "available": [{"action_id": row["action_id"], "action": _move(row["action"])}
                           for row in page.get("available") or []],
             "blocked": [{**group, "failed": list(group["failed"].values())} for group in groups.values()],
         }

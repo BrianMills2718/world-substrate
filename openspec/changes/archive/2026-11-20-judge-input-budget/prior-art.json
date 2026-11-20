@@ -1,0 +1,14 @@
+{
+  "need": "The judge's prompt stays small on large worlds and its unchanging leading part is read from the provider's prompt cache.",
+  "searched": [
+    {"place": "own", "where": "~/code2/llm_client (prompts.py, PromptCachePolicy, cache_breakpoint) and agent-skills prompt-design/caching-strategies.md", "query": "prompt caching, shared prefix, cache breakpoint", "found": "llm_client passes provider caching through (automatic shared-prefix detection over 4,096 characters, PromptCachePolicy, cache_breakpoint); prompt-design's caching procedure says order stable text first and measure cache reads. Neither shortens what the judge is given."},
+    {"place": "own", "where": "world-substrate scripts/consequence_report.py (pass_one_reading, summary)", "query": "grouped reading of the consequence report", "found": "pass_one_reading (PR #478) groups blocked bindings by move; summary groups pass 2's net changes. Extended here."},
+    {"place": "outside", "where": "OpenAI and Anthropic prompt-caching documentation", "query": "prompt caching prefix requirements", "found": "OpenAI caches automatically the identical leading part of prompts over 1,024 tokens; Anthropic caches up to a cache_control breakpoint. Both need the varying text after the stable text."}
+  ],
+  "candidates": [
+    {"name": "Provider prompt caching (OpenAI automatic, Anthropic cache_control)", "url": "https://platform.openai.com/docs/guides/prompt-caching", "covers": "Reads an identical leading part of the prompt from cache at a lower price.", "misses": "Does nothing unless the prompt's leading part is identical across calls; does not shorten the prompt.", "verdict": "combine", "reason": "Used as it is; the change orders the judge prompt so it applies."},
+    {"name": "llm_client prompt caching support", "url": "https://github.com/BrianMills2718/llm_client", "covers": "Passes caching through to providers and records cached tokens per call.", "misses": "Cannot cache a prompt whose second character range varies per call.", "verdict": "combine", "reason": "Used as it is for the calls and the measurement."}
+  ],
+  "decision": "combine",
+  "decided": "2026-11-20"
+}

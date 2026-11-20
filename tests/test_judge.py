@@ -44,8 +44,7 @@ class FakeLlm:
 
         def render_prompt(path, **kwargs):
             if "document" in kwargs:
-                return [{"role": "system", "content": f"step {kwargs['step']} for {kwargs['actor']}"},
-                        {"role": "user", "content": kwargs["document"]}]
+                return _render_judge(path, **kwargs)
             if "attempt" in kwargs:
                 return [{"role": "user", "content": json.dumps({"attempt": kwargs["attempt"]})}]
             return [{"role": "user", "content": "{}"}]
@@ -73,7 +72,20 @@ class FakeLlm:
         return fake
 
     def document(self, n: int) -> str:
-        return self.calls[n]["messages"][-1]["content"]
+        return self.calls[n]["messages"][1]["content"]
+
+    def prompt_chars(self, n: int) -> int:
+        return sum(len(m["content"]) for m in self.calls[n]["messages"])
+
+
+def _render_judge(path, **kwargs) -> list[dict]:
+    """The judge's real prompt file rendered as llm_client renders it (Jinja2, every variable required)."""
+    import jinja2
+    import yaml
+
+    env = jinja2.Environment(undefined=jinja2.StrictUndefined)
+    spec = yaml.safe_load(open(path, encoding="utf-8"))
+    return [{"role": m["role"], "content": env.from_string(m["content"]).render(**kwargs)} for m in spec["messages"]]
 
 
 def propose(rule=None, move=None, whose="none", ruling="r"):
@@ -118,11 +130,11 @@ class GameMasterTests(unittest.TestCase):
         self.assertIn(f"Putative event to resolve:  vik: {BRIBE}", doc)
         self.assertLess(doc.index("The world:"), doc.index("What the engine worked out"))
         self.assertLess(doc.index("What the engine worked out"), doc.index("Putative event to resolve"))
-        # The whole world: its description, things, installed rules and current values.
+        # The world: its description, installed rules and every thing by id, label and kinds.
         self.assertIn("Vik, a trader, has 40 coins", doc)
         self.assertIn("The officer signs the release once the crate is inspected.", doc)
-        self.assertIn("Every thing and its current values (revision 0)", doc)
-        self.assertIn('"rosa":{"entity_id":"rosa","label":"Rosa"', doc)
+        self.assertIn("Every thing, by id, label and kinds", doc)
+        self.assertIn('"rosa":{"label":"Rosa"', doc)
         # Pass 1: Rosa's own sign-release move, blocked because the crate is not inspected.
         self.assertIn("sign-release", doc)
         self.assertIn("the crate is inspected", doc)
@@ -145,6 +157,61 @@ class GameMasterTests(unittest.TestCase):
         self.assertEqual(llm.calls[0]["schema"]["properties"]["choice"]["enum"], ["yes", "no"])
         self.assertAlmostEqual(model.cost, 0.012)
         self.assertEqual([c["kind"] for c in model.calls], ["text", "choice"])
+
+
+WALTZMAN_RUN = "evidence/declared-laws/s4-waltzman-4/run-log.jsonl"
+CHARS_PER_TOKEN = 4.2
+"""Characters per input token for judge prompts: 1 / 0.238, measured on judge call 24925 (s4-waltzman-4, the
+VPS llm_calls row: prompt_tokens over the characters of its messages)."""
+
+
+class InputBudgetTests(unittest.TestCase):
+    """The judge's input is bounded by the world, not by how many bindings its moves have, and its unchanging part
+    leads every call (#473; Brian, 2026-11-20: "ia pprove your recommendations")."""
+
+    @pytest.mark.req("ai-judge/the-judge-s-input-stays-under-20-000-tokens-for-the-largest-saved-world")
+    def test_the_judge_s_input_stays_under_20_000_tokens_for_the_largest_saved_world(self):
+        from pathlib import Path
+
+        root = Path(__file__).resolve().parents[1]
+        rows = [json.loads(line) for line in (root / WALTZMAN_RUN).open(encoding="utf-8")]
+        [run] = [row for row in rows if row["path"] == "/run"]
+        bundle, rules = run["request"]["bundle"], run["request"]["causal_model"]
+        saved = run["result"]["transcript"][0]["actors"]["country-a"]
+        engine, _, _ = build_engine(bundle, rules)
+        people = list(saved["consequence"]["pass_one"]["moves"])  # the run's five people
+        one = report.pass_one(engine, "country-a", saved["consequence"]["pass_one"]["named"], people=set(people))
+        # Today's code gives the same pass 1 the run recorded: 80 blocked bindings of communicate for each of 5 people.
+        self.assertEqual(one, saved["consequence"]["pass_one"])
+        llm = FakeLlm({"propose": [propose()]})
+        with patch.dict(sys.modules, {"llm_client": llm.module()}):
+            judge_mod.judge(bundle, rules, engine, actor="country-a", attempt=saved["did"]["attempt"], pass_one=one,
+                            people=people, model="fixture-model", trace_id="fixture-trace", max_budget=0.5)
+        # The recorded run's first judge prompt was 1,190,699 characters (about 285,000 tokens).
+        self.assertLess(llm.prompt_chars(0), 20_000 * CHARS_PER_TOKEN)
+
+    @pytest.mark.req("ai-judge/the-same-leading-text-starts-every-judge-call-in-a-round")
+    def test_the_same_leading_text_starts_every_judge_call_in_a_round(self):
+        llm = FakeLlm({"propose": [propose(coin_rule(), {"to": "rosa", "amount": 40}, whose="rosa")],
+                       "review": [review("confirm")]})
+        _judge(llm)
+        bundle, rules = port()
+        engine, _, _ = build_engine(bundle, rules)
+        world = judge_mod.world_text(bundle, rules, engine)
+        propose_call, review_call = llm.calls
+        # The system message is the same for both steps and names no person.
+        self.assertEqual(propose_call["messages"][0], review_call["messages"][0])
+        self.assertNotIn("vik", propose_call["messages"][0]["content"])
+        # Both documents start with the same world, which holds no current value.
+        for call in llm.calls:
+            self.assertTrue(call["messages"][1]["content"].startswith("The world:"))
+            self.assertIn(world, call["messages"][1]["content"])
+        self.assertNotIn('"purse"', world.split("Every thing, by id")[1])
+        # The person and the step's words come last.
+        self.assertEqual([m["role"] for m in propose_call["messages"]], ["system", "user", "user"])
+        self.assertIn("The person trying is vik.", propose_call["messages"][2]["content"])
+        self.assertIn("First find the constraint question", propose_call["messages"][2]["content"])
+        self.assertIn("confirm: the test run shows what your ruling meant", review_call["messages"][2]["content"])
 
 
 class RulingTests(unittest.TestCase):
@@ -254,8 +321,8 @@ class ChainTests(unittest.TestCase):
         doc = llm.document(1)
         self.assertIn('"net_changes_grouped": true', doc)
         self.assertIn('"net_change_count": 5001', doc)
-        # The review reads the whole world and the grouped report, not the 5,000-step chain.
-        self.assertLess(len(doc) - llm.calls[1]["messages"][-1]["content"].index("Pass 2"), 20_000)
+        # The review reads the world and the grouped report, not the 5,000-step chain.
+        self.assertLess(len(doc) - doc.index("Pass 2"), 20_000)
 
     @pytest.mark.req("ai-judge/a-long-test-run-is-read-grouped")
     def test_net_changes_group_by_change_and_things(self):
