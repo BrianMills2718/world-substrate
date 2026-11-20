@@ -153,7 +153,8 @@ class GenerateWorldBundleTests(unittest.TestCase):
 
     def test_a_redesign_that_drops_the_laws_is_sent_back(self):
         # S2 pencil Fw7SHbEtW3Un: the design it revised declared 17 laws, the redesign none.
-        from tests.test_declared_laws import SHOP
+        from tests.test_declared_laws import buyer_started
+        SHOP = buyer_started()  # a trade the buyer starts (#282: a seller-started sale is sent back)
         lawless = {k: v for k, v in SHOP.items() if k not in ("resources", "laws")}
         module, call = fake_llm(json.dumps(fresh_shop(lawless)), json.dumps(fresh_shop(SHOP)))
         with patch.dict(sys.modules, {"llm_client": module}):

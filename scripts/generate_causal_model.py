@@ -453,6 +453,9 @@ def _context(bundle: dict[str, Any]) -> dict[str, Any]:
             "has at least the price. Effects cannot multiply, so a priced move hands over exactly one unit (add "
             "and subtract the literal 1, ignoring any quantity field) and charges the price once; selling more takes "
             "more moves. (2026-10-26 pencil build NZD33sh3iX29: a sale of several pencils charged for one.)",
+            # #282 pencil build (evidence/declared-laws/s1-pencil/): the shop, the buyer, was refused its own purchase.
+            "For a move named by a pairing law, the actor selector names the kind of entity that pays, and must not "
+            "be narrowed to the one who is paid: the one who pays is the one who starts the move.",
             "A process acts on each matching entity `it`. When one physical change moves or changes a linked entity "
             "too (a driver riding in a vehicle, a hospital whose bed a dying patient frees), declare that entity in "
             "the process's participants (link owner_of_it, owned_by_it, co_located, or ref:<component>.<field>) and "
