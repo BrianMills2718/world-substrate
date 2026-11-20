@@ -1,0 +1,15 @@
+{
+  "need": "In a generated trade the one who pays must be the one who starts it, so a seller cannot spend the buyer's cash and the buyer is not locked out.",
+  "searched": [
+    {"place": "own", "where": "src/world_substrate/laws.py; scripts/scaffold_world.py _validate_laws; scripts/generate_world_bundle.py repair loop; scripts/generate_causal_model.py authority_rules", "query": "who may start a pairing-law move", "found": "Laws check amounts and party shape only; the designer repair loop already feeds validator errors back, so a check fits there."},
+    {"place": "own", "where": "~/code2/workspace/docs/capabilities.md", "query": "trade consent, offer and accept", "found": "Nothing listed."},
+    {"place": "outside", "where": "web search (arXiv)", "query": "multi-agent LLM simulation trading consent both parties agree Concordia", "found": "TraderTalk (Concordia bilateral trading, detects a deal from the conversation) and propose/accept bargaining studies; no reusable consent rule for a rules-layer trade move."}
+  ],
+  "candidates": [
+    {"name": "Designer validator-repair loop (existing)", "url": "https://github.com/BrianMills2718/world-substrate", "covers": "Feeds a local validator's reason back to the designer for a rewrite.", "misses": "Has no check on who pays.", "verdict": "combine", "reason": "Add one pure check to it; no new machinery."},
+    {"name": "Two-step offer/accept move (propose/accept bargaining)", "url": "https://arxiv.org/html/2509.09071v3", "covers": "Real consent from the payer.", "misses": "Needs new engine/scheduler capability, which AGENTS.md forbids.", "verdict": "reject", "reason": "Out of scope; payer-starts gives the same guarantee for this rules layer."},
+    {"name": "Engine check in laws.py", "url": "https://github.com/BrianMills2718/world-substrate/issues/282", "covers": "Enforced for every world.", "misses": "Would refuse saved worlds and old runs that have seller-started laws.", "verdict": "reject", "reason": "Breaks saved fixtures; fix at the designer instead."}
+  ],
+  "decision": "combine",
+  "decided": "2026-11-20"
+}
