@@ -2,8 +2,8 @@
 
 ### Requirement: Builder additions are listed apart from what was left out
 
-Things the builder added to make a world run (for example a doorway the description does not mention) are listed
-under their own heading, "Added to make it run", and never under "Left out of the simulation", which holds only
+Things the builder added to make a world run (for example a doorway the description does not mention) SHALL be listed
+under their own heading, "Added to make it run", and SHALL never appear under "Left out of the simulation", which holds only
 parts of the description that could not be represented.
 
 Where it is enforced: `added_to_run` returned by `scripts/generate_world_bundle.py`, passed through
@@ -35,7 +35,7 @@ finding 3; requirement wording inferred by agent.
 
 ### Requirement: Unrepresentable parts are listed
 
-Parts of a description the simulator cannot represent are listed, not dropped silently. Only such parts are listed as
+Parts of a description the simulator cannot represent SHALL be listed, not dropped silently. Only such parts are listed as
 left out; anything the builder added is listed separately (see "Builder additions are listed apart from what was
 left out").
 
