@@ -158,7 +158,8 @@ Every run reported as evidence is a folder with `run-log.jsonl` and a `TRACE_REA
   [Waltzman build](../evidence/declared-laws/s4-waltzman/TRACE_READ.md),
   [Waltzman rebuild with laws and review](../evidence/declared-laws/s4-waltzman-2/TRACE_READ.md),
   [Waltzman rebuild with the concern-filling fix](../evidence/declared-laws/s4-waltzman-3/TRACE_READ.md),
-  [Waltzman rebuild on deploy 9ce50b3, round 1 only](../evidence/declared-laws/s4-waltzman-4/TRACE_READ.md)
+  [Waltzman rebuild on deploy 9ce50b3, round 1 only](../evidence/declared-laws/s4-waltzman-4/TRACE_READ.md),
+  [Waltzman rebuild on deploy dae881b, 10 rules kept but never offered](../evidence/declared-laws/s4-waltzman-5/TRACE_READ.md)
 - Requests and wording: [a request build stopped after round 1](../evidence/declared-laws/s5-requests/TRACE_READ.md),
   [seller wording replay](../evidence/declared-laws/seller-wording/README.md),
   [every unread attempt replayed](../evidence/declared-laws/unmatched-replay/README.md),
