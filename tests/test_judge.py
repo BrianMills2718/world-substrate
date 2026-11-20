@@ -313,6 +313,20 @@ class RunTests(unittest.TestCase):
             self.assertTrue(engine.replay()["ok"])
         self.assertNotIn("hand-coins", engine.registry.action_kinds())
 
+    @pytest.mark.req("ai-judge/pass-1-is-read-grouped")
+    def test_the_judge_reads_pass_1_grouped_and_the_run_row_keeps_it_in_full(self):
+        llm = FakeLlm({"propose": [propose(whose="rosa", ruling="Whether to take coins is Rosa's choice.")]},
+                      reading=self.UNASKED)
+        trace, _ = self._run(llm)
+        full = trace["transcript"][0]["actors"]["vik"]["consequence"]["pass_one"]
+        # The run row keeps every blocked move with every check.
+        [sign] = [r for r in full["moves"]["rosa"]["blocked"] if r["action"]["kind"] == "sign-release"]
+        self.assertTrue(any(c["ok"] for c in sign["checks"]))
+        # The judge read the grouped reading of that same pass 1, in compact JSON.
+        read = json.dumps(report.pass_one_reading(full), separators=(",", ":"), ensure_ascii=False, default=str)
+        self.assertIn(read, llm.document(0))
+        self.assertIn('"kind":"sign-release","bindings":1', llm.document(0))
+
     @pytest.mark.req("ai-judge/the-judge-rules-on-each-unmatched-attempt-in-a-run")
     def test_a_confirmed_ruling_is_recorded_and_installed_by_the_default_setting(self):
         llm = FakeLlm({"propose": [propose(coin_rule(), {"to": "rosa", "amount": 40}, whose="rosa")],

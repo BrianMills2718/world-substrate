@@ -276,8 +276,16 @@ def _test(bundle: dict[str, Any], causal_value: dict[str, Any], engine: Any, act
 
 
 def _report_text(pass_one: dict[str, Any], test: dict[str, Any] | None = None, label: str = "") -> str:
-    parts = ["Pass 1, before any rule exists (the moves and checks open to the person trying and to each person "
-             "named, and the named things' current values):\n" + json.dumps(pass_one, indent=1, default=str)]
+    """What the judge reads of the consequence report: pass 1 grouped (`consequence_report.pass_one_reading`; the run
+    record keeps it in full) and, for a review, pass 2's summary.
+
+    Implements: ai-judge/the-judge-is-concordia-s-game-master-conditioned-on-the-world-and-the-consequence-report
+    """
+    reading = consequence_report.pass_one_reading(pass_one)
+    parts = ["Pass 1, before any rule exists (the moves open to the person trying and to each person named; each "
+             "person's blocked moves grouped by move, with how many bindings are blocked, one example and each failed "
+             "check with its value, what it requires and how many bindings it stopped; and the named things' current "
+             "values):\n" + json.dumps(reading, separators=(",", ":"), ensure_ascii=False, default=str)]
     if test is not None:
         parts.append(f"Pass 2, the test run of {label or 'your proposed rule'} (rules check, then the rule run on a "
                      "copy of the world as it is now; nothing is installed):\n"
