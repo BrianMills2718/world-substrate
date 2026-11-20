@@ -17,6 +17,7 @@ governed:
 - docs/plans/
 - roadmap/
 - openspec/specs/
+- src/world_substrate/
 layout:
 - path: docs/architecture/arc42.md
   purpose: 'Architecture authority: purpose, boundaries, runtime, quality and risks'
@@ -244,3 +245,99 @@ layout:
     route
   implements: []
   tests: []
+- path: src/world_substrate/__init__.py
+  purpose: 'Neutral deterministic substrate for inspectable reference worlds'
+  implements: []
+  tests: [tests/test_action_authoring.py, tests/test_actor_information.py, tests/test_actor_report_delivery.py, tests/test_advance_events.py, tests/test_any_scenario_poc.py, tests/test_attempt_coverage.py, tests/test_authored_write_types.py, tests/test_authoring.py, tests/test_boiling.py, tests/test_build_quality.py, tests/test_composed_living_scene_renderer.py, tests/test_compound_attempt_flow.py, tests/test_consequence_report.py, tests/test_contract_status.py, tests/test_drink.py, tests/test_first_fill.py, tests/test_give_exchange.py, tests/test_greenhouse_world.py, tests/test_greenhouse_zero_review.py, tests/test_inhabited_facility.py, tests/test_initial_actor_knowledge.py, tests/test_interpreter_public_bindings.py, tests/test_judge.py, tests/test_judge_rulings.py, tests/test_kitchen_world.py, tests/test_knock_on_unbounded.py, tests/test_laws.py, tests/test_linked_process_participants.py, tests/test_living_scene.py, tests/test_living_scene_information_feedback.py, tests/test_living_scene_layout.py, tests/test_living_scene_renderer.py, tests/test_native_coordination.py, tests/test_observability_fields.py, tests/test_observation_seam.py, tests/test_open_attempt.py, tests/test_overheat_assay.py, tests/test_owner_ref.py, tests/test_policy_seam.py, tests/test_pour.py, tests/test_relational_mechanics.py, tests/test_report_effect.py, tests/test_rule_authority.py, tests/test_run_authored_world.py, tests/test_run_stop.py, tests/test_runtime_component_replay.py, tests/test_scenario_spec.py, tests/test_semantic_relation.py, tests/test_spill.py, tests/test_substrate_generality.py, tests/test_transfer.py, tests/test_unowned.py, tests/test_waltzman_composed_v2.py, tests/test_waltzman_living_scene_adapter.py, tests/test_waltzman_living_scene_profile.py, tests/test_waltzman_projection.py, tests/test_waltzman_world.py, tests/test_workshop_world.py, tests/test_world_builder_service.py, tests/test_world_scene_bridge.py, tests/test_write_scope.py]
+- path: src/world_substrate/action_authoring.py
+  purpose: 'Compile constrained authored action mechanics into ordinary ActionRules'
+  implements: [causal-model-authoring/actor-authored-report-exposure, causal-model-authoring/authority-is-derived-not-claimed, causal-model-authoring/discovery-cap-current-code, causal-model-authoring/one-declaration-per-action-kind, causal-model-authoring/processes-timing-and-linked-participants-current-code, causal-model-authoring/review-and-execution-boundary, causal-model-authoring/supported-state-surface, causal-model-authoring/terminal-condition]
+  tests: [tests/test_action_authoring.py, tests/test_actor_report_delivery.py, tests/test_build_quality.py, tests/test_initial_actor_knowledge.py, tests/test_linked_process_participants.py, tests/test_report_effect.py, tests/test_run_authored_world.py, tests/test_run_stop.py, tests/test_scenario_spec.py, tests/test_world_builder_service.py]
+- path: src/world_substrate/assay.py
+  purpose: 'Interaction assays: search for consequential state an author never declared'
+  implements: []
+  tests: [tests/test_contract_status.py, tests/test_overheat_assay.py, tests/test_spill.py, tests/test_substrate_generality.py, tests/test_workshop_world.py]
+- path: src/world_substrate/attempt.py
+  purpose: 'Open attempts: a person''s own words for what they try, read into one typed move (docs/plans/open_attempt.md, piece 1)'
+  implements: [ai-judge/pass-1-reports-what-installed-rules-compute-for-the-people-an-attempt-involves, semantic-binding/preserve-operation-and-referents, semantic-binding/whole-attempt-coverage]
+  tests: []
+- path: src/world_substrate/authoring.py
+  purpose: 'Compile a declared mechanic into a registrable process rule'
+  implements: []
+  tests: [tests/test_authored_write_types.py, tests/test_authoring.py, tests/test_owner_ref.py, tests/test_relational_mechanics.py, tests/test_unowned.py]
+- path: src/world_substrate/engine.py
+  purpose: 'Canonical transition authority with causal events and exact replay'
+  implements: [information-delivery/same-moment-reactions-cite-their-cause-current-code, transition-engine/core-engine-operations-advance, transition-engine/core-engine-operations-apply, transition-engine/core-engine-operations-causal-event-fields, transition-engine/core-engine-operations-discover, transition-engine/core-engine-operations-observe, transition-engine/core-engine-operations-snapshot-and-replay, transition-engine/core-records-event, transition-engine/core-transition-kernel, transition-engine/knock-on-chains-of-any-length-finish-in-one-moment, transition-engine/transition-envelope-pipeline, transition-engine/transition-envelope-requirements]
+  tests: [tests/test_action_authoring.py, tests/test_authoring.py, tests/test_contract_status.py, tests/test_give_exchange.py, tests/test_knock_on_unbounded.py, tests/test_laws.py, tests/test_linked_process_participants.py, tests/test_open_attempt.py, tests/test_overheat_assay.py, tests/test_relational_mechanics.py, tests/test_rule_authority.py, tests/test_runtime_component_replay.py, tests/test_spill.py, tests/test_substrate_generality.py, tests/test_transfer.py, tests/test_waltzman_world.py, tests/test_write_scope.py]
+- path: src/world_substrate/exchange.py
+  purpose: 'Derived, read-only exchange classification over committed give events'
+  implements: []
+  tests: [tests/test_give_exchange.py]
+- path: src/world_substrate/information.py
+  purpose: 'First-class information representation and actor-visible delivery semantics'
+  implements: [information-delivery/observation-rule, information-delivery/representation]
+  tests: [tests/test_actor_information.py, tests/test_living_scene_information_feedback.py, tests/test_native_coordination.py, tests/test_runtime_component_replay.py]
+- path: src/world_substrate/laws.py
+  purpose: 'A world''s own declared laws, checked at every commit (declared-laws plan, S2)'
+  implements: []
+  tests: [tests/test_laws.py]
+- path: src/world_substrate/living_scene.py
+  purpose: 'Deterministic, read-only logical frames for living-world presentation'
+  implements: [information-delivery/reports-and-refusals-are-visible-scene-effects, living-scene/living-scene-authority, living-scene/living-scene-compatibility, living-scene/living-scene-deterministic-frame-reconstruction, living-scene/living-scene-exact-event-bindings, living-scene/living-scene-information-and-outcome-presentation, living-scene/living-scene-input-seam, living-scene/living-scene-profile-shape, living-scene/living-scene-time-boundary, living-scene/living-scene-time-boundary-responsive-presentation-overrides]
+  tests: [tests/test_composed_living_scene_renderer.py, tests/test_inhabited_facility.py, tests/test_living_scene.py, tests/test_living_scene_information_feedback.py, tests/test_living_scene_layout.py, tests/test_living_scene_renderer.py, tests/test_native_coordination.py, tests/test_waltzman_composed_v2.py, tests/test_waltzman_living_scene_adapter.py, tests/test_waltzman_living_scene_profile.py, tests/test_world_scene_bridge.py]
+- path: src/world_substrate/living_scene_layout.py
+  purpose: 'Where each actor stands in a Living Scene frame: one rule for every renderer'
+  implements: []
+  tests: [tests/test_living_scene_layout.py, tests/test_world_scene_bridge.py]
+- path: src/world_substrate/mechanisms/__init__.py
+  purpose: 'Reusable registered mechanism families'
+  implements: []
+  tests: [tests/test_advance_events.py, tests/test_any_scenario_poc.py, tests/test_linked_process_participants.py, tests/test_observation_seam.py, tests/test_overheat_assay.py, tests/test_rule_authority.py, tests/test_scenario_spec.py, tests/test_spill.py, tests/test_write_scope.py]
+- path: src/world_substrate/mechanisms/damage.py
+  purpose: 'Overheat damage: an adjacent mechanic authored offline for the M3 experiment'
+  implements: []
+  tests: [tests/test_overheat_assay.py, tests/test_spill.py]
+- path: src/world_substrate/mechanisms/liquid.py
+  purpose: 'Exact extensive-liquid transfer rules'
+  implements: []
+  tests: [tests/test_observation_seam.py, tests/test_rule_authority.py, tests/test_write_scope.py]
+- path: src/world_substrate/mechanisms/ownership.py
+  purpose: 'Registered whole-vessel ownership and carrying rules'
+  implements: []
+  tests: [tests/test_write_scope.py]
+- path: src/world_substrate/mechanisms/thermal.py
+  purpose: 'Registered vessel heating, boiling, evaporation, and fire-fuel rules'
+  implements: []
+  tests: [tests/test_observation_seam.py, tests/test_rule_authority.py]
+- path: src/world_substrate/mechanisms/time.py
+  purpose: 'Registered time and actor-maintenance processes for the first probe'
+  implements: []
+  tests: [tests/test_advance_events.py, tests/test_any_scenario_poc.py, tests/test_linked_process_participants.py, tests/test_rule_authority.py, tests/test_scenario_spec.py, tests/test_write_scope.py]
+- path: src/world_substrate/model.py
+  purpose: 'Typed canonical state records for the first neutral vertical'
+  implements: [transition-engine/core-engine-operations-snapshot-and-replay, transition-engine/core-records-entity, transition-engine/core-records-world]
+  tests: [tests/test_action_authoring.py, tests/test_actor_information.py, tests/test_authored_write_types.py, tests/test_give_exchange.py, tests/test_greenhouse_world.py, tests/test_interpreter_public_bindings.py, tests/test_open_attempt.py, tests/test_owner_ref.py, tests/test_runtime_component_replay.py, tests/test_transfer.py, tests/test_unowned.py, tests/test_write_scope.py]
+- path: src/world_substrate/policy.py
+  purpose: 'Policy adapters: choose an action, never author an effect'
+  implements: []
+  tests: [tests/test_kitchen_world.py, tests/test_observation_seam.py, tests/test_policy_seam.py, tests/test_run_authored_world.py, tests/test_waltzman_world.py, tests/test_workshop_world.py]
+- path: src/world_substrate/profile.py
+  purpose: 'Mechanic packages, installation validation, and frozen profiles'
+  implements: [mechanic-installation/installation, mechanic-installation/mechanic-package]
+  tests: [tests/test_action_authoring.py, tests/test_authoring.py, tests/test_contract_status.py, tests/test_workshop_world.py]
+- path: src/world_substrate/projection.py
+  purpose: 'Read-only living-world projection over canonical snapshots and events'
+  implements: [live-projection/incremental-delivery, live-projection/wire-shape]
+  tests: [tests/test_living_scene_information_feedback.py, tests/test_waltzman_living_scene_adapter.py, tests/test_waltzman_projection.py]
+- path: src/world_substrate/rules.py
+  purpose: 'Registered action and process contracts'
+  implements: [information-delivery/causality-rule, transition-engine/core-records-action, transition-engine/core-records-rule]
+  tests: [tests/test_action_authoring.py, tests/test_boiling.py, tests/test_drink.py, tests/test_first_fill.py, tests/test_give_exchange.py, tests/test_greenhouse_world.py, tests/test_greenhouse_zero_review.py, tests/test_observability_fields.py, tests/test_observation_seam.py, tests/test_overheat_assay.py, tests/test_pour.py, tests/test_runtime_component_replay.py, tests/test_spill.py, tests/test_substrate_generality.py, tests/test_transfer.py, tests/test_write_scope.py]
+- path: src/world_substrate/semantic.py
+  purpose: 'Semantic-mechanical bindings per openspec/specs/semantic-binding/spec.md'
+  implements: [semantic-binding/boundary, semantic-binding/initial-worked-binding, semantic-binding/predicate-local-role-compatibility]
+  tests: [tests/test_give_exchange.py, tests/test_observability_fields.py, tests/test_semantic_relation.py]
+- path: src/world_substrate/semantic_relation.py
+  purpose: 'Read-only LC relation view for World Substrate semantic bindings'
+  implements: []
+  tests: [tests/test_semantic_relation.py]
