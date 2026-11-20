@@ -612,7 +612,12 @@ What the judge reads, measured from saved worlds (2026-11-09):
   no step, so the system message and world lead every judge call unchanged and can be cached. The same prompt is now
   44,067 characters (about 10,500 tokens); the requirement "The judge's input is bounded and its unchanging part comes
   first" holds it under 20,000 tokens on this run (`tests/test_judge.py`, `InputBudgetTests`). This replaces the
-  "whole world" reading described above.
+  "whole world" reading described above. Measured on a real call, 2026-11-20 (trace
+  `ws-judge-budget-measure-2bbde081`, local llm_calls 9698415 to 9698418, model `openrouter/openai/gpt-6-luna`): the
+  propose prompt is 9,818 input tokens (4.5 characters a token); a judge round costs $0.0033 cold and $0.0019 when
+  repeated, against $0.175 before. The repeated review call read 9,485 of its 10,039 tokens from cache; the
+  repeated propose call read only 1,859, and the first review call read none although it shares its first 43,008
+  characters with the propose call, so cache reuse across calls of a round is partial (provider-side).
 
 Cost per run:
 

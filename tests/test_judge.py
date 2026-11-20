@@ -162,7 +162,9 @@ class GameMasterTests(unittest.TestCase):
 WALTZMAN_RUN = "evidence/declared-laws/s4-waltzman-4/run-log.jsonl"
 CHARS_PER_TOKEN = 4.2
 """Characters per input token for judge prompts: 1 / 0.238, measured on judge call 24925 (s4-waltzman-4, the
-VPS llm_calls row: prompt_tokens over the characters of its messages)."""
+VPS llm_calls row: prompt_tokens over the characters of its messages). The compact prompt measured 4.5 on
+2026-11-20 (local llm_calls 9698415, trace ws-judge-budget-measure-2bbde081: 44,132 characters, 9,818 prompt
+tokens); 4.2 is kept because it is the stricter limit."""
 
 
 class InputBudgetTests(unittest.TestCase):
