@@ -46,3 +46,18 @@ def test_people_member_record_has_no_unwritten_authorized_or_approved_fields():
     assert people
     for e in people:
         assert set(e['components']['member']) == {'role', 'aware'}
+
+
+def test_replay_records_a_world_today_s_checks_reject_as_stopped(tmp_path):
+    """An old build whose recorded replies today's world checks reject stops that replay only (2026-11-20, #282)."""
+    from types import ModuleType
+    from unittest.mock import patch
+    from scripts import replay_build, world_builder_service
+    (tmp_path / 'run-log.jsonl').write_text(json.dumps({'path': '/generate-world', 'request': {}}) + '\n')
+    (tmp_path / 'llm-calls.jsonl').write_text('')
+    with patch.object(replay_build, 'recorded_llm_client', return_value=ModuleType('llm_client')), \
+            patch.object(world_builder_service.WorldBuilderHandler, '_generate_world',
+                         side_effect=ValueError('world proposal remained invalid after 2 repairs: law x')):
+        result = replay_build.replay(tmp_path)
+    assert result['kept'] is None
+    assert result['stopped'].startswith("today's checks reject the recorded world: world proposal remained invalid")
