@@ -1,0 +1,2891 @@
+{
+ "source": "evidence/declared-laws/s4-waltzman-5/run-log.jsonl row 1 (/generate-world result), World Builder deploy dae881b, 2026-11-20",
+ "bundle": {
+  "schema_version": "world-substrate-authoring-bundle/v0",
+  "world": {
+   "id": "cross-border-biosurveillance-decision",
+   "label": "Cross-Border Bio-Surveillance Decision",
+   "summary": "A partnership of four countries and a regional health network must decide by a deadline whether to activate a cross-border bio-surveillance early-warning system. Technical, legal, logistics, and community groups each raise a small, true concern local to their area through their own channel to a different member. Members meet regularly. These concerns can slow meetings, reopen settled issues, make ",
+   "location": "scenario",
+   "content_version": 1
+  },
+  "components": [
+   {
+    "name": "member",
+    "fields": [
+     {
+      "name": "role",
+      "type": "string",
+      "default": "participant"
+     },
+     {
+      "name": "authorized",
+      "type": "boolean",
+      "default": false
+     },
+     {
+      "name": "approved",
+      "type": "boolean",
+      "default": false
+     },
+     {
+      "name": "aware",
+      "type": "boolean",
+      "default": false
+     }
+    ]
+   },
+   {
+    "name": "information",
+    "fields": [
+     {
+      "name": "content",
+      "type": "string",
+      "default": "report"
+     },
+     {
+      "name": "source_id",
+      "type": "entity_ref",
+      "default": "placeholder"
+     },
+     {
+      "name": "channel_id",
+      "type": "string",
+      "default": "brief"
+     },
+     {
+      "name": "visibility",
+      "type": "string",
+      "default": "direct"
+     },
+     {
+      "name": "topic",
+      "type": "string",
+      "default": "coordination"
+     },
+     {
+      "name": "active",
+      "type": "boolean",
+      "default": false
+     }
+    ]
+   },
+   {
+    "name": "delivery",
+    "fields": [
+     {
+      "name": "info_id",
+      "type": "entity_ref",
+      "default": "placeholder"
+     },
+     {
+      "name": "recipient_id",
+      "type": "entity_ref",
+      "default": "placeholder"
+     },
+     {
+      "name": "channel_id",
+      "type": "string",
+      "default": "brief"
+     },
+     {
+      "name": "status",
+      "type": "string",
+      "default": "pending"
+     }
+    ]
+   },
+   {
+    "name": "claim_provenance",
+    "fields": [
+     {
+      "name": "apparent_source",
+      "type": "string",
+      "default": "unspecified"
+     },
+     {
+      "name": "source_lineage",
+      "type": "string",
+      "default": "unspecified"
+     },
+     {
+      "name": "hidden_origin",
+      "type": "string",
+      "default": "unspecified"
+     }
+    ]
+   },
+   {
+    "name": "partnership_membership",
+    "fields": [
+     {
+      "name": "present",
+      "type": "boolean",
+      "default": true
+     }
+    ]
+   },
+   {
+    "name": "activation_question",
+    "fields": [
+     {
+      "name": "question",
+      "type": "string",
+      "default": "Whether to activate the cross-border bio-surveillance early-warning system."
+     },
+     {
+      "name": "deadline_exists",
+      "type": "boolean",
+      "default": true
+     }
+    ]
+   },
+   {
+    "name": "moment",
+    "fields": [
+     {
+      "name": "ticks_until",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "every_ticks",
+      "type": "integer",
+      "default": -1
+     },
+     {
+      "name": "occurrences",
+      "type": "integer",
+      "default": 0
+     },
+     {
+      "name": "happening_now",
+      "type": "boolean",
+      "default": false
+     }
+    ]
+   },
+   {
+    "name": "work",
+    "fields": [
+     {
+      "name": "cycle_id",
+      "type": "entity_ref",
+      "default": "work-cycle"
+     },
+     {
+      "name": "raise_local_concern_done",
+      "type": "boolean",
+      "default": false
+     },
+     {
+      "name": "assess_technical_risk_done",
+      "type": "boolean",
+      "default": false
+     },
+     {
+      "name": "review_legal_requirements_done",
+      "type": "boolean",
+      "default": false
+     },
+     {
+      "name": "develop_logistics_plan_done",
+      "type": "boolean",
+      "default": false
+     },
+     {
+      "name": "consult_community_done",
+      "type": "boolean",
+      "default": false
+     },
+     {
+      "name": "reopen_settled_issue_done",
+      "type": "boolean",
+      "default": false
+     },
+     {
+      "name": "reconsider_issue_done",
+      "type": "boolean",
+      "default": false
+     },
+     {
+      "name": "make_support_conditional_done",
+      "type": "boolean",
+      "default": false
+     },
+     {
+      "name": "restore_unconditional_support_done",
+      "type": "boolean",
+      "default": false
+     }
+    ]
+   }
+  ],
+  "entities": [
+   {
+    "id": "partnership",
+    "label": "Country and Health Network Partnership",
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "role": "Partnership of four countries and a regional health network deciding whether to activate the system.",
+      "authorized": false,
+      "approved": false,
+      "aware": false
+     },
+     "work": {
+      "cycle_id": "work-cycle",
+      "raise_local_concern_done": false,
+      "assess_technical_risk_done": false,
+      "review_legal_requirements_done": false,
+      "develop_logistics_plan_done": false,
+      "consult_community_done": false,
+      "reopen_settled_issue_done": false,
+      "reconsider_issue_done": false,
+      "make_support_conditional_done": false,
+      "restore_unconditional_support_done": false
+     }
+    }
+   },
+   {
+    "id": "country-one",
+    "label": "Country One",
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "role": "Member country in the partnership.",
+      "authorized": false,
+      "approved": false,
+      "aware": false
+     },
+     "work": {
+      "cycle_id": "work-cycle",
+      "raise_local_concern_done": false,
+      "assess_technical_risk_done": false,
+      "review_legal_requirements_done": false,
+      "develop_logistics_plan_done": false,
+      "consult_community_done": false,
+      "reopen_settled_issue_done": false,
+      "reconsider_issue_done": false,
+      "make_support_conditional_done": false,
+      "restore_unconditional_support_done": false
+     }
+    }
+   },
+   {
+    "id": "country-two",
+    "label": "Country Two",
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "role": "Member country in the partnership.",
+      "authorized": false,
+      "approved": false,
+      "aware": false
+     },
+     "work": {
+      "cycle_id": "work-cycle",
+      "raise_local_concern_done": false,
+      "assess_technical_risk_done": false,
+      "review_legal_requirements_done": false,
+      "develop_logistics_plan_done": false,
+      "consult_community_done": false,
+      "reopen_settled_issue_done": false,
+      "reconsider_issue_done": false,
+      "make_support_conditional_done": false,
+      "restore_unconditional_support_done": false
+     }
+    }
+   },
+   {
+    "id": "country-three",
+    "label": "Country Three",
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "role": "Member country in the partnership.",
+      "authorized": false,
+      "approved": false,
+      "aware": false
+     },
+     "work": {
+      "cycle_id": "work-cycle",
+      "raise_local_concern_done": false,
+      "assess_technical_risk_done": false,
+      "review_legal_requirements_done": false,
+      "develop_logistics_plan_done": false,
+      "consult_community_done": false,
+      "reopen_settled_issue_done": false,
+      "reconsider_issue_done": false,
+      "make_support_conditional_done": false,
+      "restore_unconditional_support_done": false
+     }
+    }
+   },
+   {
+    "id": "country-four",
+    "label": "Country Four",
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "role": "Member country in the partnership.",
+      "authorized": false,
+      "approved": false,
+      "aware": false
+     },
+     "work": {
+      "cycle_id": "work-cycle",
+      "raise_local_concern_done": false,
+      "assess_technical_risk_done": false,
+      "review_legal_requirements_done": false,
+      "develop_logistics_plan_done": false,
+      "consult_community_done": false,
+      "reopen_settled_issue_done": false,
+      "reconsider_issue_done": false,
+      "make_support_conditional_done": false,
+      "restore_unconditional_support_done": false
+     }
+    }
+   },
+   {
+    "id": "regional-health-network",
+    "label": "Regional Health Network",
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "role": "Member of the partnership.",
+      "authorized": false,
+      "approved": false,
+      "aware": false
+     },
+     "work": {
+      "cycle_id": "work-cycle",
+      "raise_local_concern_done": false,
+      "assess_technical_risk_done": false,
+      "review_legal_requirements_done": false,
+      "develop_logistics_plan_done": false,
+      "consult_community_done": false,
+      "reopen_settled_issue_done": false,
+      "reconsider_issue_done": false,
+      "make_support_conditional_done": false,
+      "restore_unconditional_support_done": false
+     }
+    }
+   },
+   {
+    "id": "technical-group",
+    "label": "Technical Group",
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "role": "Group raising a local technical concern through its own channel.",
+      "authorized": false,
+      "approved": false,
+      "aware": false
+     },
+     "work": {
+      "cycle_id": "work-cycle",
+      "raise_local_concern_done": false,
+      "assess_technical_risk_done": false,
+      "review_legal_requirements_done": false,
+      "develop_logistics_plan_done": false,
+      "consult_community_done": false,
+      "reopen_settled_issue_done": false,
+      "reconsider_issue_done": false,
+      "make_support_conditional_done": false,
+      "restore_unconditional_support_done": false
+     }
+    }
+   },
+   {
+    "id": "legal-group",
+    "label": "Legal Group",
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "role": "Group raising a local legal concern through its own channel.",
+      "authorized": false,
+      "approved": false,
+      "aware": false
+     },
+     "work": {
+      "cycle_id": "work-cycle",
+      "raise_local_concern_done": false,
+      "assess_technical_risk_done": false,
+      "review_legal_requirements_done": false,
+      "develop_logistics_plan_done": false,
+      "consult_community_done": false,
+      "reopen_settled_issue_done": false,
+      "reconsider_issue_done": false,
+      "make_support_conditional_done": false,
+      "restore_unconditional_support_done": false
+     }
+    }
+   },
+   {
+    "id": "logistics-group",
+    "label": "Logistics Group",
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "role": "Group raising a local logistics concern through its own channel.",
+      "authorized": false,
+      "approved": false,
+      "aware": false
+     },
+     "work": {
+      "cycle_id": "work-cycle",
+      "raise_local_concern_done": false,
+      "assess_technical_risk_done": false,
+      "review_legal_requirements_done": false,
+      "develop_logistics_plan_done": false,
+      "consult_community_done": false,
+      "reopen_settled_issue_done": false,
+      "reconsider_issue_done": false,
+      "make_support_conditional_done": false,
+      "restore_unconditional_support_done": false
+     }
+    }
+   },
+   {
+    "id": "community-group",
+    "label": "Community Group",
+    "categories": [
+     "actor",
+     "member"
+    ],
+    "components": {
+     "member": {
+      "role": "Group raising a local community concern through its own channel.",
+      "authorized": false,
+      "approved": false,
+      "aware": false
+     },
+     "work": {
+      "cycle_id": "work-cycle",
+      "raise_local_concern_done": false,
+      "assess_technical_risk_done": false,
+      "review_legal_requirements_done": false,
+      "develop_logistics_plan_done": false,
+      "consult_community_done": false,
+      "reopen_settled_issue_done": false,
+      "reconsider_issue_done": false,
+      "make_support_conditional_done": false,
+      "restore_unconditional_support_done": false
+     }
+    }
+   },
+   {
+    "id": "info-technical-local-concern-report-to-country-one",
+    "label": "The Technical Group reports a small concern local to its tec (to country_one)",
+    "categories": [
+     "information"
+    ],
+    "components": {
+     "information": {
+      "content": "The Technical Group reports a small concern local to its technical area.",
+      "source_id": "technical-group",
+      "channel_id": "technical_group_channel",
+      "visibility": "direct",
+      "topic": "technical_local_concern_report",
+      "active": true
+     },
+     "claim_provenance": {
+      "apparent_source": "Technical Group",
+      "source_lineage": "technical_group_local_concern",
+      "hidden_origin": "[{\"key\": \"underlying_concern_is_true\", \"value\": true}, {\"key\": \"scope\", \"value\": \"local technical area\"}]"
+     }
+    }
+   },
+   {
+    "id": "delivery-info-technical-local-concern-report-to-country-one",
+    "label": "Delivery to country_one",
+    "categories": [
+     "delivery"
+    ],
+    "components": {
+     "delivery": {
+      "info_id": "info-technical-local-concern-report-to-country-one",
+      "recipient_id": "country-one",
+      "channel_id": "technical_group_channel",
+      "status": "delivered"
+     }
+    }
+   },
+   {
+    "id": "info-legal-local-concern-report-to-country-two",
+    "label": "The Legal Group reports a small concern local to its legal a (to country_two)",
+    "categories": [
+     "information"
+    ],
+    "components": {
+     "information": {
+      "content": "The Legal Group reports a small concern local to its legal area.",
+      "source_id": "legal-group",
+      "channel_id": "legal_group_channel",
+      "visibility": "direct",
+      "topic": "legal_local_concern_report",
+      "active": true
+     },
+     "claim_provenance": {
+      "apparent_source": "Legal Group",
+      "source_lineage": "legal_group_local_concern",
+      "hidden_origin": "[{\"key\": \"underlying_concern_is_true\", \"value\": true}, {\"key\": \"scope\", \"value\": \"local legal area\"}]"
+     }
+    }
+   },
+   {
+    "id": "delivery-info-legal-local-concern-report-to-country-two",
+    "label": "Delivery to country_two",
+    "categories": [
+     "delivery"
+    ],
+    "components": {
+     "delivery": {
+      "info_id": "info-legal-local-concern-report-to-country-two",
+      "recipient_id": "country-two",
+      "channel_id": "legal_group_channel",
+      "status": "delivered"
+     }
+    }
+   },
+   {
+    "id": "info-logistics-local-concern-report-to-country-three",
+    "label": "The Logistics Group reports a small concern local to its log (to country_three)",
+    "categories": [
+     "information"
+    ],
+    "components": {
+     "information": {
+      "content": "The Logistics Group reports a small concern local to its logistics area.",
+      "source_id": "logistics-group",
+      "channel_id": "logistics_group_channel",
+      "visibility": "direct",
+      "topic": "logistics_local_concern_report",
+      "active": true
+     },
+     "claim_provenance": {
+      "apparent_source": "Logistics Group",
+      "source_lineage": "logistics_group_local_concern",
+      "hidden_origin": "[{\"key\": \"underlying_concern_is_true\", \"value\": true}, {\"key\": \"scope\", \"value\": \"local logistics area\"}]"
+     }
+    }
+   },
+   {
+    "id": "delivery-info-logistics-local-concern-report-to-country-three",
+    "label": "Delivery to country_three",
+    "categories": [
+     "delivery"
+    ],
+    "components": {
+     "delivery": {
+      "info_id": "info-logistics-local-concern-report-to-country-three",
+      "recipient_id": "country-three",
+      "channel_id": "logistics_group_channel",
+      "status": "delivered"
+     }
+    }
+   },
+   {
+    "id": "info-community-local-concern-report-to-country-four",
+    "label": "The Community Group reports a small concern local to its com (to country_four)",
+    "categories": [
+     "information"
+    ],
+    "components": {
+     "information": {
+      "content": "The Community Group reports a small concern local to its community area.",
+      "source_id": "community-group",
+      "channel_id": "community_group_channel",
+      "visibility": "direct",
+      "topic": "community_local_concern_report",
+      "active": true
+     },
+     "claim_provenance": {
+      "apparent_source": "Community Group",
+      "source_lineage": "community_group_local_concern",
+      "hidden_origin": "[{\"key\": \"underlying_concern_is_true\", \"value\": true}, {\"key\": \"scope\", \"value\": \"local community area\"}]"
+     }
+    }
+   },
+   {
+    "id": "delivery-info-community-local-concern-report-to-country-four",
+    "label": "Delivery to country_four",
+    "categories": [
+     "delivery"
+    ],
+    "components": {
+     "delivery": {
+      "info_id": "info-community-local-concern-report-to-country-four",
+      "recipient_id": "country-four",
+      "channel_id": "community_group_channel",
+      "status": "delivered"
+     }
+    }
+   },
+   {
+    "id": "partnership-membership",
+    "label": "Partnership membership",
+    "categories": [
+     "institutional-membership",
+     "partnership-membership"
+    ],
+    "components": {
+     "partnership_membership": {
+      "present": true
+     }
+    }
+   },
+   {
+    "id": "activation-question",
+    "label": "System activation question",
+    "categories": [
+     "decision-context",
+     "activation-question"
+    ],
+    "components": {
+     "activation_question": {
+      "question": "Whether to activate the cross-border bio-surveillance early-warning system.",
+      "deadline_exists": true
+     }
+    }
+   },
+   {
+    "id": "regular-member-meeting",
+    "label": "Regular meeting of the partnership members.",
+    "categories": [
+     "moment",
+     "regular-member-meeting"
+    ],
+    "components": {
+     "moment": {
+      "ticks_until": 2,
+      "every_ticks": 2,
+      "occurrences": 0,
+      "happening_now": false
+     }
+    }
+   },
+   {
+    "id": "activation-deadline",
+    "label": "Deadline for the partnership's activation decision.",
+    "categories": [
+     "moment",
+     "activation-deadline"
+    ],
+    "components": {
+     "moment": {
+      "ticks_until": 8,
+      "every_ticks": -1,
+      "occurrences": 0,
+      "happening_now": false
+     }
+    }
+   },
+   {
+    "id": "work-cycle",
+    "label": "a new work cycle every 4 rounds",
+    "categories": [
+     "moment",
+     "work-cycle"
+    ],
+    "components": {
+     "moment": {
+      "ticks_until": 4,
+      "every_ticks": 4,
+      "occurrences": 0,
+      "happening_now": false
+     }
+    }
+   }
+  ],
+  "actions": [
+   {
+    "kind": "communicate",
+    "description": "Deliver one represented information item to its declared recipient.",
+    "fields": [
+     {
+      "name": "information",
+      "type": "entity_ref"
+     },
+     {
+      "name": "delivery",
+      "type": "entity_ref"
+     },
+     {
+      "name": "recipient",
+      "type": "entity_ref"
+     }
+    ]
+   },
+   {
+    "kind": "raise-local-concern",
+    "description": "Raise a concern through the group's own channel for partnership consideration.",
+    "fields": [
+     {
+      "name": "concern",
+      "type": "string"
+     }
+    ]
+   },
+   {
+    "kind": "assess-technical-risk",
+    "description": "Investigate a technical concern and report findings or a mitigation that could address it.",
+    "fields": [
+     {
+      "name": "concern",
+      "type": "string"
+     },
+     {
+      "name": "findings_or_mitigation",
+      "type": "string"
+     }
+    ]
+   },
+   {
+    "kind": "review-legal-requirements",
+    "description": "Review a legal concern and propose a compliant way forward.",
+    "fields": [
+     {
+      "name": "concern",
+      "type": "string"
+     },
+     {
+      "name": "proposed_response",
+      "type": "string"
+     }
+    ]
+   },
+   {
+    "kind": "develop-logistics-plan",
+    "description": "Work through a logistics concern and propose a practical plan to address it.",
+    "fields": [
+     {
+      "name": "concern",
+      "type": "string"
+     },
+     {
+      "name": "plan",
+      "type": "string"
+     }
+    ]
+   },
+   {
+    "kind": "consult-community",
+    "description": "Consult affected communities about a concern and propose a response informed by their input.",
+    "fields": [
+     {
+      "name": "concern",
+      "type": "string"
+     },
+     {
+      "name": "consultation_or_response",
+      "type": "string"
+     }
+    ]
+   },
+   {
+    "kind": "reopen-settled-issue",
+    "description": "Ask the partnership to reconsider an issue it had treated as settled, for example in light of a local concern.",
+    "fields": [
+     {
+      "name": "issue",
+      "type": "string"
+     },
+     {
+      "name": "reason",
+      "type": "string"
+     }
+    ]
+   },
+   {
+    "kind": "reconsider-issue",
+    "description": "Review a reopened issue and state a considered outcome or next step.",
+    "fields": [
+     {
+      "name": "issue",
+      "type": "string"
+     },
+     {
+      "name": "outcome_or_next_step",
+      "type": "string"
+     }
+    ]
+   },
+   {
+    "kind": "make-support-conditional",
+    "description": "Make the member's support for the activation decision conditional on a stated condition.",
+    "fields": [
+     {
+      "name": "decision",
+      "type": "entity_ref"
+     },
+     {
+      "name": "condition",
+      "type": "string"
+     }
+    ]
+   },
+   {
+    "kind": "restore-unconditional-support",
+    "description": "Restore the member's unconditional support for the activation decision after reconsidering or addressing its condition.",
+    "fields": [
+     {
+      "name": "decision",
+      "type": "entity_ref"
+     }
+    ]
+   }
+  ],
+  "presentation": {
+   "assets": {
+    "participant": {
+     "kind": "emoji",
+     "value": "\ud83d\udc64"
+    },
+    "information": {
+     "kind": "emoji",
+     "value": "\u2709\ufe0f"
+    },
+    "delivery": {
+     "kind": "text",
+     "value": "\u2192"
+    }
+   },
+   "category_assets": {
+    "member": "participant",
+    "information": "information",
+    "delivery": "delivery"
+   },
+   "station_roles": {}
+  },
+  "actor_information": {
+   "version": 1,
+   "public_summary": "A partnership of four countries and a regional health network must decide by a deadline whether to activate a cross-border bio-surveillance early-warning system.",
+   "public_entities": [
+    {
+     "id": "partnership",
+     "label": "Country and Health Network Partnership",
+     "fields": [
+      "member.role"
+     ]
+    },
+    {
+     "id": "country-one",
+     "label": "Country One",
+     "fields": [
+      "member.role"
+     ]
+    },
+    {
+     "id": "country-two",
+     "label": "Country Two",
+     "fields": [
+      "member.role"
+     ]
+    },
+    {
+     "id": "country-three",
+     "label": "Country Three",
+     "fields": [
+      "member.role"
+     ]
+    },
+    {
+     "id": "country-four",
+     "label": "Country Four",
+     "fields": [
+      "member.role"
+     ]
+    },
+    {
+     "id": "regional-health-network",
+     "label": "Regional Health Network",
+     "fields": [
+      "member.role"
+     ]
+    },
+    {
+     "id": "technical-group",
+     "label": "Technical Group",
+     "fields": [
+      "member.role"
+     ]
+    },
+    {
+     "id": "legal-group",
+     "label": "Legal Group",
+     "fields": [
+      "member.role"
+     ]
+    },
+    {
+     "id": "logistics-group",
+     "label": "Logistics Group",
+     "fields": [
+      "member.role"
+     ]
+    },
+    {
+     "id": "community-group",
+     "label": "Community Group",
+     "fields": [
+      "member.role"
+     ]
+    },
+    {
+     "id": "info-technical-local-concern-report-to-country-one",
+     "label": "Report",
+     "fields": [
+      "information.content",
+      "information.source_id",
+      "information.channel_id",
+      "information.visibility",
+      "information.topic",
+      "information.active",
+      "claim_provenance.apparent_source"
+     ]
+    },
+    {
+     "id": "delivery-info-technical-local-concern-report-to-country-one",
+     "label": "Delivery",
+     "fields": [
+      "delivery.info_id",
+      "delivery.recipient_id",
+      "delivery.channel_id",
+      "delivery.status"
+     ]
+    },
+    {
+     "id": "info-legal-local-concern-report-to-country-two",
+     "label": "Report",
+     "fields": [
+      "information.content",
+      "information.source_id",
+      "information.channel_id",
+      "information.visibility",
+      "information.topic",
+      "information.active",
+      "claim_provenance.apparent_source"
+     ]
+    },
+    {
+     "id": "delivery-info-legal-local-concern-report-to-country-two",
+     "label": "Delivery",
+     "fields": [
+      "delivery.info_id",
+      "delivery.recipient_id",
+      "delivery.channel_id",
+      "delivery.status"
+     ]
+    },
+    {
+     "id": "info-logistics-local-concern-report-to-country-three",
+     "label": "Report",
+     "fields": [
+      "information.content",
+      "information.source_id",
+      "information.channel_id",
+      "information.visibility",
+      "information.topic",
+      "information.active",
+      "claim_provenance.apparent_source"
+     ]
+    },
+    {
+     "id": "delivery-info-logistics-local-concern-report-to-country-three",
+     "label": "Delivery",
+     "fields": [
+      "delivery.info_id",
+      "delivery.recipient_id",
+      "delivery.channel_id",
+      "delivery.status"
+     ]
+    },
+    {
+     "id": "info-community-local-concern-report-to-country-four",
+     "label": "Report",
+     "fields": [
+      "information.content",
+      "information.source_id",
+      "information.channel_id",
+      "information.visibility",
+      "information.topic",
+      "information.active",
+      "claim_provenance.apparent_source"
+     ]
+    },
+    {
+     "id": "delivery-info-community-local-concern-report-to-country-four",
+     "label": "Delivery",
+     "fields": [
+      "delivery.info_id",
+      "delivery.recipient_id",
+      "delivery.channel_id",
+      "delivery.status"
+     ]
+    },
+    {
+     "id": "partnership-membership",
+     "label": "Partnership membership",
+     "fields": [],
+     "actor_ids": [
+      "partnership",
+      "country-one",
+      "country-two",
+      "country-three",
+      "country-four",
+      "regional-health-network",
+      "technical-group",
+      "legal-group",
+      "logistics-group",
+      "community-group"
+     ]
+    },
+    {
+     "id": "activation-question",
+     "label": "System activation question",
+     "fields": [],
+     "actor_ids": [
+      "partnership",
+      "country-one",
+      "country-two",
+      "country-three",
+      "country-four",
+      "regional-health-network",
+      "technical-group",
+      "legal-group",
+      "logistics-group",
+      "community-group"
+     ]
+    },
+    {
+     "id": "regular-member-meeting",
+     "label": "Regular meeting of the partnership members.",
+     "fields": []
+    },
+    {
+     "id": "activation-deadline",
+     "label": "Deadline for the partnership's activation decision.",
+     "fields": []
+    }
+   ],
+   "actors": {
+    "partnership": {
+     "brief": "You are Country and Health Network Partnership (Partnership of four countries and a regional health network deciding whether to activate the system.). Convenes and coordinates member decision-making. Your goals: Reach a decision on system activation by the deadline.. Right now: The partnership is considering activation.. You can: Convene regular member meetings.. You remember: The partnership must decide by a deadline whether to activate the cross-border bio-surveillance early-warning system..",
+     "initial_knowledge": [],
+     "observable_fields": [
+      {
+       "entity": "partnership-membership",
+       "paths": []
+      },
+      {
+       "entity": "activation-question",
+       "paths": [
+        "activation_question.question",
+        "activation_question.deadline_exists"
+       ]
+      }
+     ]
+    },
+    "country-one": {
+     "brief": "You are Country One (Member country in the partnership.). Participates in partnership decision-making. Your goals: Participate in the partnership's activation decision.. Right now: Country One is considering the activation decision.. You can: Participate in partnership meetings and decision-making.. You remember: Country One is a member of the partnership.; The Technical Group has sent Country One a report describing a small local technical concern..",
+     "initial_knowledge": [],
+     "observable_fields": [
+      {
+       "entity": "partnership-membership",
+       "paths": []
+      },
+      {
+       "entity": "activation-question",
+       "paths": [
+        "activation_question.question",
+        "activation_question.deadline_exists"
+       ]
+      }
+     ]
+    },
+    "country-two": {
+     "brief": "You are Country Two (Member country in the partnership.). Participates in partnership decision-making. Your goals: Participate in the partnership's activation decision.. Right now: Country Two is considering the activation decision.. You can: Participate in partnership meetings and decision-making.. You remember: Country Two is a member of the partnership.; The Legal Group has sent Country Two a report describing a small local legal concern..",
+     "initial_knowledge": [],
+     "observable_fields": [
+      {
+       "entity": "partnership-membership",
+       "paths": []
+      },
+      {
+       "entity": "activation-question",
+       "paths": [
+        "activation_question.question",
+        "activation_question.deadline_exists"
+       ]
+      }
+     ]
+    },
+    "country-three": {
+     "brief": "You are Country Three (Member country in the partnership.). Participates in partnership decision-making. Your goals: Participate in the partnership's activation decision.. Right now: Country Three is considering the activation decision.. You can: Participate in partnership meetings and decision-making.. You remember: Country Three is a member of the partnership.; The Logistics Group has sent Country Three a report describing a small local logistics concern..",
+     "initial_knowledge": [],
+     "observable_fields": [
+      {
+       "entity": "partnership-membership",
+       "paths": []
+      },
+      {
+       "entity": "activation-question",
+       "paths": [
+        "activation_question.question",
+        "activation_question.deadline_exists"
+       ]
+      }
+     ]
+    },
+    "country-four": {
+     "brief": "You are Country Four (Member country in the partnership.). Participates in partnership decision-making. Your goals: Participate in the partnership's activation decision.. Right now: Country Four is considering the activation decision.. You can: Participate in partnership meetings and decision-making.. You remember: Country Four is a member of the partnership.; The Community Group has sent Country Four a report describing a small local community concern..",
+     "initial_knowledge": [],
+     "observable_fields": [
+      {
+       "entity": "partnership-membership",
+       "paths": []
+      },
+      {
+       "entity": "activation-question",
+       "paths": [
+        "activation_question.question",
+        "activation_question.deadline_exists"
+       ]
+      }
+     ]
+    },
+    "regional-health-network": {
+     "brief": "You are Regional Health Network (Member of the partnership.). Participates in partnership decision-making. Your goals: Participate in the partnership's activation decision.. Right now: The regional health network is considering the activation decision.. You can: Participate in partnership meetings and decision-making.. You remember: The regional health network is a member of the partnership..",
+     "initial_knowledge": [],
+     "observable_fields": [
+      {
+       "entity": "partnership-membership",
+       "paths": []
+      },
+      {
+       "entity": "activation-question",
+       "paths": [
+        "activation_question.question",
+        "activation_question.deadline_exists"
+       ]
+      }
+     ]
+    },
+    "technical-group": {
+     "brief": "You are Technical Group (Group raising a local technical concern through its own channel.). Raises a small, true concern local to its area. Your goals: Raise its local technical concern with a partnership member.. You believe: The group has identified a small technical concern in its area.. Right now: The group holds a local technical concern.. You can: Communicate its concern through its own channel.. You remember: The group has identified a small, true technical concern local to its area.; The group has sent a report about that concern to Country One through its own channel..",
+     "initial_knowledge": [],
+     "observable_fields": [
+      {
+       "entity": "partnership-membership",
+       "paths": []
+      },
+      {
+       "entity": "activation-question",
+       "paths": [
+        "activation_question.question",
+        "activation_question.deadline_exists"
+       ]
+      }
+     ]
+    },
+    "legal-group": {
+     "brief": "You are Legal Group (Group raising a local legal concern through its own channel.). Raises a small, true concern local to its area. Your goals: Raise its local legal concern with a partnership member.. You believe: The group has identified a small legal concern in its area.. Right now: The group holds a local legal concern.. You can: Communicate its concern through its own channel.. You remember: The group has identified a small, true legal concern local to its area.; The group has sent a report about that concern to Country Two through its own channel..",
+     "initial_knowledge": [],
+     "observable_fields": [
+      {
+       "entity": "partnership-membership",
+       "paths": []
+      },
+      {
+       "entity": "activation-question",
+       "paths": [
+        "activation_question.question",
+        "activation_question.deadline_exists"
+       ]
+      }
+     ]
+    },
+    "logistics-group": {
+     "brief": "You are Logistics Group (Group raising a local logistics concern through its own channel.). Raises a small, true concern local to its area. Your goals: Raise its local logistics concern with a partnership member.. You believe: The group has identified a small logistics concern in its area.. Right now: The group holds a local logistics concern.. You can: Communicate its concern through its own channel.. You remember: The group has identified a small, true logistics concern local to its area.; The group has sent a report about that concern to Country Three through its own channel..",
+     "initial_knowledge": [],
+     "observable_fields": [
+      {
+       "entity": "partnership-membership",
+       "paths": []
+      },
+      {
+       "entity": "activation-question",
+       "paths": [
+        "activation_question.question",
+        "activation_question.deadline_exists"
+       ]
+      }
+     ]
+    },
+    "community-group": {
+     "brief": "You are Community Group (Group raising a local community concern through its own channel.). Raises a small, true concern local to its area. Your goals: Raise its local community concern with a partnership member.. You believe: The group has identified a small community concern in its area.. Right now: The group holds a local community concern.. You can: Communicate its concern through its own channel.. You remember: The group has identified a small, true community concern local to its area.; The group has sent a report about that concern to Country Four through its own channel..",
+     "initial_knowledge": [],
+     "observable_fields": [
+      {
+       "entity": "partnership-membership",
+       "paths": []
+      },
+      {
+       "entity": "activation-question",
+       "paths": [
+        "activation_question.question",
+        "activation_question.deadline_exists"
+       ]
+      }
+     ]
+    }
+   },
+   "public_actions": [
+    {
+     "kind": "communicate",
+     "description": "Deliver a held report to its declared recipient.",
+     "fields": {
+      "information": "info-technical-local-concern-report-to-country-one",
+      "delivery": "delivery-info-technical-local-concern-report-to-country-one",
+      "recipient": "country-one"
+     }
+    },
+    {
+     "kind": "communicate",
+     "description": "Deliver a held report to its declared recipient.",
+     "fields": {
+      "information": "info-legal-local-concern-report-to-country-two",
+      "delivery": "delivery-info-legal-local-concern-report-to-country-two",
+      "recipient": "country-two"
+     }
+    },
+    {
+     "kind": "communicate",
+     "description": "Deliver a held report to its declared recipient.",
+     "fields": {
+      "information": "info-logistics-local-concern-report-to-country-three",
+      "delivery": "delivery-info-logistics-local-concern-report-to-country-three",
+      "recipient": "country-three"
+     }
+    },
+    {
+     "kind": "communicate",
+     "description": "Deliver a held report to its declared recipient.",
+     "fields": {
+      "information": "info-community-local-concern-report-to-country-four",
+      "delivery": "delivery-info-community-local-concern-report-to-country-four",
+      "recipient": "country-four"
+     }
+    }
+   ]
+  },
+  "layout": {
+   "version": 1,
+   "map": "public-offices-10",
+   "rooms": {
+    "partnership": "hub",
+    "country-one": "o1",
+    "country-two": "o2",
+    "country-three": "o3",
+    "country-four": "o4",
+    "regional-health-network": "o5",
+    "technical-group": "o6",
+    "legal-group": "o7",
+    "logistics-group": "o8",
+    "community-group": "o9"
+   },
+   "doors": {
+    "country-one": {
+     "between": [
+      "partnership",
+      "country-one"
+     ],
+     "halves": []
+    },
+    "country-two": {
+     "between": [
+      "partnership",
+      "country-two"
+     ],
+     "halves": []
+    },
+    "country-three": {
+     "between": [
+      "partnership",
+      "country-three"
+     ],
+     "halves": []
+    },
+    "country-four": {
+     "between": [
+      "partnership",
+      "country-four"
+     ],
+     "halves": []
+    },
+    "regional-health-network": {
+     "between": [
+      "partnership",
+      "regional-health-network"
+     ],
+     "halves": []
+    },
+    "technical-group": {
+     "between": [
+      "partnership",
+      "technical-group"
+     ],
+     "halves": []
+    },
+    "legal-group": {
+     "between": [
+      "partnership",
+      "legal-group"
+     ],
+     "halves": []
+    },
+    "logistics-group": {
+     "between": [
+      "partnership",
+      "logistics-group"
+     ],
+     "halves": []
+    },
+    "community-group": {
+     "between": [
+      "partnership",
+      "community-group"
+     ],
+     "halves": []
+    }
+   },
+   "people": {
+    "community-group": {
+     "start": "community-group"
+    },
+    "country-four": {
+     "start": "country-four"
+    },
+    "country-one": {
+     "start": "country-one"
+    },
+    "country-three": {
+     "start": "country-three"
+    },
+    "country-two": {
+     "start": "country-two"
+    },
+    "legal-group": {
+     "start": "legal-group"
+    },
+    "logistics-group": {
+     "start": "logistics-group"
+    },
+    "partnership": {
+     "start": "partnership"
+    },
+    "regional-health-network": {
+     "start": "regional-health-network"
+    },
+    "technical-group": {
+     "start": "technical-group"
+    }
+   }
+  }
+ },
+ "causal_model": {
+  "schema_version": "world-substrate-causal-model/v0",
+  "terminal": null,
+  "mechanics": [
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "coordination.action.communicate",
+    "version": "1",
+    "action_kind": "communicate",
+    "rationale": "A represented member may deliver one represented information item through its declared delivery record to its declared recipient.",
+    "actor_selector": {
+     "categories": [
+      "member"
+     ],
+     "components": [
+      "member"
+     ]
+    },
+    "participants": {
+     "information": {
+      "categories": [
+       "information"
+      ],
+      "components": [
+       "information"
+      ]
+     },
+     "delivery": {
+      "categories": [
+       "delivery"
+      ],
+      "components": [
+       "delivery"
+      ]
+     },
+     "recipient": {
+      "categories": [
+       "member"
+      ],
+      "components": [
+       "member"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "Actor is the represented information source",
+      "left": {
+       "participant": {
+        "name": "information",
+        "path": "components.information.source_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "actor"
+      }
+     },
+     {
+      "label": "Delivery names the represented information",
+      "left": {
+       "participant": {
+        "name": "delivery",
+        "path": "components.delivery.info_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "information"
+      }
+     },
+     {
+      "label": "Delivery names the represented recipient",
+      "left": {
+       "participant": {
+        "name": "delivery",
+        "path": "components.delivery.recipient_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "entity_id": "recipient"
+      }
+     },
+     {
+      "label": "Delivery channel agrees with information channel",
+      "left": {
+       "participant": {
+        "name": "delivery",
+        "path": "components.delivery.channel_id"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "participant": {
+        "name": "information",
+        "path": "components.information.channel_id"
+       }
+      }
+     },
+     {
+      "label": "Information is not active yet",
+      "left": {
+       "participant": {
+        "name": "information",
+        "path": "components.information.active"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     },
+     {
+      "label": "Delivery is pending",
+      "left": {
+       "participant": {
+        "name": "delivery",
+        "path": "components.delivery.status"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": "pending"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "information",
+      "path": "components.information.active",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     },
+     {
+      "participant": "delivery",
+      "path": "components.delivery.status",
+      "op": "set",
+      "value": {
+       "literal": "delivered"
+      }
+     },
+     {
+      "participant": "recipient",
+      "path": "components.member.aware",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "Delivery is represented, not a claim that the message caused a later decision."
+    ],
+    "tests": [
+     "only the declared source can deliver; recipient visibility remains actor-scoped"
+    ],
+    "semantic_bindings": []
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "raise-local-concern",
+    "version": "1",
+    "action_kind": "raise-local-concern",
+    "rationale": "The group can mark that it raised a concern through its own channel. The model has no concern record, so this records the action in the group's work-cycle state without claiming to store the concern text or resolve it.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "participants": {},
+    "parameters": {
+     "concern": [
+      "A nonempty concern must be supplied."
+     ]
+    },
+    "checks": [
+     {
+      "label": "The concern must not be empty",
+      "left": {
+       "action_field": "concern"
+      },
+      "op": "ne",
+      "right": {
+       "literal": ""
+      }
+     },
+     {
+      "label": "This group must not have raised a concern in this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.raise_local_concern_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     },
+     {
+      "label": "The group must raise concerns through its own local channel",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "contains",
+      "right": {
+       "literal": "Group raising a local"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.work.raise_local_concern_done",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "The concern text and its status are not represented; this records only that this group performed the move during the current work cycle."
+    ],
+    "tests": [
+     "A local group with an unset work-cycle marker and nonempty concern can act and its marker becomes true.",
+     "An empty concern or a second attempt by the same group before the work-cycle reset is refused."
+    ],
+    "semantic_bindings": [
+     "concern is the move's required text input",
+     "work-cycle marker prevents same-cycle repetition"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "assess-technical-risk",
+    "version": "1",
+    "action_kind": "assess-technical-risk",
+    "rationale": "The Technical Group can record that it performed a technical assessment. No technical evidence or assessment record is represented, so the effect does not assert that a risk was mitigated.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "participants": {},
+    "parameters": {
+     "concern": [
+      "A nonempty concern must be supplied."
+     ],
+     "findings_or_mitigation": [
+      "Nonempty findings or mitigation must be supplied."
+     ]
+    },
+    "checks": [
+     {
+      "label": "The concern must not be empty",
+      "left": {
+       "action_field": "concern"
+      },
+      "op": "ne",
+      "right": {
+       "literal": ""
+      }
+     },
+     {
+      "label": "The findings or mitigation must not be empty",
+      "left": {
+       "action_field": "findings_or_mitigation"
+      },
+      "op": "ne",
+      "right": {
+       "literal": ""
+      }
+     },
+     {
+      "label": "This group must not have assessed technical risk in this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.assess_technical_risk_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     },
+     {
+      "label": "The Technical Group must perform the technical assessment",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "contains",
+      "right": {
+       "literal": "technical concern"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.work.assess_technical_risk_done",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "The concern, findings, and mitigation are not retained in represented state; this records only that the Technical Group performed the move during the current work cycle."
+    ],
+    "tests": [
+     "The Technical Group can act with both text fields nonempty and an unset work-cycle marker.",
+     "Another role, an empty text field, or a repeated same-cycle attempt is refused."
+    ],
+    "semantic_bindings": [
+     "concern and findings_or_mitigation are required move inputs",
+     "work-cycle marker prevents same-cycle repetition"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "review-legal-requirements",
+    "version": "1",
+    "action_kind": "review-legal-requirements",
+    "rationale": "The Legal Group can record that it reviewed a legal concern and proposed a response. No legal review record or compliance status is represented, so the move does not assert compliance.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "participants": {},
+    "parameters": {
+     "concern": [
+      "A nonempty concern must be supplied."
+     ],
+     "proposed_response": [
+      "A nonempty proposed response must be supplied."
+     ]
+    },
+    "checks": [
+     {
+      "label": "The concern must not be empty",
+      "left": {
+       "action_field": "concern"
+      },
+      "op": "ne",
+      "right": {
+       "literal": ""
+      }
+     },
+     {
+      "label": "The proposed response must not be empty",
+      "left": {
+       "action_field": "proposed_response"
+      },
+      "op": "ne",
+      "right": {
+       "literal": ""
+      }
+     },
+     {
+      "label": "This group must not have reviewed legal requirements in this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.review_legal_requirements_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     },
+     {
+      "label": "The Legal Group must perform the legal review",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "contains",
+      "right": {
+       "literal": "legal concern"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.work.review_legal_requirements_done",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "The concern and proposed response are not retained in represented state; this records only that the Legal Group performed the move during the current work cycle."
+    ],
+    "tests": [
+     "The Legal Group can act with both text fields nonempty and an unset work-cycle marker.",
+     "Another role, an empty text field, or a repeated same-cycle attempt is refused."
+    ],
+    "semantic_bindings": [
+     "concern and proposed_response are required move inputs",
+     "work-cycle marker prevents same-cycle repetition"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "develop-logistics-plan",
+    "version": "1",
+    "action_kind": "develop-logistics-plan",
+    "rationale": "The Logistics Group can record that it worked through a logistics concern and proposed a plan. No plan or feasibility state is represented, so this does not claim the plan is feasible or implemented.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "participants": {},
+    "parameters": {
+     "concern": [
+      "A nonempty concern must be supplied."
+     ],
+     "plan": [
+      "A nonempty plan must be supplied."
+     ]
+    },
+    "checks": [
+     {
+      "label": "The concern must not be empty",
+      "left": {
+       "action_field": "concern"
+      },
+      "op": "ne",
+      "right": {
+       "literal": ""
+      }
+     },
+     {
+      "label": "The plan must not be empty",
+      "left": {
+       "action_field": "plan"
+      },
+      "op": "ne",
+      "right": {
+       "literal": ""
+      }
+     },
+     {
+      "label": "This group must not have developed a logistics plan in this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.develop_logistics_plan_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     },
+     {
+      "label": "The Logistics Group must develop the logistics plan",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "contains",
+      "right": {
+       "literal": "logistics concern"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.work.develop_logistics_plan_done",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "The concern and plan are not retained in represented state; this records only that the Logistics Group performed the move during the current work cycle."
+    ],
+    "tests": [
+     "The Logistics Group can act with both text fields nonempty and an unset work-cycle marker.",
+     "Another role, an empty text field, or a repeated same-cycle attempt is refused."
+    ],
+    "semantic_bindings": [
+     "concern and plan are required move inputs",
+     "work-cycle marker prevents same-cycle repetition"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "consult-community",
+    "version": "1",
+    "action_kind": "consult-community",
+    "rationale": "The Community Group can record that it consulted affected communities and proposed a response. No consultation record or community input is represented, so this does not claim that a response has community agreement.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "participants": {},
+    "parameters": {
+     "concern": [
+      "A nonempty concern must be supplied."
+     ],
+     "consultation_or_response": [
+      "Nonempty consultation or response text must be supplied."
+     ]
+    },
+    "checks": [
+     {
+      "label": "The concern must not be empty",
+      "left": {
+       "action_field": "concern"
+      },
+      "op": "ne",
+      "right": {
+       "literal": ""
+      }
+     },
+     {
+      "label": "The consultation or response must not be empty",
+      "left": {
+       "action_field": "consultation_or_response"
+      },
+      "op": "ne",
+      "right": {
+       "literal": ""
+      }
+     },
+     {
+      "label": "This group must not have consulted the community in this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.consult_community_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     },
+     {
+      "label": "The Community Group must perform the community consultation",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "contains",
+      "right": {
+       "literal": "community concern"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.work.consult_community_done",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "The concern, consultation, and response are not retained in represented state; this records only that the Community Group performed the move during the current work cycle."
+    ],
+    "tests": [
+     "The Community Group can act with both text fields nonempty and an unset work-cycle marker.",
+     "Another role, an empty text field, or a repeated same-cycle attempt is refused."
+    ],
+    "semantic_bindings": [
+     "concern and consultation_or_response are required move inputs",
+     "work-cycle marker prevents same-cycle repetition"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "reopen-settled-issue",
+    "version": "1",
+    "action_kind": "reopen-settled-issue",
+    "rationale": "A partnership member can record that it asked to reconsider a settled issue. Settled issues and concern links are not represented, so the effect records the request rather than asserting a particular issue's status changed.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "participants": {},
+    "parameters": {
+     "issue": [
+      "A nonempty issue must be supplied."
+     ],
+     "reason": [
+      "A nonempty reason must be supplied."
+     ]
+    },
+    "checks": [
+     {
+      "label": "The issue must not be empty",
+      "left": {
+       "action_field": "issue"
+      },
+      "op": "ne",
+      "right": {
+       "literal": ""
+      }
+     },
+     {
+      "label": "The reason must not be empty",
+      "left": {
+       "action_field": "reason"
+      },
+      "op": "ne",
+      "right": {
+       "literal": ""
+      }
+     },
+     {
+      "label": "This member must not have requested reopening in this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.reopen_settled_issue_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     },
+     {
+      "label": "The member must belong to the partnership",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "contains",
+      "right": {
+       "literal": "Member"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.work.reopen_settled_issue_done",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "The issue, reason, and settled/reopened status are not retained in represented state; this records only the member's request during the current work cycle."
+    ],
+    "tests": [
+     "A partnership member can request reopening with nonempty issue and reason and an unset work-cycle marker.",
+     "A nonmember, empty text field, or repeated same-cycle request is refused."
+    ],
+    "semantic_bindings": [
+     "issue and reason are required move inputs",
+     "work-cycle marker prevents same-cycle repetition"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "reconsider-issue",
+    "version": "1",
+    "action_kind": "reconsider-issue",
+    "rationale": "A partnership member can record a considered outcome or next step after its own recorded reopening request. The issue's status and the outcome are not represented, so the move does not claim resolution.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "participants": {},
+    "parameters": {
+     "issue": [
+      "A nonempty issue must be supplied."
+     ],
+     "outcome_or_next_step": [
+      "A nonempty outcome or next step must be supplied."
+     ]
+    },
+    "checks": [
+     {
+      "label": "The issue must not be empty",
+      "left": {
+       "action_field": "issue"
+      },
+      "op": "ne",
+      "right": {
+       "literal": ""
+      }
+     },
+     {
+      "label": "The outcome or next step must not be empty",
+      "left": {
+       "action_field": "outcome_or_next_step"
+      },
+      "op": "ne",
+      "right": {
+       "literal": ""
+      }
+     },
+     {
+      "label": "This member must have requested reopening in this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.reopen_settled_issue_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "This member must not have reconsidered an issue in this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.reconsider_issue_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     },
+     {
+      "label": "The member must belong to the partnership",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "contains",
+      "right": {
+       "literal": "Member"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.work.reconsider_issue_done",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "The issue, outcome, and resolved status are not retained in represented state; this records only that the member performed the move during the current work cycle."
+    ],
+    "tests": [
+     "A partnership member who has requested reopening can reconsider with nonempty text fields.",
+     "A member without a same-cycle reopening request, a nonmember, empty text, or repeated reconsideration is refused."
+    ],
+    "semantic_bindings": [
+     "issue and outcome_or_next_step are required move inputs",
+     "reopening marker gates reconsideration",
+     "work-cycle marker prevents same-cycle repetition"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "make-support-conditional",
+    "version": "1",
+    "action_kind": "make-support-conditional",
+    "rationale": "A partnership member can record that it made its support conditional for the represented activation question. The model has no support or condition record, so the effect records only that the member performed the move; it does not alter partnership support.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "participants": {
+     "decision": {
+      "categories": [
+       "decision-context",
+       "activation-question"
+      ],
+      "components": [
+       "activation_question"
+      ]
+     }
+    },
+    "parameters": {
+     "condition": [
+      "A nonempty condition must be supplied."
+     ]
+    },
+    "checks": [
+     {
+      "label": "The condition must not be empty",
+      "left": {
+       "action_field": "condition"
+      },
+      "op": "ne",
+      "right": {
+       "literal": ""
+      }
+     },
+     {
+      "label": "The activation question must be the decision",
+      "left": {
+       "entity_id": "decision"
+      },
+      "op": "eq",
+      "right": {
+       "literal": "activation-question"
+      }
+     },
+     {
+      "label": "The activation question must have a deadline",
+      "left": {
+       "participant": {
+        "name": "decision",
+        "path": "components.activation_question.deadline_exists"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "This member must not have made support conditional in this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.make_support_conditional_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     },
+     {
+      "label": "The member must belong to the partnership",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "contains",
+      "right": {
+       "literal": "Member"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.work.make_support_conditional_done",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "Neither member support nor the stated condition has a represented state path; this records only the member's action and cannot enact or verify conditional support."
+    ],
+    "tests": [
+     "A partnership member can perform the move for the activation question with a nonempty condition and an unset work-cycle marker.",
+     "A different decision, missing deadline, nonmember, empty condition, or repeated same-cycle attempt is refused."
+    ],
+    "semantic_bindings": [
+     "decision identifies the represented activation question",
+     "condition is required move text",
+     "work-cycle marker prevents same-cycle repetition"
+    ]
+   },
+   {
+    "schema_version": "world-substrate-action-mechanic/v0",
+    "mechanic_id": "restore-unconditional-support",
+    "version": "1",
+    "action_kind": "restore-unconditional-support",
+    "rationale": "A partnership member can record a restoration move for the represented activation question after its own conditional-support move. Because no condition, remedy, or support state is represented, the move cannot verify that a condition was met or enact restored support.",
+    "actor_selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "member",
+      "work"
+     ]
+    },
+    "participants": {
+     "decision": {
+      "categories": [
+       "decision-context",
+       "activation-question"
+      ],
+      "components": [
+       "activation_question"
+      ]
+     }
+    },
+    "parameters": {},
+    "checks": [
+     {
+      "label": "The activation question must be the decision",
+      "left": {
+       "entity_id": "decision"
+      },
+      "op": "eq",
+      "right": {
+       "literal": "activation-question"
+      }
+     },
+     {
+      "label": "This member must have made support conditional in this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.make_support_conditional_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     },
+     {
+      "label": "This member must not have performed a restoration move in this work cycle",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.work.restore_unconditional_support_done"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": false
+      }
+     },
+     {
+      "label": "The member must belong to the partnership",
+      "left": {
+       "participant": {
+        "name": "actor",
+        "path": "components.member.role"
+       }
+      },
+      "op": "contains",
+      "right": {
+       "literal": "Member"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "actor",
+      "path": "components.work.restore_unconditional_support_done",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     }
+    ],
+    "limits": [
+     "The member's support, stated condition, and evidence that the condition was met are not represented; this records only the restoration move and does not enact unconditional support."
+    ],
+    "tests": [
+     "A partnership member who recorded conditional support in this work cycle can record restoration for the activation question.",
+     "A different decision, member without a same-cycle conditional-support marker, nonmember, or repeated same-cycle restoration is refused."
+    ],
+    "semantic_bindings": [
+     "decision identifies the represented activation question",
+     "conditional-support marker gates restoration",
+     "work-cycle marker prevents same-cycle repetition"
+    ]
+   }
+  ],
+  "processes": [
+   {
+    "process_id": "moment-passes",
+    "rationale": "A moment that happened last round is over.",
+    "selector": {
+     "categories": [
+      "moment"
+     ],
+     "components": [
+      "moment"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the moment is happening",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.moment.happening_now",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     }
+    ]
+   },
+   {
+    "process_id": "moment-countdown",
+    "rationale": "A scheduled moment's countdown falls by one each tick.",
+    "selector": {
+     "categories": [
+      "moment"
+     ],
+     "components": [
+      "moment"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the moment is still ahead",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.moment.ticks_until"
+       }
+      },
+      "op": "gt",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.moment.ticks_until",
+      "op": "subtract",
+      "value": {
+       "literal": 1
+      }
+     }
+    ]
+   },
+   {
+    "process_id": "moment-occurs",
+    "rationale": "At zero the moment happens once, then restarts its countdown.",
+    "selector": {
+     "categories": [
+      "moment"
+     ],
+     "components": [
+      "moment"
+     ]
+    },
+    "checks": [
+     {
+      "label": "the moment is due",
+      "left": {
+       "participant": {
+        "name": "it",
+        "path": "components.moment.ticks_until"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": 0
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.moment.occurrences",
+      "op": "add",
+      "value": {
+       "literal": 1
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.moment.happening_now",
+      "op": "set",
+      "value": {
+       "literal": true
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.moment.ticks_until",
+      "op": "set",
+      "value": {
+       "participant": {
+        "name": "it",
+        "path": "components.moment.every_ticks"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "process_id": "work-cycle-restarts",
+    "rationale": "Each time a new work cycle every 4 rounds comes round, everyone's record of work done is cleared, so routine work can be done again.",
+    "selector": {
+     "categories": [
+      "member"
+     ],
+     "components": [
+      "work"
+     ]
+    },
+    "participants": {
+     "cycle": {
+      "link": "ref:work.cycle_id",
+      "selector": {
+       "categories": [
+        "moment"
+       ],
+       "components": [
+        "moment"
+       ]
+      }
+     }
+    },
+    "checks": [
+     {
+      "label": "the work cycle restarts now",
+      "left": {
+       "participant": {
+        "name": "cycle",
+        "path": "components.moment.happening_now"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": true
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.work.raise_local_concern_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.work.assess_technical_risk_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.work.review_legal_requirements_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.work.develop_logistics_plan_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.work.consult_community_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.work.reopen_settled_issue_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.work.reconsider_issue_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.work.make_support_conditional_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.work.restore_unconditional_support_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     }
+    ]
+   },
+   {
+    "process_id": "clear-cycle-work-markers-primary",
+    "rationale": "At the start of a renewed work cycle, member work markers are cleared so local work can recur; this process clears the first six action markers.",
+    "selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "work"
+     ]
+    },
+    "participants": {
+     "cycle": {
+      "link": "ref:work.cycle_id",
+      "selector": {
+       "categories": [
+        "moment",
+        "work-cycle"
+       ],
+       "components": [
+        "moment"
+       ]
+      }
+     }
+    },
+    "checks": [
+     {
+      "label": "The work cycle must be at its renewed starting count",
+      "left": {
+       "participant": {
+        "name": "cycle",
+        "path": "components.moment.ticks_until"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": 4
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.work.raise_local_concern_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.work.assess_technical_risk_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.work.review_legal_requirements_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.work.develop_logistics_plan_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.work.consult_community_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.work.reopen_settled_issue_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     }
+    ]
+   },
+   {
+    "process_id": "clear-cycle-work-markers-secondary",
+    "rationale": "At the start of a renewed work cycle, the remaining member work markers are cleared so reconsideration and support-related moves can recur.",
+    "selector": {
+     "categories": [
+      "actor",
+      "member"
+     ],
+     "components": [
+      "work"
+     ]
+    },
+    "participants": {
+     "cycle": {
+      "link": "ref:work.cycle_id",
+      "selector": {
+       "categories": [
+        "moment",
+        "work-cycle"
+       ],
+       "components": [
+        "moment"
+       ]
+      }
+     }
+    },
+    "checks": [
+     {
+      "label": "The work cycle must be at its renewed starting count",
+      "left": {
+       "participant": {
+        "name": "cycle",
+        "path": "components.moment.ticks_until"
+       }
+      },
+      "op": "eq",
+      "right": {
+       "literal": 4
+      }
+     }
+    ],
+    "effects": [
+     {
+      "participant": "it",
+      "path": "components.work.reconsider_issue_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.work.make_support_conditional_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     },
+     {
+      "participant": "it",
+      "path": "components.work.restore_unconditional_support_done",
+      "op": "set",
+      "value": {
+       "literal": false
+      }
+     }
+    ]
+   }
+  ]
+ },
+ "briefs": {
+  "partnership": "You are Country and Health Network Partnership (Partnership of four countries and a regional health network deciding whether to activate the system.). Convenes and coordinates member decision-making. Your goals: Reach a decision on system activation by the deadline.. Right now: The partnership is considering activation.. You can: Convene regular member meetings.. You remember: The partnership must decide by a deadline whether to activate the cross-border bio-surveillance early-warning system..",
+  "country-one": "You are Country One (Member country in the partnership.). Participates in partnership decision-making. Your goals: Participate in the partnership's activation decision.. Right now: Country One is considering the activation decision.. You can: Participate in partnership meetings and decision-making.. You remember: Country One is a member of the partnership.; The Technical Group has sent Country One a report describing a small local technical concern..",
+  "country-two": "You are Country Two (Member country in the partnership.). Participates in partnership decision-making. Your goals: Participate in the partnership's activation decision.. Right now: Country Two is considering the activation decision.. You can: Participate in partnership meetings and decision-making.. You remember: Country Two is a member of the partnership.; The Legal Group has sent Country Two a report describing a small local legal concern..",
+  "country-three": "You are Country Three (Member country in the partnership.). Participates in partnership decision-making. Your goals: Participate in the partnership's activation decision.. Right now: Country Three is considering the activation decision.. You can: Participate in partnership meetings and decision-making.. You remember: Country Three is a member of the partnership.; The Logistics Group has sent Country Three a report describing a small local logistics concern..",
+  "country-four": "You are Country Four (Member country in the partnership.). Participates in partnership decision-making. Your goals: Participate in the partnership's activation decision.. Right now: Country Four is considering the activation decision.. You can: Participate in partnership meetings and decision-making.. You remember: Country Four is a member of the partnership.; The Community Group has sent Country Four a report describing a small local community concern..",
+  "regional-health-network": "You are Regional Health Network (Member of the partnership.). Participates in partnership decision-making. Your goals: Participate in the partnership's activation decision.. Right now: The regional health network is considering the activation decision.. You can: Participate in partnership meetings and decision-making.. You remember: The regional health network is a member of the partnership..",
+  "technical-group": "You are Technical Group (Group raising a local technical concern through its own channel.). Raises a small, true concern local to its area. Your goals: Raise its local technical concern with a partnership member.. You believe: The group has identified a small technical concern in its area.. Right now: The group holds a local technical concern.. You can: Communicate its concern through its own channel.. You remember: The group has identified a small, true technical concern local to its area.; The group has sent a report about that concern to Country One through its own channel..",
+  "legal-group": "You are Legal Group (Group raising a local legal concern through its own channel.). Raises a small, true concern local to its area. Your goals: Raise its local legal concern with a partnership member.. You believe: The group has identified a small legal concern in its area.. Right now: The group holds a local legal concern.. You can: Communicate its concern through its own channel.. You remember: The group has identified a small, true legal concern local to its area.; The group has sent a report about that concern to Country Two through its own channel..",
+  "logistics-group": "You are Logistics Group (Group raising a local logistics concern through its own channel.). Raises a small, true concern local to its area. Your goals: Raise its local logistics concern with a partnership member.. You believe: The group has identified a small logistics concern in its area.. Right now: The group holds a local logistics concern.. You can: Communicate its concern through its own channel.. You remember: The group has identified a small, true logistics concern local to its area.; The group has sent a report about that concern to Country Three through its own channel..",
+  "community-group": "You are Community Group (Group raising a local community concern through its own channel.). Raises a small, true concern local to its area. Your goals: Raise its local community concern with a partnership member.. You believe: The group has identified a small community concern in its area.. Right now: The group holds a local community concern.. You can: Communicate its concern through its own channel.. You remember: The group has identified a small, true community concern local to its area.; The group has sent a report about that concern to Country Four through its own channel.."
+ }
+}

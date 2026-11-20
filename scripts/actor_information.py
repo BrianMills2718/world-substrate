@@ -100,12 +100,18 @@ def validate_actor_information(bundle: dict[str, Any]) -> None:
     if not isinstance(forms, list):
         raise ActorInformationError("public_actions must be a list")
     for form in forms:
-        _object(form, {"kind", "description", "fields"}, {"unobserved_refs", "not_self"})
+        _object(form, {"kind", "description", "fields"}, {"unobserved_refs", "not_self", "open_fields"})
         _text(form["description"])
         if not isinstance(form["kind"], str) or form["kind"] not in actions or not isinstance(form["fields"], dict):
             raise ActorInformationError("invalid public action form")
         declared = {f["name"]: f["type"] for f in actions[form["kind"]]["fields"]}
-        if form["fields"].keys() != declared.keys():
+        # `open_fields`: fields the person states in their own words (a concern, a condition); never a referent.
+        # Implements: information-delivery/generated-moves-are-offered-with-their-text-left-to-the-person
+        open_names = form.get("open_fields", [])
+        if (not isinstance(open_names, list) or len(set(open_names)) != len(open_names)
+                or any(n not in declared or declared[n] == "entity_ref" for n in open_names)):
+            raise ActorInformationError("open_fields must name non-referent fields of the form's action")
+        if form["fields"].keys() != declared.keys() - set(open_names):
             raise ActorInformationError("public action form must bind its declared fields")
         for name, value in form["fields"].items():
             kind = declared[name]
@@ -220,7 +226,8 @@ def actor_page(engine: Any, bundle: dict[str, Any], actor: str) -> dict[str, Any
         available.append({"action_id": "known-" + digest,
                           "action": {**identity, "base_revision": engine.world.revision},
                           "description": form["description"], "checks": [], "effects": [], "consequences": [],
-                          "executability": "unknown"})
+                          "executability": "unknown", **({"open_fields": list(form["open_fields"])}
+                                                         if form.get("open_fields") else {})})
     return {"observation": observation, "available": available, "blocked": [], "progress": [], "total": len(available)}
 
 
@@ -247,11 +254,12 @@ def actor_context(engine: Any, bundle: dict[str, Any], actor: str, round_no: int
             "visible": "\n".join(([f"In this place with you: {', '.join(here) or 'no one else'}."] if "here" in observation else []) +
                                  [f"Delivered to you from {m['from']}: {m['content']}" for m in observation.get("messages", [])] +
                                  [f"{row['label']} ({eid}): {render(row)}" for eid, row in sorted(entities.items()) if eid != actor]),
-            "progress": "", "actions": [{"number": i, "action_id": row["action_id"], "description": row["description"] + " (" + ", ".join(
+            "progress": "", "actions": [{"number": i, "action_id": row["action_id"], "description": row["description"] + " (" + ", ".join([
                 f"{name}={entities[value]['label'] if value in entities else declared_label(declaration, value, engine)} ({value})"
                 if isinstance(value, str) and (value in entities or any(r["id"] == value for r in declaration["public_entities"]))
                 else f"{name}={json.dumps(value, ensure_ascii=False)}"
-                for name, value in sorted(row["action"].items()) if name not in {"actor", "kind", "base_revision", "controller"}) + ") [executability unknown]"} for i, row in enumerate(page["available"], 1)],
+                for name, value in sorted(row["action"].items()) if name not in {"actor", "kind", "base_revision", "controller"}]
+                + [f"{name}=<in your own words>" for name in row.get("open_fields", [])]) + ") [executability unknown]"} for i, row in enumerate(page["available"], 1)],
             "world_summary": declaration["public_summary"], "brief": profile["brief"] + ("\n" + knowledge if knowledge else ""), "recent": []}
     if memories is not None:
         context["memories"] = list(memories)

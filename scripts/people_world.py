@@ -505,6 +505,46 @@ def _with_action_subset(bundle: dict[str, Any], actions: list[dict[str, Any]]) -
     return result
 
 
+MAX_FORMS_PER_MOVE = 20
+
+
+def offer_generated_moves(bundle: dict[str, Any], causal: dict[str, Any], compiled_kinds: set[str]) -> dict[str, Any]:
+    """Declare a public form for every generated move, so residents are told it exists (#488).
+
+    Referent fields are bound to the public entities the move's rule accepts there, as the compiled decision moves
+    are; text fields (a concern, a condition) are left open for the person's own words. A move none of whose
+    referents can be named gets no form. Waltzman s4w5 (2026-11-20): all 9 generated moves had only text fields,
+    no form, and none was ever played in 31 rounds.
+
+    Implements: information-delivery/generated-moves-are-offered-with-their-text-left-to-the-person
+    """
+    information = bundle.get("actor_information")
+    if not information:
+        return bundle
+    from itertools import product
+    compile_spec, _ = _pipeline()
+    public = {row["id"] for row in information.get("public_entities", [])}
+    entities = [e for e in bundle["entities"] if e["id"] in public]
+    formed = {form["kind"] for form in information.get("public_actions", [])}
+    rules = {m["action_kind"]: m for m in causal.get("mechanics", [])}
+    forms = list(information.get("public_actions", []))
+    for action in bundle["actions"]:
+        kind = action["kind"]
+        if kind in compiled_kinds or kind in formed or kind not in rules:
+            continue
+        participants = rules[kind].get("participants") or {}
+        refs = [f["name"] for f in action["fields"] if f["type"] == "entity_ref"]
+        options = [[e["id"] for e in entities if name in participants and compile_spec._matches(e, participants[name])]
+                   for name in refs]
+        if any(not values for values in options):
+            continue
+        open_fields = [f["name"] for f in action["fields"] if f["type"] != "entity_ref"]
+        for values in list(product(*options))[:MAX_FORMS_PER_MOVE]:
+            forms.append({"kind": kind, "description": action.get("description") or kind.replace("-", " "),
+                          "fields": dict(zip(refs, values)), **({"open_fields": open_fields} if open_fields else {})})
+    return {**bundle, "actor_information": {**information, "public_actions": forms}}
+
+
 def actions_to_write(prepared: dict[str, Any]) -> dict[str, Any]:
     """The bundle with only the actions no compiled rule covers: what the rule writer must give rules to."""
     compiled_kinds = {m["action_kind"] for m in prepared["compiled"]["mechanics"]}
@@ -575,6 +615,7 @@ def assemble_people_world(prepared: dict[str, Any], generated: dict[str, Any]) -
         bundle["laws"] = laws
     causal, pinned = sp.pin_named_slots(spec, causal)
     causal, due = sp.fix_moment_due_checks(causal)
+    bundle = offer_generated_moves(bundle, causal, {m["action_kind"] for m in compiled["mechanics"]})
     build_engine(bundle, causal)  # compile + install: raises if any rule is rejected
     coverage = sp.behavior_coverage(spec, prepared["sigs"], causal, coverage)
     not_modeled = list(spec.unsupported) + [
