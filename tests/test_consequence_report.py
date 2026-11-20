@@ -93,10 +93,15 @@ class PassOneReadingTests(unittest.TestCase):
         self.assertEqual(one, kept, "the reading changed pass 1")
         [group] = reading["moves"]["ann"]["blocked"]
         self.assertEqual((group["kind"], group["bindings"]), ("communicate", 80))
-        self.assertEqual(group["example"], one["moves"]["ann"]["blocked"][0]["action"])
-        self.assertEqual(sorted((f["check"], f["actual"], f["required"], f["bindings"]) for f in group["failed"]),
-                         [("Actor is the information's source", f"source-{k}", "ann", 20) for k in range(4)]
-                         + [("the delivery is pending", "delivered", "pending", 80)])
+        example = dict(one["moves"]["ann"]["blocked"][0]["action"])
+        del example["base_revision"]
+        self.assertEqual(group["example"], example)
+        # Each failed check once, by its label, with how many bindings it stopped and at most three example values.
+        self.assertEqual([(f["check"], f["bindings"]) for f in group["failed"]],
+                         [("Actor is the information's source", 80), ("the delivery is pending", 80)])
+        self.assertEqual(group["failed"][0]["examples"],
+                         [{"actual": f"source-{k}", "required": "ann"} for k in range(report.EXAMPLES)])
+        self.assertEqual(group["failed"][1]["examples"], [{"actual": "delivered", "required": "pending"}])
         # The moves open to Ann, without their checks; no passing check is read.
         self.assertEqual(reading["moves"]["ann"]["available"], [{"action_id": "w1", "action": wait["action"]}])
         self.assertNotIn("Actor exists", json.dumps(reading))
@@ -110,7 +115,7 @@ class PassOneReadingTests(unittest.TestCase):
         reading = report.pass_one_reading(report.pass_one(engine, "vik", ["rosa", "crate"], people=PEOPLE))
         [sign] = [g for g in reading["moves"]["rosa"]["blocked"] if g["kind"] == "sign-release"]
         self.assertEqual((sign["bindings"], sign["example"]["crate"]), (1, "crate"))
-        self.assertEqual([(f["check"], f["actual"], f["bindings"]) for f in sign["failed"]],
+        self.assertEqual([(f["check"], f["examples"][0]["actual"], f["bindings"]) for f in sign["failed"]],
                          [("the crate is inspected", False, 1)])
         self.assertIn("inspect-crate", {r["action"]["kind"] for r in reading["moves"]["rosa"]["available"]})
 

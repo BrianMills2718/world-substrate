@@ -606,6 +606,13 @@ What the judge reads, measured from saved worlds (2026-11-09):
   the 272k price step, for $0.0572. The judge now reads pass 1 grouped (`consequence_report.pass_one_reading`: each
   move's blocked bindings as one entry with its count and failed checks, no passing checks): 40,865 characters for
   the same pass 1, a 77,182-character prompt. The run record keeps pass 1 in full.
+- **Judge input budget, 2026-11-20 (Brian: "ia pprove your recommendations").** The judge reads only what concerns the
+  attempt: each failed check once by label with at most three examples, and the world without current values (pass 1
+  carries the values of the person trying and the people and things named). The system message names no person and
+  no step, so the system message and world lead every judge call unchanged and can be cached. The same prompt is now
+  44,067 characters (about 10,500 tokens); the requirement "The judge's input is bounded and its unchanging part comes
+  first" holds it under 20,000 tokens on this run (`tests/test_judge.py`, `InputBudgetTests`). This replaces the
+  "whole world" reading described above.
 
 Cost per run:
 

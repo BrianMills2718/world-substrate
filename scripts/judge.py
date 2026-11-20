@@ -198,6 +198,7 @@ class Step:
         self.document_chars = len(text)
         messages = render_prompt(PROMPT, step=self.name, document=text, actor=active_player_name,
                                  contract=contract(), **self.words)
+        # Implements: ai-judge/the-judge-s-input-is-bounded-and-its-unchanging-part-comes-first
         self.answer = self.model.sample_json(messages, self.schema, name=self.name)
         statement = json.dumps(self.answer, ensure_ascii=False)
         document.statement(statement)
@@ -205,21 +206,28 @@ class Step:
 
 
 def world_text(bundle: dict[str, Any], causal_value: dict[str, Any], engine: Any) -> str:
-    """The whole world, as the plain version read it: description, kinds of thing and moves, rules, and every thing
-    with its current values. The things are given once, as they are now (the bundle's starting copy of them is left
-    out), in compact JSON: the long line (5,000 knock-on steps) is 305,042 characters indented with both copies and
-    about 123,000 this way."""
+    """The world as the judge reads it: description, kinds of thing and moves, declared laws, installed rules and
+    processes, and every thing by id, label and kinds. Current values are not here: pass 1 carries the values of the
+    person trying and of every person and thing the attempt names (`consequence_report.pass_one`). Nothing in this
+    text changes from one attempt to the next while the installed rules stay the same, so it is the same leading
+    text of every judge prompt in a run and the provider can read it from its cache (#473: on `s4-waltzman-4` every
+    thing's values were 10,005 characters of a 28,015-character world, and the prompts shared no cached part).
+
+    Implements: ai-judge/the-judge-s-input-is-bounded-and-its-unchanging-part-comes-first
+    """
     shown = {k: v for k, v in bundle.items() if k not in {"presentation", "entities"}}
 
     def compact(value: Any) -> str:
         return json.dumps(value, separators=(",", ":"), ensure_ascii=False, default=str)
 
+    things = {entity_id: {"label": entity.get("label"), "categories": entity.get("categories")}
+              for entity_id, entity in engine.world.material_dict()["entities"].items()}
     return "\n\n".join([
         "Description: " + str((bundle.get("world") or {}).get("summary") or ""),
         "Kinds of thing, moves and declared laws (authoring bundle, without its things):\n" + compact(shown),
         "Installed rules and processes:\n" + compact(causal_value),
-        f"Every thing and its current values (revision {engine.world.revision}):\n"
-        + compact(engine.world.material_dict()["entities"]),
+        "Every thing, by id, label and kinds (the current values of the person trying and of each person and thing "
+        "the attempt names are in pass 1):\n" + compact(things),
     ])
 
 
@@ -284,8 +292,8 @@ def _report_text(pass_one: dict[str, Any], test: dict[str, Any] | None = None, l
     reading = consequence_report.pass_one_reading(pass_one)
     parts = ["Pass 1, before any rule exists (the moves open to the person trying and to each person named; each "
              "person's blocked moves grouped by move, with how many bindings are blocked, one example and each failed "
-             "check with its value, what it requires and how many bindings it stopped; and the named things' current "
-             "values):\n" + json.dumps(reading, separators=(",", ":"), ensure_ascii=False, default=str)]
+             "check once, with how many bindings it stopped and up to three example values and what each requires; "
+             "and the current values of the person trying and of each person and thing named):\n" + json.dumps(reading, separators=(",", ":"), ensure_ascii=False, default=str)]
     if test is not None:
         parts.append(f"Pass 2, the test run of {label or 'your proposed rule'} (rules check, then the rule run on a "
                      "copy of the world as it is now; nothing is installed):\n"
