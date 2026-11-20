@@ -30,8 +30,6 @@ BUNDLE_SCHEMA = "world-substrate-authoring-bundle/v0"
 
 MEMBER = {"name": "member", "fields": [
     {"name": "role", "type": "string", "default": "participant"},
-    {"name": "authorized", "type": "boolean", "default": False},
-    {"name": "approved", "type": "boolean", "default": False},
     {"name": "aware", "type": "boolean", "default": False}]}
 INFORMATION = {"name": "information", "fields": [
     {"name": "content", "type": "string", "default": "report"},
@@ -712,8 +710,7 @@ def compile_spec(spec: ScenarioSpecV1) -> tuple[dict[str, Any], dict[str, Any], 
         components.append({"name": "report_log", "fields": [{"name": "entries", "type": "string_list", "default": []}]})
     for p in spec.people:
         entities.append({"id": _eid(p.entity_id), "label": p.label, "categories": ["actor", "member"],
-                         "components": {"member": {"role": p.position, "authorized": False, "approved": False,
-                                                   "aware": False}}})
+                         "components": {"member": {"role": p.position, "aware": False}}})
         if spec.independent_decision:
             entities[-1]["components"]["report_log"] = {"entries": []}
     if spec.public_summary or spec.independent_decision:
