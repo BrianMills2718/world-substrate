@@ -127,6 +127,19 @@ def test_authoring_contract_explicitly_distinguishes_withheld_and_received_infor
     assert "must not appear in an intended recipient's brief or memories" in SPEC_SYSTEM
 
 
+@pytest.mark.req("world-builder-page/the-draft-keeps-every-named-group")
+def test_authoring_contract_makes_named_groups_people_who_hold_and_send_their_concerns():
+    """#474: commit ea57114 dropped the rule that a named group is a person; s4w4 then built the groups as sources."""
+    assert "Every person, group, organisation or country the scenario names or implies as acting is a person" in SPEC_SYSTEM
+    assert "never fold a named group into another" in SPEC_SYSTEM
+    assert "A body the others belong to (a partnership, council, alliance or board) is a person of its own" in SPEC_SYSTEM
+    assert "holds its concern and delivers it to its members" in SPEC_SYSTEM
+    assert "never a pre-delivered item with no source" in SPEC_SYSTEM
+    # the privacy, lineage and belief rules stay beside it
+    assert "leave source_id null rather than inventing a sender" in SPEC_SYSTEM
+    assert "Leave lineage_visible_to_actor_ids empty" in SPEC_SYSTEM
+
+
 def test_modern_reports_are_projected_from_canonical_delivery_not_narrated_twice():
     from test_scenario_spec import _minimal
 

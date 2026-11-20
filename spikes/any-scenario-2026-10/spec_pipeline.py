@@ -18,6 +18,11 @@ from scenario_spec import ScenarioSpecV1
 
 SPEC_SYSTEM = (
     "Define a simulation world from the scenario using the schema. Every named actor has its own profile and memory. "
+    "Every person, group, organisation or country the scenario names or implies as acting is a person, with a behavioral profile "
+    "taken from what the scenario says about them; never fold a named group into another. A body the others belong to "
+    "(a partnership, council, alliance or board) is a person of its own when the scenario has it decide, convene, coordinate "
+    "or deploy, besides its members. A group that raises or sends concerns is a person who holds its concern and delivers it to its "
+    "members, never a pre-delivered item with no source. "
     "Profiles contain that actor's beliefs, not omniscient truth or required reactions. Claims may be false or disputed; "
     "information_items preserve the holder, intended recipients, apparent source, common source_lineage and hidden provenance. "
     "Separate actual technical state from claims, delivery, personal interpretation, public stance, recorded assent and institutional holds. "

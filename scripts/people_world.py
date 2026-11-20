@@ -253,7 +253,12 @@ def check_named_groups(description: str, labels: list[str], *, trace_id: str, ma
 
 
 def prepare_people_world(description: str, *, trace_id: str, max_budget: float, progress: Progress, feedback: str = "") -> dict[str, Any]:
-    """Description -> ScenarioSpecV1 -> compiled bundle and the attempts people can make (no rules yet)."""
+    """Description -> ScenarioSpecV1 -> compiled bundle and the attempts people can make (no rules yet).
+
+    The named-groups check's outcome (ran, found, or why not) returns as ``group_check`` for the build record.
+
+    Implements: world-builder-page/the-draft-keeps-every-named-group
+    """
     compile_spec, sp = _pipeline()
     progress("doing", "Working out who is involved and what each of them wants")
     spec, _ = hedged(trace_id, lambda: sp.scenario_spec(description, model=PEOPLE_MODEL, trace_id=trace_id,
@@ -262,11 +267,16 @@ def prepare_people_world(description: str, *, trace_id: str, max_budget: float, 
     from scripts.generate_world_bundle import is_recorded_authoring_replay
     if not spec.public_summary.strip() and not is_recorded_authoring_replay():
         raise ValueError("Fresh people-world authoring requires an explicit actor-safe public_summary")
+    # #474: s4w4 has no named-groups call and nothing said why; the outcome goes in the build record, not only the page.
+    group_check: dict[str, Any] = {"checked": False, "named": [], "missing": [], "error": "recorded replay: the check is not run"}
     if not is_recorded_authoring_replay():
+        group_check["error"] = ""
         try:
             named, missing = check_named_groups(description, [p.label for p in spec.people], trace_id=trace_id, max_budget=max_budget)
+            group_check.update(checked=True, named=named, missing=missing)
         except Exception as error:  # the check must never stop a build
             named, missing = [], []
+            group_check["error"] = f"{type(error).__name__}: {error}"[:300]
             progress("note", "Could not check that every named group is in", f"{type(error).__name__}: {error}"[:160])
         if missing:
             progress("doing", f"{len(missing)} named group{'s' if len(missing) != 1 else ''} missing; asking again", "", missing)
@@ -276,8 +286,10 @@ def prepare_people_world(description: str, *, trace_id: str, max_budget: float, 
                                                                 route_policy=fast_route(PEOPLE_MODEL), feedback=retry))
             try:
                 named, missing = check_named_groups(description, [p.label for p in spec.people], trace_id=trace_id, max_budget=max_budget)
-            except Exception:
+                group_check.update(named=named, missing=missing)
+            except Exception as error:
                 missing = []
+                group_check.update(checked=False, error=f"after asking again: {type(error).__name__}: {error}"[:300])
         if named:
             progress("done" if not missing else "note", f"{len(named) - len(missing)} of {len(named)} named groups are in the draft",
                      "" if not missing else "Left out, and why the builder could not keep them is in the trace", missing)
@@ -301,7 +313,7 @@ def prepare_people_world(description: str, *, trace_id: str, max_budget: float, 
     work_cycle = compile_spec.add_work_cycle(spec, bundle, compiled, [a["kind"] for a in sigs])
     progress("done", "Things people can try", "", [_words(a["kind"]) for a in bundle["actions"]])
     return {"spec": spec, "bundle": bundle, "compiled": compiled, "coverage": coverage, "sigs": sigs,
-            "work_cycle": work_cycle}
+            "work_cycle": work_cycle, "group_check": group_check}
 
 
 def _field_writers(causal: dict[str, Any]) -> dict[tuple[str, str], set[str]]:

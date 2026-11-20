@@ -897,6 +897,20 @@ class WorldBuilderServiceTests(unittest.TestCase):
         self.assertIn("no rule lets them decide", rules.call_args_list[1].kwargs["guidance"])
         self.assertEqual(payload["dry_run_attempts"][0]["review_findings"], [finding])
 
+    def test_the_named_group_check_outcome_reaches_the_build_response_and_the_run_log(self):
+        # #474: s4w4 has no named-groups call and nothing in the record says why; the outcome is now recorded.
+        check = {"checked": False, "named": [], "missing": [], "error": "RuntimeError: refused"}
+        with patch.object(service, "_trace_cost", return_value=0.01), patch.object(
+            service, "about_people", return_value=(True, "people"),
+        ), patch.object(service, "prepare_people_world", return_value={"bundle": {}, "group_check": check}), \
+                patch.object(service, "declare_people_laws", return_value=({"resources": [], "laws": []}, [])), \
+                patch.object(service, "review_rules", return_value=([], 0.0)), \
+                patch.object(service, "write_people_rules", return_value=self._people_built()):
+            status, payload = self.post("/generate-world", {"description": "Four countries decide.", "world_def": "auto"})
+        self.assertEqual(status, 200, payload)
+        self.assertEqual(payload["group_check"], check)
+        self.assertEqual(service._result_summary("/generate-world", 200, payload)["group_check"], check)
+
     def test_a_people_try_kept_because_the_wait_is_too_long_is_still_reviewed(self):
         # s4w2 Waltzman (2026-10-31): two members stalled (score 3), the test run ended past the rewrite time limit,
         # and the build kept that first try without the independent review.
