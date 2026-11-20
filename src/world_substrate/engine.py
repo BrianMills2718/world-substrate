@@ -223,6 +223,49 @@ class Engine:
     """The one transition engine over a canonical world.
 
     Implements: transition-engine/core-transition-kernel
+
+    Requirement text (generated):
+        transition-engine/core-transition-kernel: The records above form one canonical world `W`.
+            The minimum state/action/ transition semantics are: ```text observe_i(W)
+            -> O_i discover_i(W, query, cursor, limit) -> ActionPage_i apply_r(W, action)
+            -> (W', events, status) advance(W, steps)               -> (W', events) replay(W_0,
+            commands, pinned identities) -> (W_n, events, hashes) ``` The v0 `tick`/`advance`
+            contract is the implemented M1 timing baseline. `Engine.advance()` currently checks
+            registered processes step-by-step through their `due(world)` hooks; it does **not**
+            claim an independently scheduled future-event queue, duration-bearing activities, or
+            multiple canonical clocks. The richer target keeps one canonical simulated timeline
+            while allowing mechanisms to have independent cadences. See [multi-timescale
+            execution](../../../docs/architecture/arc42.md#time-and-cadence) (the note itself is
+            retired; `git show 75f32bb:docs/research/multi-timescale-execution-2026-09.md`).
+            `observe` and `discover` are actor-authorized projections of `W`; they neither own
+            alternate state nor calculate consequences. `O_i` is intentionally lossy: two actors can
+            receive different projections of the same canonical world. A policy chooses a typed
+            action from the discovered page. Only the registered rule selected by that action, or a
+            due registered process during `advance`, may calculate a material state transition. For
+            an accepted action, state changes and causal events commit atomically. For a rejected,
+            invalid, stale, or unsupported action, the material entity, relation, and process
+            projection of `W'` equals that of `W`; the rejection record may still be appended to the
+            canonical journal. This separates evidence of an attempt from effects on the modeled
+            world. Replay consumes recorded commands and pinned identities, not policy decisions,
+            and must reproduce the same final state, events, and hashes. The intended interaction
+            order is: ```text actor observes -> engine projects authorized state actor discovers ->
+            registry instantiates currently available actions policy chooses  -> typed action
+            references the observed base revision engine applies  -> rule validates, then atomically
+            commits or rejects engine advances -> due processes use the same transition authority
+            observer checks -> events, deltas, versions, and replay comparison ``` The positive
+            fill-through-transfer path of this contract is implemented and evidenced in the retained
+            [first-fill](../../../evidence/m1/first-fill-v0.json) and
+            [boiling](../../../evidence/m1/boiling-v0.json),
+            [pour](../../../evidence/m1/pour-v0.json), [drink](../../../evidence/m1/drink-v0.json),
+            and [transfer](../../../evidence/m1/transfer-v0.json) receipts. Apply, discovery,
+            minimal observation, registered clock/hydration/thermal/cooling/fuel processes, atomic
+            rejection, causal events, semantic donor comparison, and replay exist for that path.
+            Safe and hazardous consumption effects plus capacity-checked whole-vessel transfer are
+            executable. Unsupported/malformed envelope counterexamples are retained in the combined
+            [M1 evidence](../../../evidence/m1/freshwater-v0.json). Cross-domain generality remains
+            an open obligation. The revision-bound [end-to-end
+            observation](../../../evidence/m1/end-to-end-observation-v1.json) validated the M1
+            maturity claim.
     """
 
     def _bearer_of(self, action: TypedAction) -> dict[str, Any]:
@@ -284,6 +327,12 @@ class Engine:
         """Project the actor-authorized, lossy observation of the world.
 
         Implements: transition-engine/core-engine-operations-observe
+
+        Requirement text (generated):
+            transition-engine/core-engine-operations-observe: `observe(actor) -> ActorObservation`
+                The observation contains authorized state, received information, recent
+                actor-visible events, relevant definitions, and an affordance-page entry point. It
+                excludes remote or private state unless a rule delivered it.
         """
         actor = self.world.entities.get(actor_id)
         # An observer needs a place to observe from. It does not need to be a
@@ -405,6 +454,12 @@ class Engine:
         """List executable typed actions and blocked hints for an actor without advancing time.
 
         Implements: transition-engine/core-engine-operations-discover
+
+        Requirement text (generated):
+            transition-engine/core-engine-operations-discover: `discover(actor, query, cursor,
+                limit) -> ActionPage` The engine instantiates registered rules against
+                actor-authorized local state. Results contain executable typed actions, blocked
+                hints with reasons, and bounded navigation. Discovery does not advance time.
         """
         # One detached view is enough for the whole affordance page. The page is
         # first built with a single read-only check at the end, not one per hook:
@@ -604,6 +659,12 @@ class Engine:
 
         Implements: transition-engine/core-records-event
 
+        Requirement text (generated):
+            transition-engine/core-records-event: Each causal event records: - event ID, tick, world
+                revision, and rule ID/version; - cause command/process; - checks and their results;
+                - exact read/write references; - before/after values or bounded deltas; -
+                source/sink/conservation ledger where relevant; and - resulting state hash.
+
         Implements: transition-engine/core-engine-operations-causal-event-fields
         """
         # Decision 002 requires eight things be inspectable per transition.
@@ -645,6 +706,12 @@ class Engine:
         """Check an action and commit all changes and events atomically, or refuse and commit none.
 
         Implements: transition-engine/core-engine-operations-apply
+
+        Requirement text (generated):
+            transition-engine/core-engine-operations-apply: `apply(action) -> ActionResult` The
+                engine checks the action kind, base revision, actor authority, references, and rule
+                preconditions against canonical state. It commits all changes and events atomically
+                or commits none.
 
         Implements: transition-engine/transition-envelope-pipeline
 
@@ -897,6 +964,11 @@ class Engine:
         """Advance the world clock and run due processes, emitting causal evidence.
 
         Implements: transition-engine/core-engine-operations-advance
+
+        Requirement text (generated):
+            transition-engine/core-engine-operations-advance: `advance(steps=1) -> TickResult` The
+                world clock advances deterministically. Due processes execute in a documented order
+                or through explicit conflict resolution. Every process change emits causal evidence.
         """
         if type(steps) is not int or steps < 1:
             raise ValueError("steps must be a positive integer")
@@ -998,6 +1070,21 @@ class Engine:
         """Run knock-on effects of a committed event until nothing more is due.
 
         Implements: transition-engine/knock-on-chains-of-any-length-finish-in-one-moment
+
+        Requirement text (generated):
+            transition-engine/knock-on-chains-of-any-length-finish-in-one-moment: The engine SHALL
+                settle a moment's same-moment knock-on effects (`timing: immediately` processes) to
+                the end with no cap on their number, firing each (process, entity) pair at most once
+                per moment, so every chain and loop ends. Each knock-on step SHALL name the step
+                that caused it, and a step a failed check stopped SHALL be recorded with its blocker
+                (the failed check and its value). Each run SHALL record the reaction limit it ran
+                under (`null` for none), and replay SHALL use the recorded limit; a record that
+                names none ran under the old limit of 32. Where it is enforced:
+                `src/world_substrate/engine.py` (`Engine.__init__` `reaction_limit`, `_settle`,
+                `_blocked_steps`, `replay_commands`, `recorded_reaction_limit`),
+                `src/world_substrate/action_authoring.py` (`CompiledProcessMechanic.near_misses`),
+                `scripts/run_authored_world.py` (`_round_reactions`, `_moments`, the run record's
+                `reaction_limit`).
 
 
         Implements: information-delivery/same-moment-reactions-cite-their-cause-current-code
@@ -1227,6 +1314,24 @@ class Engine:
         """Rebuild an engine using only a loaded snapshot, commands, and registry.
 
         Implements: transition-engine/core-engine-operations-snapshot-and-replay
+
+        Requirement text (generated):
+            transition-engine/core-engine-operations-snapshot-and-replay: `World.snapshot() ->
+                SnapshotV1` emits a JSON-serializable object containing `schema_version:
+                world-substrate-snapshot/v1` and the complete canonical material state. That state
+                includes the engine ID, content ID, and rule-version map; commands and events are
+                intentionally absent. `World.from_snapshot()` accepts only that version and
+                reconstructs canonical state with empty history. It may also receive a world-local
+                component-type map. Those types override same- named process-global component
+                registrations for that load only, so runtime- authored worlds can replay without
+                mutating or colliding with the global world- pack registry.
+                `Engine.replay_commands(initial_snapshot, commands, registry, component_types=None)
+                -> Engine` starts from the loaded snapshot and re-applies recorded accepted,
+                rejected, invalid, and advance commands without policy calls. The supplied
+                executable registry must match the snapshot's rule-version map. A durable replay
+                bundle also names the registry configuration identity because rule versions alone do
+                not encode constructor parameters. Evidence compares the reconstructed final
+                material hash and complete event sequence with the retained outputs.
 
         ``reaction_limit`` is the limit the recorded run ran under (``recorded_reaction_limit``); commands recorded
         with no limit named ran under the old cap of 32, so that is the default."""

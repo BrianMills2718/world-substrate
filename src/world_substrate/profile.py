@@ -48,6 +48,28 @@ class MechanicPackage:
     """The declared contract for one installable mechanic.
 
     Implements: mechanic-installation/mechanic-package
+
+    Requirement text (generated):
+        mechanic-installation/mechanic-package: Each mechanic declares: | Field | Meaning | | --- |
+            --- | | `mechanic_id`, `version` | Stable installed identity | | `semantic_bindings` |
+            Linguistic Core senses, roles, specializations, and causal class | | `causal_bearer` |
+            Agent action, process, disposition, institution, or exogenous injection | | `requires` |
+            State, components, relations, and conditions required for applicability | |
+            `optional_modifiers` | Recognized state that changes behavior when present | | `forbids`
+            | Explicit incompatible conditions, not a closed global component schema | | `reads` |
+            State paths the mechanic may inspect | | `writes` | State paths the mechanic may propose
+            changing | | `emits` | Observations, events, or scheduled work it may emit | | `effects`
+            | Proposed transition operations; validation performs no canonical mutation | |
+            `invariants` | Goal-relative postconditions and accounting rules | | `dependencies` |
+            Mechanics and state surfaces believed consequential | | `unsupported_interactions` |
+            Known combinations that refuse, warn, or require refinement | | `representation` |
+            Deterministic, stochastic, empirical, scripted, external, model-mediated, or other
+            declared form | | `limits` | Preserved distinctions, omissions, assumptions, and invalid
+            questions | | `tests` | Positive, refusal, boundary, interference, and
+            double-application cases | | `trace_contract` | Required explanation when the mechanic
+            applies, refuses, or fails | Entities remain open to unrelated components. A mechanic
+            has closed local authority: state outside its declared reads and writes may coexist but
+            cannot be inspected or changed by that mechanic.
     """
 
     mechanic_id: str
@@ -253,6 +275,21 @@ class MechanicProfile:
     """The validated set of mechanics frozen for one run.
 
     Implements: mechanic-installation/installation
+
+    Requirement text (generated):
+        mechanic-installation/installation: An installer must: 1. resolve semantic and mechanic
+            identities; 2. validate all declared state paths and operations; 3. reject overlapping
+            writes **between mechanics that can commit on the same occasion** without declared
+            ordering, arbitration, or composition. Two independent actions writing one path is
+            ordinary and is already serialised by the transition envelope; the rule bites for
+            processes, which share one `advance()` and are ordered only by `order`. Read without
+            that qualifier this step rejects the promoted M1 mechanics, since `fill` and `drink`
+            both write `entities.<vessel>.liquid`; 4. check dependency references and declared
+            enforcement coverage; 5. run the mechanic's tests plus selected interaction assays; 6.
+            record limitations and unsupported interactions in the installed profile; and 7. freeze
+            a profile identity before the run. Passing installation does not prove global causal
+            closure. It proves only that the declared contract is internally valid and that the
+            selected assays passed.
     """
 
     packages: dict[str, MechanicPackage] = field(default_factory=dict)
