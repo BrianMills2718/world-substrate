@@ -2,9 +2,9 @@
 
 ### Requirement: The designer reports additions apart from unrepresented parts
 
-The structure the designer returns may carry a top-level `added_to_run`: short plain strings naming things it added
+The structure the designer returns MAY carry a top-level `added_to_run`: short plain strings naming things it added
 that the description does not state, so the world can run. `not_modeled` is only for parts of the description that
-could not be represented. Neither field is stored in the validated bundle.
+could not be represented. Neither field SHALL be stored in the validated bundle.
 
 Where it is enforced: contract and parsing in `scripts/generate_world_bundle.py`.
 
