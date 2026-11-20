@@ -254,3 +254,35 @@ def test_final_selected_candidate_review_retains_rejection_without_another_retry
     assert len(logs) == 1
     assert json.loads(logs[0].read_text())["result"]["source_draft_reviews"] == rows
     assert all(call.kwargs["policy"] == "scripted" for call in run.call_args_list)
+
+
+@pytest.mark.req("causal-model-authoring/a-privacy-repair-also-passes-on-the-missing-decision")
+def test_a_source_repair_passes_the_review_s_rule_findings_to_the_rewrite(monkeypatch):
+    """#474: the review that rejected the actor inputs also found the description's decision missing; the one
+    rewrite must hear both, not the privacy feedback alone."""
+    error = negative()
+    error.findings = [{"rule_id": "missing", "description_words": "decide by the deadline",
+                       "problem": "Nothing lets the partnership decide by the deadline."}]
+    h, prepare, writer, laws, run, review, request, token = build_harness(monkeypatch, [error, ([], 0)])
+    try:
+        service.WorldBuilderHandler._generate_people_world(h, "client", "ORIGINAL SOURCE")
+    finally:
+        service._REQUEST.reset(token)
+    assert prepare.call_args_list[1].kwargs["feedback"] == error.feedback
+    second = writer.call_args_list[1].kwargs["guidance"]
+    assert "Nothing lets the partnership decide by the deadline." in second
+    assert "decide by the deadline" in second
+    rejected = h._json.call_args.args[1]["dry_run_attempts"][0]
+    assert rejected["review_findings"] == error.findings
+
+
+@pytest.mark.req("causal-model-authoring/a-privacy-repair-also-passes-on-the-missing-decision")
+def test_review_rules_keeps_its_findings_on_a_source_rejection(monkeypatch):
+    answer = approved()
+    answer["findings"] = [{"rule_id": "missing", "description_words": "deadline", "problem": "No deadline decision."}]
+    answer["canonical_state_review"] = {"consistent": False,
+        "explanation": "Pump.current_failed duplicates technical_condition and no repair writes it."}
+    _, bundle, causal = call_review(monkeypatch, answer)
+    with pytest.raises(reviews.CanonicalStateAuthorityError) as caught:
+        reviews.review_rules("Original source", bundle, causal, trace_id="same", max_budget=0.4)
+    assert caught.value.findings == answer["findings"]
