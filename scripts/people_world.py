@@ -228,13 +228,16 @@ def unfinished_hedges(trace_id: str) -> list[Future]:
 GROUP_CHECK_WHY = "World Builder people world: a light check that every person or group the description names is in the built world."
 
 
-def check_named_groups(description: str, labels: list[str], *, trace_id: str, max_budget: float) -> tuple[list[str], list[str]]:
-    """(named, missing): every person or group the description names, and those with no matching entry in `labels`.
+def check_draft(description: str, labels: list[str], draft_has_decision: bool, *, trace_id: str,
+                max_budget: float) -> dict[str, Any]:
+    """{named, missing, decision_missing}: every person or group the description names, those with no matching entry
+    in `labels`, and the decision the description asks its people to make when the draft has none ("" otherwise).
 
-    One light model call does both the reading and the matching, because whether "the logistics group" is the built
-    "Logistics working group" is a meaning question, not a string one.
+    One light model call does the reading and the matching, because whether "the logistics group" is the built
+    "Logistics working group", or whether a text asks for a shared decision, is a meaning question, not a string one.
 
     Implements: world-builder-page/the-draft-keeps-every-named-group
+    Implements: world-builder-page/a-draft-without-the-described-decision-is-asked-again
     """
     from llm_client import call_llm, safe_json_loads
     messages = [
@@ -242,13 +245,36 @@ def check_named_groups(description: str, labels: list[str], *, trace_id: str, ma
             "You check a built world against the description it came from. List every person or group the description "
             "names or counts (for example each of 'four countries' separately when it says four countries). Then say which "
             "of those have no matching entry in the built list; a differently worded label for the same group is a match. "
-            'Return JSON only: {"named": [...], "missing": [...]}.')},
-        {"role": "user", "content": json.dumps({"description": description, "built": labels}, indent=1)},
+            "Finally, if the description says its people must make a shared decision (decide, vote, agree or approve "
+            "whether to do something) and draft_has_decision is false, put that decision in a few words in "
+            '"decision_missing"; otherwise make it "". '
+            'Return JSON only: {"named": [...], "missing": [...], "decision_missing": "..."}.')},
+        {"role": "user", "content": json.dumps({"description": description, "built": labels,
+                                                "draft_has_decision": draft_has_decision}, indent=1)},
     ]
     result = call_llm(CHECK_MODEL, messages, task="world-builder-named-groups", trace_id=trace_id, max_budget=max_budget,
-                      num_retries=1, max_tokens=2000, model_justification=GROUP_CHECK_WHY)
+                      num_retries=1, max_tokens=2000, reasoning_effort="low", model_justification=GROUP_CHECK_WHY)
     value = safe_json_loads(result.content)
-    return [str(x) for x in value.get("named") or []], [str(x) for x in value.get("missing") or []]
+    return {"named": [str(x) for x in value.get("named") or []], "missing": [str(x) for x in value.get("missing") or []],
+            "decision_missing": "" if draft_has_decision else str(value.get("decision_missing") or "").strip()}
+
+
+def check_named_groups(description: str, labels: list[str], *, trace_id: str, max_budget: float) -> tuple[list[str], list[str]]:
+    """(named, missing): `check_draft` for a draft whose decision is not in question.
+
+    Implements: world-builder-page/the-draft-keeps-every-named-group
+    """
+    found = check_draft(description, labels, True, trace_id=trace_id, max_budget=max_budget)
+    return found["named"], found["missing"]
+
+
+def _has_decision(spec: Any) -> bool:
+    return getattr(spec, "decision", None) is not None or getattr(spec, "independent_decision", None) is not None
+
+
+DECISION_FEEDBACK = ("The description asks its people to decide {what}, and the first draft has no decision. Declare it as "
+                     "independent_decision with its required_actor_ids, so the decision exists in the world and the "
+                     "people's moves can bear on it.")
 
 
 
@@ -268,28 +294,42 @@ def prepare_people_world(description: str, *, trace_id: str, max_budget: float, 
     if not spec.public_summary.strip() and not is_recorded_authoring_replay():
         raise ValueError("Fresh people-world authoring requires an explicit actor-safe public_summary")
     # #474: s4w4 has no named-groups call and nothing said why; the outcome goes in the build record, not only the page.
-    group_check: dict[str, Any] = {"checked": False, "named": [], "missing": [], "error": "recorded replay: the check is not run"}
+    group_check: dict[str, Any] = {"checked": False, "named": [], "missing": [], "decision_missing": "",
+                                   "error": "recorded replay: the check is not run"}
     if not is_recorded_authoring_replay():
         group_check["error"] = ""
+        named, missing, undecided = [], [], ""
         try:
-            named, missing = check_named_groups(description, [p.label for p in spec.people], trace_id=trace_id, max_budget=max_budget)
-            group_check.update(checked=True, named=named, missing=missing)
+            found = check_draft(description, [p.label for p in spec.people], _has_decision(spec), trace_id=trace_id,
+                                max_budget=max_budget)
+            named, missing, undecided = found["named"], found["missing"], found["decision_missing"]
+            group_check.update(checked=True, **found)
         except Exception as error:  # the check must never stop a build
-            named, missing = [], []
             group_check["error"] = f"{type(error).__name__}: {error}"[:300]
             progress("note", "Could not check that every named group is in", f"{type(error).__name__}: {error}"[:160])
-        if missing:
-            progress("doing", f"{len(missing)} named group{'s' if len(missing) != 1 else ''} missing; asking again", "", missing)
-            retry = (feedback + "\n" if feedback else "") + "The description names these groups, and the first draft left them out. Add each as its own person or group: " + "; ".join(missing)
+        if missing or undecided:
+            # #496: two identical copies race and the first answer is kept, so a draft without the described decision
+            # (s4w6 call 25412, 1 of 4 replies) left a world where nothing could be decided.
+            if missing:
+                progress("doing", f"{len(missing)} named group{'s' if len(missing) != 1 else ''} missing; asking again", "", missing)
+            if undecided:
+                progress("doing", "The draft has no decision; asking again", "", [undecided])
+            retry = "\n".join(([feedback] if feedback else [])
+                              + (["The description names these groups, and the first draft left them out. Add each as its own person or group: " + "; ".join(missing)] if missing else [])
+                              + ([DECISION_FEEDBACK.format(what=undecided)] if undecided else []))
             spec, _ = hedged(trace_id, lambda: sp.scenario_spec(description, model=PEOPLE_MODEL, trace_id=trace_id,
                                                                 max_budget=max_budget, reasoning_effort=SPEC_EFFORT,
                                                                 route_policy=fast_route(PEOPLE_MODEL), feedback=retry))
             try:
-                named, missing = check_named_groups(description, [p.label for p in spec.people], trace_id=trace_id, max_budget=max_budget)
-                group_check.update(named=named, missing=missing)
+                found = check_draft(description, [p.label for p in spec.people], _has_decision(spec), trace_id=trace_id,
+                                    max_budget=max_budget)
+                named, missing, undecided = found["named"], found["missing"], found["decision_missing"]
+                group_check.update(found)
             except Exception as error:
-                missing = []
+                missing, undecided = [], ""
                 group_check.update(checked=False, error=f"after asking again: {type(error).__name__}: {error}"[:300])
+            if undecided:
+                progress("note", "The draft still has no decision", "nothing in this world can be decided", [undecided])
         if named:
             progress("done" if not missing else "note", f"{len(named) - len(missing)} of {len(named)} named groups are in the draft",
                      "" if not missing else "Left out, and why the builder could not keep them is in the trace", missing)
