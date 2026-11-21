@@ -77,8 +77,38 @@ def test_a_check_that_ran_records_what_it_found_and_one_that_was_skipped_says_so
     _bare_pipeline(monkeypatch, ["Country A", "Legal group"])
     _stub(monkeypatch, ['{"named": ["Country A", "Legal group"], "missing": []}'])
     ran = people_world.prepare_people_world(DESC, trace_id="t", max_budget=1, progress=lambda *a, **k: None)["group_check"]
-    assert ran == {"checked": True, "named": ["Country A", "Legal group"], "missing": [], "error": ""}
+    assert ran == {"checked": True, "named": ["Country A", "Legal group"], "missing": [], "decision_missing": "", "error": ""}
     import scripts.generate_world_bundle as gwb
     monkeypatch.setattr(gwb, "is_recorded_authoring_replay", lambda: True)
     skipped = people_world.prepare_people_world(DESC, trace_id="t", max_budget=1, progress=lambda *a, **k: None)["group_check"]
     assert skipped["checked"] is False and "recorded replay" in skipped["error"]
+
+
+@pytest.mark.req("world-builder-page/a-draft-without-the-described-decision-is-asked-again")
+def test_a_draft_without_the_described_decision_is_asked_again(monkeypatch):
+    """#496: s4w6 kept the one scenario reply of four with no decision (call 25412), so nothing could ever be decided."""
+    import scripts.generate_world_bundle as gwb
+    monkeypatch.setattr(gwb, "is_recorded_authoring_replay", lambda: False)
+    monkeypatch.setattr(people_world, "HEDGE_COPIES", 1)
+    people = [SimpleNamespace(label="Country A")]
+    feedbacks = []
+    def scenario_spec(description, **kw):
+        feedbacks.append(kw.get("feedback"))
+        decided = SimpleNamespace(decision_id="activate") if len(feedbacks) > 1 else None
+        return SimpleNamespace(people=people, public_summary="s", information_items=[], scheduled_moments=[], unsupported=[],
+                               decision=None, independent_decision=decided), None
+    monkeypatch.setattr(people_world, "_pipeline", lambda: (SimpleNamespace(compile_spec=lambda spec: (_ for _ in ()).throw(StopIteration)), SimpleNamespace(scenario_spec=scenario_spec)))
+    calls = _stub(monkeypatch, ['{"named": ["Country A"], "missing": [], "decision_missing": "whether to activate the system"}',
+                                '{"named": ["Country A"], "missing": [], "decision_missing": ""}'])
+    with pytest.raises(StopIteration):
+        people_world.prepare_people_world(DESC, trace_id="t", max_budget=1, progress=lambda *a, **k: None)
+    assert feedbacks[0] is None and "whether to activate the system" in feedbacks[1] and "independent_decision" in feedbacks[1]
+    assert '"draft_has_decision": false' in calls[0][1]["content"] and '"draft_has_decision": true' in calls[1][1]["content"]
+
+
+@pytest.mark.req("world-builder-page/a-draft-without-the-described-decision-is-asked-again")
+def test_a_draft_with_its_decision_is_not_asked_again(monkeypatch):
+    _bare_pipeline(monkeypatch, ["Country A"])
+    _stub(monkeypatch, ['{"named": ["Country A"], "missing": [], "decision_missing": ""}'])
+    record = people_world.prepare_people_world(DESC, trace_id="t", max_budget=1, progress=lambda *a, **k: None)["group_check"]
+    assert record["decision_missing"] == ""

@@ -1,0 +1,12 @@
+{
+  "need": "A people build must not keep a draft that leaves out the decision its description asks for.",
+  "searched": [
+    {"place": "own", "where": "world-substrate scripts/people_world.py (check_named_groups and its one retry)", "query": "how a draft is checked against its description", "found": "The named-groups check already reads the description with one light call and asks again once with feedback; it only looked at people."},
+    {"place": "outside", "where": "llm_client documentation (hedged and structured calls)", "query": "choosing among racing replies by content", "found": "llm_client offers no content-aware choice among copies; the first good answer is kept."}
+  ],
+  "candidates": [
+    {"name": "check_named_groups and its retry (existing)", "url": "https://github.com/BrianMills2718/world-substrate", "covers": "Reading a description against a draft and asking again once with feedback.", "verdict": "adopt", "reason": "The same call and retry, asked one more question; no new call on a good draft."}
+  ],
+  "decision": "adopt",
+  "decided": "2026-11-20"
+}
