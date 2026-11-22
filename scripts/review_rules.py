@@ -23,6 +23,17 @@ REVIEW_MODEL = "openrouter/google/gemini-4-argon"
 MISSING = "missing"
 
 
+def compact(value: Any) -> str:
+    """JSON for the prompt without indentation or padding: the same content in about 30% fewer tokens.
+
+    The rules are ~88% of this prompt (pencil13: 41.7k chars indented, 28.6k compact) and the indentation was
+    ~1 token per line of nesting for no reader (workspace issue 907: ~50,900 input tokens a call, 0% cached).
+    The rules differ between calls, so reordering stable parts first would only expose ~6k chars (under the
+    provider's minimum cacheable size); cutting the text is the remedy that applies.
+    """
+    return json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+
+
 class SourceDraftReviewError(ValueError):
     """A required source judgment failed; only a valid typed negative permits repair."""
 
@@ -204,8 +215,8 @@ def review_rules(description: str, bundle: dict[str, Any], causal_model: dict[st
     # The starting numbers let the reviewer see a move that can never work from the start (#293: pencil
     # XlX1z5lyl8QT's carrier charged 0, so its own purchase law refused every purchase).
     start = starting_values(bundle)
-    messages = render_prompt(PROMPT, description=description, laws=json.dumps(laws, indent=1),
-                             rules=json.dumps(rules, indent=1), start=json.dumps(start, indent=1))
+    messages = render_prompt(PROMPT, description=description, laws=compact(laws),
+                             rules=compact(rules), start=compact(start))
     independent = any("validation_decision" in e.get("components", {}) for e in bundle.get("entities", []))
     actor_ids = None
     if independent:
@@ -219,7 +230,7 @@ def review_rules(description: str, bundle: dict[str, Any], causal_model: dict[st
             "reports or past measurements just because they remain unchanged after a repair. Explain which fields "
             "own current truth and how their writers preserve it, citing the source. Never infer authority from a "
             "field's name alone. Mechanical findings and actor privacy judgments remain separate.\n" +
-            json.dumps({"builtin_semantics": builtin_semantics(bundle)}, indent=1))})
+            compact({"builtin_semantics": builtin_semantics(bundle)}))})
     if "actor_information" in bundle:
         actor_ids = list(bundle["actor_information"]["actors"])
         messages.append({"role": "user", "content": (
@@ -238,9 +249,9 @@ def review_rules(description: str, bundle: dict[str, Any], causal_model: dict[st
             "briefs and initial knowledge as well as field values. An authorized judgment needs a short "
             "explanation grounded in the source; reject invented disclosures even when put in a limitation. "
             "Never repair or suppress the inputs silently. Mechanical findings remain separate.\n" +
-            json.dumps({"public_summary": bundle["actor_information"]["public_summary"],
-                        "builtin_semantics": builtin_semantics(bundle),
-                        "initial_actor_inputs": initial_actor_inputs(bundle, causal_model)}, indent=1))})
+            compact({"public_summary": bundle["actor_information"]["public_summary"],
+                     "builtin_semantics": builtin_semantics(bundle),
+                     "initial_actor_inputs": initial_actor_inputs(bundle, causal_model)}))})
     value, result = call_llm_json_schema(
         model, messages, review_schema(ids, actor_ids, independent=independent), schema_name="world_substrate_rules_review", task=TASK,
         trace_id=trace_id, max_budget=max_budget, max_tokens=16000, reasoning_effort=reasoning_effort,

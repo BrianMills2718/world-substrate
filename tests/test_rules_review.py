@@ -23,6 +23,14 @@ PENCIL13 = json.loads((REPO / "tests/fixtures/pencil13-kept.json").read_text())
 
 
 class ReviewTests(unittest.TestCase):
+    def test_the_prompt_json_is_compact(self):
+        rules = {"mechanics": [{"mechanic_id": "a", "effects": [1, 2]}], "processes": []}
+        text = reviewer.compact(rules)
+        self.assertNotIn("\n", text)
+        self.assertNotIn(": ", text)
+        self.assertEqual(json.loads(text), rules)
+        self.assertLess(len(text), len(json.dumps(rules, indent=1)) * 0.8)
+
     def test_findings_on_unknown_rules_or_with_no_problem_are_dropped(self):
         ids = ["buy-boxes", "sell-pencil"]
         reply = {"findings": [

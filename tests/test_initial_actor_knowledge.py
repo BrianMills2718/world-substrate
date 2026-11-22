@@ -104,7 +104,7 @@ def test_existing_review_call_reads_actual_contexts_and_rejects_narrator_negativ
     payload = messages[-1]["content"]
     assert "EXACT initial actor inputs" in payload
     assert "original source" == messages[0]["content"]
-    assert json.loads(payload[payload.index("{\n"):])["initial_actor_inputs"] == contexts
+    assert json.loads(payload[payload.index('{"public_summary"'):])["initial_actor_inputs"] == contexts
     assert leaked in payload
 
 
