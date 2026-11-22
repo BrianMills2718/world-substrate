@@ -131,6 +131,27 @@ class CausalModelGenerationSchemaTests(unittest.TestCase):
         self.assertIn("<HERE>", repair)
         self.assertIn("remove_mechanics", repair)
 
+    def test_rules_writer_marks_the_end_of_each_prompt_for_the_provider_cache(self):
+        # issue 894: Anthropic reads only marked content; 8 calls read 23% from cache. The repair call resends
+        # the first prompt, so it reads what the first wrote; the marker is on a copy, never on the earlier call.
+        bundle = validate_bundle(json.loads((REPO / "examples/world_authoring/orchard-v0.json").read_text()))
+        causal = json.loads((REPO / "examples/world_authoring/orchard-causal-v0.json").read_text())
+        good = json.dumps(causal)
+        call = MagicMock(side_effect=[SimpleNamespace(content=c, cost=0.0, model="fake-model") for c in ("{", good)])
+        fake_module = ModuleType("llm_client")
+        fake_module.call_llm = call
+        fake_module.safe_json_loads = json.loads
+        fake_module.mark_cache_breakpoint = lambda m: {**m, "content": [
+            {"type": "text", "text": m["content"], "llm_client_cache_breakpoint": True}]}
+        with patch.dict(sys.modules, {"llm_client": fake_module}):
+            generate_causal_model(bundle, model="fake-model", trace_id="test-cache-marks")
+        first, second = (c.args[1] for c in call.call_args_list)
+        for sent in (first, second):
+            self.assertTrue(sent[-1]["content"][0]["llm_client_cache_breakpoint"])
+            self.assertEqual(sum(isinstance(m["content"], list) for m in sent), 1)  # only the last
+        self.assertEqual(first[0]["content"], second[0]["content"])
+        self.assertEqual(second[1]["content"], first[1]["content"][0]["text"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -646,6 +646,22 @@ def merge_revision(previous: dict[str, Any], change: dict[str, Any]) -> dict[str
     return merged
 
 
+def cache_marked(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """A copy of ``messages`` with a prompt-cache breakpoint at the end of the last message.
+
+    Anthropic reads from its cache only content that carries a breakpoint, and this call sent none (issue 894:
+    8 calls, 23% read). The whole prompt up to the last message is the prefix, so the one repair call, which
+    resends it with the rejected reply and the compiler error appended, reads what the first call wrote.
+    A copy, so a retry never carries the earlier call's marker. An llm_client without the helper gets the
+    messages unchanged.
+    """
+    try:
+        from llm_client import mark_cache_breakpoint
+    except ImportError:
+        return messages
+    return [*messages[:-1], mark_cache_breakpoint(messages[-1])]
+
+
 def generate_causal_model(
     bundle: dict[str, Any],
     *,
@@ -736,7 +752,7 @@ def generate_causal_model(
     for attempt in range(2):
         result = call_llm(
             model,
-            messages,
+            cache_marked(messages),
             task="world-substrate-mechanic-authoring",
             trace_id=trace_id,
             max_budget=max_budget,
