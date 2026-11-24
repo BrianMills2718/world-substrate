@@ -325,13 +325,13 @@ stopping potin that the judge assesses once we build him" (the plain-words stopp
 
 ### Requirement: Saved recording player
 
-Source: Brian, 2026-11-13, “yes do that”, approving the usability recommendations in docs/VISUAL_FEEDBACK.md; event-level reconstruction detail inferred from retained round-3 counterexample under that approval.
-
 A saved run SHALL open paused with its retained scenario description and visible previous/next, direct round and scrub controls. Playback SHALL advance every retained event in recorded order within a round before advancing to the next round; reaching the final round alone SHALL NOT skip its remaining events or mark them finished. One selected event SHALL coordinate the readable event list, recorded attempt/result detail and primary world state/network. Selecting historical evidence SHALL select its historical event and reconstruct represented state through that event from retained initial entities and ordered changes, without applying later events. Reaction children and installed-rule settlements SHALL retain their own event identity. A whole-round retained picture SHALL remain available with its coarser temporal scope explicit.
 
 Actor input SHALL be matched to the selected person and exact decision round using declared retained records only. Missing data SHALL remain visibly unavailable. Supplied input SHALL NOT be presented as proof of belief. Actor-only mode SHALL hide Analyst world state, attempts, causal diagnostics and other people’s inputs. Saved playback and inspection SHALL NOT invoke a model or mutate stored records or resident memory.
 
 The player SHALL be readable and operable on desktop and phone, with keyboard and styled contextual help. Existing Picture, Network, causal history, exact trace/input, rules and other advanced actions SHALL remain reachable. The approved creation and live-execution paths SHALL retain their behavior.
+
+Source: Brian, 2026-11-13, “yes do that”, approving the usability recommendations in docs/VISUAL_FEEDBACK.md; event-level reconstruction detail inferred from retained round-3 counterexample under that approval.
 
 #### Scenario: Inspect a recorded attempt without replay timing
 
@@ -373,11 +373,11 @@ The player SHALL be readable and operable on desktop and phone, with keyboard an
 
 ### Requirement: Creation-first world workspace
 
-Source: Brian’s 2026-11-13 request for natural-language creation as the starting page, created worlds, run lifecycle and an actual spatial/visual view; follow-up saved-round-first scope.
-
 The starting page SHALL retain natural-language creation and provide the owner’s durable world library. Opening a world SHALL be read-only and show its initial visual state and available runs without silently creating a run. The studio SHALL provide distinct New run, Continue, Replay and completed-checkpoint Branch actions. Branching SHALL require a visible round-end checkpoint preview rather than silently branching from a different state than the selected mid-round event.
 
 The existing native composed scene SHALL be the primary world presentation, synchronized to world/run/event selection. It SHALL preserve represented place membership, ownership and accepted movement; illustrative screen geometry SHALL NOT claim unmodelled physical constraints. Existing causal, event, actor-input, exact-trace and older visual inspection SHALL remain available as supporting views. Actor-only mode SHALL hide privileged full-world scenes and other Analyst content. A stale asynchronous response SHALL NOT replace the current world/run selection.
+
+Source: Brian’s 2026-11-13 request for natural-language creation as the starting page, created worlds, run lifecycle and an actual spatial/visual view; follow-up saved-round-first scope.
 
 #### Scenario: Create and reopen a visual world
 
@@ -610,9 +610,9 @@ finding 3; requirement wording inferred by agent.
 
 ### Requirement: A draft without the described decision is asked again
 
-Source: Brian, 2026-11-20: "continue" (approving the recommended fix for issue #496); finding in `evidence/declared-laws/s4-waltzman-6/TRACE_READ.md`; mechanism inferred by agent.
-
 When a description asks its people to make a shared decision and the draft has no decision, the builder SHALL ask again once, saying which decision is missing, and SHALL note in plain words when the second draft still has none. A draft that has its decision SHALL NOT be asked again for it.
+
+Source: Brian, 2026-11-20: "continue" (approving the recommended fix for issue #496); finding in `evidence/declared-laws/s4-waltzman-6/TRACE_READ.md`; mechanism inferred by agent.
 
 #### Scenario: A draft without the described decision is asked again
 

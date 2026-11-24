@@ -234,9 +234,9 @@ Source: Brian's explicit documentation goal, 2026-11-12; inferred by agent from 
 
 ### Requirement: Initial exposure and source-grounded actor inputs
 
-Source: Brian's approved I0/I1 goal, 2026-11-12; integration-2 findings 3, 5 and 6.
-
 An explicitly already received report SHALL compile as delivered exposure, with actual transmitter distinct from current holder and apparent source. An unspecified actual source SHALL remain unspecified. The existing build review SHALL inspect the actual assembled initial actor inputs against the original source, including private existence or values disclosed through narrator-only negative knowledge. A declared actor-information world SHALL NOT be delivered when that review is missing, unavailable, incomplete or rejects any actor or public-summary authorization. Historical pending defaults SHALL remain compatible.
+
+Source: Brian's approved I0/I1 goal, 2026-11-12; integration-2 findings 3, 5 and 6.
 
 #### Scenario: Received information is not awaiting a second delivery
 
@@ -252,9 +252,9 @@ An explicitly already received report SHALL compile as delivered exposure, with 
 
 ### Requirement: Place-scoped perception with distinct inputs
 
-Source: Brian's 2026-11-13 inhabited-facility request; inferred by agent for the mechanism; naming rule corrected after Brian, 2026-11-16: "i agree thatt this 'you are in <room name>' is a violation of the rules".
-
 A declared public entity MAY be scoped to a place. An actor SHALL perceive a place-scoped entity's declared fields only while the entity stands in, or is, the actor's current place. Unscoped declared entities remain known everywhere. When a declaration uses a place scope, the actor's observation SHALL also name the actor's place only when the declaration publishes that place to the actor (an undeclared place's engine label is private existence and SHALL NOT enter the actor's context), list the declared entities physically present with it, and list reports delivered to the actor from its own declared report log regardless of place. The actor's prompt context SHALL present that observation, global knowledge (world summary and the actor's declared brief and knowledge) and any supplied retained memories as separate inputs; delivered reports and memories SHALL NOT be treated as physical perception, and place scope SHALL NOT be treated as a distance, hearing or occlusion model.
+
+Source: Brian's 2026-11-13 inhabited-facility request; inferred by agent for the mechanism; naming rule corrected after Brian, 2026-11-16: "i agree thatt this 'you are in <room name>' is a violation of the rules".
 
 #### Scenario: A closed door blocks movement and opening it permits movement
 
@@ -284,9 +284,9 @@ A declared public entity MAY be scoped to a place. An actor SHALL perceive a pla
 
 ### Requirement: Offered action forms follow what an actor can perceive
 
-Source: Brian's 2026-11-13 goal; resident-run finding in `evidence/ui/inhabited-facility-20261113/TRACE_READ.md`; mechanism inferred by agent.
-
 A declared public action form SHALL be offered to an actor only when every entity it names is in the actor's observation, except fields the form lists as `unobserved_refs`, and SHALL NOT be offered when a field listed in `not_self` names the actor. A declared entity that is place-scoped SHALL NOT appear in the observation of an actor in another place, whether it is a person or an object.
+
+Source: Brian's 2026-11-13 goal; resident-run finding in `evidence/ui/inhabited-facility-20261113/TRACE_READ.md`; mechanism inferred by agent.
 
 #### Scenario: An actor is offered what is at hand and not what is elsewhere
 
@@ -297,9 +297,9 @@ A declared public action form SHALL be offered to an actor only when every entit
 
 ### Requirement: Reports and refusals are visible scene effects
 
-Source: Brian's 2026-11-13 goal; inferred by agent.
-
 When a rule appends a report to the recipient's log, the replayed scene SHALL show a message from the sender to the recipient, and when a move is refused it SHALL show the refusing check's reason. These effects SHALL be derived from the recorded events through the existing scene profile and renderer, not drawn from a fixture.
+
+Source: Brian's 2026-11-13 goal; inferred by agent.
 
 #### Scenario: A real run's report and refusal appear in the replayed scene
 
@@ -308,9 +308,9 @@ When a rule appends a report to the recipient's log, the replayed scene SHALL sh
 
 ### Requirement: Generated moves are offered with their text left to the person
 
-Source: Brian, 2026-11-20: "continue" (approving the recommended fix for issue #488); finding in `evidence/declared-laws/s4-waltzman-5/TRACE_READ.md`; mechanism inferred by agent.
-
 A people build SHALL declare a public action form for every generated move whose referent fields can each be bound to a public entity the move's rule accepts there. Fields that are not referents SHALL be left open, and the resident SHALL be asked to state them in its own words. An open field SHALL NOT be a referent field. A move with a referent field that no public entity fits SHALL get no form.
+
+Source: Brian, 2026-11-20: "continue" (approving the recommended fix for issue #488); finding in `evidence/declared-laws/s4-waltzman-5/TRACE_READ.md`; mechanism inferred by agent.
 
 #### Scenario: A move with only text fields is offered with its text left open
 
