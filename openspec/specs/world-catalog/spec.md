@@ -1,15 +1,16 @@
 # world-catalog Specification
 
 ## Purpose
+
 Keep created worlds privately accessible, preserve logical run identity and complete native continuation state, and support independent branches from completed saved rounds.
 
 ## Requirements
 
 ### Requirement: Durable private created-world library
 
-Source: Brian’s 2026-11-13 world-library request; owner-only default inferred from existing authentication and the requirement not to publish other visitors’ unshared prompts.
-
 The service SHALL persist successful owner-created world definitions before acknowledging their catalog save. Stable catalog identity SHALL be distinct from immutable simulation bundle identity and content fingerprint. Existing owner authentication SHALL protect catalog listing, world/run records, checkpoints and private scene requests. Public sharing SHALL remain explicit; guest/IP bookkeeping SHALL NOT establish ownership. Storage failure SHALL NOT be reported as a successful durable save.
+
+Source: Brian’s 2026-11-13 world-library request; owner-only default inferred from existing authentication and the requirement not to publish other visitors’ unshared prompts.
 
 #### Scenario: Owner-created worlds remain available after reload
 
@@ -25,9 +26,9 @@ The service SHALL persist successful owner-created world definitions before ackn
 
 ### Requirement: Logical runs and completed checkpoints
 
-Source: Brian’s 2026-11-13 play/replay/branch request and explicit saved-round-first answer; checkpoint completeness derived from the existing native continuation contract.
-
 World definitions, logical runs, request segments, public shares and checkpoints SHALL retain distinct identities. A saved checkpoint SHALL bind the exact world/rules, final material snapshot, actor state/memory, reviewed rulings/approval and applicable continuation metadata. New catalog run segments SHALL identify their preceding checkpoint; stale continuation SHALL be rejected before native work in the deployed service process. Durable append SHALL validate ancestry. An explicit terminal response with zero new rounds SHALL preserve the current checkpoint and record finish metadata without fabricating progress.
+
+Source: Brian’s 2026-11-13 play/replay/branch request and explicit saved-round-first answer; checkpoint completeness derived from the existing native continuation contract.
 
 #### Scenario: Continue restores a saved run
 
@@ -44,9 +45,9 @@ World definitions, logical runs, request segments, public shares and checkpoints
 
 ### Requirement: Independent saved-round branches
 
-Source: Brian, 2026-11-13, selects saved-round branches first; natural-language interventions and starting-condition configuration are future features.
-
 A branch SHALL begin from an existing complete round checkpoint under the same reviewed rules and preserved actor memories. It SHALL have independent logical run identity, exact parent/checkpoint provenance and the retained parent history prefix. Appending a child SHALL NOT mutate parent state/history or conflate equal local event IDs across runs. A material event projection alone SHALL NOT be accepted as a cognitive checkpoint. Legacy recovery SHALL use provable owner/build/record data only, without inventing parentage or missing state; unavailable continuation SHALL have an explicit reason.
+
+Source: Brian, 2026-11-13, selects saved-round branches first; natural-language interventions and starting-condition configuration are future features.
 
 #### Scenario: Branching preserves the parent
 
@@ -61,11 +62,13 @@ A branch SHALL begin from an existing complete round checkpoint under the same r
 - **AND** Continue and Branch are unavailable with a truthful explanation
 
 ### Requirement: A quiet round does not end a run before its stop setting
+
 A saved run that has had a round with nothing accepted and no move open stays continuable and branchable until the world's quiet-rounds stop setting (default 6) has been reached by consecutive such rounds. A world set not to stop for being quiet is never ended by quiet rounds alone.
 
 Source: Brian, 2026-11-16: "i want you to build out the whole ux/ui using best practices and considering designs for simliar projgrams" (docs/goals/unified-world-ux.md; the stop setting is the one Brian approved on the page, "Stop once nothing is changing, after N quiet rounds").
 
 #### Scenario: a-quiet-round-does-not-end-a-run-before-its-stop-setting
+
 - **WHEN** a run with a quiet-rounds setting of 3 has had one or two consecutive quiet rounds
 - **THEN** the run can still continue
 - **AND** after the third consecutive quiet round the run reports no active moves

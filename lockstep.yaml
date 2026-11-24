@@ -209,6 +209,10 @@ layout:
   purpose: Required behavior and scenarios for scene replay
   implements: []
   tests: []
+- path: openspec/specs/scene-viewer/spec.md
+  purpose: Required behavior and scenarios for scene viewer
+  implements: []
+  tests: []
 - path: openspec/specs/semantic-binding/spec.md
   purpose: Required behavior and scenarios for semantic binding
   implements: []
@@ -223,6 +227,10 @@ layout:
   tests: []
 - path: openspec/specs/world-builder-page/spec.md
   purpose: Required behavior and scenarios for world builder page
+  implements: []
+  tests: []
+- path: openspec/specs/world-catalog/spec.md
+  purpose: Required behavior and scenarios for world catalog
   implements: []
   tests: []
 - path: docs/plans/declared_laws.path-decision.json
