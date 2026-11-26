@@ -527,3 +527,14 @@ def test_the_run_stage_has_a_library_rail_listing_worlds_runs_and_branches():
     assert "parent_run_id" in body and "openCatalogRun(" in body and "openCatalogWorld(" in body and "wb-stars" in page
     assert "drawRail();" in page.split("function updateWorkspaceControls()", 1)[1][:6000]
     assert "#stage-run>.lib-rail" in page
+
+
+@pytest.mark.req("world-builder-page/a-world-that-will-stall-says-so-on-the-run-page")
+def test_a_stalling_world_is_flagged_on_the_run_page_and_the_build_time_is_honest():
+    page = (ROOT / "scripts/world_builder_home.html").read_text()
+    stage = page.split('id="stage-run"', 1)[1]
+    assert 'id="build-warning"' in stage
+    review = page.split("const dn = $(\"dry-notice\")", 1)[1][:4500]
+    assert '$("build-warning")' in review
+    assert "max-height:30vh" in page
+    assert "about a minute" not in page and "two to three minutes" in page

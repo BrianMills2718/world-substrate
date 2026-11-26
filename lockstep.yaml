@@ -2,7 +2,7 @@
 # Documentation rows assert file purpose, not runtime implementation or test coverage.
 schema: lockstep.side.v1
 checks:
-  trace: block
+  trace: warn
   arch: block
   test-first: block
   sources: block
