@@ -3034,6 +3034,14 @@ class WorldBuilderHandler(BaseHTTPRequestHandler):
         request = _REQUEST.get()
         if request is not None:
             request["summary"].update(catalog_run_id=record["catalog_run_id"], checkpoint_id=record["checkpoint_id"])
+        # One writer per checkpoint: the page asks on opening a saved run, so opening it again while the first account
+        # is still being written would send every slice twice (live 2026-11-27, workspace issue 1043). A second
+        # request waits here and then reads the saved account.
+        with _catalog_run_lock("story:" + record["checkpoint_id"]):
+            self._write_story_once(client, body, record)
+
+    def _write_story_once(self, client: str, body: dict[str, Any], record: dict[str, Any]) -> None:
+        """Answer with the saved account of this checkpoint, or write and save it. Called under its lock."""
         saved = _catalog().story(record["checkpoint_id"])
         from scripts.run_story import STORY_VERSION
         if saved and saved.get("version") == STORY_VERSION:
