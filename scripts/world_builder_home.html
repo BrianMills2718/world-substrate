@@ -286,8 +286,8 @@ main:has(#stage-case:not([hidden]))>h1,main:has(#stage-case:not([hidden]))>.lede
       <div class="chat" id="chat" aria-live="polite" hidden></div>
       <textarea id="desc" maxlength="2000" title="Who is involved, what they share or use, and what they are trying to get done. Press Run to build it as written, or Send to talk it over with the AI first." placeholder="Two cooks share one knife and must finish three salad orders before closing."></textarea>
       <div class="row">
-        <button class="primary" id="build-btn" type="button" title="Build the simulation from the draft (or from what you typed) and start it. You can read the rules any time.">Run</button>
-        <button class="secondary" id="send-btn" type="button" title="Send this to the AI; it asks a few questions here and keeps a draft of your world. Enter also sends.">Send</button>
+        <button class="primary" id="send-btn" type="button" title="Send this to the AI; it asks a few questions here and keeps a draft of your world. Enter also sends.">Send</button>
+        <button class="secondary" id="build-btn" type="button" title="Build the simulation from the draft (or from what you typed) and start it. You can read the rules any time.">Run</button>
         <button type="button" class="linkish small" id="example-btn" title="Put an example description in the box; edit it or press Run">Use a sample prompt</button>
       </div>
       <span class="muted small" id="build-hint" role="status"></span>
@@ -326,14 +326,14 @@ main:has(#stage-case:not([hidden]))>h1,main:has(#stage-case:not([hidden]))>.lede
       </div>
     </details>
     <div class="status" id="service-status"></div>
-    <a class="case-entry" id="case-link" href="?example=early-warning">
+    <a class="case-entry" id="case-link" href="?example=early-warning" title="Open the recorded decision and compare participant statements.">
       <span>Explore a completed example</span>
       <strong>Should the coalition activate its joint response? <span aria-hidden="true">→</span></strong>
     </a>
   </section>
 
-  <section class="panel" id="stage-case" aria-label="Completed example" hidden>
-    <a href="?" id="case-home">← Back to chat</a>
+  <section class="panel" id="stage-case" aria-label="Completed example" tabindex="-1" hidden>
+    <a href="?" id="case-home" title="Return to your description and conversation.">← Back to chat</a>
     <div id="retained-case"></div>
   </section>
 
@@ -858,7 +858,7 @@ main:has(#stage-case:not([hidden]))>h1,main:has(#stage-case:not([hidden]))>.lede
     e.preventDefault();
     history.pushState({}, "", e.currentTarget.href);
     openRetainedCase();
-    $("case-home").focus();
+    $("stage-case").focus();
   };
   $("case-home").onclick = e => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
@@ -1197,7 +1197,7 @@ main:has(#stage-case:not([hidden]))>h1,main:has(#stage-case:not([hidden]))>.lede
   async function build() {
     const description = (draft || $("desc").value).trim();
     if (!description) {
-      $("build-hint").textContent = "Type what should happen first, or try an example.";
+      $("build-hint").textContent = "Describe your situation first, or use a sample prompt.";
       $("desc").focus(); return;
     }
     const gen = ++buildGen;
@@ -2188,7 +2188,7 @@ main:has(#stage-case:not([hidden]))>h1,main:has(#stage-case:not([hidden]))>.lede
       d.append(sum);
       for (const sentence of r?.sentences || []) {
         const paragraph = document.createElement("p"); paragraph.textContent = sentence.text; d.append(paragraph);
-        const cited = rows.filter(row => sentence.event_ids.includes(row.event.event_id));
+        const cited = rows.filter(row => sentence.event_ids?.includes(row.event.event_id));
         if (cited.length) d.append(storySources(cited, "View cited evidence"));
       }
       if (rows.length && !r?.sentences?.length) d.append(storySources(rows, "View round evidence"));
@@ -2223,13 +2223,13 @@ main:has(#stage-case:not([hidden]))>h1,main:has(#stage-case:not([hidden]))>.lede
       evidence = [...new Set(fields.map(field => latest.get(field)).filter(Boolean))];
       const result = decision.components.group_decision;
       heading.textContent = result.question;
-      finding.textContent = `After round ${last.turn} the decision was ${words(result.status)}. ${result.support} supported it outright and ${result.conditional} conditionally. Approval required ${result.needed}.`;
+      finding.textContent = `Round ${last.turn} · ${words(result.status)}. ${result.support} supported the proposal outright and ${result.conditional} supported it conditionally. Approval required ${result.needed}.`;
     } else {
       heading.textContent = `Latest result · Round ${last.turn}`;
       const summary = byRound.get(last.turn)?.sentences?.[0];
       if (summary) {
         finding.textContent = summary.text;
-        evidence = evidence.filter(row => summary.event_ids.includes(row.event.event_id));
+        evidence = evidence.filter(row => summary.event_ids?.includes(row.event.event_id));
       } else {
         const item = evidence.find(row => row.event.changes?.length) || evidence[0];
         finding.textContent = item ? item.title + " · " + savedStatus(item) : "No events were recorded in this round.";
@@ -2908,7 +2908,7 @@ main:has(#stage-case:not([hidden]))>h1,main:has(#stage-case:not([hidden]))>.lede
   checkService();
   refreshLibrary();
   function openRoute(){const p=new URLSearchParams(location.search);if(p.get("world"))openCatalogWorld(p.get("world"),p.get("worldRun"));else if(p.get("run"))openShared(p.get("run"));else if(p.get("example")==="early-warning")openRetainedCase();}
-  window.addEventListener("popstate",()=>{if(location.search)openRoute();else homeWorkspace(false);});openRoute();
+  window.addEventListener("popstate",()=>{if(location.search)openRoute();else if (!$("stage-case").hidden) show("describe"); else homeWorkspace(false);});openRoute();
 })();
 </script>
 </body>
