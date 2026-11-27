@@ -5,29 +5,47 @@ a failed check stops is recorded with its blocker. A7: a run recorded under the 
 """
 from __future__ import annotations
 
-import time
+from collections import Counter
 
 import pytest
 
 from scripts.run_authored_world import build_engine, run_world
 from tests.knock_on_worlds import fifty_chains, loop, truck_without_fuel
+from world_substrate import engine as engine_module
 from world_substrate.engine import LEGACY_REACTION_LIMIT, Engine, recorded_reaction_limit
+from world_substrate.model import Entity, World
+
+
+def _pull_action(engine):
+    offered = engine.discover("sam", kind="pull")["available"]
+    return dict(offered[0]["action"], controller="test")
 
 
 def _pull(engine):
-    offered = engine.discover("sam", kind="pull")["available"]
-    return engine.submit(dict(offered[0]["action"], controller="test"))
+    return engine.submit(_pull_action(engine))
+
+
+def _count_work(monkeypatch):
+    """Count the calls whose cost grows with the size of the world: copying it, copying each thing, dumping it."""
+    work: Counter[str] = Counter()
+    for owner, name in ((engine_module, "_rule_world"), (Entity, "__deepcopy__"), (World, "material_dict")):
+        def counted(*args, _call=getattr(owner, name), _name=name):
+            work[_name] += 1
+            return _call(*args)
+
+        monkeypatch.setattr(owner, name, counted)
+    return work
 
 
 @pytest.mark.req("transition-engine/fifty-chains-of-a-hundred-links-finish-in-one-moment")
 @pytest.mark.req("information-delivery/a-knock-on-step-names-the-step-that-caused-it")
-def test_fifty_chains_of_a_hundred_links_finish_in_one_moment():
+def test_fifty_chains_of_a_hundred_links_finish_in_one_moment(monkeypatch):
     engine, _, _ = build_engine(*fifty_chains(50, 100))
-    # CPU time, not wall time: the bound is on the engine's work, and wall time on a shared machine measures the
-    # load (2026-11-10: 26.6s alone, 128s inside a full suite while two other suites ran, load average 63 on 20 cores).
-    started = time.process_time()
-    result = _pull(engine)
-    elapsed = time.process_time() - started
+    things = len(engine.world.entities)
+    action = _pull_action(engine)
+    work = _count_work(monkeypatch)  # the move only, not finding it
+    result = engine.submit(action)
+    monkeypatch.undo()
     assert result["status"] == "accepted"
     steps = [step for event in result["reactions"] for step in event["reaction_steps"]]
     assert len(steps) == 5000
@@ -50,7 +68,15 @@ def test_fifty_chains_of_a_hundred_links_finish_in_one_moment():
                 parent = by_event[step["caused_by"][0]]
                 assert f"c{c}-{int(n) - 1}" in {s["it"] for s in parent["reaction_steps"]}
                 assert wave_of[step["it"]] == wave_of[f"c{c}-{int(n) - 1}"] + 1
-    assert elapsed < 120, f"5,000 steps took {elapsed:.1f}s of CPU time"
+    # The moment's cost is bounded by work counted, never by seconds: the same work took 26.6s of CPU alone and
+    # 156.5s on a loaded machine, which failed an unrelated merge (issue 504). The 50 chains advance together, so
+    # there are 100 waves. A wave copies the world once and dumps it three times, whatever the number of steps in it;
+    # the few extra calls are the move itself and the last, empty wave.
+    waves = max(e["reaction_wave"] for e in result["reactions"])
+    assert waves == len(result["reactions"]) == 100
+    assert work["_rule_world"] <= waves + 3, work
+    assert work["__deepcopy__"] <= (waves + 3) * things, work
+    assert work["material_dict"] <= 3 * waves + 8, work
 
 
 @pytest.mark.req("transition-engine/a-loop-still-ends")
