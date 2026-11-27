@@ -19,10 +19,10 @@
       "name": "World Builder and donor case",
       "url": "https://brianmills.dev/waltzman/",
       "covers": "Chat through native replay plus a recorded comparative case",
-      "verdict": "adapt",
+      "verdict": "combine",
       "reason": "Reuse the canonical chat and run viewer with the donor's existing public records."
     }
   ],
-  "decision": "adapt",
+  "decision": "combine",
   "decided": "2026-11-27"
 }
