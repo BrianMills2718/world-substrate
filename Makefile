@@ -10,12 +10,10 @@ check: planning-check
 # Installation and plan-format checks do not certify runtime coverage.
 # $(LOCKSTEP) check below runs the canonical lockstep check command.
 LOCKSTEP ?= uvx -q --from git+https://github.com/BrianMills2718/agentic-engineering-system-canonical.git lockstep
+# The plan itself (acceptance criteria included) is checked by `ship`, which runs Company Planning's validator when a
+# merge changes plan content; `lockstep plan check --acceptance` was removed from Lockstep on 2026-11-25 (AES 40368b0b2).
 planning-check:
 	$(LOCKSTEP) check sources
-	$(LOCKSTEP) plan check --acceptance docs/planning/open-attempt/acceptance-criteria.json
-	$(LOCKSTEP) plan check --acceptance docs/planning/declared-laws/acceptance-criteria.json
-	$(LOCKSTEP) plan check --acceptance docs/planning/ai-judge/acceptance-criteria.json
-	$(LOCKSTEP) plan check --acceptance docs/planning/estimate-rules/acceptance-criteria.json
 	openspec validate --specs --no-interactive
 lockstep: planning-check
 	$(LOCKSTEP) check
