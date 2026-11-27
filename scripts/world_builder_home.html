@@ -245,6 +245,20 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 .run-maps{display:grid;grid-template-columns:1fr;gap:12px}.run-maps.two{grid-template-columns:1fr 1fr}@media(max-width:900px){.run-maps.two{grid-template-columns:1fr}}.run-map-cell{min-width:0}.run-map-cell p{margin:0 0 6px}.what-if-bar{margin:8px 0}.what-if-bar button{min-height:44px}.run-map iframe{width:100%;height:min(86vh,820px);min-height:420px;border:1px solid var(--line);border-radius:10px;background:#0b1013;display:block}.run-map[hidden]{display:none}.world-scene-panel{margin:18px 0 24px}.world-scene-panel iframe{width:100%;height:540px;border:1px solid var(--line);border-radius:10px;background:#0b1013;display:block}.world-scene-panel p{font-size:14px;color:var(--muted)}body.workspace-view main{max-width:1320px}body.workspace-view main>h1,body.workspace-view main>.lede{display:none}
 @media(max-width:720px){.workspace-controls .row{display:grid;grid-template-columns:1fr 1fr}.workspace-controls select,.workspace-controls label{grid-column:1/-1;width:100%}.world-scene-panel iframe{height:420px}.world-cards{grid-template-columns:1fr}.world-library input{width:100%}}
 @media(max-width:720px){body.workspace-view main{padding:12px 12px 30px}body.workspace-view #stage-run{padding:16px}.workspace-controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:12px}.workspace-controls>button{font-size:14px;padding:8px 10px}.workspace-controls>div{flex:1}.workspace-controls details{margin:0}.workspace-controls summary{min-height:44px;padding:10px;font-size:14px}.workspace-controls details[open]{min-width:100%}.workspace-controls:has(details[open])>div{flex-basis:100%}#workspace-status{width:100%;margin:0;font-size:12px}#workspace-continue-note:empty{display:none}#saved-scenario:not(.expanded){display:none}#saved-intro{float:right}#saved-setup-toggle{font-size:12px;padding:8px;min-height:36px}#live-status{font-size:12px;margin:8px 0}#stage-run>.row{gap:6px}#stage-run>.row label{font-size:13px}#world-scene-status:not([data-error=true]){display:none}.saved-navigation{margin-top:10px}.world-scene-panel{margin-top:10px}.world-scene-panel h3{margin:8px 0}#world-scene-panel iframe{height:420px!important}}
+#stage-describe,.case-entry{max-width:760px}
+main:has(#stage-describe:not([hidden])),main:has(#stage-case:not([hidden])){max-width:820px}
+main:has(#stage-describe:not([hidden])){padding-top:clamp(24px,6vh,70px)}
+main:has(#stage-case:not([hidden]))>h1,main:has(#stage-case:not([hidden]))>.lede{display:none}
+#stage-describe{background:transparent;border:0;padding:16px 0}
+#stage-describe .create{background:var(--panel);padding:18px;border:1px solid var(--line);border-radius:16px}
+#stage-describe textarea{min-height:92px;border:0;background:transparent;padding:4px}
+#stage-describe .create .row{gap:10px}
+#stage-describe .create>span:empty,#service-status:empty{display:none}
+.case-entry{display:grid;gap:5px;padding:18px 0;margin-top:24px;border-top:1px solid var(--line);text-decoration:none;color:var(--text)}
+.case-entry>span,#case-home{font-size:14px;color:var(--muted)}
+.case-entry:hover strong,.case-entry:focus-visible strong{text-decoration:underline}
+#stage-case{padding:0;border:0;background:transparent}
+#case-home{display:inline-block;padding:12px 0}
 </style>
 </head>
 <body>
@@ -252,26 +266,26 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   <div class="brand">World Builder</div>
 </header>
 <main>
-  <h1>Simulate any small world</h1>
-  <p class="lede">Say who is involved and what they are trying to do. AI writes the rules and the simulation starts.</p>
+  <h1>What situation would you like to explore?</h1>
+  <p class="lede">Describe who is involved and what they need to decide. Talk it through, then run the simulation.</p>
 
   <nav class="main-tabs" id="main-tabs" role="tablist" aria-label="World Builder"><button type="button" role="tab" id="tab-describe" aria-selected="true" aria-controls="stage-describe" title="Describe a new world and run it.">New world</button><button type="button" role="tab" id="tab-library" aria-selected="false" aria-controls="stage-library" title="Open a world or run you made before.">Your worlds</button></nav>
 
   <section class="panel" id="stage-describe" aria-labelledby="describe-h">
     <div class="create">
-      <label class="field" id="describe-h" for="desc">What should happen?</label>
+      <label class="field" id="describe-h" for="desc">Your description</label>
       <div class="chat" id="chat" aria-live="polite" hidden></div>
       <textarea id="desc" maxlength="2000" title="Who is involved, what they share or use, and what they are trying to get done. Press Run to build it as written, or Send to talk it over with the AI first." placeholder="Two cooks share one knife and must finish three salad orders before closing."></textarea>
       <div class="row">
         <button class="primary" id="build-btn" type="button" title="Build the simulation from the draft (or from what you typed) and start it. You can read the rules any time.">Run</button>
         <button class="secondary" id="send-btn" type="button" title="Send this to the AI; it asks a few questions here and keeps a draft of your world. Enter also sends.">Send</button>
-        <button type="button" class="linkish small" id="example-btn" title="Put an example description in the box; edit it or press Run">or try an example</button>
+        <button type="button" class="linkish small" id="example-btn" title="Put an example description in the box; edit it or press Run">Use a sample prompt</button>
       </div>
       <span class="muted small" id="build-hint" role="status"></span>
       <div class="notice" id="visitor-note" hidden>Not signed in as owner: this world and its runs will not be saved to your library.
         <button type="button" class="secondary small" id="visitor-login" title="Enter the owner password so your worlds and runs are saved to your library">Turn on owner access</button></div>
     </div>
-    <details class="more"><summary title="Optional settings; the defaults work for most descriptions">Options</summary>
+    <details class="more"><summary title="Optional settings; the defaults work for most descriptions">Advanced settings</summary>
       <div class="inner">
         <fieldset style="border:0;padding:0;margin:0">
           <div class="kinds">
@@ -303,6 +317,15 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       </div>
     </details>
     <div class="status" id="service-status"></div>
+    <a class="case-entry" id="case-link" href="?example=early-warning">
+      <span>Explore a completed example</span>
+      <strong>Should the coalition activate its joint response? <span aria-hidden="true">→</span></strong>
+    </a>
+  </section>
+
+  <section class="panel" id="stage-case" aria-label="Completed example" hidden>
+    <a href="?" id="case-home">← Back to chat</a>
+    <div id="retained-case"></div>
   </section>
 
   <section class="panel" id="stage-library" hidden><section id="world-library" class="world-library" aria-labelledby="world-library-h"><div class="row"><h2 id="world-library-h">Your worlds</h2><button type="button" class="secondary" id="library-refresh" title="Refresh your private worlds without running anything.">Refresh</button><button type="button" class="secondary" id="library-login" title="Use owner access to see your private library.">Owner access</button></div><p class="small muted" id="library-status" role="status"></p><input type="search" id="library-search" aria-label="Find your worlds" placeholder="Find a world…" title="Filter saved worlds by title or description." hidden><div id="world-cards" class="world-cards"></div></section></section>
@@ -438,6 +461,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
 </footer>
 <div class="tip-toast" id="tip-toast" role="status" hidden></div>
 <div class="tip-bubble" id="tip-bubble" role="tooltip" hidden></div>
+<script src="world_builder_retained.js"></script>
 <script>
 (function () {
   "use strict";
@@ -805,7 +829,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     $("workspace-continue").onclick = () => openCatalogRun(catalog.run.id, "continue");
     $("workspace-replay").onclick = () => openCatalogRun(catalog.run.id);
   function show(stage) {
-    ["describe", "library", "working", "review", "run"].forEach((s) => { $("stage-" + s).hidden = s !== stage; });
+    ["describe", "library", "case", "working", "review", "run"].forEach((s) => { $("stage-" + s).hidden = s !== stage; });
     $("main-tabs").hidden = stage !== "describe" && stage !== "library";
     ["describe", "library"].forEach((t) => $("tab-" + t).setAttribute("aria-selected", String(stage === t)));
     document.body.classList.toggle("workspace-view", stage === "run");
@@ -813,6 +837,26 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  function openRetainedCase() {
+    show("case");
+    const container = $("retained-case");
+    if (window.WorldBuilderRetained) window.WorldBuilderRetained.open(container);
+    else container.textContent = "The example could not load. Refresh this page to try again.";
+  }
+  $("case-link").onclick = e => {
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    history.pushState({}, "", e.currentTarget.href);
+    openRetainedCase();
+    $("case-home").focus();
+  };
+  $("case-home").onclick = e => {
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    history.pushState({}, "", location.pathname);
+    show("describe");
+    $("desc").focus();
+  };
   let exampleAt = 0;
   $("example-btn").addEventListener("click", () => {
     resetThread(); $("desc").value = EXAMPLES[exampleAt % EXAMPLES.length]; exampleAt++;
@@ -2767,7 +2811,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   refreshBuild();
   checkService();
   refreshLibrary();
-  function openRoute(){const p=new URLSearchParams(location.search);if(p.get("world"))openCatalogWorld(p.get("world"),p.get("worldRun"));else if(p.get("run"))openShared(p.get("run"));}
+  function openRoute(){const p=new URLSearchParams(location.search);if(p.get("world"))openCatalogWorld(p.get("world"),p.get("worldRun"));else if(p.get("run"))openShared(p.get("run"));else if(p.get("example")==="early-warning")openRetainedCase();}
   window.addEventListener("popstate",()=>{if(location.search)openRoute();else homeWorkspace(false);});openRoute();
 })();
 </script>

@@ -14,12 +14,28 @@ from __future__ import annotations
 
 import argparse
 import http.server
+import mimetypes
 import urllib.error
 import urllib.request
 from pathlib import Path
 
 PAGE = Path(__file__).resolve().parent / "world_builder_home.html"
 GRAPH_VIEWER = Path(__file__).resolve().parent / "vendor/graph-viewer.js"
+
+ROOT = PAGE.parent.parent
+ROOM = ROOT / "viewer/smallville"
+ASSETS = {
+    "/world-builder": PAGE,
+    "/world-builder/graph-viewer.js": GRAPH_VIEWER,
+    "/world-builder/room-map": ROOM / "index.html",
+    "/world-builder/play": ROOT / "evidence/renders/world-replay-studio-v0.html",
+    "/world-builder/build": ROOT / "evidence/renders/world-builder-v0.html",
+}
+for filename in ("world_builder_retained.js", "world_builder_retained.json"):
+    ASSETS[f"/world-builder/{filename}"] = PAGE.parent / filename
+for filename in ("index.html", "graph.html", "viewer.js", "replay-public.json", "replay-resident.json",
+                 "assets-cc0/tinydungeon.png", "assets-cc0/TinyDungeon-License.txt"):
+    ASSETS[f"/world-builder/room-map/{filename}"] = ROOM / filename
 
 
 def handler(api: str) -> type[http.server.BaseHTTPRequestHandler]:
@@ -52,17 +68,12 @@ def handler(api: str) -> type[http.server.BaseHTTPRequestHandler]:
             if self.path.startswith("/world-builder/api"):
                 return self._proxy()
             path = self.path.split("?", 1)[0]
-            if path.rstrip("/") == "/world-builder":
-                data = PAGE.read_bytes()
+            asset = ASSETS.get(path.rstrip("/"))
+            if asset and asset.is_file():
+                data = asset.read_bytes()
                 self.send_response(200)
-                self.send_header("Content-Type", "text/html; charset=utf-8")
-                self.end_headers()
-                self.wfile.write(data)
-                return
-            if path == "/world-builder/graph-viewer.js":
-                data = GRAPH_VIEWER.read_bytes()
-                self.send_response(200)
-                self.send_header("Content-Type", "text/javascript; charset=utf-8")
+                self.send_header("Content-Type", mimetypes.guess_type(asset.name)[0] or "application/octet-stream")
+                self.send_header("Content-Length", str(len(data)))
                 self.end_headers()
                 self.wfile.write(data)
                 return
