@@ -68,10 +68,12 @@ def test_fifty_chains_of_a_hundred_links_finish_in_one_moment(monkeypatch):
                 parent = by_event[step["caused_by"][0]]
                 assert f"c{c}-{int(n) - 1}" in {s["it"] for s in parent["reaction_steps"]}
                 assert wave_of[step["it"]] == wave_of[f"c{c}-{int(n) - 1}"] + 1
-    # The moment's cost is bounded by work counted, never by seconds: the same work took 26.6s of CPU alone and
-    # 156.5s on a loaded machine, which failed an unrelated merge (issue 504). The 50 chains advance together, so
-    # there are 100 waves. A wave copies the world once and dumps it three times, whatever the number of steps in it;
-    # the few extra calls are the move itself and the last, empty wave.
+    # The moment's cost is bounded by work counted, never by seconds: CPU time for the same work rises with machine
+    # load (measured 2026-11-27: 17.0s alone, 31.4s beside 30 busy processes; 156.5s in a loaded merge check, which
+    # failed an unrelated merge, issue 504). The 50 chains advance together, so there are 100 waves. A wave copies the
+    # world once and dumps it three times, whatever the number of steps in it; the few extra calls are the move itself
+    # and the last, empty wave. These are the current counts, which do not vary between runs: a change that adds a
+    # copy or a dump on purpose updates them.
     waves = max(e["reaction_wave"] for e in result["reactions"])
     assert waves == len(result["reactions"]) == 100
     assert work["_rule_world"] <= waves + 3, work
