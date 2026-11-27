@@ -63,7 +63,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertEqual(self.page.count('id="build-btn"'), 1)
         self.assertIn(">Run</button>", self.page)
         self.assertIn('$("build-btn").addEventListener("click", () => build());', self.page)
-        self.assertIn('<label class="field" id="describe-h" for="desc">What should happen?</label>', self.page)
+        self.assertIn('<label class="field" id="describe-h" for="desc">Your description</label>', self.page)
         # No step bar, no surprise path, no example chips competing with the button.
         self.assertNotIn('class="steps"', self.page)
         self.assertNotIn("Surprise me", self.page)
@@ -71,10 +71,10 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('api("/surprise"', self.page)
         self.assertIn('$("surprise-btn").addEventListener("click", () => surprise());', self.page)
         self.assertNotIn('id="examples"', self.page)
-        self.assertIn(">or try an example</button>", self.page)
+        self.assertIn(">Use a sample prompt</button>", self.page)
         # An empty box never silently builds the example text.
         self.assertNotIn('$("desc").value.trim() || $("desc").placeholder', self.page)
-        self.assertIn("Type what should happen first, or try an example.", self.page)
+        self.assertIn("Describe your situation first, or use a sample prompt.", self.page)
 
     def test_waiting_is_honest_and_cancellable(self):
         self.assertIn("Creating simulation…", self.page)
@@ -98,7 +98,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('api("/clarify", { messages: talk, world_kind: kind() })', self.page)
         self.assertIn('href="play/"', self.page)
         self.assertIn('href="build/"', self.page)
-        self.assertIn('title="Optional settings; the defaults work for most descriptions">Options</summary>', self.page)
+        self.assertIn('title="Optional settings; the defaults work for most descriptions">Advanced settings</summary>', self.page)
 
     @pytest.mark.req("world-builder-page/a-visitor-picks-the-kind-of-world")
     def test_world_kinds_and_live_play_are_offered(self):
@@ -439,7 +439,7 @@ class WorldBuilderHomeTests(unittest.TestCase):
         self.assertIn('id="world-library"', library)
         for tab in ('id="tab-describe"', 'id="tab-library"'):
             self.assertIn(tab, page)
-        self.assertIn('["describe", "library", "working", "review", "run"]', page)
+        self.assertIn('["describe", "library", "case", "working", "review", "run"]', page)
         # the run page's "← Your worlds" opens the library tab
         self.assertIn('homeWorkspace(); show("library")', page)
 

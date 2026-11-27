@@ -1,0 +1,28 @@
+{
+  "need": "Get from a situation or a finding to a recorded result in the existing World Builder.",
+  "searched": [
+    {
+      "place": "own",
+      "where": "docs/research/ui-comparison-waltzman-20261117.md",
+      "query": "Prior chat, story, evidence and replay views",
+      "found": "World Builder supplies the authoring and run paths. The donor workbench pairs participant statements."
+    },
+    {
+      "place": "outside",
+      "where": "Existing archived donor workbench",
+      "query": "What primary evidence can a visitor inspect?",
+      "found": "Six paired statements and recorded round counts are already publicly distributed."
+    }
+  ],
+  "candidates": [
+    {
+      "name": "World Builder and donor case",
+      "url": "https://brianmills.dev/waltzman/",
+      "covers": "Chat through native replay plus a recorded comparative case",
+      "verdict": "combine",
+      "reason": "Reuse the canonical chat and run viewer with the donor's existing public records."
+    }
+  ],
+  "decision": "combine",
+  "decided": "2026-11-27"
+}
