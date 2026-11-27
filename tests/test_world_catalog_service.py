@@ -324,6 +324,42 @@ class CatalogServiceTests(unittest.TestCase):
         self.assertEqual(second['actor_state']['briefs'], {'ava': 'My own profile'})
 
 
+    @pytest.mark.req("world-builder-page/simple-view-story")
+    def test_story_asked_twice_at_once_is_written_once(self):
+        # 2026-11-27 live: one saved run opened twice, seconds apart, sent every slice of its story to the model twice.
+        from scripts import run_story
+        rid = self.new_run()
+        self.assertEqual(self.step(rid)[0], 200)
+        calls, started, release = [], threading.Event(), threading.Event()
+
+        def fake_tell(rounds, **kwargs):
+            calls.append(kwargs['trace_id'])
+            started.set()
+            release.wait(10)
+            return {'version': run_story.STORY_VERSION, 'rounds': []}, []
+
+        def fake_dialogue(handler, client, kind, call, **kwargs):
+            payload, _ = call(f'story-test-{len(calls)}', 0)
+            handler._json(200, {'ok': True, **payload})
+
+        answers = []
+        ask = lambda: answers.append(self.request('/story', {'catalog_run_id': rid}))
+        with patch.object(service.WorldBuilderHandler, '_dialogue_call', fake_dialogue), \
+                patch.object(run_story, 'tell_run', fake_tell):
+            first = threading.Thread(target=ask)
+            first.start()
+            self.assertTrue(started.wait(10))
+            second = threading.Thread(target=ask)
+            second.start()
+            second.join(1)  # a second writer would finish its call here; a waiting request is still blocked
+            release.set()
+            first.join(10)
+            second.join(10)
+        self.assertEqual(len(calls), 1, calls)
+        self.assertEqual([status for status, _ in answers], [200, 200], answers)
+        self.assertEqual(sorted(body['cached'] for _, body in answers), [False, True])
+        self.assertEqual({body['story']['trace_id'] for _, body in answers}, {calls[0]})
+
 class BriefChangeTests(unittest.TestCase):
     @pytest.mark.req("world-builder-page/a-what-if-branch-can-change-one-groups-brief")
     def test_a_brief_change_adds_one_line_to_one_group_and_is_checked(self):
