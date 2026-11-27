@@ -9,6 +9,7 @@ Line numbers refer to commit `184f163` (the base of this branch; its `scripts/wo
 ## The Waltzman job used for the comparison
 
 The test job has four parts:
+
 - Ten groups (four countries, a regional health network, a partnership, and technical, legal, logistics and community groups).
 - A weekly meeting.
 - A decision deadline.
@@ -93,3 +94,13 @@ What C does that no earlier UI does: build the ten-group world from words, enfor
 - The room-map public demos as a separate page (same viewer as C).
 - D's overview and V0 were read at 390 px only at the top of the page (`donor-390`, `demo_v0-390`); their lower sections at 390 px were not checked for this note.
 - Whether the shared run's map differs for runs created after 2026-11-16.
+
+## November 27 follow-up on the unified chat
+
+The November 17 changes already put the library in a tab, made Simple the default and retained the map, support chart and Advanced controls. The remaining gap on the landing page was that the example action filled the composer. A visitor could try wording there, but could not open the completed coordination finding. The chat now offers both actions and identifies the recording as an earlier workbench simulation.
+
+On the saved native run, the round story already carried event IDs. The rendered sentences discarded those references. Simple now opens the cited record in place. A shared run without a written story uses its recorded events directly. At 1280 and 390 pixels, opening the final result for share FQHXnP_TLKPi showed round 14 event r14-e00012 changing the decision from authorized to deployed. Its final state at round 45 recorded five supporting, zero conditional and four required. Advanced still exposed all 45 rounds.
+
+The earlier workbench run_5010214f2466 is a separate result. Outright support moved from 26 to six and back to 26 after a prewritten compact. At both widths one action from that finding opened the same simulated official’s statements from rounds two and three. It is the distinction between approving and still requesting safeguards that makes those statements worth showing.
+
+The same chat built a new ten-group flood-warning world. In run 8ccb3b95b72140d79d5312884b6625a2, Country 4 and the Regional Health Network supplied the two outright votes in round one (events r1-e00005 and r1-e00008). Support held at two in round two. The model scheduled the second meeting for tick eight, although the chat draft said one meeting per round. The two-round run ended before that deadline. The Simple result now reports that the deadline was still pending and opens both contributions, including their statements.

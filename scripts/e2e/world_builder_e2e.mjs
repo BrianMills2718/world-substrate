@@ -4,7 +4,7 @@
 //   node world_builder_e2e.mjs <base> <flow...>      e.g. node world_builder_e2e.mjs https://brianmills.dev task open
 //
 // Flows: tooltips (free: every visible control shows a tooltip bubble) | task | ongoing | open | pencil (Create simulation, watch it play live with no review stop; continuing worlds are also paused, checked to stay still, and resumed),
-// example (or try an example, then Create simulation), dialogue (Send, two turns in the one thread, then Run).
+// example (Use a sample prompt, then Create simulation), dialogue (Send, two turns in the one thread, then Run).
 // E2E_AI=1 also switches a playing continuing world to AI moves for two rounds (costs a few cents).
 // Screenshots go to $E2E_OUT (default ./out). Spends real model money on the target.
 // Prints one line per step and `RESULT passed=N failed=M`; exits 1 if any flow failed.
@@ -101,10 +101,21 @@ for (const flow of flows.length ? flows : ['task']) {
       await p.getByRole('button', { name: 'Run', exact: true }).click();
       const hint = (await p.textContent('#build-hint')).trim();
       log('empty create', hint);
-      if (!/Type what should happen first/.test(hint)) throw new Error('empty box did not ask for a description');
+      if (!/Describe your situation first/.test(hint)) throw new Error('empty box did not ask for a description');
       if (!(await p.locator('#stage-describe').isVisible())) throw new Error('empty box left the describe screen');
+    } else if (flow === 'retained') {
+      const record = await (await p.request.get(base + '/world-builder/world_builder_retained.json')).json();
+      await p.locator('#case-link').click();
+      await p.getByRole('button', { name: 'Read the paired statements' }).click();
+      for (const pair of record.paired_rationales) {
+        await p.locator('#retained-participant').selectOption(pair.actor_id);
+        const quotes = await p.locator('#retained-case blockquote').allTextContents();
+        if (quotes[0] !== pair.under_pressure.rationale || quotes[1] !== pair.after_stabilization.rationale)
+          throw new Error('Statement mismatch for ' + pair.actor_id);
+      }
+      log('verified', record.paired_rationales.length + ' pairs from ' + record.source_run_id);
     } else if (flow === 'example') {
-      await p.getByRole('button', { name: 'or try an example' }).click();
+      await p.getByRole('button', { name: 'Use a sample prompt' }).click();
       log('example', await p.inputValue('#desc'));
       await p.getByRole('button', { name: 'Run', exact: true }).click();
       await buildAndRun(p, 'task', log);

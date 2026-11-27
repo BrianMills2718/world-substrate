@@ -153,6 +153,8 @@ iframe.replay{width:100%;height:640px;border:1px solid var(--line);border-radius
 #run-result p{margin:4px 0}
 #run-result .source-events>summary{color:var(--ok);cursor:pointer;min-height:44px;padding:10px 0}
 #stage-run:not(.simple) #run-result{display:none}
+#stage-run.simple #catalog-controls,#stage-run.simple #workspace-continue-note,
+#stage-run.simple #workspace-status[data-run-label]{display:none}
 .simple-view{margin:10px 0}
 .simple-view .world-line{font-size:16px;margin:4px 0 12px}
 .simple-view ol{list-style:none;margin:8px 0;padding:0;display:grid;gap:8px}
@@ -493,6 +495,7 @@ main:has(#stage-case:not([hidden]))>h1,main:has(#stage-case:not([hidden]))>.lede
       selectionGeneration = 0;
 
     function workspaceError(err) {
+      delete $("workspace-status").dataset.runLabel;
       $("workspace-status").textContent = plainError(err);
     }
 
@@ -680,6 +683,7 @@ main:has(#stage-case:not([hidden]))>h1,main:has(#stage-case:not([hidden]))>.lede
           };
           sceneKey = "";
           history.replaceState({}, "", location.pathname + "?world=" + encodeURIComponent(id));
+          delete $("workspace-status").dataset.runLabel;
           $("workspace-status").textContent = "Initial world · no runs yet";
           startLive({
             rounds: []
@@ -711,6 +715,7 @@ main:has(#stage-case:not([hidden]))>h1,main:has(#stage-case:not([hidden]))>.lede
       sceneKey = "";
       history.replaceState({}, "", location.pathname + "?world=" + encodeURIComponent(catalog.worldId) + "&worldRun=" + encodeURIComponent(data.run.id));
       const forkRound=(data.checkpoints||[]).find(c=>c.id===data.run.fork_checkpoint_id)?.round;
+      $("workspace-status").dataset.runLabel = "true";
       $("workspace-status").textContent = `${data.run.name||"Run"} ${data.run.id.slice(0,6)}${data.run.parent_run_id?" · parent "+data.run.parent_run_id.slice(0,6)+" · after round "+(forkRound??"unknown"):""}`;
       if (mode === "replay") {
         world.shared = data.record;
@@ -2206,24 +2211,41 @@ main:has(#stage-case:not([hidden]))>h1,main:has(#stage-case:not([hidden]))>.lede
     const heading = document.createElement("h3"), finding = document.createElement("p");
     const entities = structuredClone(world.bundle.entities);
     const decision = entities.find(entity => entity.components?.group_decision);
+    let startingValues = "";
     let evidence = savedEventRows(last).map(row => ({...row, round: last.turn}));
     if (decision) {
       const prefix = "entities." + decision.id + ".components.group_decision.";
       const fields = ["status", "support", "conditional", "needed"].map(field => prefix + field);
-      const latest = new Map();
+      const initial = decision.components.group_decision;
+      startingValues = `Starting decision: ${words(initial.status)}. Outright support: ${initial.support}. Conditional support: ${initial.conditional}. Approval threshold: ${initial.needed}.`;
+      const receipts = [];
+      const deadlinePath = "entities." + decision.components.group_decision.deadline_id + ".components.moment.occurrences";
+      let beforeLastSupport;
       for (const turn of rounds) {
+        beforeLastSupport = decision.components.group_decision.support;
         applyRound(entities, turn);
         for (const row of savedEventRows(turn)) {
-          const receipt = {...row, round: turn.turn};
-          for (const change of row.event.changes || []) {
-            if (fields.includes(change.path)) latest.set(change.path, receipt);
+          if (row.event.changes?.some(change => fields.includes(change.path) || change.path === deadlinePath)) {
+            receipts.push({...row, round: turn.turn});
           }
         }
       }
-      evidence = [...new Set(fields.map(field => latest.get(field)).filter(Boolean))];
+      // Show the latest change first, retaining earlier contributions to the same total.
+      receipts.reverse();
+      if (receipts.length) evidence = receipts;
+      else startingValues += " These values remained unchanged. Records below are from the latest round.";
       const result = decision.components.group_decision;
       heading.textContent = result.question;
       finding.textContent = `Round ${last.turn} · ${words(result.status)}. ${result.support} supported the proposal outright and ${result.conditional} supported it conditionally. Approval required ${result.needed}.`;
+      if (rounds.length > 1) {
+        const priorRound = rounds.at(-2).turn;
+        finding.textContent += result.support === beforeLastSupport
+          ? ` Outright support held steady from round ${priorRound}.`
+          : ` Outright support changed from ${beforeLastSupport} in round ${priorRound} to ${result.support}.`;
+      }
+      const finalState = outcomeSummary(entities);
+      if (finalState.deadlineLabel) finding.textContent += finalState.deadlineReached
+        ? " The recorded deadline was reached." : " The recorded deadline was still pending.";
     } else {
       heading.textContent = `Latest result · Round ${last.turn}`;
       const summary = byRound.get(last.turn)?.sentences?.[0];
@@ -2237,17 +2259,18 @@ main:has(#stage-case:not([hidden]))>h1,main:has(#stage-case:not([hidden]))>.lede
       }
     }
     panel.append(heading, finding);
-    if (evidence.length) panel.append(storySources(evidence, "View recorded evidence"));
-    else if (decision) {
-      const source = document.createElement("p"); source.className = "small muted";
-      source.textContent = "The recorded rounds kept the decision values from the starting state."; panel.append(source);
-    }
+    if (evidence.length || startingValues) panel.append(storySources(evidence, "View recorded evidence", startingValues));
   }
-  function storySources(rows, label) {
+  function storySources(rows, label, startingValues = "") {
     const details = document.createElement("details"), summary = document.createElement("summary");
     details.className = "source-events"; summary.textContent = label; details.append(summary);
     details.addEventListener("toggle", () => {
       if (!details.open || details.childElementCount > 1) return;
+      if (startingValues) {
+        const initial = document.createElement("p");
+        initial.textContent = startingValues;
+        details.append(initial);
+      }
       for (const item of rows) {
         const event = item.event, article = document.createElement("article"), title = document.createElement("strong");
         title.textContent = (item.round ? `Round ${item.round} · ` : "") + item.title + " · " + savedStatus(item); article.append(title);
@@ -2255,6 +2278,15 @@ main:has(#stage-case:not([hidden]))>h1,main:has(#stage-case:not([hidden]))>.lede
         for (const [label, value] of [["Attempt", quote], ["Statement", event.said]]) {
           if (typeof value !== "string" || !value.trim()) continue;
           const words = document.createElement("blockquote"); words.textContent = label + " · “" + value + "”"; article.append(words);
+        }
+        const interpretation = event.did?.why || event.wanted?.why;
+        const ruling = event.ruling?.why || (item.ruling && event.why);
+        for (const [label, explanation] of [["Recorded interpretation", interpretation], ["Ruling", ruling]]) {
+          if (explanation) {
+            const reason = document.createElement("p");
+            reason.textContent = label + " · " + explanation;
+            article.append(reason);
+          }
         }
         if (event.refused_because?.length) {
           const reason = document.createElement("p"); reason.textContent = event.refused_because.map(plainCheck).join(", "); article.append(reason);
