@@ -148,16 +148,25 @@ iframe.replay{width:100%;height:640px;border:1px solid var(--line);border-radius
 .main-tabs button{background:none;border:0;border-bottom:3px solid transparent;color:inherit;font:inherit;padding:8px 14px;cursor:pointer;border-radius:6px 6px 0 0}
 .main-tabs button[aria-selected="true"]{border-bottom-color:#6aa7e8;font-weight:600}
 #stage-library .world-library{margin:0;padding:0;border:0}
+#run-result{margin:14px 0 20px;max-width:78ch}
+#run-result h3{font-size:19px}
+#run-result p{margin:4px 0}
+#run-result .source-events>summary{color:var(--ok);cursor:pointer;min-height:44px;padding:10px 0}
+#stage-run:not(.simple) #run-result{display:none}
 .simple-view{margin:10px 0}
 .simple-view .world-line{font-size:16px;margin:4px 0 12px}
 .simple-view ol{list-style:none;margin:8px 0;padding:0;display:grid;gap:8px}
-.simple-view li{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#10181d}
-.simple-view li{cursor:pointer}
+.simple-view ol>li{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#10181d}
+.simple-view .source-events{margin:.4rem 0;color:var(--text);overflow-wrap:anywhere}
+.simple-view .source-events summary{color:var(--ok);padding:6px 0}
+.source-events article{border-left:2px solid var(--line);padding:2px 12px;margin:8px 0}
+.source-events article p{margin:4px 0}
+.source-events blockquote{margin:6px 0;white-space:pre-wrap}
 .simple-view li.now{border-color:#6aa7e8;box-shadow:inset 3px 0 0 #6aa7e8}
 .simple-view li summary{cursor:pointer;list-style:none;font-size:15px;line-height:1.4}
 .simple-view li summary::-webkit-details-marker{display:none}
 .simple-view li summary::before{content:"▸ ";color:#8a949c}
-.simple-view li[open] summary::before{content:"▾ "}
+.simple-view details[open]>summary::before{content:"▾ "}
 .simple-view li .rno{color:#c5ccd1;font-weight:600;margin-right:6px}
 .simple-view li ul{margin:8px 0 2px 4px;padding-left:20px;list-style:disc;display:grid;gap:4px}
 .simple-view .more-btn{background:none;border:0;color:#6aa7e8;font:inherit;cursor:pointer;padding:0 0 0 6px;text-decoration:underline}
@@ -355,6 +364,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       <label for="context-actor">Person</label>
       <select id="context-actor" title="Choose whose exact authorized inputs to inspect. Switching views never changes their memory."></select>
     </div>
+    <section id="run-result" aria-label="Run result" hidden></section>
     <section id="run-map" class="run-map" aria-labelledby="run-map-h"><h3 id="run-map-h">The world on the map, with its graph beside it</h3>
     <p class="small muted" id="run-map-status" role="status">The map appears when the first round finishes.</p>
     <div class="what-if-bar" id="what-if-bar" hidden><button type="button" class="secondary" id="what-if" title="Play this world again from the round shown on the map, beside the original. The original is not changed.">What if…</button> <span class="small muted" id="what-if-note" role="status"></span>
@@ -2113,27 +2123,106 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     const text = world && world.description ? String(world.description) : "", more = $("simple-world-more");
     const showWorld = (full) => { $("simple-world").textContent = full || text.length <= 200 ? text : text.slice(0, 197) + "..."; more.textContent = full ? "Show less" : "Read more"; more.dataset.full = full ? "1" : ""; };
     showWorld(false); more.hidden = text.length <= 200; more.onclick = () => showWorld(!more.dataset.full);
-    if (!catalog || !catalog.run) { note.textContent = "This run is not saved in your library yet, so there is no written account. Use Advanced view to follow it live."; return; }
-    if (!story) { note.textContent = story === false ? "The account could not be written." : "Not written yet."; tell.hidden = false; tell.textContent = story === false ? "Try again" : "Tell me what happened"; return; }
-    const lost = story.not_told_rounds && story.not_told_rounds.length;
-    note.textContent = lost ? `Rounds ${story.not_told_rounds[0]} to ${story.not_told_rounds.at(-1)} could not be written; Advanced view shows them.` :
-      story.dropped_sentences ? `${story.dropped_sentences} sentence${story.dropped_sentences > 1 ? "s" : ""} left out because the recording did not support ${story.dropped_sentences > 1 ? "them" : "it"}.` : "";
-    story.rounds.forEach((r) => {
+    const rounds = live?.recorded || live?.rounds || [];
+    const byRound = new Map((story?.rounds || []).map(row => [row.round, row]));
+    const missing = story?.not_told_rounds || [];
+    note.textContent = !rounds.length ? "The first completed round will appear here." :
+      missing.length ? "Rounds without a written account show their recorded events." :
+      story?.dropped_sentences ? "Only statements supported by the recording are shown." : "";
+    tell.hidden = !catalog?.run || !rounds.length || !!story;
+    tell.textContent = story === false ? "Try writing the account again" : "Tell me what happened";
+    renderRunResult(rounds, byRound);
+    rounds.forEach((turn, index) => {
+      const r = byRound.get(turn.turn), rows = savedEventRows(turn);
       const li = document.createElement("li"), d = document.createElement("details"), sum = document.createElement("summary");
-      li.dataset.round = r.round; d.dataset.round = r.round;
-      const no = document.createElement("span"); no.className = "rno"; no.textContent = `Round ${r.round}`;
-      sum.title = "Show what happened in this round and move the map and the numbers to it.";
-      sum.append(no, r.told ? (r.headline || r.sentences[0].text) : (r.recorded ? "Nothing written for this round" : "Nobody did anything"));
-      const ul = document.createElement("ul");
-      (r.told ? r.sentences.map((s) => s.text) : [r.recorded ? "Advanced view has the moves of this round." : "No moves were recorded."]).forEach((t) => { const b = document.createElement("li"); b.textContent = t; ul.append(b); });
-      d.append(sum, ul); li.append(d);
-      sum.addEventListener("click", (e) => {
-        const i = live && live.recorded ? live.recorded.findIndex((t) => t.turn === r.round) : -1;
-        if (i >= 0) { e.preventDefault(); selectSavedRound(i); } // the map moves; markStoryRound opens this round, closes the rest
+      li.dataset.round = turn.turn; d.dataset.round = turn.turn;
+      const no = document.createElement("span"); no.className = "rno"; no.textContent = `Round ${turn.turn}`;
+      const changed = rows.filter(row => row.event.changes?.length);
+      const headline = changed.length ? changed[0].title :
+        rows.length ? `${rows.length} recorded ${rows.length === 1 ? "event" : "events"}` : "No recorded events";
+      sum.append(no, r?.headline || r?.sentences?.[0]?.text || headline);
+      d.append(sum);
+      for (const sentence of r?.sentences || []) {
+        const paragraph = document.createElement("p"); paragraph.textContent = sentence.text; d.append(paragraph);
+        const cited = rows.filter(row => sentence.event_ids.includes(row.event.event_id));
+        if (cited.length) d.append(storySources(cited, "View cited evidence"));
+      }
+      if (rows.length && !r?.sentences?.length) d.append(storySources(rows, "View round evidence"));
+      sum.addEventListener("click", (event) => {
+        if (live?.replay && live.replayIndex !== index) { event.preventDefault(); selectSavedRound(index); }
       });
-      list.append(li);
+      li.append(d); list.append(li);
     });
-    markStoryRound(shownRoundNumber());
+    markStoryRound(live?.replay ? shownRoundNumber() : rounds.at(-1)?.turn);
+  }
+  function renderRunResult(rounds, byRound) {
+    const panel = $("run-result"), last = rounds.at(-1);
+    panel.replaceChildren(); panel.hidden = !last;
+    if (!last) return;
+    const heading = document.createElement("h3"), finding = document.createElement("p");
+    const entities = structuredClone(world.bundle.entities);
+    const decision = entities.find(entity => entity.components?.group_decision);
+    let evidence = savedEventRows(last).map(row => ({...row, round: last.turn}));
+    if (decision) {
+      const prefix = "entities." + decision.id + ".components.group_decision.";
+      const fields = ["status", "support", "conditional", "needed"].map(field => prefix + field);
+      const latest = new Map();
+      for (const turn of rounds) {
+        applyRound(entities, turn);
+        for (const row of savedEventRows(turn)) {
+          const receipt = {...row, round: turn.turn};
+          for (const change of row.event.changes || []) {
+            if (fields.includes(change.path)) latest.set(change.path, receipt);
+          }
+        }
+      }
+      evidence = [...new Set(fields.map(field => latest.get(field)).filter(Boolean))];
+      const result = decision.components.group_decision;
+      heading.textContent = result.question;
+      finding.textContent = `After round ${last.turn} the decision was ${words(result.status)}. ${result.support} supported it outright and ${result.conditional} conditionally. Approval required ${result.needed}.`;
+    } else {
+      heading.textContent = `Latest result · Round ${last.turn}`;
+      const summary = byRound.get(last.turn)?.sentences?.[0];
+      if (summary) {
+        finding.textContent = summary.text;
+        evidence = evidence.filter(row => summary.event_ids.includes(row.event.event_id));
+      } else {
+        const item = evidence.find(row => row.event.changes?.length) || evidence[0];
+        finding.textContent = item ? item.title + " · " + savedStatus(item) : "No events were recorded in this round.";
+        evidence = item ? [item] : [];
+      }
+    }
+    panel.append(heading, finding);
+    if (evidence.length) panel.append(storySources(evidence, "View recorded evidence"));
+    else if (decision) {
+      const source = document.createElement("p"); source.className = "small muted";
+      source.textContent = "The recorded rounds kept the decision values from the starting state."; panel.append(source);
+    }
+  }
+  function storySources(rows, label) {
+    const details = document.createElement("details"), summary = document.createElement("summary");
+    details.className = "source-events"; summary.textContent = label; details.append(summary);
+    details.addEventListener("toggle", () => {
+      if (!details.open || details.childElementCount > 1) return;
+      for (const item of rows) {
+        const event = item.event, article = document.createElement("article"), title = document.createElement("strong");
+        title.textContent = (item.round ? `Round ${item.round} · ` : "") + item.title + " · " + savedStatus(item); article.append(title);
+        const quote = event.attempt?.text || event.wanted?.attempt || event.did?.attempt;
+        for (const [label, value] of [["Attempt", quote], ["Statement", event.said]]) {
+          if (typeof value !== "string" || !value.trim()) continue;
+          const words = document.createElement("blockquote"); words.textContent = label + " · “" + value + "”"; article.append(words);
+        }
+        if (event.refused_because?.length) {
+          const reason = document.createElement("p"); reason.textContent = event.refused_because.map(plainCheck).join(", "); article.append(reason);
+        }
+        savedChangeList(article, event);
+        if (event.event_id) {
+          const id = document.createElement("small"); id.textContent = "Recorded event " + event.event_id; article.append(id);
+        }
+        details.append(article);
+      }
+    });
+    return details;
   }
   function shownRoundNumber() { return Number(($("saved-player") && $("saved-player").dataset.round) || 0); }
   function markStoryRound(round) {
@@ -2141,13 +2230,13 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
   }
   async function loadStory(force) {
     if (!catalog || !catalog.run) { story = null; renderStory(); return; }
-    const run = catalog.run.id, checkpoint = catalog.checkpointId;
+    const run = catalog.run.id, origin = live;
     $("simple-note").textContent = "Writing a plain account of each round...";
     try {
       const d = await api("/story", { catalog_run_id: run });
-      if (!catalog || !catalog.run || catalog.run.id !== run) return;
+      if (live !== origin || catalog?.run?.id !== run) return;
       story = d.story;
-    } catch (err) { story = false; }
+    } catch (err) { if (live !== origin || catalog?.run?.id !== run) return; story = false; }
     renderStory();
   }
   function renderOutcomeBar(entities, round) {
@@ -2299,6 +2388,12 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     if ($("legacy-run-content").parentElement !== $("analyst-context")) $("analyst-context").append($("legacy-run-content"));
     const t = live.totals, n = live.rounds.length;
     const last = n ? live.rounds[n - 1].turn : 0;
+    if (live.storyRound !== last) {
+      live.storyRound = last; renderStory();
+      const entities = structuredClone(world.bundle.entities);
+      for (const turn of live.rounds) applyRound(entities, turn);
+      renderOutcomeBar(entities, last);
+    }
     $("run-h").textContent = live.replay ? (live.finished ? "A shared run (end of the recording)" : "A shared run, replayed")
       : live.playing ? "Your world is running" : live.finished ? "Your world reached its finish line" : "Your world is paused";
     $("outcome").textContent = n
@@ -2514,6 +2609,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
     live = { gen: live ? live.gen + 1 : 1, rounds: [], buffer: recorded ? recorded.slice() : [], snapshot: null, lastTurn: 0, playing: false, quiet: 0,
              totals: { allowed: 0, refused: 0, held: 0, byItself: 0, refusedByItself: 0 }, finished: false, endsAt: null, why: "",
              actorInformationMode: recorded && world.shared ? world.shared.actor_information_mode : null, actorInputs: recorded && world.shared ? (world.shared.actor_inputs || {}) : {}, actorState: null, sincePlay: 0, lastChanged: {}, runIds: [], replay: !!recorded, recorded, rulings: [], decisions: [] };
+    story = null;
     $("share-out").textContent = ""; $("readout-out").innerHTML = "";
     $("readout-btn").hidden = live.replay && !(world.shared && world.shared.readout);
     $("share-btn").hidden = live.replay;
@@ -2529,7 +2625,7 @@ footer.site{max-width:760px;margin:0 auto;padding:0 20px 40px}
       live.replayIndex = 0; live.rounds = live.recorded.slice(0, 1); live.buffer = [];
       live.finished = live.recorded.length <= 1;
       $("saved-advanced").open = false;
-      renderLive();
+      renderLive(); renderStory();
       if (world.shared && world.shared.readout) renderReadout(world.shared.readout);
     } else {
       play();
